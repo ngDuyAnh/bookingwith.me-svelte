@@ -5,19 +5,20 @@
 
     let accessString = "accessString";
     let business = {
-        businessName: "Booking With Me Co.",
-        businessPhoneNumber: "(123) 456-7890",
-        contactPhoneNumber: "(113) 426-3490",
-        email: "bookingwithme_contact@outlook.com",
-        ownerName: "Test Owner Name",
-        address: "123 Worthington Avenue",
+        businessId: -1,
+        businessName: "",
+        businessPhoneNumber: "",
+        contactPhoneNumber: "",
+        businessEmail: "",
+        ownerName: "",
+        address: "",
         city: "Winnipeg",
         province: "Manitoba",
         country: "Canada",
         postalCode: "R3Q 1Q3",
-        websiteUrl: "www.bookingwith.me",
-        businessType: "Booking schedule services.",
-        socialMediaLink: "@bookingwithme.social",
+        websiteUrl: "",
+        businessType: "",
+        socialMediaLink: "",
         registrationDate: dayjs().format('YYYY-MM-DD'),
         active: true,
         useActiveManagement: true
@@ -116,8 +117,8 @@
     </div>
 
     <div class="form-group">
-        <label for="email">Email:</label>
-        <input type="email" id="email" bind:value={business.email} class="input-field" required>
+        <label for="businessEmail">Business Email:</label>
+        <input type="email" id="email" bind:value={business.businessEmail} class="input-field" required>
     </div>
 
     <div class="form-group">
