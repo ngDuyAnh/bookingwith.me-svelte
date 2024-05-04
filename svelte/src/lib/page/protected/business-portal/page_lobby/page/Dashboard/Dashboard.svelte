@@ -1,12 +1,12 @@
 <script>
     import {onMount, setContext} from "svelte";
-    import {getLobbyBookingList, initializeCustomerBooking} from "$lib/api_server/lobby-portal/api.js";
+    import {getLobbyBookingList, initializeCustomerBooking} from "$lib/api/api_server/lobby-portal/api.js";
     import {user} from "$lib/page/protected/stores/user.js";
     import {formatToDate} from "$lib/application/Formatter.js";
-    import {now} from "$lib/page/protected/stores/now/now_dayjs_store.js";
+    import {now} from "$lib/page/stores/now/now_dayjs_store.js";
     import {bookingStateList}
         from "$lib/page/protected/business-portal/page_lobby/stores/bookingStateList_store.js";
-    import {getRecentCustomerBooking} from "$lib/api_server/lobby-portal/api.js";
+    import {getRecentCustomerBooking} from "$lib/api/api_server/lobby-portal/api.js";
     import Appointment
         from "$lib/page/protected/business-portal/page_lobby/page/Dashboard/components/Appointment/Appointment.svelte";
     import Lobby from "$lib/page/protected/business-portal/page_lobby/page/Dashboard/components/Lobby/Lobby.svelte";
@@ -14,7 +14,7 @@
         from "$lib/page/protected/business-portal/page_lobby/page/Dashboard/components/Servicing/Servicing.svelte";
     import Completed
         from "$lib/page/protected/business-portal/page_lobby/page/Dashboard/components/Completed/Completed.svelte";
-    import {CustomerBooking} from "$lib/api_server/customer-booking-portal/initialize_functions.js";
+    import {CustomerBooking} from "$lib/api/api_server/customer-booking-portal/initialize_functions.js";
 
     onMount(async () => {
         await updateCustomerBookingList();

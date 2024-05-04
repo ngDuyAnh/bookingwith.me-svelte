@@ -1,7 +1,7 @@
 <script>
     import {user} from "$lib/page/protected/stores/user.js";
     import {onMount} from "svelte";
-    import {getBusinessInformation} from "$lib/api_server/business-portal/api.js";
+    import {getBusinessInformation} from "$lib/api/api_server/business-portal/api.js";
     import {businessInfo} from "$lib/page/protected/business-portal/page_admin/stores/business_portal_admin_store.js";
     import {selectedTab} from "$lib/page/protected/business-portal/page_lobby/stores/selected_tab_store.js";
     import {Spinner} from "flowbite-svelte";
@@ -12,7 +12,7 @@
     import BookingList from "$lib/page/protected/business-portal/page_lobby/page/BookingList/BookingList.svelte";
     import {
         employeeSelectOptions, employeeToSelectOption
-    } from "$lib/page/protected/stores/EmployeeSelectOptions/employeeSelectOptions_store.js";
+    } from "$lib/page/stores/EmployeeSelectOptions/employeeSelectOptions_store.js";
     import {goto} from "$app/navigation";
 
     let isLoading = true;

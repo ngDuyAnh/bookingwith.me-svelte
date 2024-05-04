@@ -1,5 +1,5 @@
 <script>
-    import {getLogin} from "$lib/api_server/business-portal/api.js";
+    import {getLogin} from "$lib/api/api_server/business-portal/api.js";
     import {user} from "$lib/page/protected/stores/user.js";
 
     let businessId = 'ek63l-t7rfo-1cbmj-4mnck';

@@ -1,4 +1,4 @@
-import {API_BASE_URL} from "$lib/api_server/API-URL.js";
+import {API_BASE_URL} from "$lib/api/api_server/API-URL.js";
 
 const API_URL = `${API_BASE_URL}/business-portal`;
 

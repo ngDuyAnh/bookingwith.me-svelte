@@ -1,6 +1,6 @@
 
 <footer>
-    <p>Thank you for considering <a href="/static">booking with me!</a></p>
+    <p>Thank you for considering <a href="/about">booking with me!</a></p>
 </footer>
 
 <style>

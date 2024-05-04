@@ -1,11 +1,11 @@
 <script>
-    import {now} from "$lib/page/protected/stores/now/now_dayjs_store.js";
+    import {now} from "$lib/page/stores/now/now_dayjs_store.js";
     import {formatToDate, formatToTime, formatToTimeAM} from "$lib/application/Formatter.js";
     import {Button, Input, Label, Select, Textarea} from "flowbite-svelte";
-    import {availableBooking} from "$lib/api_server/customer-booking-portal/api.js";
+    import {availableBooking} from "$lib/api/api_server/customer-booking-portal/api.js";
     import dayjs from "dayjs";
     import {onMount} from "svelte";
-    import {getCustomer} from "$lib/api_server/lobby-portal/api.js";
+    import {getCustomer} from "$lib/api/api_server/lobby-portal/api.js";
 
     export let businessId;
     export let customerBooking;

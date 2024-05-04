@@ -6,9 +6,9 @@
         from "$lib/page/protected/business-portal/page_lobby/page/CreateBooking/components/CustomerIndividualListItem/CustomerIndividualListItem.svelte";
     import ModalCustomerBookingInformation
         from "$lib/page/protected/business-portal/page_lobby/page/CreateBooking/components/ModalCustomerBookingInformation/ModalCustomerBookingInformation.svelte";
-    import {now} from "$lib/page/protected/stores/now/now_dayjs_store.js";
-    import {CustomerBookingState, CustomerBooking} from "$lib/api_server/customer-booking-portal/initialize_functions.js";
-    import {forceSubmitBooking, submitBooking} from "$lib/api_server/customer-booking-portal/api.js";
+    import {now} from "$lib/page/stores/now/now_dayjs_store.js";
+    import {CustomerBookingState, CustomerBooking} from "$lib/api/api_server/customer-booking-portal/initialize_functions.js";
+    import {forceSubmitBooking, submitBooking} from "$lib/api/api_server/customer-booking-portal/api.js";
     import {businessInfo} from "$lib/page/protected/business-portal/page_admin/stores/business_portal_admin_store.js";
     import {CheckCircleSolid, ExclamationCircleSolid} from "flowbite-svelte-icons";
 

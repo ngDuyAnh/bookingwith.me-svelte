@@ -5,8 +5,8 @@
     import {Modal} from "flowbite-svelte";
     import dayjs from "dayjs";
     import {formatToTime, formatToTimeAM} from "$lib/application/Formatter.js";
-    import {CustomerBookingState} from "$lib/api_server/customer-booking-portal/initialize_functions.js";
-    import {now} from "$lib/page/protected/stores/now/now_dayjs_store.js";
+    import {CustomerBookingState} from "$lib/api/api_server/customer-booking-portal/initialize_functions.js";
+    import {now} from "$lib/page/stores/now/now_dayjs_store.js";
     import {getContext} from "svelte";
 
     let openModal = false;

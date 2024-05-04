@@ -5,7 +5,7 @@
         getEmployeeWorkSchedule,
         initializeBusinessInformation,
         initializeEmployeeWorkSchedule
-    } from "$lib/api_server/business-portal/api.js";
+    } from "$lib/api/api_server/business-portal/api.js";
     import {businessInfo} from "$lib/page/protected/business-portal/page_admin/stores/business_portal_admin_store.js";
 
     let newEmployeeName = "";

@@ -1,7 +1,7 @@
 <script>
     import { goto } from '$app/navigation';
     import dayjs from 'dayjs';
-    import {createBusiness} from "$lib/api_server/business-portal/api.js";
+    import {createBusiness} from "$lib/api/api_server/business-portal/api.js";
 
     let accessString = "accessString";
     let business = {

@@ -1,14 +1,14 @@
 <script>
     import { onMount } from 'svelte';
-    import {now} from "$lib/page/protected/stores/now/now_dayjs_store.js";
-    import {getAppointmentBookingList} from "$lib/api_server/lobby-portal/api.js";
+    import {now} from "$lib/page/stores/now/now_dayjs_store.js";
+    import {getAppointmentBookingList} from "$lib/api/api_server/lobby-portal/api.js";
     import {user} from "$lib/page/protected/stores/user.js";
     import {formatToDate, formatToTime, formatToTimeAM} from "$lib/application/Formatter.js";
     import CustomerBookingListItem
         from "$lib/page/protected/business-portal/page_lobby/page/Dashboard/components/components/CustomerBookingList/CustomerBookingListItem/CustomerBookingListItem.svelte";
     import dayjs from "dayjs";
     import {Modal} from "flowbite-svelte";
-    import {deleteBooking} from "$lib/api_server/customer-booking-portal/api.js";
+    import {deleteBooking} from "$lib/api/api_server/customer-booking-portal/api.js";
 
     let tomorrow  = $now.add(1, 'day').format(formatToDate); // default to today
     let selectedDate = tomorrow;

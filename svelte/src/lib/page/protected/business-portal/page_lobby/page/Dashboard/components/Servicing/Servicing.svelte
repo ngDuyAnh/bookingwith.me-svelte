@@ -5,11 +5,11 @@
     import dayjs from "dayjs";
     import {formatToTime, formatToTimeAM} from "$lib/application/Formatter.js";
     import {Modal} from "flowbite-svelte";
-    import {CustomerBookingState} from "$lib/api_server/customer-booking-portal/initialize_functions.js";
+    import {CustomerBookingState} from "$lib/api/api_server/customer-booking-portal/initialize_functions.js";
     import {getContext} from "svelte";
     import CustomerIndividualBooking
         from "$lib/page/protected/business-portal/page_lobby/page/Dashboard/components/Servicing/CustomerIndividualBooking/CustomerIndividualBooking.svelte";
-    import {now} from "$lib/page/protected/stores/now/now_dayjs_store.js";
+    import {now} from "$lib/page/stores/now/now_dayjs_store.js";
 
     let openModal = false;
     let selectedCustomerBooking = {};

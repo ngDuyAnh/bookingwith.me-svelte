@@ -7,7 +7,7 @@
     import Service from "$lib/page/protected/business-portal/page_admin/page/Service/Service.svelte";
     import {onMount} from "svelte";
     import {user} from "$lib/page/protected/stores/user.js";
-    import {getBusinessInformation} from "$lib/api_server/business-portal/api.js";
+    import {getBusinessInformation} from "$lib/api/api_server/business-portal/api.js";
     import {businessInfo} from "$lib/page/protected/business-portal/page_admin/stores/business_portal_admin_store.js";
     import { Spinner } from 'flowbite-svelte';
     import {goto} from "$app/navigation";

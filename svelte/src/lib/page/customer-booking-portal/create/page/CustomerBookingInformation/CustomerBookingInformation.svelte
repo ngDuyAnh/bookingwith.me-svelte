@@ -9,8 +9,8 @@
         from "$lib/components/Form/CustomerBookingInformationForm/CustomerBookingInformationForm.svelte";
     import {
         CustomerBookingState
-    } from "$lib/api_server/customer-booking-portal/initialize_functions.js";
-    import {submitBooking} from "$lib/api_server/customer-booking-portal/api.js";
+    } from "$lib/api/api_server/customer-booking-portal/initialize_functions.js";
+    import {submitBooking} from "$lib/api/api_server/customer-booking-portal/api.js";
 
     console.log("customerBooking", $customerBooking)
 

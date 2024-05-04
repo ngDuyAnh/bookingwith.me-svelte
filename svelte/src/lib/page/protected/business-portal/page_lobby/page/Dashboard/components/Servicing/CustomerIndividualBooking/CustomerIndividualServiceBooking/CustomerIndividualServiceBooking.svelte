@@ -1,9 +1,9 @@
 <script>
     import {
         employeeSelectOptions
-    } from "$lib/page/protected/stores/EmployeeSelectOptions/employeeSelectOptions_store.js";
+    } from "$lib/page/stores/EmployeeSelectOptions/employeeSelectOptions_store.js";
     import {Button, Select} from "flowbite-svelte";
-    import {now} from "$lib/page/protected/stores/now/now_dayjs_store.js";
+    import {now} from "$lib/page/stores/now/now_dayjs_store.js";
     import {formatToTime} from "$lib/application/Formatter.js";
     import {getContext} from "svelte";
 
