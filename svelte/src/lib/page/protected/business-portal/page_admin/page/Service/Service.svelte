@@ -203,7 +203,7 @@
 
 </script>
 
-<Accordion>
+<Accordion class="bg-white">
     {#each info.serviceGroupList as serviceGroup, index}
         <AccordionItem open={index === 0}>
             <div slot="header" class="flex items-center w-full">
