@@ -5,9 +5,13 @@
     import {Modal} from "flowbite-svelte";
     import dayjs from "dayjs";
     import {formatToTime, formatToTimeAM} from "$lib/application/Formatter.js";
-    import {CustomerBookingState} from "$lib/api/api_server/customer-booking-portal/initialize_functions.js";
     import {now} from "$lib/page/stores/now/now_dayjs_store.js";
     import {getContext} from "svelte";
+    import {
+        moveToLobby,
+        moveToServicing,
+        moveToCompleted
+    } from "$lib/api/api_server/lobby-portal/utility-functions/handle_customer_booking_state.js";
 
     let openModal = false;
     let selectedCustomerBooking = {};
@@ -25,33 +29,20 @@
     {
         console.log('Moving to lobby:', selectedCustomerBooking);
 
-        selectedCustomerBooking.checkinTime = $now.format(formatToTime);
-        selectedCustomerBooking.bookingState = CustomerBookingState.LOBBY;
-
-        // Save the customer booking change
-        submitCustomerBooking(selectedCustomerBooking);
+        await moveToLobby($now, selectedCustomerBooking, submitCustomerBooking);
     }
 
     async function handleServicingClick() {
         console.log('Start servicing:', selectedCustomerBooking);
 
-        selectedCustomerBooking.checkinTime = $now.format(formatToTime);
-        selectedCustomerBooking.servicingStartTime = $now.format(formatToTime);
-        selectedCustomerBooking.bookingState = CustomerBookingState.SERVICING;
-
-        // Save the customer booking change
-        submitCustomerBooking(selectedCustomerBooking);
+        await moveToServicing($now, selectedCustomerBooking, submitCustomerBooking);
     }
 
     async function handleCompleteClick()
     {
-        if (confirm("Are you sure you want to mark this as complete?"))
-        {
-            selectedCustomerBooking.bookingState = CustomerBookingState.COMPLETED;
+        console.log('Moving to completed:', selectedCustomerBooking);
 
-            // Save the customer booking change
-            submitCustomerBooking(selectedCustomerBooking);
-        }
+        await moveToCompleted($now, selectedCustomerBooking, submitCustomerBooking);
     }
 </script>
 

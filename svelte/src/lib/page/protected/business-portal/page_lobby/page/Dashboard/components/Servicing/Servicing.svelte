@@ -5,11 +5,11 @@
     import dayjs from "dayjs";
     import {formatToTime, formatToTimeAM} from "$lib/application/Formatter.js";
     import {Modal} from "flowbite-svelte";
-    import {CustomerBookingState} from "$lib/api/api_server/customer-booking-portal/initialize_functions.js";
     import {getContext} from "svelte";
     import CustomerIndividualBooking
         from "$lib/page/protected/business-portal/page_lobby/page/Dashboard/components/Servicing/CustomerIndividualBooking/CustomerIndividualBooking.svelte";
     import {now} from "$lib/page/stores/now/now_dayjs_store.js";
+    import {moveToCompleted} from "$lib/api/api_server/lobby-portal/utility-functions/handle_customer_booking_state.js";
 
     let openModal = false;
     let selectedCustomerBooking = {};
@@ -25,30 +25,9 @@
 
     async function handleCompleteClick()
     {
-        if (confirm("Are you sure you want to mark this as complete?"))
-        {
-            // Update customer booking
-            selectedCustomerBooking.servicingEndTime = $now.format(formatToTime);
-            selectedCustomerBooking.bookingState = CustomerBookingState.COMPLETED;
+        console.log('Moving to completed:', selectedCustomerBooking);
 
-            // Iterate over each individual booking
-            selectedCustomerBooking.customerIndividualBookingList.forEach(individualBooking => {
-                // Iterate over each service booking in the individual booking
-                individualBooking.customerIndividualServiceBookingList.forEach(serviceBooking => {
-                    // Mark service as completed
-                    serviceBooking.completed = true;
-
-                    // Mark all tickets within the service as completed
-                    serviceBooking.servicingTicketList.forEach(ticket => {
-                        ticket.completed = true;
-                        ticket.timePeriod.endTime = dayjs().format(formatToTime); // Set end time to now
-                    });
-                });
-            });
-
-            // Save the customer booking change
-            await submitCustomerBooking(selectedCustomerBooking);
-        }
+        await moveToCompleted($now, selectedCustomerBooking, submitCustomerBooking);
     }
 </script>
 

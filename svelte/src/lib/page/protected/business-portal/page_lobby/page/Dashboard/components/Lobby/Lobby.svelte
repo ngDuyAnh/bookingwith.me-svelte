@@ -7,7 +7,7 @@
     import {Modal} from "flowbite-svelte";
     import {getContext} from "svelte";
     import {now} from "$lib/page/stores/now/now_dayjs_store.js";
-    import {CustomerBookingState} from "$lib/api/api_server/customer-booking-portal/initialize_functions.js";
+    import {moveToServicing, moveToCompleted} from "$lib/api/api_server/lobby-portal/utility-functions/handle_customer_booking_state.js";
 
     let openModal = false;
     let selectedCustomerBooking = {};
@@ -24,22 +24,14 @@
     async function handleServicingClick() {
         console.log('Start servicing:', selectedCustomerBooking);
 
-        selectedCustomerBooking.servicingStartTime = $now.format(formatToTime);
-        selectedCustomerBooking.bookingState = CustomerBookingState.SERVICING;
-
-        // Save the customer booking change
-        submitCustomerBooking(selectedCustomerBooking);
+        await moveToServicing($now, selectedCustomerBooking, submitCustomerBooking);
     }
 
-    function handleCompleteClick()
+    async function handleCompleteClick()
     {
-        if (confirm("Are you sure you want to mark this as complete?"))
-        {
-            selectedCustomerBooking.bookingState = CustomerBookingState.COMPLETED;
+        console.log('Moving to completed:', selectedCustomerBooking);
 
-            // Save the customer booking change
-            submitCustomerBooking(selectedCustomerBooking);
-        }
+        await moveToCompleted($now, selectedCustomerBooking, submitCustomerBooking);
     }
 </script>
 
