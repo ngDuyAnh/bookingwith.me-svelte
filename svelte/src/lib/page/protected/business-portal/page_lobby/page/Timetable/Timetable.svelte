@@ -1,14 +1,22 @@
 <script>
-    import {onMount} from "svelte";
-    import {getSchedule} from "$lib/api/api_server/lobby-portal/api.js";
+    import {onMount, setContext} from "svelte";
+    import {getSchedule, initializeCustomerBooking} from "$lib/api/api_server/lobby-portal/api.js";
     import {businessInfo} from "$lib/page/protected/business-portal/page_admin/stores/business_portal_admin_store.js";
     import {now} from "$lib/page/stores/now/now_dayjs_store.js";
-    import {formatToDate, formatToTime} from "$lib/application/Formatter.js";
+    import {formatToDate, formatToTime, formatToTimeAM} from "$lib/application/Formatter.js";
     import Calendar from '@event-calendar/core';
     import ResourceTimeGrid from '@event-calendar/resource-time-grid';
     import {Modal} from "flowbite-svelte";
+    import {getCustomerBooking} from "$lib/api/api_server/customer-booking-portal/api.js";
+    import dayjs from "dayjs";
+    import CustomerIndividualServiceBooking
+        from "$lib/page/protected/business-portal/page_lobby/page/Dashboard/components/Servicing/CustomerIndividualBooking/CustomerIndividualServiceBooking/CustomerIndividualServiceBooking.svelte";
+    import {
+        findIndividualBookingByID,
+        findServiceBookingByID
+    } from "$lib/api/api_server/customer-booking-portal/utility-functions/customer-booking-utility-functions.js";
+    import {moveToCompleted} from "$lib/api/api_server/lobby-portal/utility-functions/handle_customer_booking_state.js";
 
-    let open = false;
     let plugins = [ResourceTimeGrid];
 
     function scrollToNowIndicator() {
@@ -45,18 +53,23 @@
         scrollToNowIndicator();
     }
 
-    $: console.log("eventInfo", eventInfo)
-
+    let openModal = false;
     let eventInfo = undefined;
     let customerBooking = undefined;
+    let individualBooking = undefined;
+    let serviceBooking = undefined;
 
-    async function getCustomerBooking(bookingId)
+    async function openModalServicingTicket(info)
     {
-        let response = await getCustomerBooking(bookingId);
+        console.log("eventInfo", info)
 
-        console.log("response", response)
+        eventInfo = info;
+        customerBooking = await getCustomerBooking(eventInfo.event.extendedProps.servicingTicket.bookingID);
+        individualBooking = findIndividualBookingByID(customerBooking, eventInfo.event.extendedProps.servicingTicket.individualID);
+        serviceBooking = findServiceBookingByID(individualBooking, eventInfo.event.extendedProps.servicingTicket.serviceBookingID)
 
-
+        // Open the servicing ticket modal
+        openModal = true;
     }
 
     let options = {
@@ -75,8 +88,7 @@
         resources: [],
         events: [],
         eventClick: function (info) {
-            open = true;
-            eventInfo = info;
+            openModalServicingTicket(info);
         },
         eventAllUpdated: function () {
             findECBody();
@@ -87,10 +99,31 @@
     let resources = [];
     let loading = true;
 
-    function createEvents(employeeTimetableList) {
+    async function createEvents(employeeTimetableList) {
         return employeeTimetableList.flatMap(employeeTable =>
             employeeTable.servicingTicketList.map(servicingTicket => {
                 const title = servicingTicket.service.serviceName;
+
+                // Servicing ticket colour
+                let servicingTicketColor = "#ADD8E6"; // Light blue, appointment state
+                if (servicingTicket.bookingState === 1)
+                {
+                    servicingTicketColor = "#FFC300";
+                }
+                else if (servicingTicket.bookingState === 2)
+                {
+                    servicingTicketColor = "#90ee90";
+
+                    // In the case of servicing ticket is completed
+                    if (servicingTicket.completed)
+                    {
+                        servicingTicketColor = "gray";
+                    }
+                }
+                else if (servicingTicket.bookingState === 3)
+                {
+                    servicingTicketColor = "gray";
+                }
 
                 return {
                     // Event variables
@@ -99,9 +132,14 @@
                     resourceId: employeeTable.employee.id,
                     title: title,
 
+                    // Ticket state
+                    color: servicingTicketColor,
+
                     // Booking information
-                    employeeTimetable: employeeTable,
-                    servicingTicket: servicingTicket
+                    extendedProps: {
+                        employeeTimetable: employeeTable,
+                        servicingTicket: servicingTicket
+                    }
                 };
             })
         );
@@ -126,10 +164,10 @@
             options.resources = resources;
             options.events = events;
 
-           /* if (options.events.length === 0)
+            if (options.events.length === 0)
             {
                 setTimeout(function() { findECBody(); }, 50);
-            }*/
+            }
         } catch (error) {
             console.error('Failed to  fetch tasks', error);
             events = [];
@@ -142,6 +180,24 @@
     onMount(async () => {
         await fetchSchedule();
     });
+
+    async function submitCustomerBooking(customerBooking)
+    {
+        // Submit the change to the server
+        await initializeCustomerBooking(customerBooking);
+
+        // Update the schedule
+        await fetchSchedule();
+    }
+
+    setContext('submitCustomerBooking', submitCustomerBooking);
+
+    async function handleCompleteClick()
+    {
+        console.log('Moving to completed:', customerBooking);
+
+        await moveToCompleted($now, customerBooking, submitCustomerBooking);
+    }
 </script>
 
 <div class="flex flex-col items-center justify-center p-1.5">
@@ -165,7 +221,25 @@
 {/if}
 
 <div class="absolute top-0 left-0 right-0" style="z-index: 1006;">
-    <Modal bind:open={open} size="md" outsideclose>
-        {eventInfo.event.title}
+    <Modal bind:open={openModal} size="md" autoclose outsideclose>
+        <div>
+            <p><strong>Customer name:</strong> {customerBooking.customer.customerName}</p>
+            <p><strong>Booking time:</strong> {dayjs(customerBooking.bookingTime, formatToTime).format(formatToTimeAM)}</p>
+            <p class="break-words"><strong>Message:</strong> {customerBooking.message}</p>
+
+            <div class="mt-1 p-1">
+                <div class="font-bold">Service:</div>
+                <CustomerIndividualServiceBooking
+                        {customerBooking}
+                        {individualBooking}
+                        {serviceBooking}
+                />
+            </div>
+        </div>
+
+        <div class="mt-4 flex justify-end items-center space-x-2">
+            <span class="text-gray-700 font-bold">Move to:</span>
+            <button class="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded" on:click={handleCompleteClick}>Complete</button>
+        </div>
     </Modal>
 </div>
