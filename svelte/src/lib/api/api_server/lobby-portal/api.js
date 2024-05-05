@@ -73,3 +73,15 @@ export async function initializeCustomerBooking(customerBooking)
     return await response.json();
 }
 
+export async function getSchedule(businessId, dateString, timeString)
+{
+    const FETCH_URL = `${API_URL}/get-schedule/${businessId}?date=${dateString}&time=${timeString}`;
+
+    const response = await fetch(`${FETCH_URL}`);
+
+    if (!response.ok) {
+        throw new Error(`Failed to fetch. Status: ${response.status}`);
+    }
+
+    return await response.json();
+}

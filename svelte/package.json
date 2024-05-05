@@ -32,6 +32,8 @@
   },
   "type": "module",
   "dependencies": {
+    "@event-calendar/core": "^2.6.1",
+    "@event-calendar/resource-time-grid": "^2.6.1",
     "@sveltejs/adapter-cloudflare": "^4.2.0",
     "dayjs": "^1.11.10",
     "dexie": "^4.0.1",
