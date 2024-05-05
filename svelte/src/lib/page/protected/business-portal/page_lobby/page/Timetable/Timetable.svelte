@@ -1,12 +1,11 @@
 <script>
     import {onMount} from "svelte";
-    import {getSchedule} from "$lib/api_server/lobby-portal/api.js";
+    import {getSchedule} from "$lib/api/api_server/lobby-portal/api.js";
     import {businessInfo} from "$lib/page/protected/business-portal/page_admin/stores/business_portal_admin_store.js";
-    import {now} from "$lib/page/protected/stores/now/now_dayjs_store.js";
+    import {now} from "$lib/page/stores/now/now_dayjs_store.js";
     import {formatToDate, formatToTime} from "$lib/application/Formatter.js";
     import Calendar from '@event-calendar/core';
     import ResourceTimeGrid from '@event-calendar/resource-time-grid';
-    import {getCustomerBooking} from "$lib/api_server/customer-booking-portal/api.js";
     import EmployeeCard from "$lib/page/protected/business-portal/page_lobby/page/Timetable/EmployeeCard.svelte";
 
     let open = false;
@@ -28,13 +27,12 @@
             element.style.overflowY = 'auto';
             element.style.scrollbarWidth = 'auto';
             element.style.scrollbarColor = 'white ';
-
         }
 
         const resourceElements = document.querySelectorAll('.ec-resource');
 
         resourceElements.forEach(element => {
-            element.style.minWidth = "100px";
+            element.style.minWidth = "200px";
         });
 
 
@@ -82,59 +80,26 @@
 
     onMount(async () => {
 
-        async function getServiceName(bookingID, individualID, serviceBookingID) {
-            let name = "";
-            try {
-                const rep2 = await getCustomerBooking(bookingID);
-
-
-                let customerIndividualBookingList = rep2.customerIndividualBookingList;
-
-                for (let i = 0; i < customerIndividualBookingList.length; i++) {
-                    let serviceBookingList = customerIndividualBookingList[i].customerIndividualServiceBookingList;
-                    for (let j = 0; j < serviceBookingList.length; j++) {
-                        let serviceBooking = serviceBookingList[j];
-                        if (serviceBooking.bookingID == bookingID &&
-                            serviceBooking.individualID == individualID &&
-                            serviceBooking.serviceBookingID == serviceBookingID) {
-                            name = serviceBooking.service.serviceName;
-                            break;
-                        }
-                        if (name !== "")
-                            break;
-                    }
-                }
-
-
-            } catch (error) {
-                console.error('Failed to  booking info', error);
-            }
-
-            return name || "No service name found";
-        }
-
-        async function createEvents(employeeTimetableList) {
-            const promises = employeeTimetableList.flatMap(employeeTable =>
-                employeeTable.serviceBookingList.map(async (booking) => {
-                    const title = await getServiceName(booking.bookingID, booking.individualID, booking.serviceBookingID);
+        function createEvents(employeeTimetableList) {
+            return employeeTimetableList.flatMap(employeeTable =>
+                employeeTable.servicingTicketList.map(servicingTicket => {
+                    const title = servicingTicket.service.serviceName;
 
                     return {
-                        start: `${$now.format('YYYY-MM-DD')} ${booking.timePeriod.startTime}`,
-                        end: `${$now.format('YYYY-MM-DD')} ${booking.timePeriod.endTime}`,
+                        start: `${$now.format('YYYY-MM-DD')} ${servicingTicket.timePeriod.startTime}`,
+                        end: `${$now.format('YYYY-MM-DD')} ${servicingTicket.timePeriod.endTime}`,
                         resourceId: employeeTable.employee.id,
                         title: title,
                     };
                 })
             );
-
-            // Wait for all promises to resolve
-            const events = await Promise.all(promises);
-            return events;
         }
 
         try {
             const response = await getSchedule($businessInfo.business.businessId, $now.format(formatToDate), $now.format(formatToTime));
             const {employeeTimetableList} = response;
+
+            console.log("employeeTimetableList", employeeTimetableList)
 
             events = await createEvents(employeeTimetableList);
 
@@ -148,7 +113,6 @@
             if (options.events.length == 0)
             {
                 setTimeout(function() { findECBody(); }, 50);
-
             }
 
             scheduleDone = true;
@@ -175,7 +139,6 @@
             <Calendar {plugins} {options}/>
         </div>
     </div>
-
 {/if}
 
 <EmployeeCard
