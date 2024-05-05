@@ -1,6 +1,9 @@
 <script>
     import {Button, Select} from "flowbite-svelte";
     import {onMount} from "svelte";
+    import {
+        formatCost
+    } from "$lib/page/protected/business-portal/page_lobby/page/CreateBooking/components/ModalCustomerIndividual/ServiceOption/utility_functions.js";
 
     export let service;
     export let customerIndividual;
@@ -103,7 +106,7 @@
 </script>
 
 <div class="mb-4">
-    <h3 class="font-bold">{service.serviceName} ({service.serviceCost.toFixed(2)})</h3>
+    <h3 class="font-bold">{service.serviceName} · ${formatCost(service.serviceCost)}+</h3>
     <p>Duration: {service.serviceTimeLength} minutes</p>
 
     <div class="select-container">
