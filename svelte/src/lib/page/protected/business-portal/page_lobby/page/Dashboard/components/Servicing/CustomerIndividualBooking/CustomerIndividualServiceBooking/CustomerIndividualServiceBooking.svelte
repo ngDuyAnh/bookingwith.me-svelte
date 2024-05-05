@@ -6,6 +6,8 @@
     import {now} from "$lib/page/stores/now/now_dayjs_store.js";
     import {formatToTime} from "$lib/application/Formatter.js";
     import {getContext} from "svelte";
+    import {CustomerBookingState} from "$lib/api/api_server/customer-booking-portal/initialize_functions.js";
+    import {moveToServicing} from "$lib/api/api_server/lobby-portal/utility-functions/handle_customer_booking_state.js";
 
     export let customerBooking;
     export let individualBooking;
@@ -16,9 +18,11 @@
     // Retrieve customer booking list update function
     const submitCustomerBooking = getContext('submitCustomerBooking');
 
-    function handleStartServicing()
-    {
+    function handleStartServicing() {
         console.log('Start servicing:', serviceBooking, selectedEmployee);
+
+        // If the customer is not in servicing queue, move them there
+        customerBooking.bookingState = CustomerBookingState.SERVICING;
 
         // Create the servicing ticket
         let servicingTicket = {
