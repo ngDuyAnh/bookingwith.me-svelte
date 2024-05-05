@@ -11,7 +11,7 @@
 
 
 <div style="z-index: 1006;">
-    <Modal bind:open={open} size="lg" outsideclose>
+    <Modal bind:open={open} size="md" outsideclose>
         {eventInfo.event.title}
     </Modal>
 </div>

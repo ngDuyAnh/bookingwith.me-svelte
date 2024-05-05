@@ -6,12 +6,9 @@
     import {formatToDate, formatToTime} from "$lib/application/Formatter.js";
     import Calendar from '@event-calendar/core';
     import ResourceTimeGrid from '@event-calendar/resource-time-grid';
-    import ServicingTicketModal
-        from "$lib/page/protected/business-portal/page_lobby/page/Timetable/ServicingTicketModal/ServicingTicketModal.svelte";
     import {Modal} from "flowbite-svelte";
 
     let open = false;
-    let eventInfo = {};
     let plugins = [ResourceTimeGrid];
 
     function scrollToNowIndicator() {
@@ -46,6 +43,20 @@
 
 
         scrollToNowIndicator();
+    }
+
+    $: console.log("eventInfo", eventInfo)
+
+    let eventInfo = undefined;
+    let customerBooking = undefined;
+
+    async function getCustomerBooking(bookingId)
+    {
+        let response = await getCustomerBooking(bookingId);
+
+        console.log("response", response)
+
+
     }
 
     let options = {
@@ -115,10 +126,10 @@
             options.resources = resources;
             options.events = events;
 
-            if (options.events.length === 0)
+           /* if (options.events.length === 0)
             {
                 setTimeout(function() { findECBody(); }, 50);
-            }
+            }*/
         } catch (error) {
             console.error('Failed to  fetch tasks', error);
             events = [];
@@ -131,9 +142,6 @@
     onMount(async () => {
         await fetchSchedule();
     });
-
-    $: console.log("eventInfo", eventInfo)
-
 </script>
 
 <div class="flex flex-col items-center justify-center p-1.5">

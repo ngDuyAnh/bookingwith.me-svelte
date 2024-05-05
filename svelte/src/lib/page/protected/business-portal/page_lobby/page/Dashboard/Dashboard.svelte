@@ -38,7 +38,7 @@
         {
             const customerBooking = await getRecentCustomerBooking($user.businessId, $now.format(formatToDate));
 
-            console.log("updateCustomerBookingList()", customerBooking)
+            //console.log("updateCustomerBookingList()", customerBooking)
 
             if (latestCustomerBooking.bookingID !== customerBooking.bookingID ||
                 latestCustomerBooking.bookingState !== customerBooking.bookingState) {
