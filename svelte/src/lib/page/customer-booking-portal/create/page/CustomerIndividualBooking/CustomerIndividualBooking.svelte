@@ -6,7 +6,7 @@
     import {Accordion, AccordionItem} from "flowbite-svelte";
     import {businessInfo} from "$lib/page/customer-booking-portal/create/stores/customer_booking_portal_store.js";
     import ServiceOption
-        from "$lib/page/protected/business-portal/page_lobby/page/CreateBooking/components/ModalCustomerIndividual/EmployeeSelect/ServiceOption.svelte";
+        from "$lib/page/protected/business-portal/page_lobby/page/CreateBooking/components/ModalCustomerIndividual/ServiceOption/ServiceOption.svelte";
 
     let guestIndex = 0;
 

@@ -1,7 +1,7 @@
 <script>
     import {Accordion, AccordionItem, Modal} from 'flowbite-svelte';
     import ServiceOption
-        from "$lib/page/protected/business-portal/page_lobby/page/CreateBooking/components/ModalCustomerIndividual/EmployeeSelect/ServiceOption.svelte";
+        from "$lib/page/protected/business-portal/page_lobby/page/CreateBooking/components/ModalCustomerIndividual/ServiceOption/ServiceOption.svelte";
     import {businessInfo} from "$lib/page/protected/business-portal/page_admin/stores/business_portal_admin_store.js";
 
     export let open = false;

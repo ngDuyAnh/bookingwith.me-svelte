@@ -1,6 +1,9 @@
 <script>
     import {Button, Select} from "flowbite-svelte";
     import {onMount} from "svelte";
+    import {
+        formatCost
+    } from "$lib/page/protected/business-portal/page_lobby/page/CreateBooking/components/ModalCustomerIndividual/ServiceOption/utility_functions.js";
 
     export let service;
     export let customerIndividual;
@@ -102,19 +105,19 @@
     }
 </script>
 
-<div class="mb-4">
-    <h3 class="font-bold">{service.serviceName} ({service.serviceCost.toFixed(2)})</h3>
-    <p>Duration: {service.serviceTimeLength} minutes</p>
+<div class="mb-8">
+    <h3 class="font-bold">{service.serviceName} · ${formatCost(service.serviceCost)}+</h3>
+    <p>{service.description}</p>
 
-    <div class="select-container">
+    <div class="mt-1">
         <label for="employee-select">Employee:</label>
-        <Select class="mt-2"
+        <Select
                 items={employeeSelectOptions}
                 bind:value={employeeIdSelected}
         />
     </div>
 
-    <div class="mt-4">
+    <div class="mt-1">
         <Button class="{isSelected ? 'bg-red-500 hover:bg-red-600 text-white' : 'bg-transparent hover:bg-green-100 text-green-500'} border-2 border-green-500 hover:border-green-600 text-sm font-medium rounded-lg px-4 py-2 transition ease-in-out duration-150"
                 on:click={toggleServiceSelection}>
             {isSelected ? 'Deselect' : 'Select'}
