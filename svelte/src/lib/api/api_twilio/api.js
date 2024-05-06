@@ -7,9 +7,6 @@ const WEB_PAGE_URL = "https://app.bookingwith.me";
 export async function sendTextBookingSuccess(businessName, customerBooking)
 {
     // https://help.twilio.com/articles/223183008-Formatting-International-Phone-Numbers
-
-    console.log("phoneNumber", customerBooking.customer.phoneNumber)
-
     let formattedPhoneNumber = "+1" + customerBooking.customer.phoneNumber;
 
     // Information for the message

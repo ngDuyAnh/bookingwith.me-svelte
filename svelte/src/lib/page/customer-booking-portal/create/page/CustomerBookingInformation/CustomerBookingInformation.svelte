@@ -86,6 +86,7 @@
                    customerBooking={$customerBooking}
                    customerIndividualList={$customerIndividualList}
                    submit={handleSubmit}
+                   requiredAgreeToReceiveSMS={true}
         />
     </div>
 </div>
