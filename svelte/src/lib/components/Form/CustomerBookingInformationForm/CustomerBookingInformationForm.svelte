@@ -13,6 +13,7 @@
     export let submit;
     export let customerNameAutoComplete = false;
     export let overrideFlag = false;
+    export let requiredAgreeToReceiveSMS = false;
 
     let availableTimeOptionList = [];
     async function fetchAvailableTimeList() {
@@ -31,7 +32,7 @@
                 customerIndividualList
             );
 
-            console.log("response", response);
+            //console.log("response", response);
 
             // Initialize the available time
             availableTimeOptionList = response.availableBookingList.map(
@@ -42,7 +43,7 @@
                     };
                 });
 
-            console.log("availableTimeOptionList", availableTimeOptionList)
+            //console.log("availableTimeOptionList", availableTimeOptionList)
         }
         catch (error)
         {
@@ -126,6 +127,8 @@
             customerExists();
         }
     }
+
+    let isConsentChecked = false;
 </script>
 
 <form on:submit|preventDefault={submit} class="space-y-4">
@@ -193,6 +196,16 @@
                 bind:value={customerBooking.message}
         />
     </Label>
+
+    {#if requiredAgreeToReceiveSMS}
+        <Label class="space-y-2">
+            <input type="checkbox"
+                   bind:checked={isConsentChecked}
+                   required
+                   id="smsConsentCheckbox" />
+            <span for="smsConsentCheckbox"> I agree to receive SMS messages about my appointment.</span>
+        </Label>
+    {/if}
 
     <Button type="submit" class="w-full">
         Submit
