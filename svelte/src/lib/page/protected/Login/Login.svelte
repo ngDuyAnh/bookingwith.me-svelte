@@ -2,7 +2,7 @@
     import {getLogin} from "$lib/api/api_server/business-portal/api.js";
     import {user} from "$lib/page/protected/stores/user.js";
 
-    let businessId = '';
+    export let businessId = '';
     let username = '';
     let password = '';
 
