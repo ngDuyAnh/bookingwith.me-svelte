@@ -1,4 +1,5 @@
-const API_URL = "https://bookingwithme-5737-dev.twil.io";
+
+const API_URL = "https://bookingwithme-8885-dev.twil.io";
 
 export async function sendText(toPhoneNumber, message)
 {
@@ -22,16 +23,4 @@ export async function sendText(toPhoneNumber, message)
     }
 
     return await response.json();
-}
-
-export async function sendTextBookingSuccess(customerBooking)
-{
-    // https://help.twilio.com/articles/223183008-Formatting-International-Phone-Numbers
-    let formattedPhoneNumber = "+1" + customerBooking.phoneNumber;
-
-    // Create the message
-    let message = `Success booking ${customerBooking}`;
-
-    // Send text
-    console.log(sendText(formattedPhoneNumber, message));
 }

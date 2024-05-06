@@ -11,8 +11,7 @@
         CustomerBookingState
     } from "$lib/api/api_server/customer-booking-portal/initialize_functions.js";
     import {submitBooking} from "$lib/api/api_server/customer-booking-portal/api.js";
-
-    console.log("customerBooking", $customerBooking)
+    import {sendTextBookingSuccess} from "$lib/api/api_twilio/api.js";
 
     function handlePrev()
     {
@@ -37,13 +36,22 @@
             );
 
             // Submitted
-            // Send SMS confirmation
             if (response.submitted)
             {
-
+                customerBooking.set(response.customerBooking);
 
                 // Go to the success page
                 pageIndex.set($pageIndex + 1);
+
+                // Send SMS confirmation
+                try
+                {
+                    await sendTextBookingSuccess($businessInfo.businessName, $customerBooking)
+                }
+                catch (error)
+                {
+                    console.error(error)
+                }
             }
             // Appointment recently taken
             else
