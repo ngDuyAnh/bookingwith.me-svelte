@@ -29,13 +29,14 @@ export async function availableBooking(id, dateString, currentTimeString, custom
     return await response.json();
 }
 
-export async function submitBooking(id, customerBooking, customerIndividualList)
+export async function submitBooking(id, customerBooking, timestamp, customerIndividualList)
 {
     const FETCH_URL = `${API_URL}/submit-booking/${id}`;
 
     // Convert guestList to the appropriate format
     const submitBooking = {
         "customerBooking": customerBooking,
+        "timestamp": timestamp,
         "customerIndividualList": customerIndividualList
     };
 
@@ -55,13 +56,14 @@ export async function submitBooking(id, customerBooking, customerIndividualList)
     return await response.json();
 }
 
-export async function forceSubmitBooking(id, customerBooking, customerIndividualList)
+export async function forceSubmitBooking(id, customerBooking, timestamp, customerIndividualList)
 {
     const FETCH_URL = `${API_URL}/force-submit-booking/${id}`;
 
     // Convert guestList to the appropriate format
     const submitBooking = {
         "customerBooking": customerBooking,
+        "timestamp": timestamp,
         "customerIndividualList": customerIndividualList
     };
 

@@ -11,6 +11,7 @@
     import {forceSubmitBooking, submitBooking} from "$lib/api/api_server/customer-booking-portal/api.js";
     import {businessInfo} from "$lib/page/protected/business-portal/page_admin/stores/business_portal_admin_store.js";
     import {CheckCircleSolid, ExclamationCircleSolid} from "flowbite-svelte-icons";
+    import {sendTextBookingSuccess} from "$lib/api/api_twilio/api.js";
 
     let customerBooking = CustomerBooking($now);
     let customerIndividualList = [[]];
@@ -58,6 +59,7 @@
     }
 
     let overrideFlag = false;
+    let sendSMS = true;
     async function submit()
     {
         console.log("submit()", customerBooking, customerIndividualList);
@@ -77,6 +79,7 @@
                 response = await forceSubmitBooking(
                     $businessInfo.business.businessId,
                     customerBooking,
+                    $now.format(),
                     customerIndividualList
                 );
             }
@@ -85,12 +88,28 @@
                 response = await submitBooking(
                     $businessInfo.business.businessId,
                     customerBooking,
+                    $now.format(),
                     customerIndividualList
                 );
             }
 
             // Submitted
-            if (response.submitted) {
+            if (response.submitted)
+            {
+                // Send SMS
+                if (sendSMS)
+                {
+                    try
+                    {
+                        await sendTextBookingSuccess($businessInfo.businessName, response.customerBooking);
+                    }
+                    catch (error)
+                    {
+                        console.error(error);
+                    }
+                }
+
+                // For display success submit
                 toastIcon = CheckCircleSolid;
                 toastColor = 'green';
                 toastMessage = "Booking successful!";
@@ -98,7 +117,9 @@
                 // Reinitialize to default
                 customerBooking = CustomerBooking($now);
                 customerIndividualList = [[]];
-            } else {
+            }
+            else
+            {
                 toastIcon = ExclamationCircleSolid;
                 toastColor = 'orange';
                 toastMessage = "Booking time recently unavailable.";
@@ -143,6 +164,7 @@
 <ModalCustomerBookingInformation
         bind:open={modalCustomerBooking}
         bind:overrideFlag={overrideFlag}
+        bind:sendSMS={sendSMS}
         {customerBooking}
         {customerIndividualList}
         {submit}
