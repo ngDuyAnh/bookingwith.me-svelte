@@ -2,9 +2,9 @@
     import {getLogin} from "$lib/api/api_server/business-portal/api.js";
     import {user} from "$lib/page/protected/stores/user.js";
 
-    let businessId = 'ek63l-t7rfo-1cbmj-4mnck';
-    let username = 'bookingwithme_contact@outlook.com';
-    let password = 'accessString';
+    let businessId = '';
+    let username = '';
+    let password = '';
 
     async function login(event) {
         // Preventing the default form submission behavior
