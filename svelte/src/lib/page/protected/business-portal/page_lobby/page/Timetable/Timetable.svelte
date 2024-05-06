@@ -16,6 +16,7 @@
         findServiceBookingByID
     } from "$lib/api/api_server/customer-booking-portal/utility-functions/customer-booking-utility-functions.js";
     import {moveToCompleted} from "$lib/api/api_server/lobby-portal/utility-functions/handle_customer_booking_state.js";
+    import {pageIndex} from "$lib/page/customer-booking-portal/create/stores/customer_booking_portal_store.js";
 
     let plugins = [ResourceTimeGrid];
 
@@ -44,12 +45,7 @@
 
 
         const overflowElements = document.querySelectorAll('.ec.ec-time-grid.ec-resource-day-view');
-
-        overflowElements.forEach(element => {
-            element.style.overflowX = "scroll";
-        });
-
-
+        
         scrollToNowIndicator();
     }
 
@@ -225,21 +221,27 @@
         <div>
             <p><strong>Customer name:</strong> {customerBooking.customer.customerName}</p>
             <p><strong>Booking time:</strong> {dayjs(customerBooking.bookingTime, formatToTime).format(formatToTimeAM)}</p>
+            <p><strong>Number of guest(s):</strong> {customerBooking.customerIndividualBookingList.length}</p>
             <p class="break-words"><strong>Message:</strong> {customerBooking.message}</p>
 
             <div class="mt-1 p-1">
                 <div class="font-bold">Service:</div>
-                <CustomerIndividualServiceBooking
-                        {customerBooking}
-                        {individualBooking}
-                        {serviceBooking}
-                />
-            </div>
-        </div>
 
-        <div class="mt-4 flex justify-end items-center space-x-2">
-            <span class="text-gray-700 font-bold">Move to:</span>
-            <button class="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded" on:click={handleCompleteClick}>Complete</button>
+                {#if customerBooking.bookingState !== 3}
+                    <CustomerIndividualServiceBooking
+                            {customerBooking}
+                            {individualBooking}
+                            {serviceBooking}
+                    />
+
+                    <div class="mt-4 flex justify-end items-center space-x-2">
+                        <span class="text-gray-700 font-bold">Move to:</span>
+                        <button class="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded" on:click={handleCompleteClick}>Complete</button>
+                    </div>
+                {:else}
+                    <p>{serviceBooking.service.serviceName}</p>
+                {/if}
+            </div>
         </div>
     </Modal>
 </div>
