@@ -40,19 +40,17 @@
             // Submitted
             if (response.submitted)
             {
-                customerBooking.set(response.customerBooking);
-
                 // Go to the success page
                 pageIndex.set($pageIndex + 1);
 
                 // Send SMS confirmation
                 try
                 {
-                    await sendTextBookingSuccess($businessInfo.businessName, $customerBooking)
+                    await sendTextBookingSuccess($businessInfo.businessName, response.customerBooking);
                 }
                 catch (error)
                 {
-                    console.error(error)
+                    console.error(error);
                 }
             }
             // Appointment recently taken
