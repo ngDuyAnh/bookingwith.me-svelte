@@ -1,4 +1,4 @@
-const API_URL = "https://bookingwithme-8174-dev.twil.io";
+const API_URL = "https://bookingwithme-5737-dev.twil.io";
 
 export async function sendText(toPhoneNumber, message)
 {
