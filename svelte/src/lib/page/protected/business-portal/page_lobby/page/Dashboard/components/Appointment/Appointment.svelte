@@ -76,7 +76,7 @@
 
         <div class="mt-4 flex justify-end items-center space-x-2">
             <span class="text-gray-700 font-bold">Move to:</span>
-            <button class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded" on:click={handleLobbyClick}>Lobby</button>
+            <button class="bg-orange-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded" on:click={handleLobbyClick}>Lobby</button>
             <button class="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded" on:click={handleServicingClick}>Servicing</button>
             <button class="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded" on:click={handleCompleteClick}>Complete</button>
         </div>

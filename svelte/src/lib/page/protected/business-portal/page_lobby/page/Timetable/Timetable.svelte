@@ -105,7 +105,7 @@
                 const title = servicingTicket.service.serviceName;
 
                 // Servicing ticket colour
-                let servicingTicketColor = "#ADD8E6"; // Light blue, appointment state
+                let servicingTicketColor = "#3399ff"; // Light blue, appointment state
                 if (servicingTicket.bookingState === 1)
                 {
                     servicingTicketColor = "#FFC300";
