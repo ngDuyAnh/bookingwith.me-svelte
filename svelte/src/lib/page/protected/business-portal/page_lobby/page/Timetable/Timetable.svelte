@@ -45,7 +45,7 @@
 
 
         const overflowElements = document.querySelectorAll('.ec.ec-time-grid.ec-resource-day-view');
-        
+
         scrollToNowIndicator();
     }
 

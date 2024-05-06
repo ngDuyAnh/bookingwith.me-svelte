@@ -113,7 +113,7 @@
             on:click={handleServiceBookingCompletedToggle}
             class={`px-4 py-2 text-white font-bold rounded ${!serviceBooking.completed ? 'bg-green-500 hover:bg-green-600' : 'bg-red-500 hover:bg-red-600'}`}
         >
-            {!serviceBooking.completed ? 'Mark as Completed' : 'Mark as Incomplete'}
+            {!serviceBooking.completed ? 'Mark service as done' : 'Mark service as not done'}
         </Button>
     </div>
 
