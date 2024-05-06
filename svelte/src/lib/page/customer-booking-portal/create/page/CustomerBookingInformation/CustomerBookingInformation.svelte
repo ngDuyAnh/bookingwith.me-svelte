@@ -12,6 +12,7 @@
     } from "$lib/api/api_server/customer-booking-portal/initialize_functions.js";
     import {submitBooking} from "$lib/api/api_server/customer-booking-portal/api.js";
     import {sendTextBookingSuccess} from "$lib/api/api_twilio/api.js";
+    import {now} from "$lib/page/stores/now/now_dayjs_store.js";
 
     function handlePrev()
     {
@@ -32,6 +33,7 @@
             let response = await submitBooking(
                 $businessInfo.businessId,
                 $customerBooking,
+                $now.format(),
                 $customerIndividualList
             );
 

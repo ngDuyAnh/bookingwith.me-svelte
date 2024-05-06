@@ -77,6 +77,7 @@
                 response = await forceSubmitBooking(
                     $businessInfo.business.businessId,
                     customerBooking,
+                    $now.format(),
                     customerIndividualList
                 );
             }
@@ -85,6 +86,7 @@
                 response = await submitBooking(
                     $businessInfo.business.businessId,
                     customerBooking,
+                    $now.format(),
                     customerIndividualList
                 );
             }
