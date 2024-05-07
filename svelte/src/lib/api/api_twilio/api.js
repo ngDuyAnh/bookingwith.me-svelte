@@ -15,7 +15,7 @@ export async function sendTextBookingSuccess(businessName, customerBooking)
     let formattedTime = dayjs(customerBooking.bookingTime, formatToTime).format(formatToTimeAm);
 
     // Build the SMS message
-    let message = `Your appointment at ${businessName} is set for ${formattedDate} at ${formattedTime}. Check this link for real-time updates on your service time: ${customerBookingURL}`;
+    let message = `Your appointment at ${businessName} is set for ${formattedDate} at ${formattedTime}. Check this link for real-time updates on your servicing time: ${customerBookingURL}`;
 
     // Send text
     console.log(sendText(formattedPhoneNumber, message));
