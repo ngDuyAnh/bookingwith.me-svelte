@@ -55,8 +55,6 @@
 
     async function openModalServicingTicket(info)
     {
-        console.log("eventInfo", info)
-
         eventInfo = info;
         customerBooking = await getCustomerBooking(eventInfo.event.extendedProps.servicingTicket.bookingID);
         individualBooking = findIndividualBookingByID(customerBooking, eventInfo.event.extendedProps.servicingTicket.individualID);
@@ -192,11 +190,15 @@
 
         await moveToCompleted($now, customerBooking, submitCustomerBooking);
     }
+
+    // Timetable date
+    let selectedDate = $now.format("MMM D, YYYY");
+
 </script>
 
 <div class="flex flex-col items-center justify-center p-1.5">
     <div class="flex items-center justify-center p-1.5">
-        <span>Today - {$now.format("MMM D, YYYY")}</span>
+        <span>{selectedDate}</span>
         <button
                 class="ml-4 bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
                 on:click={fetchSchedule}
