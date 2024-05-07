@@ -209,6 +209,27 @@
 </div>
 
 {#if !loading}
+
+    <!-- Legend for color coding -->
+    <div class="legend flex justify-around items-center w-full p-4 bg-white shadow rounded-lg mb-4">
+        <div class="flex items-center">
+            <span class="block w-4 h-4 bg-blue-500 mr-2"></span>
+            <span class="text-sm">Appointment (Light Blue)</span>
+        </div>
+        <div class="flex items-center">
+            <span class="block w-4 h-4 bg-yellow-300 mr-2"></span>
+            <span class="text-sm">Lobby (Yellow)</span>
+        </div>
+        <div class="flex items-center">
+            <span class="block w-4 h-4 bg-green-400 mr-2"></span>
+            <span class="text-sm">In Progress (Green)</span>
+        </div>
+        <div class="flex items-center">
+            <span class="block w-4 h-4 bg-gray-400 mr-2"></span>
+            <span class="text-sm">Completed (Gray)</span>
+        </div>
+    </div>
+
     <div class="flex flex-col items-center justify-center w-4/5 h-4/5 mx-auto overflow-x-auto">
         <div class="flex h-full m-auto"
         >
