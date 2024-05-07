@@ -176,7 +176,7 @@
     });
 
     // Automatic fetch for the latest customer booking list
-    setInterval(async () => fetchSchedule(), 10000);
+    setInterval(async () => fetchSchedule(), 30000);
 
     async function submitCustomerBooking(customerBooking)
     {
