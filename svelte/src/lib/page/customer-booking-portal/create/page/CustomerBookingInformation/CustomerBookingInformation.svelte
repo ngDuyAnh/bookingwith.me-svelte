@@ -4,7 +4,7 @@
         pageIndex,
         customerBooking,
         customerIndividualList
-    } from "$lib/page/customer-booking-portal/create/stores/customer_booking_portal_store.js";
+    } from "$lib/page/customer-booking-portal/create/stores/customer_booking_portal_create_store.js";
     import CustomerBookingInformationForm
         from "$lib/components/Form/CustomerBookingInformationForm/CustomerBookingInformationForm.svelte";
     import {

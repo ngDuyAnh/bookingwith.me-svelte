@@ -3,7 +3,7 @@
         businessInfo,
         pageIndex,
         customerBooking
-    } from "$lib/page/customer-booking-portal/create/stores/customer_booking_portal_store.js";
+    } from "$lib/page/customer-booking-portal/create/stores/customer_booking_portal_create_store.js";
     import NumGuestSelect from "$lib/page/customer-booking-portal/create/page/NumGuessSelect/NumGuestSelect.svelte";
     import CustomerIndividualBooking
         from "$lib/page/customer-booking-portal/create/page/CustomerIndividualBooking/CustomerIndividualBooking.svelte";

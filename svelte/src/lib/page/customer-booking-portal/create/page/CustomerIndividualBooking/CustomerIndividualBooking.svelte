@@ -2,9 +2,9 @@
     import {
         customerIndividualList,
         pageIndex
-    } from "$lib/page/customer-booking-portal/create/stores/customer_booking_portal_store.js";
+    } from "$lib/page/customer-booking-portal/create/stores/customer_booking_portal_create_store.js";
     import {Accordion, AccordionItem} from "flowbite-svelte";
-    import {businessInfo} from "$lib/page/customer-booking-portal/create/stores/customer_booking_portal_store.js";
+    import {businessInfo} from "$lib/page/customer-booking-portal/create/stores/customer_booking_portal_create_store.js";
     import ServiceOption
         from "$lib/page/protected/business-portal/page_lobby/page/CreateBooking/components/ModalCustomerIndividual/ServiceOption/ServiceOption.svelte";
 

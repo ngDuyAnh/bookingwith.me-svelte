@@ -7,6 +7,6 @@
         Successful!
     </h1>
     <h2>
-        Thank you for using bookingwith.me
+        Please use the SMS link on your appointment date for real-time updates.
     </h2>
 </div>
