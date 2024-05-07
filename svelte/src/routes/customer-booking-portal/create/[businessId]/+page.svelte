@@ -49,7 +49,7 @@
     });
 </script>
 
-<div class="min-h-screen w-full bg-white">
+<div class="min-h-screen w-full">
     {#if $pageIndex === 0}
         <NumGuestSelect/>
     {:else if $pageIndex === 1}

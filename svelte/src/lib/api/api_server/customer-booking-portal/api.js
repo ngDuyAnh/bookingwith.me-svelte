@@ -96,6 +96,19 @@ export async function getCustomerBooking(bookingid)
     return await response.json();
 }
 
+export async function getCustomerBookingEstimate(bookingID, currentTime)
+{
+    const FETCH_URL = `${API_URL}/get-customer-booking-estimate/${bookingID}?time=${currentTime}`;
+
+    const response = await fetch(`${FETCH_URL}`);
+
+    if (!response.ok) {
+        throw new Error(`Failed to fetch. Status: ${response.status}`);
+    }
+
+    return await response.json();
+}
+
 export async function deleteBooking(id)
 {
     const FETCH_URL = `${API_URL}/delete-customer-booking?id=${id}`;
