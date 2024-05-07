@@ -39,7 +39,7 @@
         const resourceElements = document.querySelectorAll('.ec-resource');
 
         resourceElements.forEach(element => {
-            element.style.minWidth = "200px";
+            element.style.minWidth = "15vw";
         });
 
         const overflowElements = document.querySelectorAll('.ec.ec-time-grid.ec-resource-day-view');
@@ -175,9 +175,6 @@
         await fetchSchedule();
     });
 
-    // Automatic fetch for the latest customer booking list
-    setInterval(async () => fetchSchedule(), 30000);
-
     async function submitCustomerBooking(customerBooking)
     {
         // Submit the change to the server
@@ -198,20 +195,19 @@
 </script>
 
 <div class="flex flex-col items-center justify-center p-1.5">
-    Today - {$now.format("MMM D, YYYY")}
-    <button
-            class="mt-2 bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
-            on:click={fetchSchedule}
-            disabled={loading}
-    >
-        Refresh
-    </button>
-</div>
-
-{#if !loading}
+    <div class="flex items-center justify-center p-1.5">
+        <span>Today - {$now.format("MMM D, YYYY")}</span>
+        <button
+                class="ml-4 bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
+                on:click={fetchSchedule}
+                disabled={loading}
+        >
+            Refresh
+        </button>
+    </div>
 
     <!-- Legend for color coding -->
-    <div class="legend flex justify-around items-center w-full p-4 bg-white shadow rounded-lg mb-4">
+    <div class="legend flex justify-around items-center w-full p-2 bg-white shadow rounded-lg mb-1">
         <div class="flex items-center">
             <span class="block w-4 h-4 bg-blue-500 mr-2"></span>
             <span class="text-sm">Appointment (Light Blue)</span>
@@ -229,7 +225,9 @@
             <span class="text-sm">Completed (Gray)</span>
         </div>
     </div>
+</div>
 
+{#if !loading}
     <div class="flex flex-col items-center justify-center w-4/5 h-4/5 mx-auto overflow-x-auto">
         <div class="flex h-full m-auto"
         >
