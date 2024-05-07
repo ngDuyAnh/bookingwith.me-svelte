@@ -3,7 +3,7 @@
     import dayjs from 'dayjs';
     import {createBusiness} from "$lib/api/api_server/business-portal/api.js";
 
-    let accessString = "accessString";
+    let accessString = "";
     let business = {
         businessId: -1,
         businessName: "",
@@ -15,13 +15,12 @@
         city: "Winnipeg",
         province: "Manitoba",
         country: "Canada",
-        postalCode: "R3Q 1Q3",
+        postalCode: "",
         websiteUrl: "",
         businessType: "",
         socialMediaLink: "",
         registrationDate: dayjs().format('YYYY-MM-DD'),
         active: true,
-        useActiveManagement: true
     };
 
     function handleBusinessPhoneNumberInput(event) {
@@ -174,11 +173,6 @@
     <div class="form-group">
         <label for="active">Active Flag:</label>
         <input type="checkbox" id="active" bind:checked={business.active} class="input-field">
-    </div>
-
-    <div class="form-group">
-        <label for="useActiveManagement">Active Management:</label>
-        <input type="checkbox" id="useActiveManagement" bind:checked={business.useActiveManagement} class="input-field">
     </div>
 
     <div class="form-group">
