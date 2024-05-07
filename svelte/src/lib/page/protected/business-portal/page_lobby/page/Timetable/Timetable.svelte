@@ -16,7 +16,6 @@
         findServiceBookingByID
     } from "$lib/api/api_server/customer-booking-portal/utility-functions/customer-booking-utility-functions.js";
     import {moveToCompleted} from "$lib/api/api_server/lobby-portal/utility-functions/handle_customer_booking_state.js";
-    import {pageIndex} from "$lib/page/customer-booking-portal/create/stores/customer_booking_portal_store.js";
 
     let plugins = [ResourceTimeGrid];
 
@@ -42,7 +41,6 @@
         resourceElements.forEach(element => {
             element.style.minWidth = "200px";
         });
-
 
         const overflowElements = document.querySelectorAll('.ec.ec-time-grid.ec-resource-day-view');
 
@@ -176,6 +174,9 @@
     onMount(async () => {
         await fetchSchedule();
     });
+
+    // Automatic fetch for the latest customer booking list
+    setInterval(async () => fetchSchedule(), 10000);
 
     async function submitCustomerBooking(customerBooking)
     {
