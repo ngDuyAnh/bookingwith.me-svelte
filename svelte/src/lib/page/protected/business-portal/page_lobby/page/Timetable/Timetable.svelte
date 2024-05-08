@@ -17,12 +17,72 @@
     } from "$lib/api/api_server/customer-booking-portal/utility-functions/customer-booking-utility-functions.js";
     import {moveToCompleted} from "$lib/api/api_server/lobby-portal/utility-functions/handle_customer_booking_state.js";
 
+    // Date select
+    let selectedDate = $now.format(formatToDate);
+    let isToday = true;
+
+    let options = {
+        view: 'resourceTimeGridDay',
+
+        allDaySlot: false,
+        nowIndicator: isToday,
+        dayMaxEvents: true,
+        slotDuration: '00:05:00',
+        scrollTime: $now.format('HH:mm:ss'),
+        headerToolbar: {
+            start: '',
+            center: '',
+            end: ''
+        },
+        resources: [],
+        events: [],
+        eventClick: function (info) {
+            openModalServicingTicket(info);
+        },
+        eventAllUpdated: function () {
+            findECBody();
+        }
+    };
+
+    // Re-fetch on date change
+    $: {
+        isToday = (selectedDate === $now.format(formatToDate))
+
+        options = {
+            view: 'resourceTimeGridDay',
+
+            allDaySlot: false,
+            nowIndicator: isToday,
+            dayMaxEvents: true,
+            slotDuration: '00:05:00',
+            scrollTime: $now.format('HH:mm:ss'),
+            headerToolbar: {
+                start: '',
+                center: '',
+                end: ''
+            },
+            resources: [],
+            events: [],
+            eventClick: function (info) {
+                openModalServicingTicket(info);
+            },
+            eventAllUpdated: function () {
+                findECBody();
+            }
+        };
+
+        fetchSchedule();
+    }
+
     let plugins = [ResourceTimeGrid];
 
     function scrollToNowIndicator() {
-        const nowIndicator = document.querySelector('.ec-now-indicator');
-        if (nowIndicator) {
-            nowIndicator.scrollIntoView({behavior: 'smooth', block: 'center'});
+        if (isToday)
+        {
+            const nowIndicator = document.querySelector('.ec-now-indicator');
+            if (nowIndicator) {
+                nowIndicator.scrollIntoView({behavior: 'smooth', block: 'center'});
+            }
         }
     }
 
@@ -55,8 +115,6 @@
 
     async function openModalServicingTicket(info)
     {
-        console.log("eventInfo", info)
-
         eventInfo = info;
         customerBooking = await getCustomerBooking(eventInfo.event.extendedProps.servicingTicket.bookingID);
         individualBooking = findIndividualBookingByID(customerBooking, eventInfo.event.extendedProps.servicingTicket.individualID);
@@ -65,29 +123,6 @@
         // Open the servicing ticket modal
         openModal = true;
     }
-
-    let options = {
-        view: 'resourceTimeGridDay',
-
-        allDaySlot: false,
-        nowIndicator: true,
-        dayMaxEvents: true,
-        slotDuration: '00:05:00',
-        scrollTime: $now.format('HH:mm:ss'),
-        headerToolbar: {
-            start: '',
-            center: '',
-            end: ''
-        },
-        resources: [],
-        events: [],
-        eventClick: function (info) {
-            openModalServicingTicket(info);
-        },
-        eventAllUpdated: function () {
-            findECBody();
-        }
-    };
 
     let events = [];
     let resources = [];
@@ -144,7 +179,14 @@
         loading = true;
 
         try {
-            const response = await getSchedule($businessInfo.business.businessId, $now.format(formatToDate), $now.format(formatToTime));
+            // Get the current time based on if it is today
+            let currentTimeString = "00:00";
+            if (isToday)
+            {
+                currentTimeString = $now.format(formatToTime)
+            }
+
+            const response = await getSchedule($businessInfo.business.businessId, selectedDate, currentTimeString);
             const {employeeTimetableList} = response;
 
             console.log("employeeTimetableList", employeeTimetableList)
@@ -172,7 +214,7 @@
     }
 
     onMount(async () => {
-        await fetchSchedule();
+        await fetchSchedule(selectedDate);
     });
 
     async function submitCustomerBooking(customerBooking)
@@ -196,7 +238,7 @@
 
 <div class="flex flex-col items-center justify-center p-1.5">
     <div class="flex items-center justify-center p-1.5">
-        <span>Today - {$now.format("MMM D, YYYY")}</span>
+        <input type="date" bind:value={selectedDate} min={$now.format(formatToDate)}/>
         <button
                 class="ml-4 bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
                 on:click={fetchSchedule}
@@ -247,7 +289,7 @@
             <div class="mt-1 p-1">
                 <div class="font-bold">Service:</div>
 
-                {#if customerBooking.bookingState !== 3}
+                {#if customerBooking.bookingState !== 3 && isToday}
                     <CustomerIndividualServiceBooking
                             {customerBooking}
                             {individualBooking}

@@ -23,24 +23,31 @@
     async function fetchCustomerEstimate() {
         // Get the estimate
         // Assume it is today
-        const response = await getCustomerBookingEstimate(data.bookingID, $now.format(formatToTime));
+        try
+        {
+            const response = await getCustomerBookingEstimate(data.bookingID, $now.format(formatToTime));
 
-        // Extract the response
-        customerBooking = response.customerBooking;
-        queuePosition = response.queuePosition;
-        servicingTimePeriod = response.servicingTimePeriod;
+            // Extract the response
+            customerBooking = response.customerBooking;
+            queuePosition = response.queuePosition;
+            servicingTimePeriod = response.servicingTimePeriod;
 
-        // Display information
-        let bookingDate = dayjs(customerBooking.bookingDate).startOf("day");
-        relativeDate = bookingDate.diff($now.startOf("day"), "day");
+            // Display information
+            let bookingDate = dayjs(customerBooking.bookingDate).startOf("day");
+            relativeDate = bookingDate.diff($now.startOf("day"), "day");
 
-        // Appointment date and time format for display
-        bookingDateFormatted = bookingDate.format('ddd, MMM D YYYY');
-        bookingTimeFormatted = dayjs(customerBooking.bookingTime, formatToTime).format(formatToTimeAm);
+            // Appointment date and time format for display
+            bookingDateFormatted = bookingDate.format('ddd, MMM D YYYY');
+            bookingTimeFormatted = dayjs(customerBooking.bookingTime, formatToTime).format(formatToTimeAm);
 
-        // Estimate servicing time
-        estimateServicingStartTime = dayjs(servicingTimePeriod.startTime, formatToTime).format(formatToTimeAm);
-        estimateServicingEndTime = dayjs(servicingTimePeriod.endTime, formatToTime).format(formatToTimeAm);
+            // Estimate servicing time
+            estimateServicingStartTime = dayjs(servicingTimePeriod.startTime, formatToTime).format(formatToTimeAm);
+            estimateServicingEndTime = dayjs(servicingTimePeriod.endTime, formatToTime).format(formatToTimeAm);
+        }
+        catch (error)
+        {
+            console.log(error)
+        }
     }
 
     onMount(async () => {
