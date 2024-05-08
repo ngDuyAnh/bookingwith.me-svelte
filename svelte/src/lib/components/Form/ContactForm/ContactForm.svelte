@@ -1,25 +1,10 @@
 <script>
-    import {db} from '$lib/svelte_server/contact_database/database.js';
-
     export let textarea_placeholder = "Share some information about yourself, business, ideas, inquiries, what you are looking for or expecting. I'd love to chat.";
 
     let name = '';
     let email = '';
     let phoneNumber = '';
     let message = '';
-
-    async function handleSubmit() {
-        // Capture the current date and time
-        const timestamp = new Date();
-
-        try {
-            await db.contacts.add({timestamp, name, email, phoneNumber, message });
-            alert('Received!');
-            name = email = phoneNumber = message = ''; // Reset form fields
-        } catch (error) {
-            alert('Failed to save contact! This should not happen, please contact me: bookingwithme@outlook.com');
-        }
-    }
 
     function handlePhoneNumberInput(event) {
         if (event.target instanceof HTMLInputElement)
@@ -49,37 +34,40 @@
     }
 </script>
 
-<form on:submit|preventDefault={handleSubmit}>
+<form action="https://api.staticforms.xyz/submit" method="post">
+
+    <input type="hidden" name="accessKey" value="42845fe9-34eb-4e01-b2f7-fc9650997037">
+
     <div class="form-group">
         <label for="name">Name:</label>
-        <input type="text" id="name" bind:value={name} class="input-field" required>
+        <input type="text" id="name" bind:value={name} class="input-field" name="name" required>
     </div>
 
     <div class="form-group">
         <label for="email">Email:</label>
-        <input type="email" id="email" bind:value={email} class="input-field" required>
+        <input type="email" id="email" bind:value={email} class="input-field" name="email" required>
     </div>
 
     <div class="form-group">
         <label for="phoneNumber">Phone Number:</label>
-        <input type="tel" id="phoneNumber" bind:value={phoneNumber} on:input={handlePhoneNumberInput} required
+        <input type="tel" id="phoneNumber" bind:value={phoneNumber} on:input={handlePhoneNumberInput} name="phone" required
                pattern="\(\d\d\d\) \d\d\d-\d\d\d\d"
                title="Phone number must be in the format: (123) 456-7890">
     </div>
 
     <div class="form-group">
         <label for="message">Message:</label>
-        <textarea id="message" bind:value={message} class="input-field" rows="5" required
+        <textarea id="message" bind:value={message} class="input-field" rows="5" name="message" required
                   placeholder={textarea_placeholder}/>
     </div>
 
     <div class="form-group">
-        <button type="submit" class="submit-button">Send</button>
+        <input type="submit" value="Submit" class="submit-button"/>
     </div>
 </form>
 
 <style>
-    input, textarea, button {
+    input, textarea {
         width: 100%;
         padding: 1rem;
         margin-bottom: 1rem;
@@ -94,7 +82,7 @@
         resize: vertical;
     }
 
-    button {
+    .submit-button {
         background-color: #4CAF50;
         color: #fff;
         border: none;
@@ -104,7 +92,4 @@
         align-items: center;
     }
 
-    button:hover {
-        background-color: #66BB6A;
-    }
 </style>
