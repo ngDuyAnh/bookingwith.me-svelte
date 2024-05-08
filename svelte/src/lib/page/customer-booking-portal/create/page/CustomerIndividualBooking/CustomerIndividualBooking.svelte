@@ -74,7 +74,7 @@
     <div class="mt-3">
         <Accordion key={customerIndividual}>
             {#each $businessInfo.serviceGroupList as serviceGroup, index}
-                <AccordionItem open={index === 0}>
+                <AccordionItem open={index === 0} class="bg-gray-100">
                     <div slot="header" class="flex items-center w-full">
                         <div class="flex flex-col sm:flex-row justify-between w-full items-center text-center sm:text-left">
                             <span class="font-semibold mb-2 sm:mb-0 sm:mr-3">{serviceGroup.serviceGroupName}</span>
@@ -82,12 +82,12 @@
                         </div>
                     </div>
 
-                    {#each serviceGroup.serviceList as service}
-                        <ServiceOption
-                                {service}
-                                {customerIndividual}
-                        />
-                    {/each}
+                        {#each serviceGroup.serviceList as service}
+                            <ServiceOption
+                                    {service}
+                                    {customerIndividual}
+                            />
+                        {/each}
                 </AccordionItem>
             {/each}
         </Accordion>
