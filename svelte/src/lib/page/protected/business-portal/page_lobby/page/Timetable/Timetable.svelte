@@ -57,7 +57,7 @@
         },
         eventMouseEnter: function (info){
 
-            if(info.event.title != "")
+            if(info.event.title !== "")
             {
                 let bookingID = info.event.extendedProps.servicingTicket.bookingID;
                 let currServiceID = info.event.extendedProps.servicingTicket.serviceBookingID;
@@ -86,7 +86,7 @@
         },
         eventMouseLeave: function (info){
 
-            if(info.event.title != "")
+            if(info.event.title !== "")
             {
                 let bookingID = info.event.extendedProps.servicingTicket.bookingID;
                 resetHighlight(bookingID);
@@ -264,7 +264,7 @@
             resources = employeeTimetableList.flatMap(employeeTable => {
                 employeeWorkHourEvent.push({
                     resourceId: employeeTable.employee.id,
-                    color: employeeTable.employee.id == -1? "red":"#FFF9D0",
+                    color: employeeTable.employee.id === -1? "red":"#FFF9D0",
                     start: `${$now.format('YYYY-MM-DD')} ${employeeTable.timePeriod.startTime}`,
                     end: `${$now.format('YYYY-MM-DD')} ${employeeTable.timePeriod.endTime}`,
                     display: "background",
