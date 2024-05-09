@@ -7,6 +7,7 @@
     import {formatToTime} from "$lib/application/Formatter.js";
     import {getContext} from "svelte";
     import {CustomerBookingState} from "$lib/api/api_server/customer-booking-portal/initialize_functions.js";
+    import {moveToServicing} from "$lib/api/api_server/lobby-portal/utility-functions/handle_customer_booking_state.js";
 
     export let customerBooking;
     export let individualBooking;
@@ -44,8 +45,8 @@
         // Add the servicing ticket to the service booking
         serviceBooking.servicingTicketList.push(servicingTicket);
 
-        // Save the customer booking change
-        submitCustomerBooking(customerBooking);
+        // Move and save the customer booking to servicing queue
+        moveToServicing($now, customerBooking, submitCustomerBooking);
 
         // Reset the selected employee after starting servicing
         selectedEmployee = null;
