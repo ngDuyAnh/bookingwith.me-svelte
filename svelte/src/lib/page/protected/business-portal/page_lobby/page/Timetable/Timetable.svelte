@@ -81,14 +81,47 @@
     let individualBooking = undefined;
     let serviceBooking = undefined;
     let preselectEmployee = undefined;
+    let indicateToSendCustomerBookingToCompleted = false;
 
     async function openModalServicingTicket(info)
     {
         eventInfo = info;
         customerBooking = await getCustomerBooking(eventInfo.event.extendedProps.servicingTicket.bookingID);
+
+        console.log("customerBooking", customerBooking);
+
         individualBooking = findIndividualBookingByID(customerBooking, eventInfo.event.extendedProps.servicingTicket.individualID);
         serviceBooking = findServiceBookingByID(individualBooking, eventInfo.event.extendedProps.servicingTicket.serviceBookingID)
         preselectEmployee = eventInfo.event.extendedProps.employeeTimetable.employee.id;
+
+        // Indicate to send the customer booking to completed
+        // It must be under servicing
+        if (customerBooking.bookingState === 2)
+        {
+            // Determine the number of service booking remaining to be service
+            let remaining = 0;
+            customerBooking.customerIndividualBookingList.forEach(
+                individualBooking => individualBooking.customerIndividualServiceBookingList.forEach(
+                    serviceBooking => {
+                        // Service booking is not completed
+                        if (!serviceBooking.completed)
+                        {
+
+                            remaining += 1;
+                        }
+                    }
+                )
+            )
+
+            // All the service bookings are done
+            // Or this ticket is the ticket that currently servicing the last service
+            // Then indicate to send it to completed
+            if (remaining === 0 || (remaining === 1 && !serviceBooking.completed))
+            {
+                console.log("Here")
+                indicateToSendCustomerBookingToCompleted = true;
+            }
+        }
 
         // Open the servicing ticket modal
         openModal = true;
@@ -122,7 +155,7 @@
                         servicingTicketColor = "gray";
                     }
                     // The ticket is currently being service
-                    else if (servicingTicket.ticketId != -1)
+                    else if (servicingTicket.ticketId !== -1)
                     {
                         servicingTicketColor = "#29c029";
                     }
@@ -300,7 +333,11 @@
 
                     <div class="mt-4 flex justify-end items-center space-x-2">
                         <span class="text-gray-700 font-bold">Move to:</span>
-                        <button class="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded" on:click={handleCompleteClick}>Complete</button>
+                        {#if indicateToSendCustomerBookingToCompleted}
+                            <button class="animate-pulse bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded" on:click={handleCompleteClick}>Complete</button>
+                        {:else}
+                            <button class="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded" on:click={handleCompleteClick}>Complete</button>
+                        {/if}
                     </div>
                 {:else}
                     <p>{serviceBooking.service.serviceName}</p>
