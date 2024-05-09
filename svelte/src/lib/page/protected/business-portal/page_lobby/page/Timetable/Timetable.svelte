@@ -3,7 +3,7 @@
     import {getSchedule, initializeCustomerBooking} from "$lib/api/api_server/lobby-portal/api.js";
     import {businessInfo} from "$lib/page/protected/business-portal/page_admin/stores/business_portal_admin_store.js";
     import {now} from "$lib/page/stores/now/now_dayjs_store.js";
-    import {formatToDate, formatToTime, formatToTimeAM} from "$lib/application/Formatter.js";
+    import {formatToDate, formatToTime, formatToTimeAm} from "$lib/application/Formatter.js";
     import Calendar from '@event-calendar/core';
     import ResourceTimeGrid from '@event-calendar/resource-time-grid';
     import {Modal} from "flowbite-svelte";
@@ -18,16 +18,22 @@
     import {moveToCompleted} from "$lib/api/api_server/lobby-portal/utility-functions/handle_customer_booking_state.js";
 
     // Date select
-    let selectedDate = $now.format(formatToDate);
+    let todayDate = $now.format(formatToDate);
+    let prevSelectedDate = todayDate;
+    let selectedDate = todayDate;
     let isToday = true;
 
     let options = {
         view: 'resourceTimeGridDay',
-
+        views:
+            {
+                resourceTimeGridDay:{pointer:true}
+            },
         allDaySlot: false,
         nowIndicator: isToday,
         dayMaxEvents: true,
         slotDuration: '00:05:00',
+        // businessHours: true,
         scrollTime: $now.format('HH:mm:ss'),
         headerToolbar: {
             start: '',
@@ -36,55 +42,26 @@
         },
         resources: [],
         events: [],
+        // selectable: true,
         eventClick: function (info) {
-            openModalServicingTicket(info);
+            console.log(info);
+            if(info.event.title !="")
+                openModalServicingTicket(info);
         },
         eventAllUpdated: function () {
             findECBody();
         }
     };
 
-    // Re-fetch on date change
-    $: {
-        isToday = (selectedDate === $now.format(formatToDate))
-
-        options = {
-            view: 'resourceTimeGridDay',
-
-            allDaySlot: false,
-            nowIndicator: isToday,
-            dayMaxEvents: true,
-            slotDuration: '00:05:00',
-            scrollTime: $now.format('HH:mm:ss'),
-            headerToolbar: {
-                start: '',
-                center: '',
-                end: ''
-            },
-            resources: [],
-            events: [],
-            eventClick: function (info) {
-                openModalServicingTicket(info);
-            },
-            eventAllUpdated: function () {
-                findECBody();
-            }
-        };
-
+    $: if(prevSelectedDate && selectedDate && !dayjs(prevSelectedDate).isSame(selectedDate, 'day')){
+        prevSelectedDate = selectedDate;
+        console.log("REACTIVE CALLED");
+        isToday = (selectedDate === todayDate);
+        options.nowIndicator = isToday;
         fetchSchedule();
     }
 
     let plugins = [ResourceTimeGrid];
-
-    function scrollToNowIndicator() {
-        if (isToday)
-        {
-            const nowIndicator = document.querySelector('.ec-now-indicator');
-            if (nowIndicator) {
-                nowIndicator.scrollIntoView({behavior: 'smooth', block: 'center'});
-            }
-        }
-    }
 
     function findECBody() {
         const element = document.querySelector('.ec-body');
@@ -104,7 +81,6 @@
 
         const overflowElements = document.querySelectorAll('.ec.ec-time-grid.ec-resource-day-view');
 
-        scrollToNowIndicator();
     }
 
     let openModal = false;
@@ -124,11 +100,13 @@
         openModal = true;
     }
 
-    let events = [];
+    let employeeEvents = [];
+    let employeeWorkHourEvent = [];
     let resources = [];
     let loading = true;
 
     async function createEvents(employeeTimetableList) {
+
         return employeeTimetableList.flatMap(employeeTable =>
             employeeTable.servicingTicketList.map(servicingTicket => {
                 const title = servicingTicket.service.serviceName;
@@ -159,7 +137,8 @@
                     start: `${$now.format('YYYY-MM-DD')} ${servicingTicket.timePeriod.startTime}`,
                     end: `${$now.format('YYYY-MM-DD')} ${servicingTicket.timePeriod.endTime}`,
                     resourceId: employeeTable.employee.id,
-                    title: title,
+                    // display: 'background',
+                    title: `${title}\n${servicingTicket.customerBookingInfo.customerName}`,
 
                     // Ticket state
                     color: servicingTicketColor,
@@ -173,6 +152,7 @@
             })
         );
     }
+
 
     async function fetchSchedule()
     {
@@ -189,16 +169,35 @@
             const response = await getSchedule($businessInfo.business.businessId, selectedDate, currentTimeString);
             const {employeeTimetableList} = response;
 
-            console.log("employeeTimetableList", employeeTimetableList)
+            console.log("employeeTimetableList", employeeTimetableList);
+            console.log("HELLO??");
 
-            events = await createEvents(employeeTimetableList);
 
-            resources = employeeTimetableList.flatMap(employeeTable => ({
-                id: employeeTable.employee.id, title: `${employeeTable.employee.employeeName}`
-            }));
+            resources = employeeTimetableList.flatMap(employeeTable => {
+                employeeWorkHourEvent.push({
+                    resourceId: employeeTable.employee.id,
+                    color: "black",
+                    start: `${$now.format('YYYY-MM-DD')} ${employeeTable.timePeriod.startTime}`,
+                    end: `${$now.format('YYYY-MM-DD')} ${employeeTable.timePeriod.endTime}`,
+                    display: "background",
+                });
+                return {
+                    id: employeeTable.employee.id,
+                    title: `${employeeTable.employee.employeeName}`
+                };
+            });
+
+            // resources = employeeTimetableList.flatMap(employeeTable => ({
+            //     id: employeeTable.employee.id, title: `${employeeTable.employee.employeeName}`
+            // }));
+            console.log("resourced", resources);
+
+            employeeEvents = await createEvents(employeeTimetableList);
+            console.log("employee events", employeeEvents);
+            console.log("employee work hours",employeeWorkHourEvent);
 
             options.resources = resources;
-            options.events = events;
+            options.events = employeeWorkHourEvent.concat(employeeEvents);
 
             if (options.events.length === 0)
             {
@@ -206,7 +205,7 @@
             }
         } catch (error) {
             console.error('Failed to  fetch tasks', error);
-            events = [];
+            employeeEvents = [];
             resources = [];
         }
 
@@ -214,7 +213,14 @@
     }
 
     onMount(async () => {
-        await fetchSchedule(selectedDate);
+        try {
+            await fetchSchedule();
+        }
+        catch(err)
+        {
+            console.error("Failed to fetch schedule", err);
+        }
+
     });
 
     async function submitCustomerBooking(customerBooking)
@@ -282,7 +288,7 @@
     <Modal bind:open={openModal} size="md" autoclose outsideclose>
         <div>
             <p><strong>Customer name:</strong> {customerBooking.customer.customerName}</p>
-            <p><strong>Booking time:</strong> {dayjs(customerBooking.bookingTime, formatToTime).format(formatToTimeAM)}</p>
+            <p><strong>Booking time:</strong> {dayjs(customerBooking.bookingTime, formatToTime).format(formatToTimeAm)}</p>
             <p><strong>Number of guest(s):</strong> {customerBooking.customerIndividualBookingList.length}</p>
             <p class="break-words"><strong>Message:</strong> {customerBooking.message}</p>
 

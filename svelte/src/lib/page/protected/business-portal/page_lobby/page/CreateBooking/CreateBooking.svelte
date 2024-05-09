@@ -10,7 +10,6 @@
     import {CustomerBookingState, CustomerBooking} from "$lib/api/api_server/customer-booking-portal/initialize_functions.js";
     import {forceSubmitBooking, submitBooking} from "$lib/api/api_server/customer-booking-portal/api.js";
     import {businessInfo} from "$lib/page/protected/business-portal/page_admin/stores/business_portal_admin_store.js";
-    import {CheckCircleSolid, ExclamationCircleSolid} from "flowbite-svelte-icons";
     import {sendTextBookingSuccess} from "$lib/api/api_twilio/api.js";
 
     let customerBooking = CustomerBooking($now);
@@ -46,9 +45,8 @@
     {
         modalCustomerBooking = true;
     }
-
+    let success = false;
     let showToast = false;
-    let toastIcon = CheckCircleSolid;
     let toastColor = "green";
     let toastMessage = "";
 
@@ -110,7 +108,7 @@
                 }
 
                 // For display success submit
-                toastIcon = CheckCircleSolid;
+                success = true;
                 toastColor = 'green';
                 toastMessage = "Booking successful!";
 
@@ -120,7 +118,7 @@
             }
             else
             {
-                toastIcon = ExclamationCircleSolid;
+                success = false;
                 toastColor = 'orange';
                 toastMessage = "Booking time recently unavailable.";
             }
@@ -131,7 +129,7 @@
         catch (error)
         {
             console.error("Error submitting booking:", error);
-            toastIcon = ExclamationCircleSolid;
+            success = false;
             toastColor = 'red';
             toastMessage = "Something went wrong, please contact bookingwith.me";
         }
@@ -170,10 +168,15 @@
         {submit}
 />
 
+
 <!-- Toast for booking confirmation -->
 <Toast bind:open={showToast} color={toastColor}>
     <svelte:fragment slot="icon">
-        <svelte:component this={toastIcon} class="w-5 h-5" />
+        {#if success}
+            <svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" viewBox="0 0 24 24"><path fill="green" fill-rule="evenodd" d="M2 12C2 6.477 6.477 2 12 2s10 4.477 10 10s-4.477 10-10 10S2 17.523 2 12m13.707-1.293a1 1 0 0 0-1.414-1.414L11 12.586l-1.793-1.793a1 1 0 0 0-1.414 1.414l2.5 2.5a1 1 0 0 0 1.414 0z" clip-rule="evenodd"/></svg>
+        {:else}
+            <svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" viewBox="0 0 24 24"><path fill="red" fill-rule="evenodd" d="M2 12C2 6.477 6.477 2 12 2s10 4.477 10 10s-4.477 10-10 10S2 17.523 2 12m11-4a1 1 0 1 0-2 0v5a1 1 0 1 0 2 0zm-1 7a1 1 0 1 0 0 2h.01a1 1 0 1 0 0-2z" clip-rule="evenodd"/></svg>
+        {/if}
         <span class="sr-only">Icon</span>
     </svelte:fragment>
     {toastMessage}
