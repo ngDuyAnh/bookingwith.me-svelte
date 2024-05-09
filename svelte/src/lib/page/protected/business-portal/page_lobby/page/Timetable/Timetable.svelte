@@ -45,7 +45,7 @@
         // selectable: true,
         eventClick: function (info) {
             console.log(info);
-            if(info.event.title !="")
+            if(info.event.title !== "")
                 openModalServicingTicket(info);
         },
         eventAllUpdated: function () {
@@ -78,9 +78,6 @@
         resourceElements.forEach(element => {
             element.style.minWidth = "15vw";
         });
-
-        const overflowElements = document.querySelectorAll('.ec.ec-time-grid.ec-resource-day-view');
-
     }
 
     let openModal = false;
