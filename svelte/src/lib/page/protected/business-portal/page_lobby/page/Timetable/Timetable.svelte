@@ -33,7 +33,6 @@
         nowIndicator: isToday,
         dayMaxEvents: true,
         slotDuration: '00:05:00',
-        // businessHours: true,
         scrollTime: $now.format('HH:mm:ss'),
         headerToolbar: {
             start: '',
@@ -42,11 +41,8 @@
         },
         resources: [],
         events: [],
-        // selectable: true,
         eventClick: function (info) {
-            console.log(info);
-            if(info.event.title !== "")
-                openModalServicingTicket(info);
+            openModalServicingTicket(info);
         },
         eventAllUpdated: function () {
             findECBody();
@@ -55,7 +51,6 @@
 
     $: if(prevSelectedDate && selectedDate && !dayjs(prevSelectedDate).isSame(selectedDate, 'day')){
         prevSelectedDate = selectedDate;
-        console.log("REACTIVE CALLED");
         isToday = (selectedDate === todayDate);
         options.nowIndicator = isToday;
         fetchSchedule();
@@ -167,9 +162,8 @@
             const {employeeTimetableList} = response;
 
             console.log("employeeTimetableList", employeeTimetableList);
-            console.log("HELLO??");
 
-
+            employeeWorkHourEvent =[];
             resources = employeeTimetableList.flatMap(employeeTable => {
                 employeeWorkHourEvent.push({
                     resourceId: employeeTable.employee.id,
@@ -184,14 +178,9 @@
                 };
             });
 
-            // resources = employeeTimetableList.flatMap(employeeTable => ({
-            //     id: employeeTable.employee.id, title: `${employeeTable.employee.employeeName}`
-            // }));
-            console.log("resourced", resources);
+
 
             employeeEvents = await createEvents(employeeTimetableList);
-            console.log("employee events", employeeEvents);
-            console.log("employee work hours",employeeWorkHourEvent);
 
             options.resources = resources;
             options.events = employeeWorkHourEvent.concat(employeeEvents);
@@ -204,6 +193,7 @@
             console.error('Failed to  fetch tasks', error);
             employeeEvents = [];
             resources = [];
+            employeeWorkHourEvent =[];
         }
 
         loading = false;
