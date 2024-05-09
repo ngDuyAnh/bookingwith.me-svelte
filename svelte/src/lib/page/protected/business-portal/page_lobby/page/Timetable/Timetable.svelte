@@ -111,12 +111,18 @@
                 }
                 else if (servicingTicket.bookingState === 2)
                 {
+                    // In servicing queue waiting to be service
                     servicingTicketColor = "#90ee90";
 
                     // In the case of servicing ticket is completed
                     if (servicingTicket.completed)
                     {
                         servicingTicketColor = "gray";
+                    }
+                    // The ticket is currently being service
+                    else if (servicingTicket.ticketId != -1)
+                    {
+                        servicingTicketColor = "#29c029";
                     }
                 }
                 else if (servicingTicket.bookingState === 3)
