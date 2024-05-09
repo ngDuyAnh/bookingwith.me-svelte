@@ -13,7 +13,13 @@
     export let individualBooking;
     export let serviceBooking;
 
-    let selectedEmployee;
+    export let preselectEmployee = undefined;
+
+    let selectedEmployee = null;
+    if (preselectEmployee !== undefined)
+    {
+        selectedEmployee = preselectEmployee;
+    }
 
     // Retrieve customer booking list update function
     const submitCustomerBooking = getContext('submitCustomerBooking');

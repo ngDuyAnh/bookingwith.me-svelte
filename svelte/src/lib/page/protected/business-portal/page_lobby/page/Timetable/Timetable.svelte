@@ -80,6 +80,7 @@
     let customerBooking = undefined;
     let individualBooking = undefined;
     let serviceBooking = undefined;
+    let preselectEmployee = undefined;
 
     async function openModalServicingTicket(info)
     {
@@ -87,6 +88,7 @@
         customerBooking = await getCustomerBooking(eventInfo.event.extendedProps.servicingTicket.bookingID);
         individualBooking = findIndividualBookingByID(customerBooking, eventInfo.event.extendedProps.servicingTicket.individualID);
         serviceBooking = findServiceBookingByID(individualBooking, eventInfo.event.extendedProps.servicingTicket.serviceBookingID)
+        preselectEmployee = eventInfo.event.extendedProps.employeeTimetable.employee.id;
 
         // Open the servicing ticket modal
         openModal = true;
@@ -293,6 +295,7 @@
                             {customerBooking}
                             {individualBooking}
                             {serviceBooking}
+                            {preselectEmployee}
                     />
 
                     <div class="mt-4 flex justify-end items-center space-x-2">
