@@ -22,6 +22,13 @@
     let prevSelectedDate = todayDate;
     let selectedDate = todayDate;
     let isToday = true;
+    let calendarInstance;
+
+    let prevSelected = null;
+    let prevSelectedServiceID = null;
+    let prevEL = null;
+
+    let plugins = [ResourceTimeGrid];
 
     let options = {
         view: 'resourceTimeGridDay',
@@ -44,9 +51,48 @@
         eventClick: function (info) {
             openModalServicingTicket(info);
         },
-        eventAllUpdated: function () {
+        eventAllUpdated: function (info) {
+            console.log("eventAllUpdated", info);
             findECBody();
-        }
+        },
+        eventMouseEnter: function (info){
+
+            if(info.event.title != "")
+            {
+                let bookingID = info.event.extendedProps.servicingTicket.bookingID;
+                let currServiceID = info.event.extendedProps.servicingTicket.serviceBookingID;
+
+                // calendar is slow in updating events so need these two checks to make sure the borders and highlight
+                // dont stay on events that are not supposed to have them anymore
+                if(prevSelectedServiceID && prevSelectedServiceID !== currServiceID)
+                {
+                    resetIndividualHighlight(prevSelectedServiceID);
+                    prevEL.className = prevEL.className.replaceAll('border-2','').replaceAll('border-black','');
+
+                }
+                if(prevSelected && prevSelected !== bookingID)
+                {
+                    resetHighlight(prevSelected);
+                }
+                prevSelected = bookingID;
+                prevSelectedServiceID=currServiceID;
+
+
+                highlightRelatedEvents(bookingID);
+
+                info.el.className = `${info.el.className} border-2 border-black`;
+                prevEL = info.el;
+            }
+        },
+        eventMouseLeave: function (info){
+
+            if(info.event.title != "")
+            {
+                let bookingID = info.event.extendedProps.servicingTicket.bookingID;
+                resetHighlight(bookingID);
+                info.el.className = info.el.className.replaceAll('border-2','').replaceAll('border-black','');
+            }
+        },
     };
 
     $: if(prevSelectedDate && selectedDate && !dayjs(prevSelectedDate).isSame(selectedDate, 'day')){
@@ -56,7 +102,37 @@
         fetchSchedule();
     }
 
-    let plugins = [ResourceTimeGrid];
+    function highlightRelatedEvents(bookingID) {
+        const allEvents = calendarInstance.getEvents();
+        allEvents.forEach(event => {
+
+            if (event.extendedProps.servicingTicket && event.extendedProps.servicingTicket.bookingID === bookingID) {
+                event.backgroundColor = "pink";
+                calendarInstance.updateEvent(event);
+            }
+        });
+    }
+
+    function resetHighlight(bookingID) {
+        const allEvents = calendarInstance.getEvents();
+        allEvents.forEach(event => {
+
+            if (event.extendedProps.servicingTicket && event.extendedProps.servicingTicket.bookingID === bookingID) {
+                event.backgroundColor = bookingStateColour(event.extendedProps.servicingTicket);
+                calendarInstance.updateEvent(event);
+            }
+        });
+    }
+
+    function resetIndividualHighlight(serviceBookingID) {
+        const allEvents = calendarInstance.getEvents();
+        allEvents.forEach(event => {
+            if (event.extendedProps.servicingTicket && event.extendedProps.servicingTicket.serviceBookingID === serviceBookingID) {
+                event.backgroundColor = bookingStateColour(event.extendedProps.servicingTicket);
+                calendarInstance.updateEvent(event);
+            }
+        });
+    }
 
     function findECBody() {
         const element = document.querySelector('.ec-body');
@@ -72,6 +148,20 @@
 
         resourceElements.forEach(element => {
             element.style.minWidth = "15vw";
+        });
+
+        const todayElements = document.querySelectorAll('.ec-day.ec-today');
+
+        todayElements.forEach(element => {
+            element.style.background = "rgba(0,0,0,0.1)";
+        });
+
+        const workHourElements = document.querySelectorAll('.ec-bg-event');
+
+        workHourElements.forEach(element => {
+            element.style.borderStyle = "groove";
+            element.style. borderWidth= "1px";
+            element.style.borderColor = "black";
         });
     }
 
@@ -97,6 +187,31 @@
     let resources = [];
     let loading = true;
 
+    function bookingStateColour(servicingTicket){
+
+        let servicingTicketColor = "#3399ff"; // Light blue, appointment state
+        if (servicingTicket.bookingState === 1)
+        {
+            servicingTicketColor = "#FFC300";
+        }
+        else if (servicingTicket.bookingState === 2)
+        {
+            servicingTicketColor = "#90ee90";
+
+            // In the case of servicing ticket is completed
+            if (servicingTicket.completed)
+            {
+                servicingTicketColor = "gray";
+            }
+        }
+        else if (servicingTicket.bookingState === 3)
+        {
+            servicingTicketColor = "gray";
+        }
+
+        return servicingTicketColor;
+    }
+
     async function createEvents(employeeTimetableList) {
 
         return employeeTimetableList.flatMap(employeeTable =>
@@ -104,25 +219,7 @@
                 const title = servicingTicket.service.serviceName;
 
                 // Servicing ticket colour
-                let servicingTicketColor = "#3399ff"; // Light blue, appointment state
-                if (servicingTicket.bookingState === 1)
-                {
-                    servicingTicketColor = "#FFC300";
-                }
-                else if (servicingTicket.bookingState === 2)
-                {
-                    servicingTicketColor = "#90ee90";
-
-                    // In the case of servicing ticket is completed
-                    if (servicingTicket.completed)
-                    {
-                        servicingTicketColor = "gray";
-                    }
-                }
-                else if (servicingTicket.bookingState === 3)
-                {
-                    servicingTicketColor = "gray";
-                }
+                let servicingTicketColor = bookingStateColour(servicingTicket);
 
                 return {
                     // Event variables
@@ -167,7 +264,7 @@
             resources = employeeTimetableList.flatMap(employeeTable => {
                 employeeWorkHourEvent.push({
                     resourceId: employeeTable.employee.id,
-                    color: "black",
+                    color: employeeTable.employee.id == -1? "red":"#FFF9D0",
                     start: `${$now.format('YYYY-MM-DD')} ${employeeTable.timePeriod.startTime}`,
                     end: `${$now.format('YYYY-MM-DD')} ${employeeTable.timePeriod.endTime}`,
                     display: "background",
@@ -266,7 +363,7 @@
     <div class="flex flex-col items-center justify-center w-4/5 h-4/5 mx-auto overflow-x-auto">
         <div class="flex h-full m-auto"
         >
-            <Calendar {plugins} {options}/>
+            <Calendar bind:this={calendarInstance} {plugins} {options}/>
         </div>
     </div>
 {/if}
