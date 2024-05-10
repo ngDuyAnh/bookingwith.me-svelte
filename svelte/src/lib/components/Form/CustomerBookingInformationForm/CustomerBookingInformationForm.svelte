@@ -35,7 +35,7 @@
             //console.log("response", response);
 
             // Initialize the available time
-            availableTimeOptionList = response.availableBookingList.map(
+            availableTimeOptionList = response.availabilityList.map(
                 timeString => {
                     return {
                         value: timeString,
