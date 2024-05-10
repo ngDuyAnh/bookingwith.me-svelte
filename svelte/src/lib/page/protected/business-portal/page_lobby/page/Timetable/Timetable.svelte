@@ -245,7 +245,6 @@
             // Or this ticket is the ticket that currently servicing the last service
             // Then indicate to send it to completed
             if (remaining === 0 || (remaining === 1 && !serviceBooking.completed)) {
-                console.log("Here");
                 indicateToSendCustomerBookingToCompleted = true;
             }
         }
@@ -285,8 +284,6 @@
     async function createEvents(employeeTimetableList) {
         return employeeTimetableList.flatMap((employeeTable) =>
             employeeTable.servicingTicketList.map((servicingTicket) => {
-                const title = servicingTicket.service.serviceName;
-
                 // Servicing ticket colour
                 let servicingTicketColor = bookingStateColour(servicingTicket);
 
@@ -295,7 +292,7 @@
                     start: `${$now.format("YYYY-MM-DD")} ${servicingTicket.timePeriod.startTime}`,
                     end: `${$now.format("YYYY-MM-DD")} ${servicingTicket.timePeriod.endTime}`,
                     resourceId: employeeTable.employee.id,
-                    title: `${title}\n${servicingTicket.customerBookingInfo.customerName}`,
+                    title: `${servicingTicket.service.serviceName}\n${servicingTicket.servicingTicketInfo.customerName}`,
 
                     // Ticket state
                     color: servicingTicketColor,
