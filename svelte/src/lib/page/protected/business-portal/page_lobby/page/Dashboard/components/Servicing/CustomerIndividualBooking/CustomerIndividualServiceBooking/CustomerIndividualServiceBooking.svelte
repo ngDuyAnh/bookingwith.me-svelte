@@ -7,13 +7,18 @@
     import {formatToTime} from "$lib/application/Formatter.js";
     import {getContext} from "svelte";
     import {CustomerBookingState} from "$lib/api/api_server/customer-booking-portal/initialize_functions.js";
-    import {moveToServicing} from "$lib/api/api_server/lobby-portal/utility-functions/handle_customer_booking_state.js";
 
     export let customerBooking;
     export let individualBooking;
     export let serviceBooking;
 
-    let selectedEmployee;
+    export let preselectEmployee = undefined;
+
+    let selectedEmployee = null;
+    if (preselectEmployee !== undefined)
+    {
+        selectedEmployee = preselectEmployee;
+    }
 
     // Retrieve customer booking list update function
     const submitCustomerBooking = getContext('submitCustomerBooking');
