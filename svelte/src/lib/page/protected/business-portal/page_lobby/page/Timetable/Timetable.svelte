@@ -50,7 +50,7 @@
         eventClick: function (info) {
             openModalServicingTicket(info);
         },
-        eventAllUpdated: function (info) {
+        eventAllUpdated: function () {
             findECBody();
         },
         eventMouseEnter: function (info) {
