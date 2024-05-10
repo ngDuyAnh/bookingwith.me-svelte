@@ -27,6 +27,8 @@
     let prevSelected = null;
     let prevSelectedServiceID = null;
     let prevEL = null;
+    let prevInfoID= null;
+    let conflictEmployeeEvents = {};
 
     let plugins = [ResourceTimeGrid];
 
@@ -53,8 +55,11 @@
         eventAllUpdated: function () {
             findECBody();
         },
-        eventMouseEnter: function (info) {
+        eventMouseEnter: function (info) { //under weird circumstances, can be called infinetly when hovering over an event
+                                            // until you move the mouse elsewhere. observed when an event occupies
+                                            // very little time range.
             if (info.event.title !== "") {
+                prevInfoID = info.event.id;
                 let bookingID = info.event.extendedProps.servicingTicket.bookingID;
                 let currServiceID =
                     info.event.extendedProps.servicingTicket.serviceBookingID;
@@ -63,9 +68,7 @@
                 // dont stay on events that are not supposed to have them anymore
                 if (prevSelectedServiceID && prevSelectedServiceID !== currServiceID) {
                     resetIndividualHighlight(prevSelectedServiceID);
-                    prevEL.className = prevEL.className
-                        .replaceAll("border-2", "")
-                        .replaceAll("border-black", "");
+                    prevEL.className = `ec-event ${conflictEmployeeEvents[prevInfoID]?conflictEmployeeEvents[prevInfoID]:"" }`;
                 }
                 if (prevSelected && prevSelected !== bookingID) {
                     resetHighlight(prevSelected);
@@ -75,7 +78,7 @@
 
                 highlightRelatedEvents(bookingID);
 
-                info.el.className = `${info.el.className} border-2 border-black`;
+                info.el.className = `ec-event border-2 border-black`;
                 prevEL = info.el;
             } else {
                 // bug where moving mouse quick between events can make highlight stick,
@@ -89,10 +92,7 @@
                     resetIndividualHighlight(prevSelectedServiceID);
 
                     if (prevEL)
-                        prevEL.className = prevEL.className
-                            .replaceAll("border-2", "")
-                            .replaceAll("border-black", "");
-
+                        prevEL.className = `ec-event ${conflictEmployeeEvents[prevInfoID]?conflictEmployeeEvents[prevInfoID]:""}`;
                     prevEL = null;
                     prevSelectedServiceID = null;
                 }
@@ -102,17 +102,39 @@
         },
         eventMouseLeave: function (info) {
             if (info.event.title !== "") {
-                let bookingID = info.event.extendedProps.servicingTicket.bookingID;
-                resetHighlight(bookingID);
-                info.el.className = info.el.className
-                    .replaceAll("border-2", "")
-                    .replaceAll("border-black", "");
                 prevEL = null;
                 prevSelected = null;
                 prevSelectedServiceID = null;
+
+                let bookingID = info.event.extendedProps.servicingTicket.bookingID;
+                resetHighlight(bookingID);
+                info.el.className = `ec-event ${conflictEmployeeEvents[info.event.id]?conflictEmployeeEvents[info.event.id]:"" }`;
             }
         },
+        eventDidMount: function(info){
+            if (info.event.title !== "") {
+
+                let extendedProps = info.event.extendedProps;
+                let employeeID = extendedProps.employeeTimetable.employee.id;
+                let bookedEmployee = extendedProps.servicingTicket.servicingTicketInfo.bookedEmployee;
+                let conflicted = false;
+
+                if(bookedEmployee !== null && bookedEmployee.id !== employeeID){
+                    conflicted = true;
+                    conflictEmployeeEvents[info.event.id] = "border-2 border-red-600";
+                    info.el.className = `ec-event border-2 border-red-600`;
+                }
+
+                if(!conflicted && conflictEmployeeEvents[info.event.id])
+                {
+                    delete conflictEmployeeEvents[info.event.id];
+                }
+            }
+
+        }
     };
+
+
 
     $: if (
         prevSelectedDate &&
@@ -189,14 +211,6 @@
 
         todayElements.forEach((element) => {
             element.style.background = "rgba(0,0,0,0.1)";
-        });
-
-        const workHourElements = document.querySelectorAll(".ec-bg-event");
-
-        workHourElements.forEach((element) => {
-            element.style.borderStyle = "groove";
-            element.style.borderWidth = "1px";
-            element.style.borderColor = "black";
         });
     }
 
