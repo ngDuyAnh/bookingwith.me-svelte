@@ -77,6 +77,27 @@
 
                 info.el.className = `${info.el.className} border-2 border-black`;
                 prevEL = info.el;
+            } else {
+                // bug where moving mouse quick between events can make highlight stick,
+                // even when not hovering over any events (except work hour event, which has no title)
+                // handled through extra checking
+                if (prevSelected) {
+                    resetHighlight(prevSelected);
+                    prevSelected = null;
+                }
+                if (prevSelectedServiceID) {
+                    resetIndividualHighlight(prevSelectedServiceID);
+
+                    if (prevEL)
+                        prevEL.className = prevEL.className
+                            .replaceAll("border-2", "")
+                            .replaceAll("border-black", "");
+
+                    prevEL = null;
+                    prevSelectedServiceID = null;
+                }
+
+
             }
         },
         eventMouseLeave: function (info) {
@@ -86,6 +107,9 @@
                 info.el.className = info.el.className
                     .replaceAll("border-2", "")
                     .replaceAll("border-black", "");
+                prevEL = null;
+                prevSelected = null;
+                prevSelectedServiceID = null;
             }
         },
     };
