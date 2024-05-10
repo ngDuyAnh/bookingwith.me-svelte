@@ -57,7 +57,7 @@
     }
 
     let overrideFlag = false;
-    let sendSMS = true;
+    let sendSMS = false;
     async function submit()
     {
         console.log("submit()", customerBooking, customerIndividualList);
