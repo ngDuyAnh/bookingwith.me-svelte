@@ -13,7 +13,13 @@
     export let individualBooking;
     export let serviceBooking;
 
-    let selectedEmployee;
+    export let preselectEmployee = undefined;
+
+    let selectedEmployee = null;
+    if (preselectEmployee !== undefined)
+    {
+        selectedEmployee = preselectEmployee;
+    }
 
     // Retrieve customer booking list update function
     const submitCustomerBooking = getContext('submitCustomerBooking');
@@ -45,8 +51,8 @@
         // Add the servicing ticket to the service booking
         serviceBooking.servicingTicketList.push(servicingTicket);
 
-        // Save the customer booking change
-        submitCustomerBooking(customerBooking);
+        // Move and save the customer booking to servicing queue
+        moveToServicing($now, customerBooking, submitCustomerBooking);
 
         // Reset the selected employee after starting servicing
         selectedEmployee = null;
