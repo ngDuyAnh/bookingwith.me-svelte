@@ -412,7 +412,7 @@
 
     setContext("submitCustomerBooking", submitCustomerBooking);
 
-    async function handleCompleteClick() {
+    async function handleCompletedClick() {
         console.log("Moving to completed:", customerBooking);
 
         await moveToCompleted($now, customerBooking, submitCustomerBooking);
@@ -506,13 +506,13 @@
                         {#if indicateToSendCustomerBookingToCompleted}
                             <button
                                     class="animate-pulse bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded"
-                                    on:click={handleCompleteClick}>Complete
+                                    on:click={handleCompletedClick}>Complete
                             </button
                             >
                         {:else}
                             <button
                                     class="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded"
-                                    on:click={handleCompleteClick}>Complete
+                                    on:click={handleCompletedClick}>Complete
                             </button
                             >
                         {/if}
