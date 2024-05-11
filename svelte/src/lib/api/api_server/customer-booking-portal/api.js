@@ -29,6 +29,37 @@ export async function availableBooking(id, dateString, currentTimeString, custom
     return await response.json();
 }
 
+export async function walk_in_availability(id, dateString, currentTimeString, customerIndividualList)
+{
+    const FETCH_URL = `${API_URL}/walk-in-availability/${id}`;
+
+    // Convert guestList to the appropriate format
+    const availableBooking = {
+        availableBooking: {
+            date: dateString,
+            currentTime: currentTimeString,
+            customerIndividualList: customerIndividualList
+        }
+    };
+
+    console.log("availableBooking", JSON.stringify(availableBooking))
+
+    const response = await fetch(`${FETCH_URL}`, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(availableBooking)
+    });
+
+    if (!response.ok) {
+        const errorBody = await response.text(); // or response.json() if the server responds with JSON
+        throw new Error(`walk_in_availability(). Status: ${response.status}, Body: ${errorBody}`);
+    }
+
+    return await response.json();
+}
+
 export async function submitBooking(id, customerBooking, timestamp, customerIndividualList)
 {
     const FETCH_URL = `${API_URL}/submit-booking/${id}`;
