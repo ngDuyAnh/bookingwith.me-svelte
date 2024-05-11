@@ -17,7 +17,7 @@
     import {onMount} from "svelte";
     import {getBusiness} from "$lib/api/api_server/customer-booking-portal/api.js";
     import {goto} from "$app/navigation";
-    import {CustomerBooking} from "$lib/api/api_server/customer-booking-portal/initialize_functions.js";
+    import {CustomerBooking} from "$lib/api/api_server/customer-booking-portal/utility-functions/initialize_functions.js";
     import {now} from "$lib/page/stores/now/now_dayjs_store.js";
 
     export let data;
