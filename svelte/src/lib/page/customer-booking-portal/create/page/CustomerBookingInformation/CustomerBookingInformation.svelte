@@ -46,7 +46,8 @@
 </script>
 
 <CustomerBookingInformation
-        businessInfo={businessInfo}
+        businessId={$businessInfo.businessId}
+        businessName={$businessInfo.businessName}
         handlePrev={handlePrev}
         handleSubmit={submitCallback}
         customerIndividualList={customerIndividualList}

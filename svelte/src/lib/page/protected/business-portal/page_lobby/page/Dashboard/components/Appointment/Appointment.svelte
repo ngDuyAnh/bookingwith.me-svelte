@@ -137,9 +137,8 @@
 
 
 {#if edit}
-    <div class="w-[300px] h-[300px] bg-amber-950">
-        <Modal bind:open={edit} size="md" outsideclose>
-            {console.log("selectedCustomerBooking", selectedCustomerBooking)}
+    <div class="">
+        <Modal bind:open={edit} size="" class="w-[80vw] h-[80vh] border-dotted border-4" classBackdrop="fixed inset-0 z-40 bg-gray-900 bg-opacity-90 dark:bg-opacity-80"  outsideclose>
             {#if $pageIndex === 0}
                 <ServiceBookingEditorGuestSelector/>
             {:else if $pageIndex === 1}

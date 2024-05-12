@@ -1,17 +1,12 @@
 <script>
-    import CustomerBookingInformationForm
-        from "$lib/components/Form/CustomerBookingInformationForm/CustomerBookingInformationForm.svelte";
     import {
         CustomerBookingState
     } from "$lib/api/api_server/customer-booking-portal/utility-functions/initialize_functions.js";
-
-    import {submitBooking} from "$lib/api/api_server/customer-booking-portal/api.js";
     import {sendTextBookingSuccess} from "$lib/api/api_twilio/api.js";
 
     import {businessInfo} from "$lib/page/protected/business-portal/page_admin/stores/business_portal_admin_store.js";
     import CustomerBookingInformation
         from "$lib/components/BookingComponents/CustomerBookingInformation/CustomerBookingInformation.svelte";
-    import {now} from "$lib/page/stores/now/now_dayjs_store.js";
     import {pageIndex,customerIndividualList,customerBooking} from "$lib/page/protected/business-portal/page_admin/stores/service_editor_store.js";
 
 
@@ -29,58 +24,44 @@
         pageIndex.set($pageIndex - 1);
     }
 
-    async function handleSubmit()
+    async function submitCallback(success, error)
     {
-        console.log("handleSubmit()", $customerBooking, $customerIndividualList);
+        console.log("submitCallback()", $customerBooking, $customerIndividualList);
 
-        try
+        if (success)
         {
-            // Initialize the customer booking as appointment which is index 0
-            $customerBooking.bookingState = CustomerBookingState.APPOINTMENT;
+            // Go to the success page
+            pageIndex.set($pageIndex + 1);
 
-            // Force submit if override is toggled
-            let response = await submitBooking(
-                $businessInfo.businessId,
-                $customerBooking,
-                $now.format(),
-                $customerIndividualList
-            );
-
-            // Submitted
-            if (response.submitted)
+            // Send SMS confirmation
+            try
             {
-                // Go to the success page
-                pageIndex.set(0);
-                alert("SUBMITTED THE EDIT");
-
-                // Send SMS confirmation
-                try
-                {
-                    await sendTextBookingSuccess($businessInfo.businessName, response.customerBooking);
-                }
-                catch (error)
-                {
-                    console.error(error);
-                }
+                await sendTextBookingSuccess($businessInfo.businessName, response.customerBooking);
             }
-            // Appointment recently taken
-            else
+            catch (error)
             {
-                alert("Booking time recently unavailable. Please pick a different time!");
+                console.error(error);
             }
         }
-        catch (error)
+        else if (error)
         {
-            console.error("Error submitting booking:", error);
+            alert(`Something went wrong, please contact the business to make your appointment!`);
+        }
+        else
+        {
+            alert("Booking time recently unavailable. Please pick a different time!");
         }
     }
+
 </script>
 
 
 <CustomerBookingInformation
-        businessInfo={businessInfo}
+        businessId={$businessInfo.business.businessId}
+        businessName={$businessInfo.business.businessName}
         handlePrev={handlePrev}
-        handleSubmit={handleSubmit}
+        handleSubmit={submitCallback}
         customerBooking={customerBooking}
         customerIndividualList={customerIndividualList}
 />
+
