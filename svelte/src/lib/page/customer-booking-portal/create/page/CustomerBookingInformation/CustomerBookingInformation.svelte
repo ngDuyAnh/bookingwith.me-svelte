@@ -20,48 +20,32 @@
         pageIndex.set($pageIndex - 1);
     }
 
-    async function handleSubmit()
+    async function submitCallback(success, error)
     {
-        console.log("handleSubmit()", $customerBooking, $customerIndividualList);
+        console.log("submitCallback()", $customerBooking, $customerIndividualList);
 
-        try
+        if (success)
         {
-            // Initialize the customer booking as appointment which is index 0
-            $customerBooking.bookingState = CustomerBookingState.APPOINTMENT;
+            // Go to the success page
+            pageIndex.set($pageIndex + 1);
 
-            // Force submit if override is toggled
-            let response = await submitBooking(
-                $businessInfo.businessId,
-                $customerBooking,
-                $now.format(),
-                $customerIndividualList
-            );
-
-            // Submitted
-            if (response.submitted)
+            // Send SMS confirmation
+            try
             {
-                // Go to the success page
-                pageIndex.set($pageIndex + 1);
-
-                // Send SMS confirmation
-                try
-                {
-                    await sendTextBookingSuccess($businessInfo.businessName, response.customerBooking);
-                }
-                catch (error)
-                {
-                    console.error(error);
-                }
+                await sendTextBookingSuccess($businessInfo.businessName, response.customerBooking);
             }
-            // Appointment recently taken
-            else
+            catch (error)
             {
-                alert("Booking time recently unavailable. Please pick a different time!");
+                console.error(error);
             }
         }
-        catch (error)
+        else if (error)
         {
-            console.error("Error submitting booking:", error);
+            alert(`Something went wrong, please contact the business to make your appointment!`);
+        }
+        else
+        {
+            alert("Booking time recently unavailable. Please pick a different time!");
         }
     }
 </script>
@@ -83,10 +67,11 @@
     <div class="mt-3 w-full max-w-md p-8 border-2 border-gray-200 shadow-md rounded-lg">
         <CustomerBookingInformationForm
                    businessId={$businessInfo.businessId}
+                   businessName={$businessInfo.businessName}
                    customerBooking={$customerBooking}
                    customerIndividualList={$customerIndividualList}
-                   submit={handleSubmit}
                    requiredAgreeToReceiveSMS={true}
+                   {submitCallback}
         />
     </div>
 </div>

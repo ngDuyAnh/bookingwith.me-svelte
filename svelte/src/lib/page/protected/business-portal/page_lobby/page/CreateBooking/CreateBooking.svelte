@@ -87,10 +87,15 @@
             message = "Booking time recently unavailable.";
         }
 
-        console.log(`Here ${color} ${message}`)
-
         // Trigger to toast with close countdown
         triggerToast(success, color, message);
+
+        // Reinitialize if success
+        if (success)
+        {
+            customerBooking = CustomerBooking($now);
+            customerIndividualList = [[]];
+        }
     }
 </script>
 
