@@ -12,13 +12,12 @@
     import {onMount} from "svelte";
     import {getCustomer} from "$lib/api/api_server/lobby-portal/api.js";
     import {
-        CustomerBooking,
         CustomerBookingState
     } from "$lib/api/api_server/customer-booking-portal/utility-functions/initialize_functions.js";
-    import {businessInfo} from "$lib/page/protected/business-portal/page_admin/stores/business_portal_admin_store.js";
     import {sendTextBookingSuccess} from "$lib/api/api_twilio/api.js";
 
     export let businessId;
+    export let businessName;
     export let customerBooking;
     export let customerIndividualList;
     export let submitCallback = undefined;
@@ -229,7 +228,7 @@
             if (overrideFlag)
             {
                 response = await forceSubmitBooking(
-                    $businessInfo.business.businessId,
+                    businessId,
                     customerBooking,
                     $now.format(),
                     customerIndividualList
@@ -246,7 +245,7 @@
                 }
 
                 response = await submitBooking(
-                    $businessInfo.business.businessId,
+                    businessId,
                     $now.format(formatToTime),
                     selectedAvailability.timePeriod,
                     customerBooking,
@@ -264,15 +263,11 @@
                 // Send SMS
                 if (sendSMS) {
                     try {
-                        await sendTextBookingSuccess($businessInfo.businessName, response.customerBooking);
+                        await sendTextBookingSuccess(businessName, response.customerBooking);
                     } catch (error) {
                         console.error(error);
                     }
                 }
-
-                // Reinitialize to default
-                customerBooking = CustomerBooking($now);
-                customerIndividualList = [[]];
             }
         }
         catch (err)

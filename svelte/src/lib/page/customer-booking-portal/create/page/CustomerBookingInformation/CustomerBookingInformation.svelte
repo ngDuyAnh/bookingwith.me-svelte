@@ -15,7 +15,6 @@
         pageIndex.set($pageIndex - 1);
     }
 
-
     async function submitCallback(success, error)
     {
         console.log("submitCallback()", $customerBooking, $customerIndividualList);

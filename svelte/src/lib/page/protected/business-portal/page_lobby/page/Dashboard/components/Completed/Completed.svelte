@@ -5,6 +5,9 @@
     import dayjs from "dayjs";
     import {formatToTime, formatToTimeAM} from "$lib/application/Formatter.js";
     import {Modal} from "flowbite-svelte";
+    import {moveToServicing} from "$lib/api/api_server/lobby-portal/utility-functions/handle_customer_booking_state.js";
+    import {now} from "$lib/page/stores/now/now_dayjs_store.js";
+    import {getContext} from "svelte";
 
     let openModal = false;
     let selectedCustomerBooking = {};
@@ -17,6 +20,15 @@
         hasMsg = selectedCustomerBooking.message === "";
     }
 
+
+    // Retrieve customer booking list update function
+    const submitCustomerBooking = getContext('submitCustomerBooking');
+
+    async function handleServicingClick() {
+        console.log('Move to servicing:', selectedCustomerBooking);
+
+        await moveToServicing($now, selectedCustomerBooking, submitCustomerBooking);
+    }
 
 </script>
 
@@ -53,6 +65,11 @@
                     </div>
                 {/each}
             </div>
+        </div>
+
+        <div class="mt-4 flex justify-end items-center space-x-2">
+            <span class="text-gray-700 font-bold">Move to:</span>
+            <button class="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded" on:click={handleServicingClick}>Servicing</button>
         </div>
     </Modal>
 </div>
