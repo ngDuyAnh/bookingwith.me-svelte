@@ -8,12 +8,16 @@
 
     let openModal = false;
     let selectedCustomerBooking = {};
+    let hasMsg;
 
     function handleCustomerBookingClick(customerBooking)
     {
         openModal = true;
         selectedCustomerBooking = customerBooking;
+        hasMsg = selectedCustomerBooking.message === "";
     }
+
+
 </script>
 
 <CustomerBookingList
@@ -23,7 +27,7 @@
 />
 
 <!-- Modal for customer booking -->
-<div class="absolute top-0 left-0 right-0">
+<div class="">
     <Modal bind:open={openModal} size="md" autoclose outsideclose>
         <div>
             <p><strong>Customer name:</strong> {selectedCustomerBooking.customer.customerName}</p>
@@ -32,7 +36,11 @@
             <p><strong>Check-in time:</strong> {dayjs(selectedCustomerBooking.checkinTime, formatToTime).format(formatToTimeAM)}</p>
             <p><strong>Start time:</strong> {dayjs(selectedCustomerBooking.servicingStartTime, formatToTime).format(formatToTimeAM)}</p>
             <p><strong>End time:</strong> {dayjs(selectedCustomerBooking.servicingEndTime, formatToTime).format(formatToTimeAM)}</p>
-            <p class="break-words"><strong>Message:</strong> {selectedCustomerBooking.message}</p>
+            <p class="break-words"><strong>Message:</strong> {selectedCustomerBooking.message}
+            {#if !hasMsg}
+                <span class="animate-ping absolute inline-flex h-1.5 w-1.5 rounded-full bg-sky-400 opacity-75"></span>
+            {/if}
+            </p>
             <div class="mt-4">
                 <div class="font-bold">Guest(s):</div>
                 {#each selectedCustomerBooking.customerIndividualBookingList as individualBooking}

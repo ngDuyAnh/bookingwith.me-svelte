@@ -1,20 +1,35 @@
 <script>
     import {
-        businessInfo,
-        pageIndex,
         customerBooking,
-        customerIndividualList
     } from "$lib/page/customer-booking-portal/create/stores/customer_booking_portal_create_store.js";
+
     import CustomerBookingInformationForm
         from "$lib/components/Form/CustomerBookingInformationForm/CustomerBookingInformationForm.svelte";
     import {
         CustomerBookingState
     } from "$lib/api/api_server/customer-booking-portal/utility-functions/initialize_functions.js";
+
     import {submitBooking} from "$lib/api/api_server/customer-booking-portal/api.js";
     import {sendTextBookingSuccess} from "$lib/api/api_twilio/api.js";
-    import {now} from "$lib/page/stores/now/now_dayjs_store.js";
+
+
+
+    //
+    import {businessInfo} from "$lib/page/protected/business-portal/page_admin/stores/business_portal_admin_store.js";
     import CustomerBookingInformation
         from "$lib/components/BookingComponents/CustomerBookingInformation/CustomerBookingInformation.svelte";
+    import {now} from "$lib/page/stores/now/now_dayjs_store.js";
+    import {pageIndex,customerIndividualList} from "$lib/page/protected/business-portal/page_admin/stores/service_editor_store.js";
+    //
+
+
+    console.log("customerBooking",customerBooking)
+    console.log("customerIndividualList",customerIndividualList)
+    // console.log("CustomerBookingInformationForm")
+    console.log("CustomerBookingState",CustomerBookingState)
+    // console.log("customerBooking")
+    // console.log("customerBooking")
+
 
     function handlePrev()
     {
@@ -68,16 +83,15 @@
     }
 </script>
 
+
 <CustomerBookingInformation
         businessInfo={businessInfo}
         handlePrev={handlePrev}
-        handleSubmit={handleSubmit}
-        customerIndividualList={$customerIndividualList}
-        customerBooking={$customerBooking}
 />
-{console.log("businessInfo",businessInfo)}
-{console.log("$customerIndividualList",$customerIndividualList)}
-{console.log("$customerBooking", $customerBooking)}
+<!--        export let handleSubmit;-->
+<!--        export let customerIndividualList;-->
+<!--        export let customerBooking;-->
+
 
 <div class="flex flex-col items-center min-h-screen">
     <div class="flex justify-between items-center px-4 pt-4 w-full">
@@ -95,11 +109,11 @@
     <!-- Customer booking information -->
     <div class="mt-3 w-full max-w-md p-8 border-2 border-gray-200 shadow-md rounded-lg">
         <CustomerBookingInformationForm
-                   businessId={$businessInfo.businessId}
-                   customerBooking={$customerBooking}
-                   customerIndividualList={$customerIndividualList}
-                   submit={handleSubmit}
-                   requiredAgreeToReceiveSMS={true}
+                businessId={$businessInfo.businessId}
+                customerBooking={$customerBooking}
+                customerIndividualList={$customerIndividualList}
+                submit={handleSubmit}
+                requiredAgreeToReceiveSMS={true}
         />
     </div>
 </div>
