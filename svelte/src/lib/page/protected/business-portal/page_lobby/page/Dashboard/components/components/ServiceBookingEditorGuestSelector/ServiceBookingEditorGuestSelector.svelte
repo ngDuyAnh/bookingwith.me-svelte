@@ -1,13 +1,11 @@
 <script>
-    import {
-        businessInfo,
-        pageIndex,
-        customerIndividualList
-    } from "$lib/page/customer-booking-portal/create/stores/customer_booking_portal_create_store.js";
     import {Spinner} from "flowbite-svelte";
     import GuestSelect from "$lib/components/BookingComponents/GuestSelect/GuestSelect.svelte";
+    import {businessInfo} from "$lib/page/protected/business-portal/page_admin/stores/business_portal_admin_store.js";
+    import {pageIndex,customerIndividualList} from "$lib/page/protected/business-portal/page_admin/stores/service_editor_store.js";
+    import {onMount} from "svelte";
 
-    let selectedNumGuests = $customerIndividualList.length;
+    let selectedNumGuests;
 
     // Wait for the businessInfo fetching to be done
     let loading = true;
@@ -35,10 +33,18 @@
                 return list;
             });
         }
-
+        console.log("selectedNumGuests",selectedNumGuests);
+        console.log("customerIndividualList",$customerIndividualList);
         // Go to the next page to get the customer individual booking information
         pageIndex.set($pageIndex + 1);
     }
+    onMount(() => {
+
+        selectedNumGuests = $customerIndividualList.length;
+
+        console.log("selectedNumGuests",selectedNumGuests);
+        console.log("$customerIndividualList",$customerIndividualList);
+    });
 </script>
 
 {#if loading}
@@ -48,7 +54,7 @@
 {:else}
 
     <GuestSelect
-            businessInfo={$businessInfo}
+            businessInfo={$businessInfo.business}
             handleSubmit={handleSubmit}
             bind:selectedNumGuests={selectedNumGuests}
     />

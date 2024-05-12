@@ -28,8 +28,8 @@
     <div class="mt-3 w-full max-w-md p-8 border-2 border-gray-200 shadow-md rounded-lg">
         <CustomerBookingInformationForm
                 businessId={$businessInfo.businessId}
-                customerBooking={customerBooking}
-                customerIndividualList={customerIndividualList}
+                customerBooking={$customerBooking}
+                customerIndividualList={$customerIndividualList}
                 submit={handleSubmit}
                 requiredAgreeToReceiveSMS={true}
         />

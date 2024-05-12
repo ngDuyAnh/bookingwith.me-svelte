@@ -15,10 +15,16 @@
 
     import ServiceBookingEditor
         from "$lib/page/protected/business-portal/page_lobby/page/Dashboard/components/components/ServiceBookingEditor/ServiceBookingEditor.svelte";
-    import {pageIndex} from "$lib/page/protected/business-portal/page_admin/stores/service_editor_store.js";
+    import {
+        customerBooking,
+        customerIndividualList,
+        pageIndex
+    } from "$lib/page/protected/business-portal/page_admin/stores/service_editor_store.js";
 
     import ServiceBookingEditorSubmission
         from "$lib/page/protected/business-portal/page_lobby/page/Dashboard/components/components/ServiceBookingEditorSubmission/ServiceBookingEditorSubmission.svelte";
+    import ServiceBookingEditorGuestSelector
+        from "$lib/page/protected/business-portal/page_lobby/page/Dashboard/components/components/ServiceBookingEditorGuestSelector/ServiceBookingEditorGuestSelector.svelte";
 
     let openModal = false;
     let selectedCustomerBooking = {};
@@ -56,6 +62,16 @@
     function editBooking() {
         console.log("edit clicked");
         edit = true;
+
+        if (selectedCustomerBooking && selectedCustomerBooking.customerIndividualBookingList) {
+            customerIndividualList.set(selectedCustomerBooking.customerIndividualBookingList.map(individualBooking =>
+                individualBooking.customerIndividualServiceBookingList
+            ));
+        }
+
+        customerBooking.set(selectedCustomerBooking);
+        console.log("customerBooking",$customerBooking);
+        pageIndex.set(0);
     }
 </script>
 
@@ -123,13 +139,13 @@
 {#if edit}
     <div class="w-[300px] h-[300px] bg-amber-950">
         <Modal bind:open={edit} size="md" outsideclose>
+            {console.log("selectedCustomerBooking", selectedCustomerBooking)}
             {#if $pageIndex === 0}
-                <ServiceBookingEditor
-                        selectedCustomerBooking={selectedCustomerBooking}
-                />
+                <ServiceBookingEditorGuestSelector/>
             {:else if $pageIndex === 1}
-                <ServiceBookingEditorSubmission
-                />
+                <ServiceBookingEditor/>
+            {:else if $pageIndex === 2}
+                <ServiceBookingEditorSubmission/>
             {/if}
         </Modal>
     </div>

@@ -72,34 +72,35 @@
         businessInfo={businessInfo}
         handlePrev={handlePrev}
         handleSubmit={handleSubmit}
-        customerIndividualList={$customerIndividualList}
-        customerBooking={$customerBooking}
+        customerIndividualList={customerIndividualList}
+        customerBooking={customerBooking}
 />
+
 {console.log("businessInfo",businessInfo)}
 {console.log("$customerIndividualList",$customerIndividualList)}
 {console.log("$customerBooking", $customerBooking)}
 
-<div class="flex flex-col items-center min-h-screen">
-    <div class="flex justify-between items-center px-4 pt-4 w-full">
-        <button
-                class="flex items-center justify-center px-4 py-2 rounded-lg bg-blue-500 hover:bg-blue-700 focus:outline-none focus:ring-4 focus:ring-blue-300 transition duration-150 ease-in-out"
-                on:click={handlePrev}
-                aria-label="Previous"
-        >
-            <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 12h14M5 12l4-4m-4 4 4 4"/>
-            </svg>
-        </button>
-    </div>
+<!--<div class="flex flex-col items-center min-h-screen">-->
+<!--    <div class="flex justify-between items-center px-4 pt-4 w-full">-->
+<!--        <button-->
+<!--                class="flex items-center justify-center px-4 py-2 rounded-lg bg-blue-500 hover:bg-blue-700 focus:outline-none focus:ring-4 focus:ring-blue-300 transition duration-150 ease-in-out"-->
+<!--                on:click={handlePrev}-->
+<!--                aria-label="Previous"-->
+<!--        >-->
+<!--            <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">-->
+<!--                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 12h14M5 12l4-4m-4 4 4 4"/>-->
+<!--            </svg>-->
+<!--        </button>-->
+<!--    </div>-->
 
-    <!-- Customer booking information -->
-    <div class="mt-3 w-full max-w-md p-8 border-2 border-gray-200 shadow-md rounded-lg">
-        <CustomerBookingInformationForm
-                   businessId={$businessInfo.businessId}
-                   customerBooking={$customerBooking}
-                   customerIndividualList={$customerIndividualList}
-                   submit={handleSubmit}
-                   requiredAgreeToReceiveSMS={true}
-        />
-    </div>
-</div>
+<!--    &lt;!&ndash; Customer booking information &ndash;&gt;-->
+<!--    <div class="mt-3 w-full max-w-md p-8 border-2 border-gray-200 shadow-md rounded-lg">-->
+<!--        <CustomerBookingInformationForm-->
+<!--                   businessId={$businessInfo.businessId}-->
+<!--                   customerBooking={$customerBooking}-->
+<!--                   customerIndividualList={$customerIndividualList}-->
+<!--                   submit={handleSubmit}-->
+<!--                   requiredAgreeToReceiveSMS={true}-->
+<!--        />-->
+<!--    </div>-->
+<!--</div>-->

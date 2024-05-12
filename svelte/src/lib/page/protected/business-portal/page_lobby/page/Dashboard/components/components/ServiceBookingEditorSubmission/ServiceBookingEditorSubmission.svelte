@@ -1,8 +1,4 @@
 <script>
-    import {
-        customerBooking,
-    } from "$lib/page/customer-booking-portal/create/stores/customer_booking_portal_create_store.js";
-
     import CustomerBookingInformationForm
         from "$lib/components/Form/CustomerBookingInformationForm/CustomerBookingInformationForm.svelte";
     import {
@@ -12,15 +8,11 @@
     import {submitBooking} from "$lib/api/api_server/customer-booking-portal/api.js";
     import {sendTextBookingSuccess} from "$lib/api/api_twilio/api.js";
 
-
-
-    //
     import {businessInfo} from "$lib/page/protected/business-portal/page_admin/stores/business_portal_admin_store.js";
     import CustomerBookingInformation
         from "$lib/components/BookingComponents/CustomerBookingInformation/CustomerBookingInformation.svelte";
     import {now} from "$lib/page/stores/now/now_dayjs_store.js";
-    import {pageIndex,customerIndividualList} from "$lib/page/protected/business-portal/page_admin/stores/service_editor_store.js";
-    //
+    import {pageIndex,customerIndividualList,customerBooking} from "$lib/page/protected/business-portal/page_admin/stores/service_editor_store.js";
 
 
     console.log("customerBooking",customerBooking)
@@ -58,7 +50,8 @@
             if (response.submitted)
             {
                 // Go to the success page
-                pageIndex.set($pageIndex + 1);
+                pageIndex.set(0);
+                alert("SUBMITTED THE EDIT");
 
                 // Send SMS confirmation
                 try
@@ -87,33 +80,7 @@
 <CustomerBookingInformation
         businessInfo={businessInfo}
         handlePrev={handlePrev}
+        handleSubmit={handleSubmit}
+        customerBooking={customerBooking}
+        customerIndividualList={customerIndividualList}
 />
-<!--        export let handleSubmit;-->
-<!--        export let customerIndividualList;-->
-<!--        export let customerBooking;-->
-
-
-<div class="flex flex-col items-center min-h-screen">
-    <div class="flex justify-between items-center px-4 pt-4 w-full">
-        <button
-                class="flex items-center justify-center px-4 py-2 rounded-lg bg-blue-500 hover:bg-blue-700 focus:outline-none focus:ring-4 focus:ring-blue-300 transition duration-150 ease-in-out"
-                on:click={handlePrev}
-                aria-label="Previous"
-        >
-            <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 12h14M5 12l4-4m-4 4 4 4"/>
-            </svg>
-        </button>
-    </div>
-
-    <!-- Customer booking information -->
-    <div class="mt-3 w-full max-w-md p-8 border-2 border-gray-200 shadow-md rounded-lg">
-        <CustomerBookingInformationForm
-                businessId={$businessInfo.businessId}
-                customerBooking={$customerBooking}
-                customerIndividualList={$customerIndividualList}
-                submit={handleSubmit}
-                requiredAgreeToReceiveSMS={true}
-        />
-    </div>
-</div>

@@ -12,7 +12,8 @@
     let customerIndividual = [];
     $: if ($customerIndividualList && $customerIndividualList.length > guestIndex) {
         customerIndividual = $customerIndividualList[guestIndex];
-        console.log("customerIndividual",customerIndividual)
+        console.log("customerIndividual",customerIndividual);
+        console.log("customerIndividualList",$customerIndividualList);
     }
 
     function handlePrev()

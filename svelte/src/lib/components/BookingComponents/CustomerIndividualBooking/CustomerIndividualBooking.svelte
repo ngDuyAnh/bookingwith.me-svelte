@@ -8,7 +8,6 @@ export let handleNext;
 export let guestIndex;
 export let businessInfo;
 export let customerIndividual;
-export let disableOption = false;
 
 </script>
 
@@ -17,7 +16,6 @@ export let disableOption = false;
         <button
                 class="flex items-center justify-center px-4 py-2 rounded-lg bg-blue-500 hover:bg-blue-700 focus:outline-none focus:ring-4 focus:ring-blue-300 transition duration-150 ease-in-out"
                 on:click={handlePrev}
-                disabled={disableOption?guestIndex===0:false}
                 aria-label="Previous"
         >
             <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -61,14 +59,3 @@ export let disableOption = false;
         </Accordion>
     </div>
 </div>
-
-
-<style>
-    button:not(:disabled):hover {
-        background-color: #4e73b0;
-    }
-
-    button:disabled {
-        background-color: #b2caf3;
-    }
-</style>
