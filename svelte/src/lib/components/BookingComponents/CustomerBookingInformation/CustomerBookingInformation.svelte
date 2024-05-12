@@ -30,7 +30,7 @@
                 businessId={$businessInfo.businessId}
                 customerBooking={$customerBooking}
                 customerIndividualList={$customerIndividualList}
-                submit={handleSubmit}
+                submitCallback={handleSubmit}
                 requiredAgreeToReceiveSMS={true}
         />
     </div>
