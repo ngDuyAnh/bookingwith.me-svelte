@@ -6,7 +6,9 @@
     import {now} from "$lib/page/stores/now/now_dayjs_store.js";
     import {formatToTime, formatToTimeAm} from "$lib/application/Formatter.js";
     import {getContext} from "svelte";
-    import {CustomerBookingState} from "$lib/api/api_server/customer-booking-portal/utility-functions/initialize_functions.js";
+    import {
+        CustomerBookingState
+    } from "$lib/api/api_server/customer-booking-portal/utility-functions/initialize_functions.js";
     import {moveToServicing} from "$lib/api/api_server/lobby-portal/utility-functions/handle_customer_booking_state.js";
     import dayjs from "dayjs";
 
