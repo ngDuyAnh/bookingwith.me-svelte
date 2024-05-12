@@ -16,6 +16,9 @@
         findServiceBookingByID,
     } from "$lib/api/api_server/customer-booking-portal/utility-functions/customer-booking-utility-functions.js";
     import {moveToCompleted} from "$lib/api/api_server/lobby-portal/utility-functions/handle_customer_booking_state.js";
+    import {
+        CustomerBookingState
+    } from "$lib/api/api_server/customer-booking-portal/utility-functions/initialize_functions.js";
 
     // Date select
     let todayDate = $now.format(formatToDate);
@@ -222,7 +225,10 @@
     let preselectEmployee = undefined;
     let indicateToSendCustomerBookingToCompleted = false;
 
-    async function openModalServicingTicket(info) {
+    async function openModalServicingTicket(info)
+    {
+        console.log("openModalServicingTicket", info)
+
         eventInfo = info;
         customerBooking = await getCustomerBooking(
             eventInfo.event.extendedProps.servicingTicket.bookingID
@@ -240,25 +246,38 @@
 
         // Indicate to send the customer booking to completed
         // It must be under servicing
-        if (customerBooking.bookingState === 2) {
-            // Determine the number of service booking remaining to be service
-            let remaining = 0;
-            customerBooking.customerIndividualBookingList.forEach(
-                (individualBooking) =>
-                    individualBooking.customerIndividualServiceBookingList.forEach(
-                        (serviceBooking) => {
-                            // Service booking is not completed
-                            if (!serviceBooking.completed) {
-                                remaining += 1;
-                            }
-                        }
-                    )
-            );
+        indicateToSendCustomerBookingToCompleted = false;
+        if (customerBooking.bookingState === CustomerBookingState.SERVICING)
+        {
+            // Get the service booking list
+            let serviceBookingList = customerBooking.customerIndividualBookingList.map(
+                individualBooking => individualBooking.customerIndividualServiceBookingList
+            ).flat();
 
-            // All the service bookings are done
-            // Or this ticket is the ticket that currently servicing the last service
-            // Then indicate to send it to completed
-            if (remaining === 0 || (remaining === 1 && !serviceBooking.completed)) {
+            // Count completed and currently servicing bookings
+            let incompletedServiceBookingCount = 0;
+            let incompletedServicingTicketCount = 0;
+            serviceBookingList.forEach((serviceBooking) => {
+                if (!serviceBooking.completed)
+                {
+                    incompletedServiceBookingCount += 1;
+
+                    // Check if there is only one servicing ticket that is not completed
+                    if (serviceBooking.servicingTicketList.length > 0)
+                    {
+                        serviceBooking.servicingTicketList.forEach((servicingTicket) => {
+                            if (!servicingTicket.completed)
+                            {
+                                incompletedServicingTicketCount += 1;
+                            }
+                        })
+                    }
+                }
+            });
+
+            // All service bookings are completed or only one left, and it is currently being servicing
+            if (incompletedServiceBookingCount === 0 || (incompletedServiceBookingCount === 1 && incompletedServicingTicketCount === 1))
+            {
                 indicateToSendCustomerBookingToCompleted = true;
             }
         }
@@ -393,7 +412,7 @@
 
     setContext("submitCustomerBooking", submitCustomerBooking);
 
-    async function handleCompleteClick() {
+    async function handleCompletedClick() {
         console.log("Moving to completed:", customerBooking);
 
         await moveToCompleted($now, customerBooking, submitCustomerBooking);
@@ -487,13 +506,13 @@
                         {#if indicateToSendCustomerBookingToCompleted}
                             <button
                                     class="animate-pulse bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded"
-                                    on:click={handleCompleteClick}>Complete
+                                    on:click={handleCompletedClick}>Complete
                             </button
                             >
                         {:else}
                             <button
                                     class="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded"
-                                    on:click={handleCompleteClick}>Complete
+                                    on:click={handleCompletedClick}>Complete
                             </button
                             >
                         {/if}

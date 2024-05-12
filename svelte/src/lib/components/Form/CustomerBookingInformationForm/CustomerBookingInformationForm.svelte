@@ -2,17 +2,32 @@
     import {now} from "$lib/page/stores/now/now_dayjs_store.js";
     import {formatToDate, formatToTime, formatToTimeAM} from "$lib/application/Formatter.js";
     import {Button, Input, Label, Select, Textarea} from "flowbite-svelte";
-    import {availableBooking, walk_in_availability} from "$lib/api/api_server/customer-booking-portal/api.js";
+    import {
+        availability,
+        walkin_availability,
+        forceSubmitBooking,
+        submitBooking
+    } from "$lib/api/api_server/customer-booking-portal/api.js";
     import dayjs from "dayjs";
     import {onMount} from "svelte";
     import {getCustomer} from "$lib/api/api_server/lobby-portal/api.js";
+    import {
+        CustomerBooking,
+        CustomerBookingState
+    } from "$lib/api/api_server/customer-booking-portal/utility-functions/initialize_functions.js";
+    import {businessInfo} from "$lib/page/protected/business-portal/page_admin/stores/business_portal_admin_store.js";
+    import {sendTextBookingSuccess} from "$lib/api/api_twilio/api.js";
 
     export let businessId;
     export let customerBooking;
     export let customerIndividualList;
-    export let submit;
+    export let submitCallback = undefined;
+
+
     export let customerNameAutoComplete = false;
     export let overrideFlag = false;
+    export let sendSMS = false;
+
     export let requiredAgreeToReceiveSMS = false;
 
     export let walkinAvailabilityFlag = false;
@@ -31,61 +46,67 @@
 
         try
         {
-            if (!walkinAvailabilityFlag)
+            let response = {};
+
+            console.log("walkinAvailabilityFlag", walkinAvailabilityFlag)
+
+            if (walkinAvailabilityFlag)
             {
-                const response = await availableBooking(
+                response = await walkin_availability(
                     businessId,
                     customerBooking.bookingDate,
                     currentTimeString,
                     customerIndividualList
                 );
 
-                console.log("response", response);
+                // Initialize the available time
+                availableTimeOptionList = response.availabilityList.map(
+                    availability => {
+                        return {
+                            value: availability.timePeriod.startTime,
+                            name: `${dayjs(availability.timePeriod.startTime, formatToTime).format(formatToTimeAM)} to ${dayjs(availability.timePeriod.endTime, formatToTime).format(formatToTimeAM)} (${availability.duration} minutes)`,
+                            availability: availability
+                        };
+                    });
+            }
+            else
+            {
+                response = await availability(
+                    businessId,
+                    customerBooking.bookingDate,
+                    currentTimeString,
+                    customerIndividualList
+                );
 
                 // Initialize the available time
                 availableTimeOptionList = response.availabilityList.map(
-                    timeString => {
+                    availability => {
                         return {
-                            value: timeString,
-                            name: dayjs(timeString, formatToTime).format(formatToTimeAM)
+                            value: availability.timePeriod.startTime,
+                            name: `${dayjs(availability.timePeriod.startTime, formatToTime).format(formatToTimeAM)}`,
+                            availability: availability
                         };
                     });
+            }
 
+            if (!walkinAvailabilityFlag)
+            {
                 // Add the option to fetch walk-in availability
-                if (availableTimeOptionList.length !== 0)
+                if (availableTimeOptionList.length > 0)
                 {
                     availableTimeOptionList.push({
                         value: undefined,
-                        name: "Show more availability..."
+                        name: "Show more availability...",
+                        availability: undefined
                     });
                 }
                 // No availability
                 // Search for walk-in availability
-                else
+                else if (availableTimeOptionList.length === 0)
                 {
                     walkinAvailabilityFlag = true;
-                    fetchAvailableTimeList();
+                    await fetchAvailableTimeList();
                 }
-            }
-            else
-            {
-                const response = await walk_in_availability(
-                    businessId,
-                    customerBooking.bookingDate,
-                    currentTimeString,
-                    customerIndividualList
-                );
-
-                console.log("response", response);
-
-                // Initialize the available time
-                availableTimeOptionList = response.availabilityList.map(
-                    walkinAvailability => {
-                        return {
-                            value: walkinAvailability.timePeriod.startTime,
-                            name: `${dayjs(walkinAvailability.timePeriod.startTime, formatToTime).format(formatToTimeAM)} - ${dayjs(walkinAvailability.timePeriod.endTime, formatToTime).format(formatToTimeAM)} (${walkinAvailability.duration} minutes)`
-                        };
-                    });
             }
 
             console.log("availableTimeOptionList", availableTimeOptionList)
@@ -99,6 +120,8 @@
 
     // Show more availability is selected
     // Fetch the walk-in availability
+    let selectedAvailability = undefined;
+    $: selectedAvailability = availableTimeOptionList.find(option => option.value === customerBooking.bookingTime)?.availability;
     $: if (customerBooking.bookingTime === undefined)
     {
         // Reset
@@ -115,8 +138,10 @@
         // New date selected
         customerBooking.bookingDate = dateSelected;
 
-        // Reset the time select
+        // Reset
+        walkinAvailabilityFlag = false;
         customerBooking.bookingTime = null;
+        selectedAvailability = undefined;
 
         // Get the new available time
         fetchAvailableTimeList();
@@ -128,13 +153,8 @@
     })
 
     // Reactive statement to fetch times when the date changes
-    $: if (dateSelected !== customerBooking.bookingDate) {
-        console.log("Here")
-
-        // Reset the walk-in availability
-        walkinAvailabilityFlag = false;
-        customerBooking.bookingTime = null;
-
+    $: if (dateSelected !== customerBooking.bookingDate)
+    {
         // Fetch availability
         getAvailableTimeOptionList();
     }
@@ -189,6 +209,82 @@
         // When the formatted phone number is complete, fetch the customer name
         if (value.length === 10) {
             customerExists();
+        }
+    }
+
+    async function submit()
+    {
+        console.log("submit()", customerBooking, customerIndividualList);
+        let success = false;
+        let error = false;
+
+        try
+        {
+            let response = {};
+
+            // Set the customer booking state
+            customerBooking.bookingState = CustomerBookingState.APPOINTMENT;
+
+            // Force submit if override is toggled
+            if (overrideFlag)
+            {
+                response = await forceSubmitBooking(
+                    $businessInfo.business.businessId,
+                    customerBooking,
+                    $now.format(),
+                    customerIndividualList
+                );
+            }
+            // Submit appointment
+            else
+            {
+                // Synchronize servicing
+                // Submit appointment aim to schedule to be service at the same time
+                if (!walkinAvailabilityFlag)
+                {
+                    customerBooking.bookingState = CustomerBookingState.SCHEDULE;
+                }
+
+                response = await submitBooking(
+                    $businessInfo.business.businessId,
+                    $now.format(formatToTime),
+                    selectedAvailability.timePeriod,
+                    customerBooking,
+                    $now.format(),
+                    customerIndividualList
+                );
+
+            }
+
+            // Success
+            if (response.submitted)
+            {
+                success = true;
+
+                // Send SMS
+                if (sendSMS) {
+                    try {
+                        await sendTextBookingSuccess($businessInfo.businessName, response.customerBooking);
+                    } catch (error) {
+                        console.error(error);
+                    }
+                }
+
+                // Reinitialize to default
+                customerBooking = CustomerBooking($now);
+                customerIndividualList = [[]];
+            }
+        }
+        catch (err)
+        {
+            console.error("Error submitting booking:", err);
+            error = true;
+        }
+
+        // Call the callback function for submit
+        if (submitCallback)
+        {
+            submitCallback(success, error);
         }
     }
 
@@ -267,7 +363,7 @@
                    bind:checked={isConsentChecked}
                    required
                    id="smsConsentCheckbox" />
-            <span for="smsConsentCheckbox"> I agree to receive SMS messages about my appointment.</span>
+            <span> I agree to receive SMS messages about my appointment.</span>
         </Label>
     {/if}
 
