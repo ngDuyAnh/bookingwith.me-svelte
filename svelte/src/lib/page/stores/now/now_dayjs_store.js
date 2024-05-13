@@ -7,3 +7,5 @@ export const now = writable(dayjs());
 setInterval(() => {
     now.set(dayjs());
 }, 60000);
+
+//export const now = writable(dayjs('2024-05-08T17:30'));

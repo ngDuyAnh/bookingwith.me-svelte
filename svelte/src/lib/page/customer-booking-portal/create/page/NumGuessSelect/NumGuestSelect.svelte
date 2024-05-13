@@ -3,7 +3,7 @@
         businessInfo,
         pageIndex,
         customerIndividualList
-    } from "$lib/page/customer-booking-portal/create/stores/customer_booking_portal_store.js";
+    } from "$lib/page/customer-booking-portal/create/stores/customer_booking_portal_create_store.js";
     import {Spinner} from "flowbite-svelte";
 
     let selectedNumGuests = $customerIndividualList.length;

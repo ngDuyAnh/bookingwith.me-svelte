@@ -2,9 +2,9 @@
     import {
         customerIndividualList,
         pageIndex
-    } from "$lib/page/customer-booking-portal/create/stores/customer_booking_portal_store.js";
+    } from "$lib/page/customer-booking-portal/create/stores/customer_booking_portal_create_store.js";
     import {Accordion, AccordionItem} from "flowbite-svelte";
-    import {businessInfo} from "$lib/page/customer-booking-portal/create/stores/customer_booking_portal_store.js";
+    import {businessInfo} from "$lib/page/customer-booking-portal/create/stores/customer_booking_portal_create_store.js";
     import ServiceOption
         from "$lib/page/protected/business-portal/page_lobby/page/CreateBooking/components/ModalCustomerIndividual/ServiceOption/ServiceOption.svelte";
 
@@ -74,7 +74,7 @@
     <div class="mt-3">
         <Accordion key={customerIndividual}>
             {#each $businessInfo.serviceGroupList as serviceGroup, index}
-                <AccordionItem open={index === 0}>
+                <AccordionItem open={index === 0} class="bg-gray-100">
                     <div slot="header" class="flex items-center w-full">
                         <div class="flex flex-col sm:flex-row justify-between w-full items-center text-center sm:text-left">
                             <span class="font-semibold mb-2 sm:mb-0 sm:mr-3">{serviceGroup.serviceGroupName}</span>
@@ -82,12 +82,12 @@
                         </div>
                     </div>
 
-                    {#each serviceGroup.serviceList as service}
-                        <ServiceOption
-                                {service}
-                                {customerIndividual}
-                        />
-                    {/each}
+                        {#each serviceGroup.serviceList as service}
+                            <ServiceOption
+                                    {service}
+                                    {customerIndividual}
+                            />
+                        {/each}
                 </AccordionItem>
             {/each}
         </Accordion>

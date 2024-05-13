@@ -4,21 +4,30 @@
     } from "$lib/page/stores/EmployeeSelectOptions/employeeSelectOptions_store.js";
     import {Button, Select} from "flowbite-svelte";
     import {now} from "$lib/page/stores/now/now_dayjs_store.js";
-    import {formatToTime} from "$lib/application/Formatter.js";
+    import {formatToTime, formatToTimeAm} from "$lib/application/Formatter.js";
     import {getContext} from "svelte";
-    import {CustomerBookingState} from "$lib/api/api_server/customer-booking-portal/initialize_functions.js";
+    import {
+        CustomerBookingState
+    } from "$lib/api/api_server/customer-booking-portal/utility-functions/initialize_functions.js";
     import {moveToServicing} from "$lib/api/api_server/lobby-portal/utility-functions/handle_customer_booking_state.js";
+    import dayjs from "dayjs";
 
     export let customerBooking;
     export let individualBooking;
     export let serviceBooking;
 
-    let selectedEmployee;
+    export let preselectEmployee = undefined;
+
+    let selectedEmployee = null;
+    if (preselectEmployee !== undefined)
+    {
+        selectedEmployee = preselectEmployee;
+    }
 
     // Retrieve customer booking list update function
     const submitCustomerBooking = getContext('submitCustomerBooking');
 
-    function handleStartServicing() {
+    async function handleStartServicing() {
         console.log('Start servicing:', serviceBooking, selectedEmployee);
 
         // If the customer is not in servicing queue, move them there
@@ -45,8 +54,8 @@
         // Add the servicing ticket to the service booking
         serviceBooking.servicingTicketList.push(servicingTicket);
 
-        // Save the customer booking change
-        submitCustomerBooking(customerBooking);
+        // Service the customer booking
+        await moveToServicing($now, customerBooking, submitCustomerBooking);
 
         // Reset the selected employee after starting servicing
         selectedEmployee = null;
@@ -123,7 +132,7 @@
         <div class="mt-4 p-4 border border-gray-500 rounded bg-gray-100">
             <div class="p-2">
                 <p><strong>Employee:</strong> {ticket.employee.employeeName}</p>
-                <p><strong>Start Time:</strong> {ticket.timePeriod.startTime}</p>
+                <p><strong>Start Time:</strong> {dayjs(ticket.timePeriod.startTime, formatToTime).format(formatToTimeAm)}</p>
                 <Button on:click={() => handleEndServicing(ticket)} disabled={ticket.completed}>
                     End
                 </Button>

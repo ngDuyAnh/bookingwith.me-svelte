@@ -7,10 +7,9 @@
     import ModalCustomerBookingInformation
         from "$lib/page/protected/business-portal/page_lobby/page/CreateBooking/components/ModalCustomerBookingInformation/ModalCustomerBookingInformation.svelte";
     import {now} from "$lib/page/stores/now/now_dayjs_store.js";
-    import {CustomerBookingState, CustomerBooking} from "$lib/api/api_server/customer-booking-portal/initialize_functions.js";
-    import {forceSubmitBooking, submitBooking} from "$lib/api/api_server/customer-booking-portal/api.js";
-    import {businessInfo} from "$lib/page/protected/business-portal/page_admin/stores/business_portal_admin_store.js";
-    import {CheckCircleSolid, ExclamationCircleSolid} from "flowbite-svelte-icons";
+    import {
+        CustomerBooking
+    } from "$lib/api/api_server/customer-booking-portal/utility-functions/initialize_functions.js";
 
     let customerBooking = CustomerBooking($now);
     let customerIndividualList = [[]];
@@ -46,75 +45,56 @@
         modalCustomerBooking = true;
     }
 
+    let toastSuccess = false;
     let showToast = false;
-    let toastIcon = CheckCircleSolid;
     let toastColor = "green";
     let toastMessage = "";
 
-    function triggerToast() {
+    function triggerToast(success, color, message)
+    {
+        toastSuccess = success;
+        toastColor = color;
+        toastMessage = message;
+
         showToast = true;
         setTimeout(
             () => { showToast = false; }, 3000);
     }
 
     let overrideFlag = false;
-    async function submit()
-    {
-        console.log("submit()", customerBooking, customerIndividualList);
+    let sendSMS = false;
 
+    async function submitCallback(success, error)
+    {
         // Close the customer booking modal
         modalCustomerBooking = false;
 
-        try
+        console.log(`submitCallback ${success} ${error}`);
+
+        // Success
+        let color = 'green';
+        let message = "Booking successful!";
+
+        // Error
+        if (error)
         {
-            // Initialize the customer booking as appointment which is index 0
-            customerBooking.bookingState = CustomerBookingState.APPOINTMENT;
-
-            // Force submit if override is toggled
-            let response = {};
-            if (overrideFlag)
-            {
-                response = await forceSubmitBooking(
-                    $businessInfo.business.businessId,
-                    customerBooking,
-                    $now.format(),
-                    customerIndividualList
-                );
-            }
-            else
-            {
-                response = await submitBooking(
-                    $businessInfo.business.businessId,
-                    customerBooking,
-                    $now.format(),
-                    customerIndividualList
-                );
-            }
-
-            // Submitted
-            if (response.submitted) {
-                toastIcon = CheckCircleSolid;
-                toastColor = 'green';
-                toastMessage = "Booking successful!";
-
-                // Reinitialize to default
-                customerBooking = CustomerBooking($now);
-                customerIndividualList = [[]];
-            } else {
-                toastIcon = ExclamationCircleSolid;
-                toastColor = 'orange';
-                toastMessage = "Booking time recently unavailable.";
-            }
-
-            // Trigger to toast with close countdown
-            triggerToast();
+            color = 'red';
+            message = "Something went wrong, please contact bookingwith.me";
         }
-        catch (error)
+        else if (!success)
         {
-            console.error("Error submitting booking:", error);
-            toastIcon = ExclamationCircleSolid;
-            toastColor = 'red';
-            toastMessage = "Something went wrong, please contact bookingwith.me";
+            color = 'orange';
+            message = "Booking time recently unavailable.";
+        }
+
+        // Trigger to toast with close countdown
+        triggerToast(success, color, message);
+
+        // Reinitialize if success
+        if (success)
+        {
+            customerBooking = CustomerBooking($now);
+            customerIndividualList = [[]];
         }
     }
 </script>
@@ -145,15 +125,21 @@
 <ModalCustomerBookingInformation
         bind:open={modalCustomerBooking}
         bind:overrideFlag={overrideFlag}
+        bind:sendSMS={sendSMS}
         {customerBooking}
         {customerIndividualList}
-        {submit}
+        {submitCallback}
 />
+
 
 <!-- Toast for booking confirmation -->
 <Toast bind:open={showToast} color={toastColor}>
     <svelte:fragment slot="icon">
-        <svelte:component this={toastIcon} class="w-5 h-5" />
+        {#if toastSuccess}
+            <svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" viewBox="0 0 24 24"><path fill="green" fill-rule="evenodd" d="M2 12C2 6.477 6.477 2 12 2s10 4.477 10 10s-4.477 10-10 10S2 17.523 2 12m13.707-1.293a1 1 0 0 0-1.414-1.414L11 12.586l-1.793-1.793a1 1 0 0 0-1.414 1.414l2.5 2.5a1 1 0 0 0 1.414 0z" clip-rule="evenodd"/></svg>
+        {:else}
+            <svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" viewBox="0 0 24 24"><path fill="red" fill-rule="evenodd" d="M2 12C2 6.477 6.477 2 12 2s10 4.477 10 10s-4.477 10-10 10S2 17.523 2 12m11-4a1 1 0 1 0-2 0v5a1 1 0 1 0 2 0zm-1 7a1 1 0 1 0 0 2h.01a1 1 0 1 0 0-2z" clip-rule="evenodd"/></svg>
+        {/if}
         <span class="sr-only">Icon</span>
     </svelte:fragment>
     {toastMessage}

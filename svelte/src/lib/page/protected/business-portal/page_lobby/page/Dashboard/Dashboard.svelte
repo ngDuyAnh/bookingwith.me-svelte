@@ -14,17 +14,11 @@
         from "$lib/page/protected/business-portal/page_lobby/page/Dashboard/components/Servicing/Servicing.svelte";
     import Completed
         from "$lib/page/protected/business-portal/page_lobby/page/Dashboard/components/Completed/Completed.svelte";
-    import {CustomerBooking} from "$lib/api/api_server/customer-booking-portal/initialize_functions.js";
-
-    onMount(async () => {
-        await updateCustomerBookingList();
-    });
-
-    // Automatic fetch for the latest customer booking list
-    setInterval(async () => updateCustomerBookingList(), 10000);
+    import {
+        CustomerBooking
+    } from "$lib/api/api_server/customer-booking-portal/utility-functions/initialize_functions.js";
 
     let latestCustomerBooking = CustomerBooking($now);
-
     async function fetchCustomerBookingList()
     {
         // Get the customer booking list
@@ -56,6 +50,13 @@
             console.error(error);
         }
     }
+
+    onMount(async () => {
+        await updateCustomerBookingList();
+    });
+
+    // Automatic fetch for the latest customer booking list
+    setInterval(async () => updateCustomerBookingList(), 10000);
 
     async function submitCustomerBooking(customerBooking)
     {

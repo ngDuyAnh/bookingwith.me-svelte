@@ -3,7 +3,7 @@
         businessInfo,
         pageIndex,
         customerBooking
-    } from "$lib/page/customer-booking-portal/create/stores/customer_booking_portal_store.js";
+    } from "$lib/page/customer-booking-portal/create/stores/customer_booking_portal_create_store.js";
     import NumGuestSelect from "$lib/page/customer-booking-portal/create/page/NumGuessSelect/NumGuestSelect.svelte";
     import CustomerIndividualBooking
         from "$lib/page/customer-booking-portal/create/page/CustomerIndividualBooking/CustomerIndividualBooking.svelte";
@@ -17,7 +17,9 @@
     import {onMount} from "svelte";
     import {getBusiness} from "$lib/api/api_server/customer-booking-portal/api.js";
     import {goto} from "$app/navigation";
-    import {CustomerBooking} from "$lib/api/api_server/customer-booking-portal/initialize_functions.js";
+    import {
+        CustomerBooking
+    } from "$lib/api/api_server/customer-booking-portal/utility-functions/initialize_functions.js";
     import {now} from "$lib/page/stores/now/now_dayjs_store.js";
 
     export let data;
@@ -49,7 +51,7 @@
     });
 </script>
 
-<div class="min-h-screen w-full bg-white">
+<div class="min-h-screen w-full">
     {#if $pageIndex === 0}
         <NumGuestSelect/>
     {:else if $pageIndex === 1}

@@ -5,8 +5,11 @@
     import {Spinner} from "flowbite-svelte";
     import {onMount} from "svelte";
     import BusinessPortalLobby from "$lib/page/protected/business-portal/page_lobby/BusinessPortalLobby.svelte";
+    import {page} from "$app/stores";
 
     let loading = true;
+
+    let businessId = $page.url.searchParams.get('businessId') || '';
 
     onMount(() => {
         initializeUserFromSession();
@@ -22,7 +25,7 @@
             <Spinner />
         </div>
     {:else if !$user?.businessId || !$user?.access}
-        <Login/>
+        <Login {businessId}/>
     {:else if $user.access === 'business-portal/admin'}
         <BusinessPortalAdmin/>
     {:else if $user.access === 'business-portal/lobby'}
