@@ -4,6 +4,8 @@
     import {now} from "$lib/page/stores/now/now_dayjs_store.js";
     let plugins = [ResourceTimeGrid];
 
+    console.log("Here")
+
     let options = {
         view: 'resourceTimeGridDay',
 
