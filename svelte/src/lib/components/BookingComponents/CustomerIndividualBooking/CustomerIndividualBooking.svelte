@@ -22,7 +22,7 @@ export let customerIndividual;
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 12h14M5 12l4-4m-4 4 4 4"/>
             </svg>
         </button>
-        <h1 class="text-xl font-semibold flex-grow-0 mx-20">
+        <h1 class="text-xl font-semibold flex-grow-0 ">
             Guest #{guestIndex + 1}
         </h1>
         <button

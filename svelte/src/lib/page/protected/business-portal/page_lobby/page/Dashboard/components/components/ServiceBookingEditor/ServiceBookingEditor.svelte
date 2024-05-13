@@ -1,51 +1,28 @@
 <script>
-    import {businessInfo} from "$lib/page/protected/business-portal/page_admin/stores/business_portal_admin_store.js";
-    import {
-        pageIndex,
-        customerIndividualList
-    } from "$lib/page/protected/business-portal/page_admin/stores/service_editor_store.js";
-    import CustomerIndividualBooking
-        from "$lib/components/BookingComponents/CustomerIndividualBooking/CustomerIndividualBooking.svelte";
+    import {pageIndex} from "$lib/page/protected/business-portal/page_admin/stores/service_editor_store.js";
+    import {Modal} from "flowbite-svelte";
+    import ServiceBookingEditorIndividual
+        from "$lib/page/protected/business-portal/page_lobby/page/Dashboard/components/components/ServiceBookingEditorIndividual/ServiceBookingEditorIndividual.svelte";
+    import ServiceBookingEditorSubmission
+        from "$lib/page/protected/business-portal/page_lobby/page/Dashboard/components/components/ServiceBookingEditorSubmission/ServiceBookingEditorSubmission.svelte";
+    import ServiceBookingEditorGuestSelector
+        from "$lib/page/protected/business-portal/page_lobby/page/Dashboard/components/components/ServiceBookingEditorGuestSelector/ServiceBookingEditorGuestSelector.svelte";
 
-    let guestIndex = 0;
 
-    // Get the customer individual from the index
-    let customerIndividual = [];
-    $: if ($customerIndividualList && $customerIndividualList.length > guestIndex) {
-        customerIndividual = $customerIndividualList[guestIndex];
-        console.log("customerIndividual", customerIndividual);
-        console.log("customerIndividualList", $customerIndividualList);
-    }
+    export let edit;
 
-    function handlePrev() {
-        // Go back to number of guests selector page
-        if (guestIndex === 0) {
-            pageIndex.set($pageIndex - 1);
-        }
-        // Go back to the previous customer
-        else {
-            guestIndex -= 1;
-        }
-    }
-
-    function handleNext() {
-        // Go to the next page to get the customer booking information
-        if (guestIndex === ($customerIndividualList.length - 1)) {
-            pageIndex.set($pageIndex + 1);
-        }
-        // Get the next customer
-        else {
-            guestIndex += 1;
-        }
-    }
 </script>
 
-<!-- Modal for customer booking -->
-<CustomerIndividualBooking
-        handlePrev={handlePrev}
-        handleNext={handleNext}
-        bind:guestIndex={guestIndex}
-        businessInfo={businessInfo}
-        bind:customerIndividual={customerIndividual}
-/>
-
+{#if edit}
+    <div class="">
+        <Modal bind:open={edit} size="" class="w-full max-w-3xl h-[80vh] border-dotted border-8" classBackdrop="fixed inset-0 z-50 bg-gray-900 bg-opacity-90 dark:bg-opacity-80"  outsideclose>
+            {#if $pageIndex === 0}
+                <ServiceBookingEditorGuestSelector/>
+            {:else if $pageIndex === 1}
+                <ServiceBookingEditorIndividual/>
+            {:else if $pageIndex === 2}
+                <ServiceBookingEditorSubmission/>
+            {/if}
+        </Modal>
+    </div>
+{/if}

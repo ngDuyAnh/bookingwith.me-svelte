@@ -7,14 +7,15 @@
     import {formatToTime, formatToTimeAM} from "$lib/application/Formatter.js";
     import {now} from "$lib/page/stores/now/now_dayjs_store.js";
     import {getContext} from "svelte";
+    import { Tooltip, Button } from 'flowbite-svelte';
     import {
         moveToCompleted,
         moveToLobby,
         moveToServicing
     } from "$lib/api/api_server/lobby-portal/utility-functions/handle_customer_booking_state.js";
 
-    import ServiceBookingEditor
-        from "$lib/page/protected/business-portal/page_lobby/page/Dashboard/components/components/ServiceBookingEditor/ServiceBookingEditor.svelte";
+    import ServiceBookingEditorIndividual
+        from "$lib/page/protected/business-portal/page_lobby/page/Dashboard/components/components/ServiceBookingEditorIndividual/ServiceBookingEditorIndividual.svelte";
     import {
         customerBooking,
         customerIndividualList,
@@ -25,6 +26,8 @@
         from "$lib/page/protected/business-portal/page_lobby/page/Dashboard/components/components/ServiceBookingEditorSubmission/ServiceBookingEditorSubmission.svelte";
     import ServiceBookingEditorGuestSelector
         from "$lib/page/protected/business-portal/page_lobby/page/Dashboard/components/components/ServiceBookingEditorGuestSelector/ServiceBookingEditorGuestSelector.svelte";
+    import ServiceBookingEditor
+        from "$lib/page/protected/business-portal/page_lobby/page/Dashboard/components/components/ServiceBookingEditor/ServiceBookingEditor.svelte";
 
     let openModal = false;
     let selectedCustomerBooking = {};
@@ -40,18 +43,21 @@
     const submitCustomerBooking = getContext('submitCustomerBooking');
 
     async function handleLobbyClick() {
+        openModal = false;
         console.log('Moving to lobby:', selectedCustomerBooking);
 
         await moveToLobby($now, selectedCustomerBooking, submitCustomerBooking);
     }
 
     async function handleServicingClick() {
+        openModal = false;
         console.log('Start servicing:', selectedCustomerBooking);
 
         await moveToServicing($now, selectedCustomerBooking, submitCustomerBooking);
     }
 
     async function handleCompleteClick() {
+        openModal = false;
         console.log('Moving to completed:', selectedCustomerBooking);
 
         await moveToCompleted($now, selectedCustomerBooking, submitCustomerBooking);
@@ -64,9 +70,14 @@
         edit = true;
 
         if (selectedCustomerBooking && selectedCustomerBooking.customerIndividualBookingList) {
-            customerIndividualList.set(selectedCustomerBooking.customerIndividualBookingList.map(individualBooking =>
-                individualBooking.customerIndividualServiceBookingList
-            ));
+            customerIndividualList.set(
+                selectedCustomerBooking.customerIndividualBookingList.map(individualBooking =>
+                    individualBooking.customerIndividualServiceBookingList.map(serviceBooking => ({
+                        service: serviceBooking.service,
+                        employee: serviceBooking.employee
+                    }))
+                )
+            );
         }
 
         customerBooking.set(selectedCustomerBooking);
@@ -83,7 +94,7 @@
 
 <!-- Modal for customer booking -->
 <div class="">
-    <Modal bind:open={openModal} size="md" autoclose outsideclose>
+    <Modal bind:open={openModal} size="md" outsideclose>
         <div>
             <p><strong>Customer name:</strong> {selectedCustomerBooking.customer.customerName}</p>
             <p><strong>Phone number:</strong> {selectedCustomerBooking.customer.phoneNumber}</p>
@@ -111,13 +122,14 @@
 
         <div class="mt-4 flex ">
             <div class="justify-start">
-                <button on:click={editBooking}>
+                <Button id="show-tooltip" on:click={editBooking} color="light" outline>
                     <svg class="w-6 h-6 text-gray-800 dark:text-white" aria-hidden="true"
                          xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
                         <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                               d="m14.304 4.844 2.852 2.852M7 7H4a1 1 0 0 0-1 1v10a1 1 0 0 0 1 1h11a1 1 0 0 0 1-1v-4.5m2.409-9.91a2.017 2.017 0 0 1 0 2.853l-6.844 6.844L8 14l.713-3.565 6.844-6.844a2.015 2.015 0 0 1 2.852 0Z"/>
                     </svg>
-                </button>
+                </Button>
+                <Tooltip triggeredBy="#show-tooltip">Edit Booking</Tooltip>
             </div>
             <div class="ml-auto justify-end items-center space-x-2">
                 <span class="text-gray-700 font-bold">Move to:</span>
@@ -136,17 +148,6 @@
 </div>
 
 
-{#if edit}
-    <div class="">
-        <Modal bind:open={edit} size="" class="w-[80vw] h-[80vh] border-dotted border-4" classBackdrop="fixed inset-0 z-40 bg-gray-900 bg-opacity-90 dark:bg-opacity-80"  outsideclose>
-            {#if $pageIndex === 0}
-                <ServiceBookingEditorGuestSelector/>
-            {:else if $pageIndex === 1}
-                <ServiceBookingEditor/>
-            {:else if $pageIndex === 2}
-                <ServiceBookingEditorSubmission/>
-            {/if}
-        </Modal>
-    </div>
-
-{/if}
+<ServiceBookingEditor
+    bind:edit={edit}
+/>
