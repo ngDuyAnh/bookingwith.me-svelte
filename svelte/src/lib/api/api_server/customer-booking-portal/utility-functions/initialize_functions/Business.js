@@ -3,13 +3,13 @@ import {formatToDate} from "$lib/application/Formatter.js";
 export function Business(now)
 {
     return {
-        "business":businessInformation(now),
+        "business":BusinessInformation(now),
         "serviceGroupList":[],
         "employeeList":[],
     }
 }
 
-export function businessInformation(now)
+export function BusinessInformation(now)
 {
     return {
         "id":-1,

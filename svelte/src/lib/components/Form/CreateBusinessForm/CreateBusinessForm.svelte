@@ -1,27 +1,12 @@
 <script>
     import { goto } from '$app/navigation';
-    import dayjs from 'dayjs';
     import {createBusiness} from "$lib/api/api_server/business-portal/api.js";
+    import {
+        BusinessInformation
+    } from "$lib/api/api_server/customer-booking-portal/utility-functions/initialize_functions/Business.js";
+    import {now} from "$lib/page/stores/now/now_dayjs_store.js";
 
-    let accessString = "";
-    let business = {
-        businessId: -1,
-        businessName: "",
-        businessPhoneNumber: "",
-        contactPhoneNumber: "",
-        businessEmail: "",
-        ownerName: "",
-        address: "",
-        city: "Winnipeg",
-        province: "Manitoba",
-        country: "Canada",
-        postalCode: "",
-        websiteUrl: "",
-        businessType: "",
-        socialMediaLink: "",
-        registrationDate: dayjs().format('YYYY-MM-DD'),
-        active: true,
-    };
+    let business = BusinessInformation($now);
 
     function handleBusinessPhoneNumberInput(event) {
         if (event.target instanceof HTMLInputElement)
@@ -151,18 +136,13 @@
     </div>
 
     <div class="form-group">
-        <label for="businessType">Business Type:</label>
-        <input type="text" id="businessType" bind:value={business.businessType} class="input-field" required>
-    </div>
-
-    <div class="form-group">
-        <label for="registrationDate">Registration Date:</label>
-        <input type="date" id="registrationDate" bind:value={business.registrationDate} class="input-field" required>
-    </div>
-
-    <div class="form-group">
         <label for="websiteUrl">Website URL:</label>
         <input type="text" id="websiteUrl" bind:value={business.websiteUrl} class="input-field">
+    </div>
+
+    <div class="form-group">
+        <label for="businessType">Business Type:</label>
+        <input type="text" id="businessType" bind:value={business.businessType} class="input-field" required>
     </div>
 
     <div class="form-group">
@@ -170,14 +150,15 @@
         <input type="text" id="socialMediaLink" bind:value={business.socialMediaLink} class="input-field">
     </div>
 
+
     <div class="form-group">
-        <label for="active">Active Flag:</label>
-        <input type="checkbox" id="active" bind:checked={business.active} class="input-field">
+        <label for="registrationDate">Registration Date:</label>
+        <input type="date" id="registrationDate" bind:value={business.registrationDate} class="input-field" required>
     </div>
 
     <div class="form-group">
-        <label for="accessString">Access string:</label>
-        <input type="text" id="accessString" bind:value={accessString} class="input-field" required>
+        <label for="active">Active Flag:</label>
+        <input type="checkbox" id="active" bind:checked={business.active} class="input-field">
     </div>
 
     <div class="form-group">
