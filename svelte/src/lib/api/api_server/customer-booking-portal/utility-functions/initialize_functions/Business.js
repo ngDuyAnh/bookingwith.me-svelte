@@ -1,33 +1,28 @@
-import {formatToDate} from "$lib/application/Formatter.js";
-
-export function Business(now)
+export function Business()
 {
     return {
-        "business":BusinessInformation(now),
+        "business":BusinessInformation(),
         "serviceGroupList":[],
         "employeeList":[],
     }
 }
 
-export function BusinessInformation(now)
+export function BusinessInformation()
 {
     return {
         "id":-1,
-        "businessId": null,
-        "businessName": "",
-        "businessPhoneNumber": "",
-        "contactPhoneNumber": "",
-        "businessEmail": "",
-        "ownerName": "",
-        "address": "",
+        "businessID": null,
+        "businessName": "Booking With Me",
+        "businessPhoneNumber": "123456789",
+        "address": "123 street rd",
         "city": "Winnipeg",
         "province": "Manitoba",
         "country": "Canada",
-        "postalCode": "",
-        "websiteUrl": "",
-        "businessType": "",
-        "socialMediaLink": "",
-        "registrationDate": now.format(formatToDate),
+        "postalCode": "R2M1A2",
+        "websiteUrl": "app.bookingwith.me",
+        "businessType": "Booking App",
+        "socialMediaLink": "app.bookingwith.me",
+        "timestamp": "",
         "active": true,
     };
 }
