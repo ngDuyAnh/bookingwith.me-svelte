@@ -9,7 +9,7 @@
     export let sendSMS = true;
     export let customerBooking;
     export let customerIndividualList;
-    export let submit;
+    export let submitCallback;
 
     // Reset the input formatted phone number
     let firstOpen = false;
@@ -38,9 +38,9 @@
                businessId={$businessInfo.business.businessId}
                {customerBooking}
                {customerIndividualList}
-               {submit}
                customerNameAutoComplete={true}
                {overrideFlag}
+               {submitCallback}
        />
     </div>
 </Modal>

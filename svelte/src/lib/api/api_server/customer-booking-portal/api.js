@@ -2,9 +2,9 @@ import {API_BASE_URL} from "$lib/api/api_server/API-URL.js";
 
 const API_URL = `${API_BASE_URL}/customer-booking-portal`;
 
-export async function availableBooking(id, dateString, currentTimeString, customerIndividualList)
+export async function availability(id, dateString, currentTimeString, customerIndividualList)
 {
-    const FETCH_URL = `${API_URL}/available-booking/${id}`;
+    const FETCH_URL = `${API_URL}/availability/${id}`;
 
     // Convert guestList to the appropriate format
     const availableBooking = {
@@ -29,7 +29,7 @@ export async function availableBooking(id, dateString, currentTimeString, custom
     return await response.json();
 }
 
-export async function walk_in_availability(id, dateString, currentTimeString, customerIndividualList)
+export async function walkin_availability(id, dateString, currentTimeString, customerIndividualList)
 {
     const FETCH_URL = `${API_URL}/walk-in-availability/${id}`;
 
@@ -60,12 +60,14 @@ export async function walk_in_availability(id, dateString, currentTimeString, cu
     return await response.json();
 }
 
-export async function submitBooking(id, customerBooking, timestamp, customerIndividualList)
+export async function submitBooking(id, currentTime, timePeriod, customerBooking, timestamp, customerIndividualList)
 {
     const FETCH_URL = `${API_URL}/submit-booking/${id}`;
 
     // Convert guestList to the appropriate format
     const submitBooking = {
+        "currentTime": currentTime,
+        "timePeriod": timePeriod,
         "customerBooking": customerBooking,
         "timestamp": timestamp,
         "customerIndividualList": customerIndividualList
