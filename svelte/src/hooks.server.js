@@ -1,4 +1,5 @@
 import {redirect} from "@sveltejs/kit";
+import {login} from "$lib/api/api_server/user-portal/api.js";
 
 export async function handle({ event, resolve })
 {
@@ -11,9 +12,12 @@ export async function handle({ event, resolve })
             const authCookies = JSON.parse(event.cookies.get('auth'));
 
             console.log("authCookies", authCookies);
+            console.log("email", authCookies.email);
 
             // Get the user
-            //const response =
+            const response = await login(authCookies.email)
+
+            console.log("login", response);
         }
         catch (err)
         {

@@ -53,19 +53,6 @@ export async function getBusiness(id)
     return await response.json();
 }
 
-export async function getLogin(id, username, accessString)
-{
-    const FETCH_URL = `${API_URL}/login/${id}?username=${username}&accessString=${accessString}`;
-
-    const response = await fetch(`${FETCH_URL}`);
-
-    if (!response.ok) {
-        throw new Error(`Failed to fetch valid access. Status: ${response.status}`);
-    }
-
-    return await response.json();
-}
-
 export async function initializeBusinessInformation(businessInfo)
 {
     const FETCH_URL = `${API_URL}/initialize-business-information`;
