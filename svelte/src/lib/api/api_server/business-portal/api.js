@@ -2,14 +2,13 @@ import {API_BASE_URL} from "$lib/api/api_server/API-URL.js";
 
 const API_URL = `${API_BASE_URL}/business-portal`;
 
-export async function createBusiness(business, accessString)
+export async function createBusiness(business)
 {
     const FETCH_URL = `${API_URL}/create`;
 
     // Convert guestList to the appropriate format
     const createBusiness = {
-        business: business,
-        accessString: accessString
+        business: business
     };
 
     const response = await fetch(`${FETCH_URL}`, {

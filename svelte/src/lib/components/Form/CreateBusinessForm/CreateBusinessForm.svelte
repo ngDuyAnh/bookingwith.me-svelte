@@ -65,7 +65,7 @@
     async function handleSubmit() {
         try
         {
-            const businessResult = await createBusiness(business, accessString);
+            const businessResult = await createBusiness(business);
 
             // Redirect to the information page with the new created business
             let businessId = businessResult.business.businessId;
