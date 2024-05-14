@@ -12,11 +12,9 @@ const config = {
       }
     }),
 
-    /*
     csrf: {
       checkOrigin: false,
     }
-    */
   },
 
   preprocess: [vitePreprocess({})],

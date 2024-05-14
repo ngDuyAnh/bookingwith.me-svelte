@@ -1,8 +1,7 @@
 import dayjs from "dayjs";
 import {formatToTime, formatToTimeAm} from "$lib/application/Formatter.js";
 import {sendText} from "$lib/api/api_twilio/twilio_endpoints/twilio_endpoints.js";
-
-const WEB_PAGE_URL = "https://app.bookingwith.me";
+import {WEB_PAGE_URL} from "$lib/WEB_PAGE_URL.js";
 
 export async function sendTextBookingSuccess(businessName, customerBooking)
 {
