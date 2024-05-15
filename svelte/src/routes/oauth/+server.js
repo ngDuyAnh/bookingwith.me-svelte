@@ -4,7 +4,7 @@ import {SECRET_CLIENT_ID, SECRET_CLIENT_SECRET} from "$env/static/private";
 
 
 export const GET = async ({url, cookies})=>{
-    const redirectURL = 'https://anh.bookingwith.me/oauth';
+    const redirectURL = 'https://roba.bookingwith.me/oauth';
     const code = await url.searchParams.get('code');
     console.log("returned code", code);
 

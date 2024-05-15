@@ -1,17 +1,15 @@
 <script>
-    import {initializeUserFromSession, user} from "$lib/page/protected/stores/user.js";
+    import {user} from "$lib/page/protected/stores/user.js";
     import BusinessPortalAdmin from "$lib/page/protected/business-portal/page_admin/BusinessPortalAdmin.svelte";
-    import Login from "$lib/page/protected/Login/Login.svelte";
     import {Spinner} from "flowbite-svelte";
     import {onMount} from "svelte";
     import BusinessPortalLobby from "$lib/page/protected/business-portal/page_lobby/BusinessPortalLobby.svelte";
+    export let data;
 
     let loading = true;
 
-    onMount(() => {
-        initializeUserFromSession();
-
-        // Done loading data
+    onMount(async () => {
+        user.set(data);
         loading = false;
     });
 </script>
@@ -21,11 +19,15 @@
         <div class="flex justify-center items-center h-screen">
             <Spinner />
         </div>
-    {:else if !$user?.businessId || !$user?.access}
-        <Login/>
-    {:else if $user.access === 'business-portal/admin'}
+    {:else if $user.role === 'BUSINESS_ADMIN'}
         <BusinessPortalAdmin/>
-    {:else if $user.access === 'business-portal/lobby'}
+    {:else if $user.role === 'LOBBY'}
+        <BusinessPortalLobby/>
+    {:else if $user.role === 'ADMIN'}
+        <BusinessPortalLobby/>
+    {:else if $user.role === 'EMPLOYEE'}
+        <BusinessPortalLobby/>
+    {:else if $user.role === 'REGISTER'}
         <BusinessPortalLobby/>
     {:else}
         <p>Unexpected user state, please contact support.</p>

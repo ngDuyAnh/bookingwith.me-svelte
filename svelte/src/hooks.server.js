@@ -15,12 +15,14 @@ export async function handle({ event, resolve })
             console.log("email", authCookies.email);
 
             // Get the user
-            const response = await login(authCookies.email)
-
+            const response = await login(authCookies.email);
             console.log("login", response);
+
+            event.cookies.set('userInfo', response, { path: '/', httpOnly: true, secure: true });
         }
         catch (err)
         {
+            console.log("error", err);
             throw redirect(303,'/signup');
         }
 
