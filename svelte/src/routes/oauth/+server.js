@@ -30,11 +30,17 @@ export const GET = async ({url, cookies})=>{
 
         // Cookies for the authentication
         cookies.set("auth", JSON.stringify(userInfo), {
-            path: "/protected",
+            path: "/",
             httpOnly: true,
             sameSite: "strict",
             maxAge: 60 * 60 * 24 * 30
         })
+
+        // await new Promise(resolve => setTimeout(resolve, 100)); // Simulate async operation
+
+
+        // const authCookie = cookies.get('auth');
+        // console.log("cookie get is ", authCookie);
     }
     catch(err)
     {

@@ -1,7 +1,7 @@
 <script>
     import {onMount, setContext} from "svelte";
     import {getSchedule, initializeCustomerBooking} from "$lib/api/api_server/lobby-portal/api.js";
-    import {businessInfo} from "$lib/page/protected/business-portal/page_admin/stores/business_portal_admin_store.js";
+    import {businessInfo} from "$lib/page/protected/business-portal/page_business_admin/stores/business_portal_admin_store.js";
     import {now} from "$lib/page/stores/now/now_dayjs_store.js";
     import {formatToDate, formatToTime, formatToTimeAM} from "$lib/application/Formatter.js";
     import Calendar from '@event-calendar/core';

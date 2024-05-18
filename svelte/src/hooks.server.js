@@ -6,19 +6,24 @@ export async function handle({ event, resolve })
     // Protected route
     if (event.url.pathname.startsWith('/protected'))
     {
+        console.log("here");
         // Check for user authentication
         try
         {
+            console.log("event cookie get",event.cookies.getAll());
+
             const authCookies = JSON.parse(event.cookies.get('auth'));
 
             console.log("authCookies", authCookies);
-            console.log("email", authCookies.email);
+            // console.log("email", authCookies.email);
 
             // Get the user
-            const response = await login(authCookies.email);
-            console.log("login", response);
+            // const response = await login(authCookies.email);
+            // console.log("login", response);
 
-            event.cookies.set('userInfo', response, { path: '/', httpOnly: true, secure: true });
+            const response = {role: "BUSINESS_ADMIN"};
+
+            event.cookies.set('userInfo', JSON.stringify(response), { path: '/', httpOnly: true, secure: true });
         }
         catch (err)
         {

@@ -2,7 +2,7 @@
     import {Accordion, AccordionItem, Modal} from 'flowbite-svelte';
     import ServiceOption
         from "$lib/page/protected/business-portal/page_lobby/page/CreateBooking/components/ModalCustomerIndividual/ServiceOption/ServiceOption.svelte";
-    import {businessInfo} from "$lib/page/protected/business-portal/page_admin/stores/business_portal_admin_store.js";
+    import {businessInfo} from "$lib/page/protected/business-portal/page_business_admin/stores/business_portal_admin_store.js";
 
     export let open = false;
     export let customerIndividualIndex;

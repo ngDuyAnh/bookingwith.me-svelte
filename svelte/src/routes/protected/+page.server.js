@@ -1,3 +1,3 @@
 export async function load({ cookies }) {
-    return cookies.get('userInfo');
+    return JSON.parse(cookies.get('userInfo'));
 }

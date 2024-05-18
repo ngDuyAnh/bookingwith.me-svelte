@@ -1,6 +1,6 @@
 <script>
     import {Modal, Toggle} from "flowbite-svelte";
-    import {businessInfo} from "$lib/page/protected/business-portal/page_admin/stores/business_portal_admin_store.js";
+    import {businessInfo} from "$lib/page/protected/business-portal/page_business_admin/stores/business_portal_admin_store.js";
     import CustomerBookingInformationForm
         from "$lib/components/Form/CustomerBookingInformationForm/CustomerBookingInformationForm.svelte";
 

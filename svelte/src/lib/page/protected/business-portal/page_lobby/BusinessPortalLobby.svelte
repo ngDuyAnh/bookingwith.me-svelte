@@ -2,7 +2,7 @@
     import {user} from "$lib/page/protected/stores/user.js";
     import {onMount} from "svelte";
     import {getBusinessInformation} from "$lib/api/api_server/business-portal/api.js";
-    import {businessInfo} from "$lib/page/protected/business-portal/page_admin/stores/business_portal_admin_store.js";
+    import {businessInfo} from "$lib/page/protected/business-portal/page_business_admin/stores/business_portal_admin_store.js";
     import {selectedTab} from "$lib/page/protected/business-portal/page_lobby/stores/selected_tab_store.js";
     import {Spinner} from "flowbite-svelte";
     import Header from "$lib/page/protected/business-portal/components/Header/Header.svelte";
