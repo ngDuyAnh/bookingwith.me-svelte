@@ -1,8 +1,7 @@
 <script>
-    import {user} from "$lib/page/protected/stores/user.js";
     import {onMount} from "svelte";
     import {getBusinessInformation} from "$lib/api/api_server/business-portal/api.js";
-    import {businessInfo} from "$lib/page/protected/business-portal/page_admin/stores/business_portal_admin_store.js";
+    import {businessInfo} from "$lib/page/protected/business-portal/page_business_admin/stores/business_portal_admin_store.js";
     import {selectedTab} from "$lib/page/protected/business-portal/page_lobby/stores/selected_tab_store.js";
     import {Spinner} from "flowbite-svelte";
     import Header from "$lib/page/protected/business-portal/components/Header/Header.svelte";
@@ -14,6 +13,7 @@
         employeeSelectOptions, employeeToSelectOption
     } from "$lib/page/stores/EmployeeSelectOptions/employeeSelectOptions_store.js";
     import {goto} from "$app/navigation";
+    import {userProfile} from "$lib/page/protected/stores/userProfile.js";
 
     let isLoading = true;
     let tabs = ['Dashboard', 'Timetable', 'Create', "List"];
@@ -22,7 +22,7 @@
     onMount(async () => {
         // Get business info
         try {
-            const response = await getBusinessInformation($user.businessId);
+            const response = await getBusinessInformation($userProfile.businessId);
 
             console.log("/protected/business-portal/admin response ", response);
 

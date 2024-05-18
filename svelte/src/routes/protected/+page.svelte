@@ -1,21 +1,27 @@
 <script>
-    import {initializeUserFromSession, user} from "$lib/page/protected/stores/user.js";
-    import BusinessPortalAdmin from "$lib/page/protected/business-portal/page_admin/BusinessPortalAdmin.svelte";
-    import Login from "$lib/page/protected/Login/Login.svelte";
+    import {userProfile} from "$lib/page/protected/stores/userProfile.js";
     import {Spinner} from "flowbite-svelte";
     import {onMount} from "svelte";
+    import Login from "$lib/page/protected/page_login/Login.svelte";
+    import BusinessPortalAdmin from "$lib/page/protected/business-portal/page_admin/BusinessPortalAdmin.svelte";
     import BusinessPortalLobby from "$lib/page/protected/business-portal/page_lobby/BusinessPortalLobby.svelte";
-    import {page} from "$app/stores";
+    import BusinessPortalBusinessAdmin
+        from "$lib/page/protected/business-portal/page_business_admin/BusinessPortalBusinessAdmin.svelte";
+    import BusinessPortalEmployee
+        from "$lib/page/protected/business-portal/page_employee/BusinessPortalEmployee.svelte";
+    import BusinessPortalRegister
+        from "$lib/page/protected/business-portal/page_register/BusinessPortalRegister.svelte";
+
+    export let data;
+
+    $: userProfile.set(data.props);
 
     let loading = true;
 
-    let businessId = $page.url.searchParams.get('businessId') || '';
-
-    onMount(() => {
-        initializeUserFromSession();
-
-        // Done loading data
+    onMount(async () => {
         loading = false;
+
+        console.log("userProfile", $userProfile);
     });
 </script>
 
@@ -24,12 +30,18 @@
         <div class="flex justify-center items-center h-screen">
             <Spinner />
         </div>
-    {:else if !$user?.businessId || !$user?.access}
-        <Login {businessId}/>
-    {:else if $user.access === 'business-portal/admin'}
+    {:else if !$userProfile.auth || !$userProfile.user}
+        <Login/>
+    {:else if $userProfile.user.role === 'ADMIN'}
         <BusinessPortalAdmin/>
-    {:else if $user.access === 'business-portal/lobby'}
+    {:else if $userProfile.user.role === 'BUSINESS_ADMIN'}
+        <BusinessPortalBusinessAdmin/>
+    {:else if $userProfile.user.role === 'LOBBY'}
         <BusinessPortalLobby/>
+    {:else if $userProfile.user.role === 'EMPLOYEE'}
+        <BusinessPortalEmployee/>
+    {:else if $userProfile.user.role === 'REGISTER'}
+        <BusinessPortalRegister/>
     {:else}
         <p>Unexpected user state, please contact support.</p>
     {/if}

@@ -6,7 +6,7 @@
         initializeBusinessInformation,
         initializeEmployeeWorkSchedule
     } from "$lib/api/api_server/business-portal/api.js";
-    import {businessInfo} from "$lib/page/protected/business-portal/page_admin/stores/business_portal_admin_store.js";
+    import {businessInfo} from "$lib/page/protected/business-portal/page_business_admin/stores/business_portal_admin_store.js";
 
     let newEmployeeName = "";
     let formModalAddEmployee = false;
