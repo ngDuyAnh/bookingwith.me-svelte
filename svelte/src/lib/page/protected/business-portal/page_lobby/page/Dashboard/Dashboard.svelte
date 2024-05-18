@@ -1,7 +1,6 @@
 <script>
     import {onMount, setContext} from "svelte";
     import {getLobbyBookingList, initializeCustomerBooking} from "$lib/api/api_server/lobby-portal/api.js";
-    import {user} from "$lib/page/protected/stores/user.js";
     import {formatToDate} from "$lib/application/Formatter.js";
     import {now} from "$lib/page/stores/now/now_dayjs_store.js";
     import {bookingStateList}
@@ -15,6 +14,7 @@
     import Completed
         from "$lib/page/protected/business-portal/page_lobby/page/Dashboard/components/Completed/Completed.svelte";
     import {CustomerBooking} from "$lib/api/api_server/customer-booking-portal/initialize_functions.js";
+    import {userProfile} from "$lib/page/protected/stores/userProfile.js";
 
     onMount(async () => {
         await updateCustomerBookingList();
@@ -28,7 +28,7 @@
     async function fetchCustomerBookingList()
     {
         // Get the customer booking list
-        const response = await getLobbyBookingList($user.businessId, $now.format(formatToDate));
+        const response = await getLobbyBookingList($userProfile.user.business.businessID, $now.format(formatToDate));
         bookingStateList.set(response.bookingList);
     }
 
@@ -36,7 +36,7 @@
     {
         try
         {
-            const customerBooking = await getRecentCustomerBooking($user.businessId, $now.format(formatToDate));
+            const customerBooking = await getRecentCustomerBooking($userProfile.user.business.businessID, $now.format(formatToDate));
 
             //console.log("updateCustomerBookingList()", customerBooking)
 

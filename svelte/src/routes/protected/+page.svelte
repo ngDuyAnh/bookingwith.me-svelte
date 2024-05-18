@@ -1,7 +1,8 @@
 <script>
-    import {user} from "$lib/page/protected/stores/user.js";
+    import {userProfile} from "$lib/page/protected/stores/userProfile.js";
     import {Spinner} from "flowbite-svelte";
     import {onMount} from "svelte";
+    import Login from "$lib/page/protected/page_login/Login.svelte";
     import BusinessPortalAdmin from "$lib/page/protected/business-portal/page_admin/BusinessPortalAdmin.svelte";
     import BusinessPortalLobby from "$lib/page/protected/business-portal/page_lobby/BusinessPortalLobby.svelte";
     import BusinessPortalBusinessAdmin
@@ -10,14 +11,17 @@
         from "$lib/page/protected/business-portal/page_employee/BusinessPortalEmployee.svelte";
     import BusinessPortalRegister
         from "$lib/page/protected/business-portal/page_register/BusinessPortalRegister.svelte";
+
     export let data;
+
+    $: userProfile.set(data.props);
 
     let loading = true;
 
     onMount(async () => {
-        user.set(data);
         loading = false;
-        alert(`role is ${$user.role}`);
+
+        console.log("userProfile", $userProfile);
     });
 </script>
 
@@ -26,15 +30,17 @@
         <div class="flex justify-center items-center h-screen">
             <Spinner />
         </div>
-    {:else if $user.role === 'BUSINESS_ADMIN'}
-        <BusinessPortalBusinessAdmin/>
-    {:else if $user.role === 'LOBBY'}
-        <BusinessPortalLobby/>
-    {:else if $user.role === 'ADMIN'}
+    {:else if !$userProfile.auth || !$userProfile.user}
+        <Login/>
+    {:else if $userProfile.user.role === 'ADMIN'}
         <BusinessPortalAdmin/>
-    {:else if $user.role === 'EMPLOYEE'}
+    {:else if $userProfile.user.role === 'BUSINESS_ADMIN'}
+        <BusinessPortalBusinessAdmin/>
+    {:else if $userProfile.user.role === 'LOBBY'}
+        <BusinessPortalLobby/>
+    {:else if $userProfile.user.role === 'EMPLOYEE'}
         <BusinessPortalEmployee/>
-    {:else if $user.role === 'REGISTER'}
+    {:else if $userProfile.user.role === 'REGISTER'}
         <BusinessPortalRegister/>
     {:else}
         <p>Unexpected user state, please contact support.</p>

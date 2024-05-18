@@ -6,22 +6,19 @@
     import Employee from "$lib/page/protected/business-portal/page_business_admin/page/Employee/Employee.svelte";
     import Service from "$lib/page/protected/business-portal/page_business_admin/page/Service/Service.svelte";
     import {onMount} from "svelte";
-    import {user} from "$lib/page/protected/stores/user.js";
     import {getBusinessInformation} from "$lib/api/api_server/business-portal/api.js";
     import {businessInfo} from "$lib/page/protected/business-portal/page_business_admin/stores/business_portal_admin_store.js";
     import { Spinner } from 'flowbite-svelte';
     import {goto} from "$app/navigation";
+    import {userProfile} from "$lib/page/protected/stores/userProfile.js";
 
     let isLoading = true;
     let tabs = ['Dashboard', 'Report', 'Employee', 'Service'];
     selectedTab.set(tabs[2]);
 
-    let userProfile;
-    $: userProfile = $user;
-
     onMount(async () => {
         try {
-            const response = await getBusinessInformation(userProfile.businessId);
+            const response = await getBusinessInformation($userProfile.user.business.businessID);
 
             console.log("/protected/business-portal/admin response ", response);
 

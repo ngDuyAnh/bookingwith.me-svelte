@@ -3,8 +3,8 @@ import {OAuth2Client} from "google-auth-library"
 import {SECRET_CLIENT_ID, SECRET_CLIENT_SECRET} from "$env/static/private";
 
 export const actions={
-    OAuth2: async()=>{
-        const redirectURL = 'https://roba.bookingwith.me/oauth';
+    OAuth2: async()=> {
+        const redirectURL = 'https://anh.bookingwith.me/oauth';
 
         const oAuth2Client = new OAuth2Client(SECRET_CLIENT_ID, SECRET_CLIENT_SECRET, redirectURL);
 

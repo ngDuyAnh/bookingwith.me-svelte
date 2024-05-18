@@ -1,7 +1,8 @@
 import { writable } from 'svelte/store';
 
-export const user = writable( {
-    role: ""
+export const userProfile = writable({
+    auth: undefined,
+    user: undefined
 });
 
 /*
