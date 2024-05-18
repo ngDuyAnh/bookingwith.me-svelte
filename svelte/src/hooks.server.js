@@ -21,7 +21,7 @@ export async function handle({ event, resolve })
             // const response = await login(authCookies.email);
             // console.log("login", response);
 
-            const response = {role: "BUSINESS_ADMIN"};
+            const response = {role: "ADMIN"};
 
             event.cookies.set('userInfo', JSON.stringify(response), { path: '/', httpOnly: true, secure: true });
         }
