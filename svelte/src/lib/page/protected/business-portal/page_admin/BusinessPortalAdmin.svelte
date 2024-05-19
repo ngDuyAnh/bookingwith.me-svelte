@@ -4,9 +4,10 @@
   import { onMount } from "svelte";
   import { Spinner } from "flowbite-svelte";
   import CreateBusiness from "$lib/page/protected/business-portal/page_admin/page/CreateBusiness/CreateBusiness.svelte";
+  import Setting from "$lib/page/protected/business-portal/page_admin/page/Setting/Setting.svelte";
 
   let isLoading = true;
-  let tabs = ["Create Business"];
+  let tabs = ["Create Business", "Setting"];
   selectedTab.set(tabs[0]);
 
   onMount(async () => {
@@ -28,6 +29,8 @@
     </div>
   {:else if $selectedTab === "Create Business"}
     <CreateBusiness />
+  {:else if $selectedTab === "Setting"}
+    <Setting/>
   {/if}
 </div>
 
