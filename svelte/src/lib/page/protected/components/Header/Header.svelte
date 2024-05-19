@@ -5,10 +5,10 @@
     import {CloseButton, Drawer, Sidebar, SidebarGroup, SidebarItem, SidebarWrapper} from "flowbite-svelte";
 
     export let tabs;
-    export let selectedTab;
+    export let selectedIndex;
 
-    function selectTab(tab) {
-        selectedTab.set(tab);
+    function selectTab(index) {
+        selectedIndex = index;
     }
 
     let navigateButtonHidden = true;
@@ -27,13 +27,13 @@
     <div class="hidden lg:block">
         <nav>
             <svg viewBox="0 0 2 3" aria-hidden="true">
-                <path d="M0,0 L1,2 C1.5,3 1.5,3 2,3 L2,0 Z" />
+                <path d="M0,0 L1,2 C1.5,3 1.5,3 2,3 L2,0 Z"/>
             </svg>
 
             <ul>
-                {#each tabs as tab}
-                    <li aria-current={tab === $selectedTab ? 'page' : 'not-current-page'}>
-                        <button class="tab-button" on:click={() => selectTab(tab)}>
+                {#each tabs as tab, index}
+                    <li aria-current={index === selectedIndex ? 'page' : 'not-current-page'}>
+                        <button class="tab-button" on:click={() => selectTab(index)}>
                             {tab}
                         </button>
                     </li>
@@ -41,7 +41,7 @@
             </ul>
 
             <svg viewBox="0 0 2 3" aria-hidden="true">
-                <path d="M0,0 L0,3 C0.5,3 0.5,3 1,2 L2,0 Z" />
+                <path d="M0,0 L0,3 C0.5,3 0.5,3 1,2 L2,0 Z"/>
             </svg>
         </nav>
     </div>
@@ -58,20 +58,22 @@
 
         <button class="lg:hidden flex items-center justify-center w-10 h-10 rounded focus:outline-none focus:ring-2 focus:ring-opacity-50"
                 on:click={() => navigateButtonHidden = false} aria-label="Show navigation">
-            <svg class="w-6 h-6 text-gray-800 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
+            <svg class="w-6 h-6 text-gray-800 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg"
+                 width="24" height="24" fill="none" viewBox="0 0 24 24">
                 <path stroke="currentColor" stroke-linecap="round" stroke-width="2" d="M5 7h14M5 12h14M5 17h14"/>
             </svg>
         </button>
     </div>
 </header>
 
-<Drawer transitionType="fly" {transitionParams} bind:hidden={navigateButtonHidden} id="sidebar2" divClass="z-[1006] overflow-y-auto p-4 bg-white dark:bg-gray-800">
-    <div class="flex items-center z-[1006]">
-        <h5 id="drawer-navigation-label-3" class="text-base font-semibold text-gray-500 uppercase dark:text-gray-400">Menu</h5>
-        <CloseButton on:click={() => (navigateButtonHidden = true)} class="mb-4 dark:text-white" />
+<Drawer transitionType="fly" {transitionParams} bind:hidden={navigateButtonHidden} id="sidebar2">
+    <div class="flex items-center">
+        <h5 id="drawer-navigation-label-3" class="text-base font-semibold text-gray-500 uppercase dark:text-gray-400">
+            Menu</h5>
+        <CloseButton on:click={() => (navigateButtonHidden = true)} class="mb-4 dark:text-white"/>
     </div>
     <Sidebar>
-        <SidebarWrapper divClass=" z-[1006] overflow-y-auto py-4 px-3 rounded dark:bg-gray-800">
+        <SidebarWrapper divClass="overflow-y-auto py-4 px-3 rounded dark:bg-gray-800">
             <SidebarGroup>
                 {#each tabs as tab}
                     <SidebarItem label={tab} on:click={() => {

@@ -1,25 +1,27 @@
 <script>
-    import {selectedTab} from "$lib/page/protected/business-portal/page_lobby/stores/selected_tab_store.js";
-    import Header from "$lib/page/protected/business-portal/components/Header/Header.svelte";
+    import Header from "$lib/page/protected/components/Header/Header.svelte";
     import Dashboard from "$lib/page/protected/business-portal/page_lobby/page/Dashboard/Dashboard.svelte";
     import Timetable from "$lib/page/protected/business-portal/page_lobby/page/Timetable/Timetable.svelte";
     import CreateBooking from "$lib/page/protected/business-portal/page_lobby/page/CreateBooking/CreateBooking.svelte";
     import BookingList from "$lib/page/protected/business-portal/page_lobby/page/BookingList/BookingList.svelte";
 
     let tabs = ['Dashboard', 'Timetable', 'Create', "List"];
-    selectedTab.set(tabs[0]);
+    let selectedIndex = 0;
 </script>
 
 <div class="flex flex-col h-screen overflow-hidden z-[1006]">
-    <Header {tabs} {selectedTab}/>
+    <Header
+            {tabs}
+            bind:selectedIndex={selectedIndex}
+    />
 
-    {#if $selectedTab === tabs[0]}
+    {#if selectedIndex === 0}
         <Dashboard />
-    {:else if $selectedTab === tabs[1]}
+    {:else if selectedIndex === 1}
         <Timetable />
-    {:else if $selectedTab === tabs[2]}
+    {:else if selectedIndex === 2}
         <CreateBooking />
-    {:else if $selectedTab === tabs[3]}
+    {:else if selectedIndex === 3}
         <BookingList />
     {/if}
 </div>

@@ -1,6 +1,5 @@
 <script>
-  import { selectedTab } from "$lib/page/protected/business-portal/page_business_admin/stores/selected_tab_store.js";
-  import Header from "$lib/page/protected/business-portal/components/Header/Header.svelte";
+  import Header from "$lib/page/protected/components/Header/Header.svelte";
   import Dashboard from "$lib/page/protected/business-portal/page_business_admin/page/Dashboard/Dashboard.svelte";
   import Report from "$lib/page/protected/business-portal/page_business_admin/page/Report/Report.svelte";
   import Employee from "$lib/page/protected/business-portal/page_business_admin/page/Employee/Employee.svelte";
@@ -8,22 +7,24 @@
   import Setting from "$lib/page/protected/business-portal/page_business_admin/page/Setting/Setting.svelte";
 
   let tabs = ["Dashboard", "Report", "Employee", "Service", "Setting"];
-  selectedTab.set(tabs[2]);
-
+  let selectedIndex = 0;
 </script>
 
-<Header {tabs} {selectedTab} />
+<Header
+        {tabs}
+        bind:selectedIndex={selectedIndex}
+/>
 
 <div class="m-1">
-  {#if $selectedTab === "Dashboard"}
+  {#if selectedIndex === 0}
     <Dashboard />
-  {:else if $selectedTab === "Report"}
+  {:else if selectedIndex === 1}
     <Report />
-  {:else if $selectedTab === "Employee"}
+  {:else if selectedIndex === 2}
     <Employee />
-  {:else if $selectedTab === "Service"}
+  {:else if selectedIndex === 3}
     <Service />
-  {:else if $selectedTab === "Setting"}
+  {:else if selectedIndex === 4}
     <Setting />
   {/if}
 </div>
