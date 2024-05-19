@@ -1,11 +1,10 @@
 import {redirect} from "@sveltejs/kit";
 import {OAuth2Client} from "google-auth-library"
-import {SECRET_CLIENT_ID, SECRET_CLIENT_SECRET} from "$env/static/private";
+import {SECRET_CLIENT_ID, SECRET_CLIENT_SECRET, ORIGIN} from "$env/static/private";
 import {login} from "$lib/api/api_server/user-portal/api.js";
 
-
 export const GET = async ({url, cookies})=>{
-    const redirectURL = 'https://anh.bookingwith.me/oauth';
+    const redirectURL = `${ORIGIN}/oauth`;
     const code = await url.searchParams.get('code');
 
     try

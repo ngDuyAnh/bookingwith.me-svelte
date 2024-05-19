@@ -1,5 +1,5 @@
 import {OAuth2Client} from "google-auth-library";
-import {SECRET_CLIENT_ID, SECRET_CLIENT_SECRET} from "$env/static/private";
+import {ORIGIN, SECRET_CLIENT_ID, SECRET_CLIENT_SECRET} from "$env/static/private";
 import {redirect} from "@sveltejs/kit";
 
 export async function load({ cookies }) {
@@ -23,7 +23,7 @@ export async function load({ cookies }) {
 
 export const actions={
     OAuth2: async()=> {
-        const redirectURL = 'https://anh.bookingwith.me/oauth';
+        const redirectURL = `${ORIGIN}/oauth`;
 
         const oAuth2Client = new OAuth2Client(SECRET_CLIENT_ID, SECRET_CLIENT_SECRET, redirectURL);
 

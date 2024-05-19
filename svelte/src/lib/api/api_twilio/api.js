@@ -1,7 +1,9 @@
 import dayjs from "dayjs";
 import {formatToTime, formatToTimeAm} from "$lib/application/Formatter.js";
 import {sendText} from "$lib/api/api_twilio/twilio_endpoints/twilio_endpoints.js";
-import {WEB_PAGE_URL} from "$lib/WEB_PAGE_URL.js";
+import {ORIGIN} from "$env/static/private";
+
+const WEB_PAGE_URL = ORIGIN
 
 export async function sendTextBookingSuccess(businessName, customerBooking)
 {
