@@ -124,7 +124,7 @@
 
         // Request the server to update asynchronously
         const response = await initializeBusiness($userProfile.user.business);
-        businessInfo.update(userProfile=> userProfile.user.business = response);
+        userProfile.update(userProfile=> userProfile.user.business = response);
 
         // Close the modal and reset editing state
         editingEmployee = {};
