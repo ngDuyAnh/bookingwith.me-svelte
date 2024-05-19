@@ -5,18 +5,25 @@
   import Login from "$lib/page/protected/page_login/Login.svelte";
   import AdminPortal from "$lib/page/protected/business-portal/page_admin/AdminPortal.svelte";
   import BusinessPortalAdmin from "$lib/page/protected/business-portal/page_business_admin/BusinessPortalAdmin.svelte";
+  import {getBusiness} from "$lib/api/api_server/business-portal/api.js";
+  import {business} from "$lib/page/protected/stores/business.js";
 
   export let data;
   let loading = true;
 
   // User profile
-  $: userProfile.set(data.props);
+  userProfile.set(data.props);
 
   onMount(async () => {
-    loading = false;
+    // Get the business
+    const response = await getBusiness($userProfile.user.businessInfo.businessID);
+    business.set(response);
 
-    console.log("userProfile", $userProfile);
+    loading = false;
   });
+
+  $: console.log("userProfile", $userProfile);
+  $: console.log("business", $business);
 </script>
 
 <div class="min-h-screen w-full">

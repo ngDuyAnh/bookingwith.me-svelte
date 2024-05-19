@@ -2,10 +2,7 @@
 <script>
     import { Accordion, AccordionItem, Button, Modal, Label, Input, MultiSelect } from 'flowbite-svelte';
     import {initializeBusiness} from "$lib/api/api_server/business-portal/api.js";
-    import {userProfile} from "$lib/page/protected/stores/userProfile.js";
-
-    let info = $userProfile.user.business;
-    $: info = $userProfile.user.business;
+    import {business} from "$lib/page/protected/stores/business.js";
 
     let editingServiceGroup = {};
     let editingCloneServiceGroup = {};
@@ -27,9 +24,9 @@
         }
     }
     let employeeSelectOptions = []
-    $: if (info && info.employeeList)
+    $: if ($business && $business.employeeList)
     {
-        employeeSelectOptions = info.employeeList.map(employee => employeeToSelectOption(employee));
+        employeeSelectOptions = $business.employeeList.map(employee => employeeToSelectOption(employee));
     }
 
     let newServiceGroupName = '';
@@ -73,8 +70,8 @@
         Object.assign(editingServiceGroup, editingCloneServiceGroup);
 
         // Request the server to update
-        const response = await initializeBusiness(info);
-        userProfile.update(userProfile=> userProfile.user.business = response);
+        const response = await initializeBusiness($business);
+        business.set(response);
 
         // Reset the form fields and close the modal
         editingServiceGroup = {};
@@ -93,9 +90,9 @@
         // Archive
         editingServiceGroup.archive = true;
 
-        // Request the server to update asynchronously
-        const response = await initializeBusiness(info);
-        userProfile.update(userProfile=> userProfile.user.business = response);
+        // Request the server to update
+        const response = await initializeBusiness($business);
+        business.set(response);
 
         // Close the modal and reset editing state
         editingServiceGroup = {};
@@ -116,8 +113,8 @@
         Object.assign(editingService, editingCloneService);
 
         // Request the server to update
-        const response = await initializeBusiness(info);
-        userProfile.update(userProfile=> userProfile.user.business = response);
+        const response = await initializeBusiness($business);
+        business.set(response);
 
         // Reset the form fields and close the modal
         editingServiceGroup = {};
@@ -139,11 +136,11 @@
         };
 
         // Add the new service group
-        info.serviceGroupList.push(newServiceGroup);
+        $business.serviceGroupList.push(newServiceGroup);
 
         // Request the server to update
-        const response = await initializeBusiness(info);
-        userProfile.update(userProfile=> userProfile.user.business = response);
+        const response = await initializeBusiness($business);
+        business.set(response);
 
         // Reset the form fields and close the modal
         newServiceGroupName = '';
@@ -162,9 +159,9 @@
         // Archive
         editingService.archive = true;
 
-        // Request the server to update asynchronously
-        const response = await initializeBusiness(info);
-        userProfile.update(userProfile=> userProfile.user.business = response);
+        // Request the server to update
+        const response = await initializeBusiness($business);
+        business.set(response);
 
         // Close the modal and reset editing state
         editingServiceGroup = {};
@@ -190,9 +187,9 @@
         // Add the new service to the group
         addServiceToServiceGroup.serviceList.push(newService);
 
-        // Request the server to update asynchronously
-        const response = await initializeBusiness(info);
-        userProfile.update(userProfile=> userProfile.user.business = response);
+        // Request the server to update
+        const response = await initializeBusiness($business);
+        business.set(response);
 
         // Reset the form fields and close the modal
         newServiceName = '';
@@ -204,7 +201,7 @@
 </script>
 
 <Accordion class="bg-white">
-    {#each info.serviceGroupList as serviceGroup, index}
+    {#each $business.serviceGroupList as serviceGroup, index}
         <AccordionItem open={index === 0}>
             <div slot="header" class="flex items-center w-full">
                 <div class="flex flex-col sm:flex-row justify-between w-full items-center text-center sm:text-left">

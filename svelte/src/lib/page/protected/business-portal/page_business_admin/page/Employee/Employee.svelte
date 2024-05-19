@@ -5,7 +5,7 @@
         initializeBusiness,
         initializeEmployeeWorkSchedule
     } from "$lib/api/api_server/business-portal/api.js";
-    import {userProfile} from "$lib/page/protected/stores/userProfile.js";
+    import {business} from "$lib/page/protected/stores/business.js";
 
     let newEmployeeName = "";
     let formModalAddEmployee = false;
@@ -70,8 +70,8 @@
         Object.assign(editingEmployee, editingCloneEmployee);
 
         // Request the server to update
-        const response = await initializeBusiness($userProfile.user.business);
-        userProfile.update(userProfile=> userProfile.user.business = response);
+        const response = await initializeBusiness($business);
+        business.set(response);
 
         // Reset the form fields and close the modal
         editingEmployee = {};
@@ -123,8 +123,8 @@
         editingEmployee.archive = true;
 
         // Request the server to update asynchronously
-        const response = await initializeBusiness($userProfile.user.business);
-        userProfile.update(userProfile=> userProfile.user.business = response);
+        const response = await initializeBusiness($business);
+        business.set(response);
 
         // Close the modal and reset editing state
         editingEmployee = {};
@@ -143,11 +143,11 @@
         };
 
         // Add the new employee to the business
-        $userProfile.user.business.employeeList.push(newEmployee);
+        business.employeeList.push(newEmployee);
 
         // Request the server to update asynchronously
-        const response = await initializeBusiness($userProfile.user.business);
-        userProfile.update(userProfile=> userProfile.user.business = response);
+        const response = await initializeBusiness($business);
+        business.set(response);
 
         // Reset the form fields and close the modal
         newEmployeeName = "";
@@ -155,7 +155,7 @@
 </script>
 
 <ul class="employee-list">
-    {#each $userProfile.user.business.employeeList as employee (employee.id)}
+    {#each $business.employeeList as employee (employee.id)}
         <li class="list-item">
             <div class="flex items-center justify-between p-4 bg-white shadow hover:shadow-md transition-shadow duration-200 ease-in-out rounded-lg mb-2">
                 <span class="text-gray-800 font-medium">{employee.employeeName}</span>
