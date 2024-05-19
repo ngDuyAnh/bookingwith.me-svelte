@@ -1,3 +1,4 @@
+import {User} from "$lib/api/api_server/user-portal/User.js";
 
 export function Business()
 {
@@ -32,6 +33,7 @@ export function Employee() {
     return {
         "id": -1,
         "employeeName": "",
+        "user": User(),
         "archive": false,
     };
 }

@@ -7,6 +7,7 @@
   import BusinessPortalAdmin from "$lib/page/protected/business-portal/page_business_admin/BusinessPortalAdmin.svelte";
   import {getBusiness} from "$lib/api/api_server/business-portal/api.js";
   import {business} from "$lib/page/protected/stores/business.js";
+  import BusinessPortalLobby from "$lib/page/protected/business-portal/page_lobby/BusinessPortalLobby.svelte";
 
   export let data;
   let loading = true;
@@ -15,9 +16,13 @@
   userProfile.set(data.props);
 
   onMount(async () => {
+    if($userProfile.auth != null && $userProfile.user !=null)
     // Get the business
-    const response = await getBusiness($userProfile.user.businessInfo.businessID);
-    business.set(response);
+    {
+      const response = await getBusiness($userProfile.user.businessInfo.businessID);
+      console.log("Response is", response);
+      business.set(response);
+    }
 
     loading = false;
   });
@@ -38,6 +43,7 @@
   {:else if $userProfile.user.role === "BUSINESS_ADMIN"}
     <BusinessPortalAdmin/>
   {:else if $userProfile.user.role === "LOBBY"}
+    <BusinessPortalLobby/>
     <p>BusinessPortalLobby</p>
   {:else if $userProfile.user.role === "EMPLOYEE"}
     <p>BusinessPortalEmployee</p>

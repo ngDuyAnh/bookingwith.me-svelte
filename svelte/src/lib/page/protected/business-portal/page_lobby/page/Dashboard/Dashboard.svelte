@@ -16,6 +16,7 @@
     import {
         CustomerBooking
     } from "$lib/api/api_server/customer-booking-portal/utility-functions/initialize_functions/CustomerBooking.js";
+    import {userProfile} from "$lib/page/protected/stores/userProfile.js";
 
     let latestCustomerBooking = CustomerBooking($now);
     async function fetchCustomerBookingList()

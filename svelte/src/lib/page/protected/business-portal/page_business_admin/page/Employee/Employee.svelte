@@ -6,8 +6,11 @@
         initializeEmployeeWorkSchedule
     } from "$lib/api/api_server/business-portal/api.js";
     import {business} from "$lib/page/protected/stores/business.js";
+    import {Employee} from "$lib/api/api_server/customer-booking-portal/utility-functions/initialize_functions/Business.js";
+    import {User} from "$lib/api/api_server/user-portal/User.js";
 
     let newEmployeeName = "";
+    let newEmployeeEmail = "";
     let formModalAddEmployee = false;
 
     let editingEmployee = {};
@@ -19,8 +22,16 @@
     let editingEmployeeWorkSchedule = [];
 
     function openModalEditEmployee(employee) {
+        if(employee.user == null)
+        {
+            employee.user = User();
+        }
+        console.log("EMPLOYEE",employee);
+
         editingEmployee = employee;
         editingCloneEmployee = {...employee};
+
+
         formModalEditEmployee = true;
     }
 
@@ -136,14 +147,12 @@
         console.log(`Adding new employee: ${newEmployeeName}`);
 
         // Create new employee
-        const newEmployee = {
-            id: -1,
-            employeeName: newEmployeeName,
-            archive: false
-        };
+        const newEmployee = Employee();
+        newEmployee.employeeName = newEmployeeName;
+        newEmployee.user.email = newEmployeeEmail;
 
         // Add the new employee to the business
-        business.employeeList.push(newEmployee);
+        $business.employeeList.push(newEmployee);
 
         // Request the server to update asynchronously
         const response = await initializeBusiness($business);
@@ -151,6 +160,7 @@
 
         // Reset the form fields and close the modal
         newEmployeeName = "";
+        newEmployeeEmail = "";
     }
 </script>
 
@@ -206,6 +216,11 @@
             <span>Employee Name</span>
             <Input bind:value={editingCloneEmployee.employeeName} required />
         </Label>
+        <Label class="space-y-2">
+            <span>Employee Email:</span>
+            <Input bind:value={editingCloneEmployee.user.email} required />
+        </Label>
+
         <Button class="w-full" on:click={handleEditEmployee}>Update</Button>
         <Button class="w-full" on:click={handleDeleteEmployee}>Delete</Button>
     </form>
@@ -218,6 +233,10 @@
         <Label class="space-y-2">
             <span>Employee Name:</span>
             <Input bind:value={newEmployeeName} required />
+        </Label>
+        <Label class="space-y-2">
+            <span>Employee Email:</span>
+            <Input bind:value={newEmployeeEmail} required />
         </Label>
         <Button class="w-full" type="submit" on:click={handleAddEmployee}>Add</Button>
     </form>
