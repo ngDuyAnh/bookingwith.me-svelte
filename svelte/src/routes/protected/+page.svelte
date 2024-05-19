@@ -35,7 +35,6 @@
     <Login />
   {:else if $userProfile.user.role === "ADMIN"}
     <AdminPortal/>
-    <p>Admin</p>
   {:else if $userProfile.user.role === "BUSINESS_ADMIN"}
     <BusinessPortalAdmin/>
   {:else if $userProfile.user.role === "LOBBY"}
