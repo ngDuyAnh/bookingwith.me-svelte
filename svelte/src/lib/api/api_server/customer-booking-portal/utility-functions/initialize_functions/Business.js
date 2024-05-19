@@ -1,3 +1,4 @@
+
 export function Business()
 {
     return {
@@ -12,16 +13,16 @@ export function BusinessInformation()
     return {
         "id":-1,
         "businessID": null,
-        "businessName": "Booking With Me",
-        "businessPhoneNumber": "123456789",
-        "address": "123 street rd",
-        "city": "Winnipeg",
-        "province": "Manitoba",
-        "country": "Canada",
-        "postalCode": "R2M1A2",
-        "websiteUrl": "app.bookingwith.me",
-        "businessType": "Booking App",
-        "socialMediaLink": "app.bookingwith.me",
+        "businessName": "",
+        "businessPhoneNumber": "",
+        "address": "",
+        "city": "",
+        "province": "",
+        "country": "",
+        "postalCode": "",
+        "websiteUrl": "",
+        "businessType": "",
+        "socialMediaLink": "",
         "timestamp": "",
         "active": true,
     };

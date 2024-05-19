@@ -8,11 +8,11 @@
 
     let businessInfo = {
         "business": BusinessInformation(),
-        "businessEmail": "bookingwithme.gm@gmail.com",
-        "lobbyEmail": "lobbybookingwithme@gmail.com",
-        "contactEmail": "bookingwithme_contact@outlook.com",
-        "contactName": "Roba",
-        "contactPhoneNumber": "0987654321",
+        "businessEmail": "",
+        "lobbyEmail": "",
+        "contactEmail": "",
+        "contactName": "",
+        "contactPhoneNumber": "",
     };
 
     let formattedBusinessPhoneNumber = formatPhoneNumberInput(businessInfo.business.businessPhoneNumber);
@@ -50,11 +50,11 @@
             const businessResult = await createBusiness(businessInfo);
 
             // Redirect to the information page with the new created business
-            let businessId = businessResult.business.businessId;
+            let businessID = businessResult.business.businessID;
 
-            console.log(businessId);
+            console.log(businessID);
 
-            await goto(`/admin/business/get/${businessId}`);
+            await goto(`/admin/business/get/${businessID}`);
         } catch (error) {
             console.log(error)
             alert('Failed to create the business!');
