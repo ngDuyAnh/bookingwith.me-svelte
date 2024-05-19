@@ -72,7 +72,7 @@
     setContext('submitCustomerBooking', submitCustomerBooking);
 </script>
 
-<div class="flex flex-row space-x-4 overflow-x-auto p-4 flex-1">
+<div class="flex flex-row justify-between space-x-4 overflow-x-auto p-4 flex-1">
     <Appointment/>
     <Lobby/>
     <Servicing/>

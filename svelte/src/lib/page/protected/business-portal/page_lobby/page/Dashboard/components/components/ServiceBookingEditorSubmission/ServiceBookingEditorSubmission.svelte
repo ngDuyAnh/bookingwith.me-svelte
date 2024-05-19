@@ -1,13 +1,22 @@
 <script>
     import {
-        businessInfo,
-        pageIndex,
-        customerBooking,
-        customerIndividualList
-    } from "$lib/page/customer-booking-portal/create/stores/customer_booking_portal_create_store.js";
+        CustomerBookingState
+    } from "$lib/api/api_server/customer-booking-portal/utility-functions/initialize_functions.js";
     import {sendTextBookingSuccess} from "$lib/api/api_twilio/api.js";
+
+    import {businessInfo} from "$lib/page/protected/business-portal/page_admin/stores/business_portal_admin_store.js";
     import CustomerBookingInformation
         from "$lib/components/BookingComponents/CustomerBookingInformation/CustomerBookingInformation.svelte";
+    import {pageIndex,customerIndividualList,customerBooking} from "$lib/page/protected/business-portal/page_admin/stores/service_editor_store.js";
+
+
+    console.log("customerBooking",customerBooking)
+    console.log("customerIndividualList",customerIndividualList)
+    // console.log("CustomerBookingInformationForm")
+    console.log("CustomerBookingState",CustomerBookingState)
+    // console.log("customerBooking")
+    // console.log("customerBooking")
+
 
     function handlePrev()
     {
@@ -43,13 +52,16 @@
             alert("Booking time recently unavailable. Please pick a different time!");
         }
     }
+
 </script>
 
+
 <CustomerBookingInformation
-        businessId={$businessInfo.businessId}
-        businessName={$businessInfo.businessName}
+        businessId={$businessInfo.business.businessId}
+        businessName={$businessInfo.business.businessName}
         handlePrev={handlePrev}
         handleSubmit={submitCallback}
-        customerIndividualList={customerIndividualList}
         customerBooking={customerBooking}
+        customerIndividualList={customerIndividualList}
 />
+

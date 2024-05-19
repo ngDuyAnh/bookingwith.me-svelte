@@ -65,13 +65,13 @@
     </div>
 </header>
 
-<Drawer transitionType="fly" {transitionParams} bind:hidden={navigateButtonHidden} id="sidebar2">
-    <div class="flex items-center">
+<Drawer transitionType="fly" {transitionParams} bind:hidden={navigateButtonHidden} id="sidebar2" divClass="z-[1006] overflow-y-auto p-4 bg-white dark:bg-gray-800">
+    <div class="flex items-center z-[1006]">
         <h5 id="drawer-navigation-label-3" class="text-base font-semibold text-gray-500 uppercase dark:text-gray-400">Menu</h5>
         <CloseButton on:click={() => (navigateButtonHidden = true)} class="mb-4 dark:text-white" />
     </div>
     <Sidebar>
-        <SidebarWrapper divClass="overflow-y-auto py-4 px-3 rounded dark:bg-gray-800">
+        <SidebarWrapper divClass=" z-[1006] overflow-y-auto py-4 px-3 rounded dark:bg-gray-800">
             <SidebarGroup>
                 {#each tabs as tab}
                     <SidebarItem label={tab} on:click={() => {
