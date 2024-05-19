@@ -51,7 +51,7 @@
     });
 </script>
 
-<div class="flex flex-col h-screen overflow-hidden">
+<div class="flex flex-col h-screen overflow-hidden z-[1006]">
     <Header {tabs} {selectedTab}/>
 
     {#if isLoading}
