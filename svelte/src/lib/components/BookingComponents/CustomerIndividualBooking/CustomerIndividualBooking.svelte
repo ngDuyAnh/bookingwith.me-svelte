@@ -6,7 +6,7 @@ import ServiceOption
 export let handlePrev;
 export let handleNext;
 export let guestIndex;
-export let businessInfo;
+export let business;
 export let customerIndividual;
 
 </script>
@@ -39,7 +39,7 @@ export let customerIndividual;
     <!-- Customer individual service select -->
     <div class="mt-3">
         <Accordion key={customerIndividual}>
-            {#each $businessInfo.serviceGroupList as serviceGroup, index}
+            {#each $business.serviceGroupList as serviceGroup, index}
                 <AccordionItem open={index === 0} class="bg-gray-100">
                     <div slot="header" class="flex items-center w-full">
                         <div class="flex flex-col sm:flex-row justify-between w-full items-center text-center sm:text-left">

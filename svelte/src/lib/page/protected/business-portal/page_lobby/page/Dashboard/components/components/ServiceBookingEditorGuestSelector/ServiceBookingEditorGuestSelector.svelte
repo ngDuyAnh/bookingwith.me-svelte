@@ -1,7 +1,8 @@
 <script>
     import {Spinner} from "flowbite-svelte";
     import GuestSelect from "$lib/components/BookingComponents/GuestSelect/GuestSelect.svelte";
-    import {businessInfo} from "$lib/page/protected/business-portal/page_admin/stores/business_portal_admin_store.js";
+    import {business} from "$lib/page/protected/stores/business.js";
+    console.log($business);
     import {
         customerIndividualList,
         pageIndex
@@ -10,9 +11,9 @@
 
     let selectedNumGuests;
 
-    // Wait for the businessInfo fetching to be done
+    // Wait for the business.businessInfo fetching to be done
     let loading = true;
-    $: if ($businessInfo) {
+    $: if ($business.businessInfo) {
         loading = false;
     }
 
@@ -50,7 +51,7 @@
         <Spinner/>
     {:else}
         <GuestSelect
-                businessInfo={$businessInfo.business}
+                businessInfo={$business.businessInfo}
                 handleSubmit={handleSubmit}
                 bind:selectedNumGuests={selectedNumGuests}
         />
