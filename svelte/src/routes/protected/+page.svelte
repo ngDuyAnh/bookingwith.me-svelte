@@ -16,11 +16,10 @@
   userProfile.set(data.props);
 
   onMount(async () => {
-    if($userProfile.auth != null && $userProfile.user !=null)
     // Get the business
+    if($userProfile.auth != null && $userProfile.user !=null)
     {
       const response = await getBusiness($userProfile.user.businessInfo.businessID);
-      console.log("Response is", response);
       business.set(response);
     }
 
@@ -44,7 +43,6 @@
     <BusinessPortalAdmin/>
   {:else if $userProfile.user.role === "LOBBY"}
     <BusinessPortalLobby/>
-    <p>BusinessPortalLobby</p>
   {:else if $userProfile.user.role === "EMPLOYEE"}
     <p>BusinessPortalEmployee</p>
   {:else if $userProfile.user.role === "REGISTER"}

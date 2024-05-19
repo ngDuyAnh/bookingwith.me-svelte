@@ -1,7 +1,7 @@
 <script>
     import CustomerBookingList
         from "$lib/page/protected/business-portal/page_lobby/page/Dashboard/components/components/CustomerBookingList/CustomerBookingList.svelte";
-    import {bookingStateList} from "$lib/page/protected/business-portal/page_lobby/stores/bookingStateList_store.js";
+    import {bookingStateList} from "$lib/page/protected/business-portal/page_lobby/stores/dashboard_store.js";
     import dayjs from "dayjs";
     import {formatToTime, formatToTimeAM} from "$lib/application/Formatter.js";
     import {Modal} from "flowbite-svelte";

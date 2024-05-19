@@ -3,8 +3,7 @@
     import {getLobbyBookingList, initializeCustomerBooking} from "$lib/api/api_server/lobby-portal/api.js";
     import {formatToDate} from "$lib/application/Formatter.js";
     import {now} from "$lib/page/stores/now/now_dayjs_store.js";
-    import {bookingStateList}
-        from "$lib/page/protected/business-portal/page_lobby/stores/bookingStateList_store.js";
+    import {bookingStateList} from "$lib/page/protected/business-portal/page_lobby/stores/dashboard_store.js";
     import {getRecentCustomerBooking} from "$lib/api/api_server/lobby-portal/api.js";
     import Appointment
         from "$lib/page/protected/business-portal/page_lobby/page/Dashboard/components/Appointment/Appointment.svelte";
@@ -16,13 +15,16 @@
     import {
         CustomerBooking
     } from "$lib/api/api_server/customer-booking-portal/utility-functions/initialize_functions/CustomerBooking.js";
-    import {userProfile} from "$lib/page/protected/stores/userProfile.js";
+    import {business} from "$lib/page/protected/stores/business.js";
 
     let latestCustomerBooking = CustomerBooking($now);
     async function fetchCustomerBookingList()
     {
         // Get the customer booking list
-        const response = await getLobbyBookingList($userProfile.user.business.businessID, $now.format(formatToDate));
+        const response = await getLobbyBookingList($business.businessInfo.businessID, $now.format(formatToDate));
+
+        console.log("fetchCustomerBookingList", response)
+
         bookingStateList.set(response.bookingList);
     }
 
@@ -30,7 +32,7 @@
     {
         try
         {
-            const customerBooking = await getRecentCustomerBooking($userProfile.user.business.businessID, $now.format(formatToDate));
+            const customerBooking = await getRecentCustomerBooking($business.businessInfo.businessID, $now.format(formatToDate));
 
             //console.log("updateCustomerBookingList()", customerBooking)
 
