@@ -1,11 +1,8 @@
 
 <script>
     import { Accordion, AccordionItem, Button, Modal, Label, Input, MultiSelect } from 'flowbite-svelte';
-    import {initializeBusinessInformation} from "$lib/api/api_server/business-portal/api.js";
-    import {businessInfo} from "$lib/page/protected/business-portal/page_admin/stores/business_portal_admin_store.js";
-
-    let info;
-    $: info = $businessInfo;
+    import {initializeBusiness} from "$lib/api/api_server/business-portal/api.js";
+    import {business} from "$lib/page/protected/stores/business.js";
 
     let editingServiceGroup = {};
     let editingCloneServiceGroup = {};
@@ -27,13 +24,14 @@
         }
     }
     let employeeSelectOptions = []
-    $: if (info && info.employeeList)
+    $: if ($business && $business.employeeList)
     {
-        employeeSelectOptions = info.employeeList.map(employee => employeeToSelectOption(employee));
+        employeeSelectOptions = $business.employeeList.map(employee => employeeToSelectOption(employee));
     }
 
     let newServiceGroupName = '';
     let newServiceGroupDescription = '';
+    let newServiceGroupMultiselect = false;
     let formModalAddServiceGroup = false;
 
     let addServiceToServiceGroup = {};
@@ -73,8 +71,8 @@
         Object.assign(editingServiceGroup, editingCloneServiceGroup);
 
         // Request the server to update
-        const response = await initializeBusinessInformation(info);
-        businessInfo.set(response);
+        const response = await initializeBusiness($business);
+        business.set(response);
 
         // Reset the form fields and close the modal
         editingServiceGroup = {};
@@ -93,9 +91,9 @@
         // Archive
         editingServiceGroup.archive = true;
 
-        // Request the server to update asynchronously
-        const response = await initializeBusinessInformation(info);
-        businessInfo.set(response);
+        // Request the server to update
+        const response = await initializeBusiness($business);
+        business.set(response);
 
         // Close the modal and reset editing state
         editingServiceGroup = {};
@@ -116,8 +114,8 @@
         Object.assign(editingService, editingCloneService);
 
         // Request the server to update
-        const response = await initializeBusinessInformation(info);
-        businessInfo.set(response);
+        const response = await initializeBusiness($business);
+        business.set(response);
 
         // Reset the form fields and close the modal
         editingServiceGroup = {};
@@ -127,7 +125,7 @@
     }
 
     async function handleAddServiceGroup() {
-        console.log('Adding new service group:', {name: newServiceGroupName, description: newServiceGroupDescription});
+        console.log('Adding new service group:', {name: newServiceGroupName, description: newServiceGroupDescription, multiselect: newServiceGroupMultiselect});
 
         // Create a new service group object
         const newServiceGroup = {
@@ -135,19 +133,21 @@
             serviceGroupName: newServiceGroupName,
             description: newServiceGroupDescription,
             archive: false,
+            multiselect: newServiceGroupMultiselect,
             serviceList: [],
         };
 
         // Add the new service group
-        info.serviceGroupList.push(newServiceGroup);
+        $business.serviceGroupList.push(newServiceGroup);
 
         // Request the server to update
-        const response = await initializeBusinessInformation(info);
-        businessInfo.set(response);
+        const response = await initializeBusiness($business);
+        business.set(response);
 
         // Reset the form fields and close the modal
         newServiceGroupName = '';
         newServiceGroupDescription = '';
+        newServiceGroupMultiselect = false;
     }
 
     async function handleDeleteService()
@@ -162,9 +162,9 @@
         // Archive
         editingService.archive = true;
 
-        // Request the server to update asynchronously
-        const response = await initializeBusinessInformation(info);
-        businessInfo.set(response);
+        // Request the server to update
+        const response = await initializeBusiness($business);
+        business.set(response);
 
         // Close the modal and reset editing state
         editingServiceGroup = {};
@@ -190,9 +190,9 @@
         // Add the new service to the group
         addServiceToServiceGroup.serviceList.push(newService);
 
-        // Request the server to update asynchronously
-        const response = await initializeBusinessInformation(info);
-        businessInfo.set(response);
+        // Request the server to update
+        const response = await initializeBusiness($business);
+        business.set(response);
 
         // Reset the form fields and close the modal
         newServiceName = '';
@@ -200,11 +200,10 @@
         newServiceTimeLength = 0;
         newServiceDescription = '';
     }
-
 </script>
 
 <Accordion class="bg-white">
-    {#each info.serviceGroupList as serviceGroup, index}
+    {#each $business.serviceGroupList as serviceGroup, index}
         <AccordionItem open={index === 0}>
             <div slot="header" class="flex items-center w-full">
                 <div class="flex flex-col sm:flex-row justify-between w-full items-center text-center sm:text-left">
@@ -243,15 +242,21 @@
 <Modal bind:open={formModalServiceGroupEdit} size="xs" autoclose outsideclose>
     <form class="flex flex-col space-y-6" on:submit|preventDefault={() => {}}>
         <h3 class="mb-4 text-xl font-medium text-gray-900 dark:text-white">Edit Service Group</h3>
-        <Label class="space-y-2">
+        <Label class="">
             <span>Service Group Name</span>
             <Input bind:value={editingCloneServiceGroup.serviceGroupName} required />
         </Label>
 
-        <Label class="space-y-2">
+        <Label class="">
             <span>Description</span>
             <Input bind:value={editingCloneServiceGroup.description} required />
         </Label>
+
+        <label class="inline-flex items-center cursor-pointer">
+            <input type="checkbox" bind:checked={editingCloneServiceGroup.multiselect} class="sr-only peer">
+            <div class="relative w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300 dark:peer-focus:ring-blue-800 rounded-full peer dark:bg-gray-700 peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-blue-600"></div>
+            <span class="ms-3 text-sm font-medium text-gray-900 dark:text-gray-300">Multiselect</span>
+        </label>
 
         <Button class="w-full" on:click={handleEditServiceGroup}>Update</Button>
         <Button class="w-full" on:click={handleDeleteServiceGroup}>Delete</Button>
@@ -305,6 +310,12 @@
             <span>Description</span>
             <Input bind:value={newServiceGroupDescription} required />
         </Label>
+
+        <label class="inline-flex items-center cursor-pointer">
+            <input type="checkbox" bind:checked={newServiceGroupMultiselect} class="sr-only peer">
+            <div class="relative w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300 dark:peer-focus:ring-blue-800 rounded-full peer dark:bg-gray-700 peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-blue-600"></div>
+            <span class="ms-3 text-sm font-medium text-gray-900 dark:text-gray-300">Multiselect</span>
+        </label>
 
         <Button class="w-full" type="submit" on:click={handleAddServiceGroup}>Add</Button>
     </form>

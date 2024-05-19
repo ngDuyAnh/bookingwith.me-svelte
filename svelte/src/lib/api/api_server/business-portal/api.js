@@ -2,22 +2,16 @@ import {API_BASE_URL} from "$lib/api/api_server/API-URL.js";
 
 const API_URL = `${API_BASE_URL}/business-portal`;
 
-export async function createBusiness(business, accessString)
+export async function createBusiness(businessInformation)
 {
     const FETCH_URL = `${API_URL}/create`;
-
-    // Convert guestList to the appropriate format
-    const createBusiness = {
-        business: business,
-        accessString: accessString
-    };
 
     const response = await fetch(`${FETCH_URL}`, {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json'
         },
-        body: JSON.stringify(createBusiness)
+        body: JSON.stringify(businessInformation)
     });
 
     if (!response.ok) {
@@ -53,29 +47,16 @@ export async function getBusiness(id)
     return await response.json();
 }
 
-export async function getLogin(id, username, accessString)
+export async function initializeBusiness(business)
 {
-    const FETCH_URL = `${API_URL}/login/${id}?username=${username}&accessString=${accessString}`;
-
-    const response = await fetch(`${FETCH_URL}`);
-
-    if (!response.ok) {
-        throw new Error(`Failed to fetch valid access. Status: ${response.status}`);
-    }
-
-    return await response.json();
-}
-
-export async function initializeBusinessInformation(businessInfo)
-{
-    const FETCH_URL = `${API_URL}/initialize-business-information`;
+    const FETCH_URL = `${API_URL}/initialize-business`;
 
     const response = await fetch(`${FETCH_URL}`, {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json'
         },
-        body: JSON.stringify(businessInfo)
+        body: JSON.stringify(business)
     });
 
     if (!response.ok) {
