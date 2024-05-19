@@ -1,11 +1,11 @@
 
 <script>
     import { Accordion, AccordionItem, Button, Modal, Label, Input, MultiSelect } from 'flowbite-svelte';
-    import {initializeBusinessInformation} from "$lib/api/api_server/business-portal/api.js";
-    import {businessInfo} from "$lib/page/protected/business-portal/page_business_admin/stores/business_portal_admin_store.js";
+    import {initializeBusiness} from "$lib/api/api_server/business-portal/api.js";
+    import {userProfile} from "$lib/page/protected/stores/userProfile.js";
 
-    let info;
-    $: info = $businessInfo;
+    let info = $userProfile.user.business;
+    $: info = $userProfile.user.business;
 
     let editingServiceGroup = {};
     let editingCloneServiceGroup = {};
@@ -73,8 +73,8 @@
         Object.assign(editingServiceGroup, editingCloneServiceGroup);
 
         // Request the server to update
-        const response = await initializeBusinessInformation(info);
-        businessInfo.set(response);
+        const response = await initializeBusiness(info);
+        userProfile.update(userProfile=> userProfile.user.business = response);
 
         // Reset the form fields and close the modal
         editingServiceGroup = {};
@@ -94,8 +94,8 @@
         editingServiceGroup.archive = true;
 
         // Request the server to update asynchronously
-        const response = await initializeBusinessInformation(info);
-        businessInfo.set(response);
+        const response = await initializeBusiness(info);
+        userProfile.update(userProfile=> userProfile.user.business = response);
 
         // Close the modal and reset editing state
         editingServiceGroup = {};
@@ -116,8 +116,8 @@
         Object.assign(editingService, editingCloneService);
 
         // Request the server to update
-        const response = await initializeBusinessInformation(info);
-        businessInfo.set(response);
+        const response = await initializeBusiness(info);
+        userProfile.update(userProfile=> userProfile.user.business = response);
 
         // Reset the form fields and close the modal
         editingServiceGroup = {};
@@ -142,8 +142,8 @@
         info.serviceGroupList.push(newServiceGroup);
 
         // Request the server to update
-        const response = await initializeBusinessInformation(info);
-        businessInfo.set(response);
+        const response = await initializeBusiness(info);
+        userProfile.update(userProfile=> userProfile.user.business = response);
 
         // Reset the form fields and close the modal
         newServiceGroupName = '';
@@ -163,8 +163,8 @@
         editingService.archive = true;
 
         // Request the server to update asynchronously
-        const response = await initializeBusinessInformation(info);
-        businessInfo.set(response);
+        const response = await initializeBusiness(info);
+        userProfile.update(userProfile=> userProfile.user.business = response);
 
         // Close the modal and reset editing state
         editingServiceGroup = {};
@@ -191,8 +191,8 @@
         addServiceToServiceGroup.serviceList.push(newService);
 
         // Request the server to update asynchronously
-        const response = await initializeBusinessInformation(info);
-        businessInfo.set(response);
+        const response = await initializeBusiness(info);
+        userProfile.update(userProfile=> userProfile.user.business = response);
 
         // Reset the form fields and close the modal
         newServiceName = '';

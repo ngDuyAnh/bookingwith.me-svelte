@@ -1,12 +1,11 @@
-
 <script>
     import { Button, Modal, Label, Input } from 'flowbite-svelte';
     import {
         getEmployeeWorkSchedule,
-        initializeBusinessInformation,
+        initializeBusiness,
         initializeEmployeeWorkSchedule
     } from "$lib/api/api_server/business-portal/api.js";
-    import {businessInfo} from "$lib/page/protected/business-portal/page_business_admin/stores/business_portal_admin_store.js";
+    import {userProfile} from "$lib/page/protected/stores/userProfile.js";
 
     let newEmployeeName = "";
     let formModalAddEmployee = false;
@@ -71,8 +70,8 @@
         Object.assign(editingEmployee, editingCloneEmployee);
 
         // Request the server to update
-        const response = await initializeBusinessInformation($businessInfo);
-        businessInfo.set(response);
+        const response = await initializeBusiness($userProfile.user.business);
+        userProfile.update(userProfile=> userProfile.user.business = response);
 
         // Reset the form fields and close the modal
         editingEmployee = {};
@@ -124,8 +123,8 @@
         editingEmployee.archive = true;
 
         // Request the server to update asynchronously
-        const response = await initializeBusinessInformation($businessInfo);
-        businessInfo.set(response);
+        const response = await initializeBusiness($userProfile.user.business);
+        businessInfo.update(userProfile=> userProfile.user.business = response);
 
         // Close the modal and reset editing state
         editingEmployee = {};
@@ -144,11 +143,11 @@
         };
 
         // Add the new employee to the business
-        $businessInfo.employeeList.push(newEmployee);
+        $userProfile.user.business.employeeList.push(newEmployee);
 
         // Request the server to update asynchronously
-        const response = await initializeBusinessInformation($businessInfo);
-        businessInfo.set(response);
+        const response = await initializeBusiness($userProfile.user.business);
+        userProfile.update(userProfile=> userProfile.user.business = response);
 
         // Reset the form fields and close the modal
         newEmployeeName = "";
@@ -156,7 +155,7 @@
 </script>
 
 <ul class="employee-list">
-    {#each $businessInfo.employeeList as employee (employee.id)}
+    {#each $userProfile.user.business.employeeList as employee (employee.id)}
         <li class="list-item">
             <div class="flex items-center justify-between p-4 bg-white shadow hover:shadow-md transition-shadow duration-200 ease-in-out rounded-lg mb-2">
                 <span class="text-gray-800 font-medium">{employee.employeeName}</span>

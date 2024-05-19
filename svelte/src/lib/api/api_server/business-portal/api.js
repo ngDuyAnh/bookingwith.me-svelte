@@ -47,16 +47,16 @@ export async function getBusiness(id)
     return await response.json();
 }
 
-export async function initializeBusinessInformation(businessInfo)
+export async function initializeBusiness(business)
 {
-    const FETCH_URL = `${API_URL}/initialize-business-information`;
+    const FETCH_URL = `${API_URL}/initialize-business`;
 
     const response = await fetch(`${FETCH_URL}`, {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json'
         },
-        body: JSON.stringify(businessInfo)
+        body: JSON.stringify(business)
     });
 
     if (!response.ok) {
