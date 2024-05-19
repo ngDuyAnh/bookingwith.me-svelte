@@ -55,7 +55,8 @@ export function ServiceGroup()
         "id ": -1,
         "serviceGroupName": "",
         "description": "",
-        "archive": false,
+        "multiselect": false,
         "serviceList": [],
+        "archive": false
     };
 }
