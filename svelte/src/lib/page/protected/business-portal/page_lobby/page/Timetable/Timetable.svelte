@@ -1,7 +1,7 @@
 <script>
     import {onMount, setContext} from "svelte";
     import {getSchedule, initializeCustomerBooking,} from "$lib/api/api_server/lobby-portal/api.js";
-    import {businessInfo} from "$lib/page/protected/business-portal/page_admin/stores/business_portal_admin_store.js";
+    import {businessInfo} from "$lib/page/protected/business-portal/page_business_admin/stores/business_portal_admin_store.js";
     import {now} from "$lib/page/stores/now/now_dayjs_store.js";
     import {formatToDate, formatToTime, formatToTimeAm,} from "$lib/application/Formatter.js";
     import Calendar from "@event-calendar/core";
@@ -18,7 +18,7 @@
     import {moveToCompleted} from "$lib/api/api_server/lobby-portal/utility-functions/handle_customer_booking_state.js";
     import {
         CustomerBookingState
-    } from "$lib/api/api_server/customer-booking-portal/utility-functions/initialize_functions.js";
+    } from "$lib/api/api_server/customer-booking-portal/utility-functions/initialize_functions/CustomerBooking.js";
 
     // Date select
     let todayDate = $now.format(formatToDate);

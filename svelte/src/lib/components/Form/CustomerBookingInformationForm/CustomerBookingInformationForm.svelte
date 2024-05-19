@@ -13,7 +13,7 @@
     import {getCustomer} from "$lib/api/api_server/lobby-portal/api.js";
     import {
         CustomerBookingState
-    } from "$lib/api/api_server/customer-booking-portal/utility-functions/initialize_functions.js";
+    } from "$lib/api/api_server/customer-booking-portal/utility-functions/initialize_functions/CustomerBooking.js";
     import {sendTextBookingSuccess} from "$lib/api/api_twilio/api.js";
 
     export let businessId;
