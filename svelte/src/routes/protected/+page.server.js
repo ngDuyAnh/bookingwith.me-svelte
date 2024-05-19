@@ -34,5 +34,11 @@ export const actions={
         });
 
         throw redirect(302, authorizeUrl);
+    },
+
+    logout: async ({ cookies }) => {
+        cookies.delete('auth', { path: '/' });
+        cookies.delete('user', { path: '/' });
+        throw redirect(302, '/'); // Redirect to home or login page
     }
 }
