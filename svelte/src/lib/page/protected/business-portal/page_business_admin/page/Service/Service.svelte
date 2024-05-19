@@ -34,6 +34,7 @@
 
     let newServiceGroupName = '';
     let newServiceGroupDescription = '';
+    let newServiceGroupMultiselect = false;
     let formModalAddServiceGroup = false;
 
     let addServiceToServiceGroup = {};
@@ -127,7 +128,7 @@
     }
 
     async function handleAddServiceGroup() {
-        console.log('Adding new service group:', {name: newServiceGroupName, description: newServiceGroupDescription});
+        console.log('Adding new service group:', {name: newServiceGroupName, description: newServiceGroupDescription, multiselect: newServiceGroupMultiselect});
 
         // Create a new service group object
         const newServiceGroup = {
@@ -135,6 +136,7 @@
             serviceGroupName: newServiceGroupName,
             description: newServiceGroupDescription,
             archive: false,
+            multiselect: newServiceGroupMultiselect,
             serviceList: [],
         };
 
@@ -148,6 +150,7 @@
         // Reset the form fields and close the modal
         newServiceGroupName = '';
         newServiceGroupDescription = '';
+        newServiceGroupMultiselect = false;
     }
 
     async function handleDeleteService()
@@ -243,15 +246,20 @@
 <Modal bind:open={formModalServiceGroupEdit} size="xs" autoclose outsideclose>
     <form class="flex flex-col space-y-6" on:submit|preventDefault={() => {}}>
         <h3 class="mb-4 text-xl font-medium text-gray-900 dark:text-white">Edit Service Group</h3>
-        <Label class="space-y-2">
+        <Label class="">
             <span>Service Group Name</span>
             <Input bind:value={editingCloneServiceGroup.serviceGroupName} required />
         </Label>
 
-        <Label class="space-y-2">
+        <Label class="">
             <span>Description</span>
             <Input bind:value={editingCloneServiceGroup.description} required />
         </Label>
+
+        <div class="flex items-center mb-4">
+            <input id="default-checkbox" type="checkbox" bind:value={editingCloneServiceGroup.multiselect} class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600">
+            <label for="default-checkbox" class="ms-2 text-sm font-medium text-gray-900 dark:text-gray-300">Multiselect</label>
+        </div>
 
         <Button class="w-full" on:click={handleEditServiceGroup}>Update</Button>
         <Button class="w-full" on:click={handleDeleteServiceGroup}>Delete</Button>
@@ -305,6 +313,11 @@
             <span>Description</span>
             <Input bind:value={newServiceGroupDescription} required />
         </Label>
+
+        <div class="flex items-center mb-4">
+            <input id="default-checkbox" type="checkbox" bind:value={newServiceGroupMultiselect} class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600">
+            <label for="default-checkbox" class="ms-2 text-sm font-medium text-gray-900 dark:text-gray-300">Multiselect</label>
+        </div>
 
         <Button class="w-full" type="submit" on:click={handleAddServiceGroup}>Add</Button>
     </form>
