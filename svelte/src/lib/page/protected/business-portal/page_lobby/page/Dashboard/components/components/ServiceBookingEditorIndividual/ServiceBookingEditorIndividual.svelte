@@ -1,5 +1,6 @@
 <script>
-    import {businessInfo} from "$lib/page/protected/business-portal/page_admin/stores/business_portal_admin_store.js";
+    import {business} from "$lib/page/protected/stores/business.js";
+    console.log($business);
     import {
         pageIndex,
         customerIndividualList
@@ -45,7 +46,7 @@
         handlePrev={handlePrev}
         handleNext={handleNext}
         bind:guestIndex={guestIndex}
-        businessInfo={businessInfo}
+        business={business}
         bind:customerIndividual={customerIndividual}
 />
 

@@ -14,19 +14,13 @@
         moveToServicing
     } from "$lib/api/api_server/lobby-portal/utility-functions/handle_customer_booking_state.js";
 
-    import ServiceBookingEditorIndividual
-        from "$lib/page/protected/business-portal/page_lobby/page/Dashboard/components/components/ServiceBookingEditorIndividual/ServiceBookingEditorIndividual.svelte";
     import {
         customerBooking,
         customerIndividualList,
         pageIndex
     } from "$lib/page/protected/business-portal/page_admin/stores/service_editor_store.js";
 
-    import ServiceBookingEditorSubmission
-        from "$lib/page/protected/business-portal/page_lobby/page/Dashboard/components/components/ServiceBookingEditorSubmission/ServiceBookingEditorSubmission.svelte";
-    import ServiceBookingEditorGuestSelector
-        from "$lib/page/protected/business-portal/page_lobby/page/Dashboard/components/components/ServiceBookingEditorGuestSelector/ServiceBookingEditorGuestSelector.svelte";
-    import ServiceBookingEditor
+   import ServiceBookingEditor
         from "$lib/page/protected/business-portal/page_lobby/page/Dashboard/components/components/ServiceBookingEditor/ServiceBookingEditor.svelte";
 
     let openModal = false;

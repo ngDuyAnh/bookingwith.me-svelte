@@ -1,14 +1,14 @@
 <script>
     import {
         CustomerBookingState
-    } from "$lib/api/api_server/customer-booking-portal/utility-functions/initialize_functions.js";
+    } from "$lib/api/api_server/customer-booking-portal/utility-functions/initialize_functions/CustomerBooking.js";
     import {sendTextBookingSuccess} from "$lib/api/api_twilio/api.js";
 
-    import {businessInfo} from "$lib/page/protected/business-portal/page_admin/stores/business_portal_admin_store.js";
+    import {business} from "$lib/page/protected/stores/business.js";
+    console.log($business);
     import CustomerBookingInformation
         from "$lib/components/BookingComponents/CustomerBookingInformation/CustomerBookingInformation.svelte";
     import {pageIndex,customerIndividualList,customerBooking} from "$lib/page/protected/business-portal/page_admin/stores/service_editor_store.js";
-
 
     console.log("customerBooking",customerBooking)
     console.log("customerIndividualList",customerIndividualList)
@@ -36,7 +36,7 @@
             // Send SMS confirmation
             try
             {
-                await sendTextBookingSuccess($businessInfo.businessName, response.customerBooking);
+                await sendTextBookingSuccess($business.businessInfo.businessName, response.customerBooking);
             }
             catch (error)
             {
@@ -57,8 +57,8 @@
 
 
 <CustomerBookingInformation
-        businessId={$businessInfo.business.businessId}
-        businessName={$businessInfo.business.businessName}
+        businessId={$business.businessInfo.businessID}
+        businessName={$business.businessInfo.businessName}
         handlePrev={handlePrev}
         handleSubmit={submitCallback}
         customerBooking={customerBooking}
