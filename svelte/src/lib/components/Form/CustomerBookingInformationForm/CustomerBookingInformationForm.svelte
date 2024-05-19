@@ -14,10 +14,10 @@
     import {
         CustomerBookingState
     } from "$lib/api/api_server/customer-booking-portal/utility-functions/initialize_functions/CustomerBooking.js";
-    import {sendTextBookingSuccess} from "$lib/api/api_twilio/api.js";
+    // import {sendTextBookingSuccess} from "$lib/api/api_twilio/api.js";
 
     export let businessId;
-    export let businessName;
+    // export let businessName;
     export let customerBooking;
     export let customerIndividualList;
     export let submitCallback = undefined;
@@ -263,7 +263,7 @@
                 // Send SMS
                 if (sendSMS) {
                     try {
-                        await sendTextBookingSuccess(businessName, response.customerBooking);
+                        // await sendTextBookingSuccess(businessName, response.customerBooking);
                     } catch (error) {
                         console.error(error);
                     }

@@ -1,7 +1,6 @@
 import {redirect} from "@sveltejs/kit";
 import {OAuth2Client} from "google-auth-library"
 import {SECRET_CLIENT_ID, SECRET_CLIENT_SECRET, ORIGIN} from "$env/static/private";
-import {login} from "$lib/api/api_server/user-portal/api.js";
 
 export const GET = async ({url, cookies})=>{
     const redirectURL = `${ORIGIN}/oauth`;
@@ -25,20 +24,9 @@ export const GET = async ({url, cookies})=>{
         }
         const auth = await userInfoResponse.json();
 
-        // Get the user profile from the api backend
-        const user = await login(auth.email);
-
         // Cookies for the authentication
         cookies.set("auth", JSON.stringify(auth), {
             path: "/",
-            httpOnly: true,
-            sameSite: "strict",
-            maxAge: 60 * 60 * 24 * 30,
-            secure: true
-        });
-
-        cookies.set('user', JSON.stringify(user), {
-            path: '/',
             httpOnly: true,
             sameSite: "strict",
             maxAge: 60 * 60 * 24 * 30,

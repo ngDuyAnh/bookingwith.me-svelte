@@ -1,18 +1,20 @@
 import {OAuth2Client} from "google-auth-library";
 import {ORIGIN, SECRET_CLIENT_ID, SECRET_CLIENT_SECRET} from "$env/static/private";
 import {redirect} from "@sveltejs/kit";
+import {login} from "$lib/api/api_server/user-portal/api.js";
 
 export async function load({ cookies }) {
     const authCookie = await cookies.get('auth');
-    const userCookie = await cookies.get('user');
+    const auth = authCookie ? JSON.parse(authCookie) : null;
 
-    const auth = authCookie ? JSON.parse(authCookie) : undefined;
-    const user = userCookie ? JSON.parse(userCookie) : undefined;
+    // Get the user profile from the api backend
+    let user = null;
+    if (auth)
+    {
+        user = await login(auth.email);
+    }
 
-    /*if (!auth || !user) {
-        throw redirect(303, '/signup');
-    }*/
-
+    // Return data
     return {
         props: {
             auth,
