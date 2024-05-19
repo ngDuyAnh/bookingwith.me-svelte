@@ -23,7 +23,7 @@ export async function load({ cookies }) {
 
 export const actions={
     OAuth2: async()=> {
-        const redirectURL = 'https://anh.bookingwith.me/oauth';
+        const redirectURL = 'https://roba.bookingwith.me/oauth';
 
         const oAuth2Client = new OAuth2Client(SECRET_CLIENT_ID, SECRET_CLIENT_SECRET, redirectURL);
 

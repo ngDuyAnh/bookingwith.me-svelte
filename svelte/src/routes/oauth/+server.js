@@ -5,7 +5,7 @@ import {login} from "$lib/api/api_server/user-portal/api.js";
 
 
 export const GET = async ({url, cookies})=>{
-    const redirectURL = 'https://anh.bookingwith.me/oauth';
+    const redirectURL = 'https://roba.bookingwith.me/oauth';
     const code = await url.searchParams.get('code');
 
     try

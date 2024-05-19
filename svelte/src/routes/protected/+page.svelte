@@ -3,6 +3,7 @@
   import { Spinner } from "flowbite-svelte";
   import { onMount } from "svelte";
   import Login from "$lib/page/protected/page_login/Login.svelte";
+  import BusinessPortalAdmin from "$lib/page/protected/business-portal/page_admin/BusinessPortalAdmin.svelte";
 
   export let data;
   let loading = true;
@@ -25,6 +26,7 @@
   {:else if !$userProfile.auth || !$userProfile.user}
     <Login />
   {:else if $userProfile.user.role === "ADMIN"}
+    <BusinessPortalAdmin/>
     <p>Admin</p>
   {:else if $userProfile.user.role === "BUSINESS_ADMIN"}
     <p>BusinessPortalBusinessAdmin</p>
