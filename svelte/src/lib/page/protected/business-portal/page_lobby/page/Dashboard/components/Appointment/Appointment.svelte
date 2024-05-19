@@ -18,6 +18,9 @@
         customerIndividualList,
         pageIndex
     } from "$lib/page/protected/business-portal/page_admin/stores/service_editor_store.js";
+    import {
+        CustomerBooking
+    } from "$lib/api/api_server/customer-booking-portal/utility-functions/initialize_functions/CustomerBooking.js";
     import ServiceBookingEditor
         from "$lib/page/protected/business-portal/page_lobby/page/Dashboard/components/components/ServiceBookingEditor/ServiceBookingEditor.svelte";
 
@@ -33,6 +36,8 @@
 
     function handleAddNewBookingClick()
     {
+        customerBooking.set(CustomerBooking($now));
+        edit = true;
         console.log("handleAddNewBookingClick")
     }
 
