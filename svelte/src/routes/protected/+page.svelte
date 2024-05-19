@@ -1,36 +1,40 @@
 <script>
-    import {initializeUserFromSession, user} from "$lib/page/protected/stores/user.js";
-    import BusinessPortalBusinessAdmin from "$lib/page/protected/business-portal/page_business_admin/BusinessPortalBusinessAdmin.svelte";
-    import Login from "$lib/page/protected/Login/Login.svelte";
-    import {Spinner} from "flowbite-svelte";
-    import {onMount} from "svelte";
-    import BusinessPortalLobby from "$lib/page/protected/business-portal/page_lobby/BusinessPortalLobby.svelte";
-    import {page} from "$app/stores";
+  import { userProfile } from "$lib/page/protected/stores/userProfile.js";
+  import { Spinner } from "flowbite-svelte";
+  import { onMount } from "svelte";
+  import Login from "$lib/page/protected/page_login/Login.svelte";
 
-    let loading = true;
+  export let data;
+  let loading = true;
 
-    let businessId = $page.url.searchParams.get('businessId') || '';
+  // User profile
+  $: userProfile.set(data.props);
 
-    onMount(() => {
-        initializeUserFromSession();
+  onMount(async () => {
+    loading = false;
 
-        // Done loading data
-        loading = false;
-    });
+    console.log("userProfile", $userProfile);
+  });
 </script>
 
 <div class="min-h-screen w-full">
-    {#if loading}
-        <div class="flex justify-center items-center h-screen">
-            <Spinner />
-        </div>
-    {:else if !$user?.businessId || !$user?.access}
-        <Login {businessId}/>
-    {:else if $user.access === 'business-portal/admin'}
-        <BusinessPortalBusinessAdmin/>
-    {:else if $user.access === 'business-portal/lobby'}
-        <BusinessPortalLobby/>
-    {:else}
-        <p>Unexpected user state, please contact support.</p>
-    {/if}
+  {#if loading}
+    <div class="flex justify-center items-center h-screen">
+      <Spinner />
+    </div>
+  {:else if !$userProfile.auth || !$userProfile.user}
+    <Login />
+  {:else if $userProfile.user.role === "ADMIN"}
+    <p>Admin</p>
+  {:else if $userProfile.user.role === "BUSINESS_ADMIN"}
+    <p>BusinessPortalBusinessAdmin</p>
+  {:else if $userProfile.user.role === "LOBBY"}
+    <p>BusinessPortalLobby</p>
+  {:else if $userProfile.user.role === "EMPLOYEE"}
+    <p>BusinessPortalEmployee</p>
+  {:else if $userProfile.user.role === "REGISTER"}
+    <p>BusinessPortalRegister</p>
+  {:else}
+    <p>Unexpected user state, please contact support.</p>
+  {/if}
 </div>
