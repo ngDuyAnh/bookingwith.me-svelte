@@ -8,6 +8,7 @@
   import {getBusiness} from "$lib/api/api_server/business-portal/api.js";
   import {business} from "$lib/page/protected/stores/business.js";
   import BusinessPortalLobby from "$lib/page/protected/business-portal/page_lobby/BusinessPortalLobby.svelte";
+  import BusinessPortalEmployee from "$lib/page/protected/business-portal/page_employee/BusinessPortalEmployee.svelte";
 
   export let data;
   let loading = true;
@@ -44,7 +45,7 @@
   {:else if $userProfile.user.role === "LOBBY"}
     <BusinessPortalLobby/>
   {:else if $userProfile.user.role === "EMPLOYEE"}
-    <p>BusinessPortalEmployee</p>
+    <BusinessPortalEmployee/>
   {:else if $userProfile.user.role === "REGISTER"}
     <p>BusinessPortalRegister</p>
   {:else}
