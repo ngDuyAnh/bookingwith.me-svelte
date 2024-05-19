@@ -33,7 +33,7 @@
 
     function handleAddNewBookingClick()
     {
-        console.log("Here")
+        console.log("handleAddNewBookingClick")
     }
 
     // Retrieve customer booking list update function
@@ -87,8 +87,16 @@
     <!-- List Header -->
     <div class="px-4 py-2 flex items-center justify-between select-none">
         <h2 class="text-lg font-bold">{"Appointment"}</h2>
-        <span class="text-sm">{$bookingStateList[0].length}</span>
-<!--        <i class="fas fa-plus cursor-pointer text-blue-500" on:click={handleAddNewBookingClick}></i>-->
+
+        <div class="flex items-center space-x-4">
+            <span class="text-sm">{$bookingStateList[0].length}</span>
+
+            <button on:click={handleAddNewBookingClick} class="text-blue-500 hover:text-blue-700 focus:outline-none">
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M12 9v6m3-3H9m12 0a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
+                </svg>
+            </button>
+        </div>
     </div>
 
     <CustomerBookingList
