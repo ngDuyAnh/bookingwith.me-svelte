@@ -31,7 +31,7 @@
                 businessId={businessId}
                 customerBooking={$customerBooking}
                 businessName={businessName}
-                customerIndividualList={$customerIndividualList}
+                customerIndividualList={customerIndividualList}
                 submitCallback={handleSubmit}
                 requiredAgreeToReceiveSMS={true}
         />

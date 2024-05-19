@@ -1,7 +1,7 @@
 <script>
     import {business} from "$lib/page/protected/stores/business.js";
     console.log($business);
-    import {
+    import {customerBooking,
         pageIndex,
         customerIndividualList
     } from "$lib/page/protected/business-portal/page_admin/stores/service_editor_store.js";
@@ -12,10 +12,10 @@
 
     // Get the customer individual from the index
     let customerIndividual = [];
-    $: if ($customerIndividualList && $customerIndividualList.length > guestIndex) {
-        customerIndividual = $customerIndividualList[guestIndex];
+    $: if ($customerBooking.customerIndividualBookingList && $customerBooking.customerIndividualBookingList.length > guestIndex) {
+        customerIndividual = $customerBooking.customerIndividualBookingList[guestIndex];
         console.log("customerIndividual", customerIndividual);
-        console.log("customerIndividualList", $customerIndividualList);
+        console.log("customerIndividualList", $customerBooking.customerIndividualBookingList);
     }
 
     function handlePrev() {
@@ -31,7 +31,7 @@
 
     function handleNext() {
         // Go to the next page to get the customer booking information
-        if (guestIndex === ($customerIndividualList.length - 1)) {
+        if (guestIndex === ($customerBooking.customerIndividualBookingList.length - 1)) {
             pageIndex.set($pageIndex + 1);
         }
         // Get the next customer

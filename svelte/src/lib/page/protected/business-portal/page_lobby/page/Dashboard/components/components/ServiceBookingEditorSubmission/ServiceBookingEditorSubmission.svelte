@@ -10,10 +10,10 @@
         from "$lib/components/BookingComponents/CustomerBookingInformation/CustomerBookingInformation.svelte";
     import {pageIndex,customerIndividualList,customerBooking} from "$lib/page/protected/business-portal/page_admin/stores/service_editor_store.js";
 
-    console.log("customerBooking",customerBooking)
-    console.log("customerIndividualList",customerIndividualList)
+    // console.log("customerBooking",customerBooking)
+    // console.log("customerIndividualList",customerIndividualList)
     // console.log("CustomerBookingInformationForm")
-    console.log("CustomerBookingState",CustomerBookingState)
+    // console.log("CustomerBookingState",CustomerBookingState)
     // console.log("customerBooking")
     // console.log("customerBooking")
 
@@ -26,7 +26,7 @@
 
     async function submitCallback(success, error)
     {
-        console.log("submitCallback()", $customerBooking, $customerIndividualList);
+        console.log("submitCallback()", $customerBooking, $customerBooking.customerIndividualList);
 
         if (success)
         {
@@ -62,6 +62,6 @@
         handlePrev={handlePrev}
         handleSubmit={submitCallback}
         customerBooking={customerBooking}
-        customerIndividualList={customerIndividualList}
+        customerIndividualList={$customerBooking.customerIndividualBookingList}
 />
 
