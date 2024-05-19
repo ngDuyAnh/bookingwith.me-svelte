@@ -1,5 +1,5 @@
 import {formatToTime} from "$lib/application/Formatter.js";
-import {CustomerBookingState} from "$lib/api/api_server/customer-booking-portal/utility-functions/initialize_functions.js";
+import {CustomerBookingState} from "$lib/api/api_server/customer-booking-portal/utility-functions/initialize_functions/CustomerBooking.js";
 import dayjs from "dayjs";
 
 export async function moveToLobby(now, customerBooking, submitCustomerBooking)

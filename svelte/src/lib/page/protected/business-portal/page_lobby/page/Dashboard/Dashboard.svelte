@@ -16,7 +16,7 @@
         from "$lib/page/protected/business-portal/page_lobby/page/Dashboard/components/Completed/Completed.svelte";
     import {
         CustomerBooking
-    } from "$lib/api/api_server/customer-booking-portal/utility-functions/initialize_functions.js";
+    } from "$lib/api/api_server/customer-booking-portal/utility-functions/initialize_functions/CustomerBooking.js";
 
     let latestCustomerBooking = CustomerBooking($now);
     async function fetchCustomerBookingList()

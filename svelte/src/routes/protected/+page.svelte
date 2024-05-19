@@ -1,6 +1,6 @@
 <script>
     import {initializeUserFromSession, user} from "$lib/page/protected/stores/user.js";
-    import BusinessPortalAdmin from "$lib/page/protected/business-portal/page_admin/BusinessPortalAdmin.svelte";
+    import BusinessPortalBusinessAdmin from "$lib/page/protected/business-portal/page_business_admin/BusinessPortalBusinessAdmin.svelte";
     import Login from "$lib/page/protected/Login/Login.svelte";
     import {Spinner} from "flowbite-svelte";
     import {onMount} from "svelte";
@@ -27,7 +27,7 @@
     {:else if !$user?.businessId || !$user?.access}
         <Login {businessId}/>
     {:else if $user.access === 'business-portal/admin'}
-        <BusinessPortalAdmin/>
+        <BusinessPortalBusinessAdmin/>
     {:else if $user.access === 'business-portal/lobby'}
         <BusinessPortalLobby/>
     {:else}
