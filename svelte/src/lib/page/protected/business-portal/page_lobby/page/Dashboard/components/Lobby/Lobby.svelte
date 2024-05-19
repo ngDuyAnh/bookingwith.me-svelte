@@ -68,11 +68,18 @@
 
 </script>
 
-<CustomerBookingList
-        listName="Lobby"
-        customerBookingList={$bookingStateList[1]}
-        handleCustomerBookingClick={handleCustomerBookingClick}
-/>
+<div class="min-w-[348.4px] max-w-[348.4px] bg-gray-100 rounded shadow p-4 overflow-y-auto border border-sky-200">
+    <!-- List Header -->
+    <div class="px-4 py-2 flex items-center justify-between select-none">
+        <h2 class="text-lg font-bold">{"Lobby"}</h2>
+        <span class="text-sm">{$bookingStateList[1].length}</span>
+    </div>
+
+    <CustomerBookingList
+            customerBookingList={$bookingStateList[1]}
+            handleCustomerBookingClick={handleCustomerBookingClick}
+    />
+</div>
 
 <!-- Modal for customer booking -->
 <div class="">

@@ -13,14 +13,12 @@
         moveToLobby,
         moveToServicing
     } from "$lib/api/api_server/lobby-portal/utility-functions/handle_customer_booking_state.js";
-
     import {
         customerBooking,
         customerIndividualList,
         pageIndex
     } from "$lib/page/protected/business-portal/page_admin/stores/service_editor_store.js";
-
-   import ServiceBookingEditor
+    import ServiceBookingEditor
         from "$lib/page/protected/business-portal/page_lobby/page/Dashboard/components/components/ServiceBookingEditor/ServiceBookingEditor.svelte";
 
     let openModal = false;
@@ -31,6 +29,11 @@
         openModal = true;
         selectedCustomerBooking = {...customerBooking};
         hasMsg = selectedCustomerBooking.message === "";
+    }
+
+    function handleAddNewBookingClick()
+    {
+        console.log("Here")
     }
 
     // Retrieve customer booking list update function
@@ -80,11 +83,19 @@
     }
 </script>
 
-<CustomerBookingList
-        listName="Appointment"
-        customerBookingList={$bookingStateList[0]}
-        handleCustomerBookingClick={handleCustomerBookingClick}
-/>
+<div class="min-w-[348.4px] max-w-[348.4px] bg-gray-100 rounded shadow p-4 overflow-y-auto border border-sky-200">
+    <!-- List Header -->
+    <div class="px-4 py-2 flex items-center justify-between select-none">
+        <h2 class="text-lg font-bold">{"Appointment"}</h2>
+        <span class="text-sm">{$bookingStateList[0].length}</span>
+<!--        <i class="fas fa-plus cursor-pointer text-blue-500" on:click={handleAddNewBookingClick}></i>-->
+    </div>
+
+    <CustomerBookingList
+            customerBookingList={$bookingStateList[0]}
+            handleCustomerBookingClick={handleCustomerBookingClick}
+    />
+</div>
 
 <!-- Modal for customer booking -->
 <div class="">
