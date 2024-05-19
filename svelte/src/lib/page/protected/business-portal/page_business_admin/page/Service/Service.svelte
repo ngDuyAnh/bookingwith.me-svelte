@@ -200,7 +200,6 @@
         newServiceTimeLength = 0;
         newServiceDescription = '';
     }
-
 </script>
 
 <Accordion class="bg-white">
@@ -253,10 +252,11 @@
             <Input bind:value={editingCloneServiceGroup.description} required />
         </Label>
 
-        <div class="flex items-center mb-4">
-            <input id="default-checkbox" type="checkbox" bind:value={editingCloneServiceGroup.multiselect} class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600">
-            <label for="default-checkbox" class="ms-2 text-sm font-medium text-gray-900 dark:text-gray-300">Multiselect</label>
-        </div>
+        <label class="inline-flex items-center cursor-pointer">
+            <input type="checkbox" bind:checked={editingCloneServiceGroup.multiselect} class="sr-only peer">
+            <div class="relative w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300 dark:peer-focus:ring-blue-800 rounded-full peer dark:bg-gray-700 peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-blue-600"></div>
+            <span class="ms-3 text-sm font-medium text-gray-900 dark:text-gray-300">Multiselect</span>
+        </label>
 
         <Button class="w-full" on:click={handleEditServiceGroup}>Update</Button>
         <Button class="w-full" on:click={handleDeleteServiceGroup}>Delete</Button>
@@ -311,10 +311,11 @@
             <Input bind:value={newServiceGroupDescription} required />
         </Label>
 
-        <div class="flex items-center mb-4">
-            <input id="default-checkbox" type="checkbox" bind:value={newServiceGroupMultiselect} class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600">
-            <label for="default-checkbox" class="ms-2 text-sm font-medium text-gray-900 dark:text-gray-300">Multiselect</label>
-        </div>
+        <label class="inline-flex items-center cursor-pointer">
+            <input type="checkbox" bind:checked={newServiceGroupMultiselect} class="sr-only peer">
+            <div class="relative w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300 dark:peer-focus:ring-blue-800 rounded-full peer dark:bg-gray-700 peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-blue-600"></div>
+            <span class="ms-3 text-sm font-medium text-gray-900 dark:text-gray-300">Multiselect</span>
+        </label>
 
         <Button class="w-full" type="submit" on:click={handleAddServiceGroup}>Add</Button>
     </form>
