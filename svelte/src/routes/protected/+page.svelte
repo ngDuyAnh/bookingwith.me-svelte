@@ -3,20 +3,12 @@
     import {Spinner} from "flowbite-svelte";
     import {onMount} from "svelte";
     import Login from "$lib/page/protected/page_login/Login.svelte";
-    import BusinessPortalAdmin from "$lib/page/protected/business-portal/page_admin/BusinessPortalAdmin.svelte";
-    import BusinessPortalLobby from "$lib/page/protected/business-portal/page_lobby/BusinessPortalLobby.svelte";
-    import BusinessPortalBusinessAdmin
-        from "$lib/page/protected/business-portal/page_business_admin/BusinessPortalBusinessAdmin.svelte";
-    import BusinessPortalEmployee
-        from "$lib/page/protected/business-portal/page_employee/BusinessPortalEmployee.svelte";
-    import BusinessPortalRegister
-        from "$lib/page/protected/business-portal/page_register/BusinessPortalRegister.svelte";
 
     export let data;
-
-    $: userProfile.set(data.props);
-
     let loading = true;
+
+    // User profile
+    $: userProfile.set(data.props);
 
     onMount(async () => {
         loading = false;
@@ -33,15 +25,15 @@
     {:else if !$userProfile.auth || !$userProfile.user}
         <Login/>
     {:else if $userProfile.user.role === 'ADMIN'}
-        <BusinessPortalAdmin/>
+        <p>Admin</p>
     {:else if $userProfile.user.role === 'BUSINESS_ADMIN'}
-        <BusinessPortalBusinessAdmin/>
+        <p>BusinessPortalBusinessAdmin</p>
     {:else if $userProfile.user.role === 'LOBBY'}
-        <BusinessPortalLobby/>
+        <p>BusinessPortalLobby</p>
     {:else if $userProfile.user.role === 'EMPLOYEE'}
-        <BusinessPortalEmployee/>
+        <p>BusinessPortalEmployee</p>
     {:else if $userProfile.user.role === 'REGISTER'}
-        <BusinessPortalRegister/>
+        <p>BusinessPortalRegister</p>
     {:else}
         <p>Unexpected user state, please contact support.</p>
     {/if}
