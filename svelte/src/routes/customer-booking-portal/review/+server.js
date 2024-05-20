@@ -34,20 +34,18 @@ async function polishReview(reviewText) {
 }
 
 async function createAssistant() {
-    const assistant = await openai.beta.assistants.create({
+    return openai.beta.assistants.create({
         name: "Booking with Me",
         instructions:
             "You are a helpful assistant that polishes and enhances user-provided reviews for Google Reviews. Keep reviews concise but not too short.",
         model: "gpt-4-turbo",
     });
-
-    return assistant;
 }
 
 
 export async function POST({ request }) {
     const { reviewText } = await request.json();
-    if (!createdAssistant && assistant == undefined) {
+    if (!createdAssistant && assistant === undefined) {
         try {
             assistant = await createAssistant();
             thread = await openai.beta.threads.create();
