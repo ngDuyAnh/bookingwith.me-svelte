@@ -26,8 +26,7 @@ async function polishReview(reviewText) {
         });
 
         const message = messages.data[messages.data.length - 1];
-        const polishedText = message.content[0].text.value;
-        return polishedText;
+        return message.content[0].text.value;;
     } catch (error) {
         console.error('Error during conversation:', error);
         throw error;
@@ -35,20 +34,19 @@ async function polishReview(reviewText) {
 }
 
 async function createAssistant() {
-    const assistant = await openai.beta.assistants.create({
+    return openai.beta.assistants.create({
         name: "Booking with Me",
         instructions:
             "You are a helpful assistant that polishes and enhances user-provided reviews for Google Reviews. Keep reviews concise but not too short.",
         model: "gpt-4-turbo",
     });
 
-    return assistant;
 }
 
 
 export async function POST({ request }) {
     const { reviewText } = await request.json();
-    if (!createdAssistant && assistant == undefined) {
+    if (!createdAssistant && assistant === undefined) {
         try {
             assistant = await createAssistant();
             thread = await openai.beta.threads.create();

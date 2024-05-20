@@ -58,8 +58,7 @@
 
             const data = await response.json();
             if (response.ok) {
-                let polishedReviewText = data.polishedReview;
-                reviewText = polishedReviewText;
+                reviewText = data.polishedReview;
             } else {
                 throw new Error(data.error || "Unknown error occurred");
             }
