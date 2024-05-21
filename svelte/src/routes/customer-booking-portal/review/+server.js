@@ -38,7 +38,7 @@ async function createAssistant() {
         name: "Booking with Me",
         instructions:
             "You are a helpful assistant that polishes and enhances user-provided reviews for Google Reviews. Keep reviews concise but not too short.",
-        model: "gpt-4-turbo",
+        model: "gpt-3.5-turbo",
     });
 }
 
