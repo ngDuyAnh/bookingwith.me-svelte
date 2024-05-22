@@ -8,18 +8,22 @@
         CustomerIndividualBooking
     } from "$lib/api/api_server/customer-booking-portal/utility-functions/initialize_functions/CustomerBooking.js";
 
-    export let showCustomerBookingInformationFlagHeader = false;
+    export let showCustomerBookingInformationFlagHeader = true;
+
+    export let customerBookingInformationProps = {
+        overrideFlag: false,
+        sendSMSFlag: false
+    };
+    export let customerBookingInformationFormProps = {
+        customerNameAutoComplete: true,
+        requiredAgreeToReceiveSMS: false
+    };
 
     export let open = false;
     export let business;
     export let customerBooking = {
         ...CustomerBooking($now),
         customerIndividualBookingList: [CustomerIndividualBooking()]
-    };
-
-    export let customerBookingInformationFormProps = {
-        customerNameAutoComplete: false,
-        requiredAgreeToReceiveSMS: true
     };
 
     // Reset
@@ -45,6 +49,8 @@
                 bookingChannel={CustomerBookingChannel.LOBBY}
 
                 {showCustomerBookingInformationFlagHeader}
+
+                {customerBookingInformationProps}
                 {customerBookingInformationFormProps}
 
                 {business}

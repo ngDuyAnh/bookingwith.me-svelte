@@ -10,9 +10,12 @@
         from "$lib/components/CustomerBooking/CustomerBookingInformation/CustomerBookingInformation.svelte";
     import BookingSuccess from "$lib/components/CustomerBooking/BookingSuccess/BookingSuccess.svelte";
 
-    export let bookingChannel = undefined;
-
     export let showCustomerBookingInformationFlagHeader = false;
+
+    export let customerBookingInformationProps = {
+        overrideFlag: false,
+        sendSMSFlag: true
+    };
     export let customerBookingInformationFormProps = {
         customerNameAutoComplete: false,
         requiredAgreeToReceiveSMS: true
@@ -26,6 +29,7 @@
     };
 
     // Initialize the booking channel
+    export let bookingChannel = undefined;
     $: if (customerBooking.bookingChannel === -1)
     {
         customerBooking.bookingChannel = bookingChannel;
@@ -86,6 +90,7 @@
     {:else if pageIndex === 2}
         <CustomerBookingInformation
                 {showCustomerBookingInformationFlagHeader}
+                {...customerBookingInformationProps}
                 {customerBookingInformationFormProps}
 
                 {business}

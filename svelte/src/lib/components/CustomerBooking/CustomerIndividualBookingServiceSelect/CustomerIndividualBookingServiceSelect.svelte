@@ -29,7 +29,7 @@
         if (guestIndex === (customerIndividualBookingList.length - 1))
         {
             // Check if all guest has selected at least a service
-            let allGuestSelectedService = false;
+            let allGuestSelectedService = true;
             if (allGuestSelectedService)
             {
                 gotoCustomerBookingInformation();

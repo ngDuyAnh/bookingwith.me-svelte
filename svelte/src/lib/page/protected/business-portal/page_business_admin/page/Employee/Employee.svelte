@@ -77,7 +77,7 @@
     {
         console.log('Updating employee with new details:', editingEmployee);
 
-        // Initialize
+        // Deep clone
         Object.assign(editingEmployee, editingCloneEmployee);
 
         // Request the server to update
