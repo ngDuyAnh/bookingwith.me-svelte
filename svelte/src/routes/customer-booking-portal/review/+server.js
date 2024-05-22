@@ -1,5 +1,5 @@
 import OpenAI from 'openai';
-import { OPENAI_API_KEY } from '$env/static/private';
+import { OPENAI_API_KEY, OPENAI_ASSISTANT_KEY } from '$env/static/private';
 
 const openai = new OpenAI({ apiKey: OPENAI_API_KEY});
 let assistant = undefined;
@@ -13,12 +13,12 @@ async function polishReview(reviewText) {
         await openai.beta.threads.messages.create(thread.id,
             {
                 role: "user",
-                content: `Polish the following review for Google Reviews:\n\n${reviewText}`,
+                content: `Polish the following review by making it positive, sanitizing it, while maintaining the tone of the original review, for Google Reviews:\n\n${reviewText}`,
             }
         );
 
         const run = await openai.beta.threads.runs.createAndPoll(thread.id, {
-            assistant_id: assistant.id
+            assistant_id: OPENAI_ASSISTANT_KEY
         });
 
         const messages = await openai.beta.threads.messages.list(thread.id, {
@@ -33,21 +33,21 @@ async function polishReview(reviewText) {
     }
 }
 
-async function createAssistant() {
-    return openai.beta.assistants.create({
-        name: "Booking with Me",
-        instructions:
-            "You are a helpful assistant that polishes and enhances user-provided reviews for Google Reviews. Keep reviews concise but not too short.",
-        model: "gpt-3.5-turbo",
-    });
-}
+// async function createAssistant() {
+//     return openai.beta.assistants.create({
+//         name: "Booking with Me",
+//         instructions:
+//             "You are a helpful assistant that polishes and enhances user-provided reviews for Google Reviews. Keep reviews concise but not too short.",
+//         model: "gpt-3.5-turbo",
+//     });
+// }
 
 
 export async function POST({ request }) {
     const { reviewText } = await request.json();
     if (!createdAssistant && assistant === undefined) {
         try {
-            assistant = await createAssistant();
+            // assistant = await createAssistant();
             thread = await openai.beta.threads.create();
             createdAssistant = true;
         } catch (error) {
