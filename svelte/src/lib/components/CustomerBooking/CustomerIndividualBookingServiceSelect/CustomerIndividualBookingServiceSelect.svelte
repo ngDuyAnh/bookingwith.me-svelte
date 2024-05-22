@@ -1,17 +1,41 @@
 <script>
-import {Accordion, AccordionItem} from "flowbite-svelte";
-import ServiceOption
-    from "$lib/page/protected/business-portal/page_lobby/page/CreateBooking/components/ModalCustomerIndividual/ServiceOption/ServiceOption.svelte";
+    import {Accordion, AccordionItem} from "flowbite-svelte";
+    import ServiceOption
+        from "$lib/components/CustomerBooking/CustomerIndividualBookingServiceSelect/components/ServiceOption/ServiceOption.svelte";
 
-export let handlePrev;
-export let handleNext;
-export let guestIndex;
-export let business;
-export let customerIndividual;
+    export let business
+    export let gotoNumGuestSelect;
+    export let gotoCustomerBookingInformation;
+    export let customerIndividualBookingList;
 
+    let guestIndex = 0;
+
+    function handlePrev()
+    {
+        if (guestIndex === 0)
+        {
+            gotoNumGuestSelect();
+        }
+        else
+        {
+            guestIndex--;
+        }
+    }
+
+    function handleNext()
+    {
+        if (guestIndex === (customerIndividualBookingList.length - 1))
+        {
+            gotoCustomerBookingInformation();
+        }
+        else
+        {
+            guestIndex++;
+        }
+    }
 </script>
 
-<div class="">
+<div class="h-full w-full">
     <div class="flex justify-between items-center px-4 pt-4 w-full">
         <button
                 class="flex items-center justify-center px-4 py-2 rounded-lg bg-blue-500 hover:bg-blue-700 focus:outline-none focus:ring-4 focus:ring-blue-300 transition duration-150 ease-in-out"
@@ -38,8 +62,8 @@ export let customerIndividual;
 
     <!-- Customer individual service select -->
     <div class="mt-3">
-        <Accordion key={customerIndividual}>
-            {#each $business.serviceGroupList as serviceGroup, index}
+        <Accordion>
+            {#each business.serviceGroupList as serviceGroup, index}
                 <AccordionItem open={index === 0} class="bg-gray-100">
                     <div slot="header" class="flex items-center w-full">
                         <div class="flex flex-col sm:flex-row justify-between w-full items-center text-center sm:text-left">
@@ -51,7 +75,7 @@ export let customerIndividual;
                     {#each serviceGroup.serviceList as service}
                         <ServiceOption
                                 {service}
-                                {customerIndividual}
+                                customerIndividualBooking={customerIndividualBookingList[guestIndex]}
                         />
                     {/each}
                 </AccordionItem>

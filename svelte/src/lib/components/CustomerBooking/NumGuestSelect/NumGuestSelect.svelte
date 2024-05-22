@@ -1,10 +1,7 @@
 <script>
-
     export let businessInfo;
-    export let handleSubmit;
+    export let gotoCustomerIndividualBookingServiceSelect;
     export let selectedNumGuests;
-    console.log("guest select businessInfo",businessInfo);
-
 </script>
 
 <div class="flex flex-col items-center justify-center h-full w-full">
@@ -12,7 +9,7 @@
         Welcome to {businessInfo.businessName}
     </h1>
 
-    <form class="max-w-sm mx-auto" on:submit|preventDefault={handleSubmit}>
+    <form class="max-w-sm mx-auto" on:submit|preventDefault={gotoCustomerIndividualBookingServiceSelect(selectedNumGuests)}>
         <label for="zip-input" class="block text-sm font-medium text-gray-900 dark:text-white text-center">
             Please select the number of guests:
         </label>

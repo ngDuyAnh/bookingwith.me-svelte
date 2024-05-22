@@ -14,31 +14,30 @@
         moveToServicing
     } from "$lib/api/api_server/lobby-portal/utility-functions/handle_customer_booking_state.js";
     import {
-        customerBooking,
-        customerIndividualList,
-        pageIndex
-    } from "$lib/page/protected/business-portal/page_admin/stores/service_editor_store.js";
-    import {
         CustomerBooking
     } from "$lib/api/api_server/customer-booking-portal/utility-functions/initialize_functions/CustomerBooking.js";
-    import ServiceBookingEditor
-        from "$lib/page/protected/business-portal/page_lobby/page/Dashboard/components/components/ServiceBookingEditor/ServiceBookingEditor.svelte";
+    import ModalCustomerBooking from "$lib/components/CustomerBooking/ModalCustomerBooking.svelte";
+    import {business} from "$lib/page/protected/stores/business.js";
+    import {
+        CustomerBookingChannel
+    } from "$lib/api/api_server/customer-booking-portal/utility-functions/initialize_functions/CustomerBooking.js";
 
-    let openModal = false;
+    let openModalNewCustomerBooking = false;
     let selectedCustomerBooking = {};
     let hasMsg;
+
+    let openModal = false;
 
     function handleCustomerBookingClick(customerBooking) {
         openModal = true;
         selectedCustomerBooking = {...customerBooking};
-        hasMsg = selectedCustomerBooking.message === "";
+        hasMsg = (selectedCustomerBooking.message === "");
     }
 
-    function handleAddNewBookingClick()
+    function handleAddNewCustomerBookingClick()
     {
-        customerBooking.set(CustomerBooking($now));
-        edit = true;
         console.log("handleAddNewBookingClick")
+        openModalNewCustomerBooking = true;
     }
 
     // Retrieve customer booking list update function
@@ -64,28 +63,6 @@
 
         await moveToCompleted($now, selectedCustomerBooking, submitCustomerBooking);
     }
-
-    let edit = false;
-
-    function editBooking() {
-        console.log("edit clicked");
-        edit = true;
-
-        if (selectedCustomerBooking && selectedCustomerBooking.customerIndividualBookingList) {
-            customerIndividualList.set(
-                selectedCustomerBooking.customerIndividualBookingList.map(individualBooking =>
-                    individualBooking.customerIndividualServiceBookingList.map(serviceBooking => ({
-                        service: serviceBooking.service,
-                        employee: serviceBooking.employee
-                    }))
-                )
-            );
-        }
-
-        customerBooking.set(selectedCustomerBooking);
-        console.log("customerBooking",$customerBooking);
-        pageIndex.set(0);
-    }
 </script>
 
 <div class="min-w-[348.4px] max-w-[348.4px] bg-gray-100 rounded shadow p-4 overflow-y-auto border border-sky-200">
@@ -96,7 +73,7 @@
         <div class="flex items-center space-x-4">
             <span class="text-sm">{$bookingStateList[0].length}</span>
 
-            <button on:click={handleAddNewBookingClick} class="text-blue-500 hover:text-blue-700 focus:outline-none">
+            <button on:click={handleAddNewCustomerBookingClick} class="text-blue-500 hover:text-blue-700 focus:outline-none">
                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
                     <path stroke-linecap="round" stroke-linejoin="round" d="M12 9v6m3-3H9m12 0a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
                 </svg>
@@ -111,7 +88,7 @@
 </div>
 
 <!-- Modal for customer booking -->
-<div class="">
+<!--<div class="absolute top-0 left-0 right-0">
     <Modal bind:open={openModal} size="md" outsideclose>
         <div>
             <p><strong>Customer name:</strong> {selectedCustomerBooking.customer.customerName}</p>
@@ -163,9 +140,18 @@
             </div>
         </div>
     </Modal>
-</div>
+</div>-->
 
+<!-- Create a new customer booking -->
+<ModalCustomerBooking
+        bookingChannel={CustomerBookingChannel.LOBBY}
 
-<ServiceBookingEditor
-    bind:edit={edit}
+        showCustomerBookingInformationFlagHeader={true}
+        customerBookingInformationFormProps={{
+            customerNameAutoComplete: true,
+            requiredAgreeToReceiveSMS: false
+        }}
+
+        bind:open={openModalNewCustomerBooking}
+        business={$business}
 />

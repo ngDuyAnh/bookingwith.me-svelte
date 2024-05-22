@@ -4,7 +4,6 @@
     import {Button, Input, Label, Select, Textarea} from "flowbite-svelte";
     import {
         availability,
-        walkin_availability,
         forceSubmitBooking,
         submitBooking
     } from "$lib/api/api_server/customer-booking-portal/api.js";
@@ -14,30 +13,30 @@
     import {
         CustomerBookingState
     } from "$lib/api/api_server/customer-booking-portal/utility-functions/initialize_functions/CustomerBooking.js";
-    // import {sendTextBookingSuccess} from "$lib/api/api_twilio/api.js";
-
-    export let businessId;
-    // export let businessName;
-    export let customerBooking;
-    export let customerIndividualList;
-    export let submitCallback = undefined;
-
+    import {send_SMS_BookingSuccess} from "$lib/api/api_twilio/api.js";
 
     export let customerNameAutoComplete = false;
+    export let requiredAgreeToReceiveSMS = true;
+
+    export let businessInfo;
+    // export let businessName;
+    export let customerBooking;
+
+    export let submitCallback = undefined;
+
     export let overrideFlag = false;
-    export let sendSMS = false;
+    export let sendSMSFlag = false;
 
-    export let requiredAgreeToReceiveSMS = false;
+    let walkinAvailabilityFlag = false;
 
-    export let walkinAvailabilityFlag = false;
-
+    let currentTimeString = "00:00";
     let availableTimeOptionList = [];
     async function fetchAvailableTimeList()
     {
         // Empty
         availableTimeOptionList = [];
 
-        let currentTimeString = "00:00";
+        currentTimeString = "00:00";
         if (customerBooking.bookingDate === $now.format(formatToDate))
         {
             currentTimeString = $now.format(formatToTime)
@@ -47,15 +46,17 @@
         {
             let response = {};
 
-            console.log("walkinAvailabilityFlag", walkinAvailabilityFlag)
-
             if (walkinAvailabilityFlag)
             {
-                response = await walkin_availability(
-                    businessId,
+                customerBooking.bookingState = CustomerBookingState.APPOINTMENT;
+
+                // Get the availabilities
+                response = await availability(
+                    businessInfo.businessID,
                     customerBooking.bookingDate,
                     currentTimeString,
-                    customerIndividualList
+                    customerBooking,
+                    5
                 );
 
                 // Initialize the available time
@@ -70,11 +71,15 @@
             }
             else
             {
+                customerBooking.bookingState = CustomerBookingState.SCHEDULE;
+
+                // Get the availabilities
                 response = await availability(
-                    businessId,
+                    businessInfo.businessID,
                     customerBooking.bookingDate,
                     currentTimeString,
-                    customerIndividualList
+                    customerBooking,
+                    10
                 );
 
                 // Initialize the available time
@@ -88,6 +93,7 @@
                     });
             }
 
+            // Currently the walk-in availability flag is not selected
             if (!walkinAvailabilityFlag)
             {
                 // Add the option to fetch walk-in availability
@@ -108,7 +114,7 @@
                 }
             }
 
-            console.log("availableTimeOptionList", availableTimeOptionList)
+            //console.log("availableTimeOptionList", availableTimeOptionList)
         }
         catch (error)
         {
@@ -213,7 +219,8 @@
 
     async function submit()
     {
-        console.log("submit()", customerBooking, customerIndividualList);
+        console.log("submit()", customerBooking);
+
         let success = false;
         let error = false;
 
@@ -228,10 +235,9 @@
             if (overrideFlag)
             {
                 response = await forceSubmitBooking(
-                    businessId,
-                    customerBooking,
+                    businessInfo.businessID,
                     $now.format(),
-                    customerIndividualList
+                    customerBooking
                 );
             }
             // Submit appointment
@@ -245,12 +251,10 @@
                 }
 
                 response = await submitBooking(
-                    businessId,
-                    $now.format(formatToTime),
+                    businessInfo.businessID,
+                    currentTimeString,
                     selectedAvailability.timePeriod,
-                    customerBooking,
-                    $now.format(),
-                    customerIndividualList
+                    customerBooking
                 );
 
             }
@@ -261,19 +265,19 @@
                 success = true;
 
                 // Send SMS
-                if (sendSMS) {
+                if (sendSMSFlag) {
                     try {
-                        // await sendTextBookingSuccess(businessName, response.customerBooking);
+                        await send_SMS_BookingSuccess(businessInfo.businessName, response.customerBooking);
                     } catch (error) {
-                        console.error(error);
+                        console.error("Failed to send SMS message.", error);
                     }
                 }
             }
         }
         catch (err)
         {
-            console.error("Error submitting booking:", err);
             error = true;
+            console.error("Error submitting booking:", err);
         }
 
         // Call the callback function for submit

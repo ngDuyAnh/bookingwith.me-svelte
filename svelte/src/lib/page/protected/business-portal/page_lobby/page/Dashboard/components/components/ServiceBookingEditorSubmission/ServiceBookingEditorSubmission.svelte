@@ -1,3 +1,4 @@
+<!--
 <script>
     import {
         CustomerBookingState
@@ -65,3 +66,4 @@
         customerIndividualList={$customerBooking.customerIndividualBookingList}
 />
 
+-->

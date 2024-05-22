@@ -1,3 +1,4 @@
+<!--
 <script>
     import {
         businessInfo,
@@ -53,3 +54,4 @@
         customerIndividualList={customerIndividualList}
         customerBooking={customerBooking}
 />
+-->

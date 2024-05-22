@@ -1,3 +1,4 @@
+<!--
 <script>
     import {
         customerIndividualList,
@@ -51,4 +52,4 @@
     bind:guestIndex={guestIndex}
     businessInfo={businessInfo}
     bind:customerIndividual={customerIndividual}
-/>
+/>-->

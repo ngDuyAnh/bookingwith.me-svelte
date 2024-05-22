@@ -8,6 +8,11 @@ export const CustomerBookingState = {
     SCHEDULE: 4
 }
 
+export const CustomerBookingChannel = {
+    LOBBY: 0,
+    ONLINE: 1
+}
+
 export function CustomerBooking(now)
 {
     return {
@@ -20,10 +25,14 @@ export function CustomerBooking(now)
         "bookingDate": now.format(formatToDate),
         "bookingTime": null,
         "message": "",
+
         "bookingState": -1,
+        "bookingChannel": -1,
+
         "checkinTime": null,
         "servicingStartTime": null,
         "servicingEndTime": null,
+
         "customerIndividualBookingList": []
     };
 }

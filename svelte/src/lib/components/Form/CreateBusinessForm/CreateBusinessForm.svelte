@@ -4,7 +4,7 @@
     import {
         BusinessInformation
     } from "$lib/api/api_server/customer-booking-portal/utility-functions/initialize_functions/Business.js";
-    import {formatPhoneNumberInput} from "$lib/application/FormatPhoneNumber.js";
+    import {formatPhoneNumber} from "$lib/application/FormatPhoneNumber.js";
 
     let businessInfo = {
         "business": BusinessInformation(),
@@ -15,8 +15,8 @@
         "contactPhoneNumber": "",
     };
 
-    let formattedBusinessPhoneNumber = formatPhoneNumberInput(businessInfo.business.businessPhoneNumber);
-    let formattedContactPhoneNumber = formatPhoneNumberInput(businessInfo.contactPhoneNumber);
+    let formattedBusinessPhoneNumber = formatPhoneNumber(businessInfo.business.businessPhoneNumber);
+    let formattedContactPhoneNumber = formatPhoneNumber(businessInfo.contactPhoneNumber);
 
     function handleBusinessPhoneNumberInput(event) {
         if (event.target instanceof HTMLInputElement)
@@ -28,7 +28,7 @@
             // Update the phone number
             businessInfo.business.businessPhoneNumber = rawPhoneNumber;
 
-            formattedBusinessPhoneNumber = formatPhoneNumberInput(businessInfo.business.businessPhoneNumber);
+            formattedBusinessPhoneNumber = formatPhoneNumber(businessInfo.business.businessPhoneNumber);
         }
     }
 
@@ -41,7 +41,7 @@
             // Update the phone number
             businessInfo.contactPhoneNumber = rawPhoneNumber;
 
-            formattedContactPhoneNumber = formatPhoneNumberInput(businessInfo.contactPhoneNumber);
+            formattedContactPhoneNumber = formatPhoneNumber(businessInfo.contactPhoneNumber);
         }
     }
 

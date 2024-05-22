@@ -1,3 +1,4 @@
+<!--
 <script>
     import {business} from "$lib/page/protected/stores/business.js";
     console.log($business);
@@ -41,7 +42,7 @@
     }
 </script>
 
-<!-- Modal for customer booking -->
+&lt;!&ndash; Modal for customer booking &ndash;&gt;
 <CustomerIndividualBooking
         handlePrev={handlePrev}
         handleNext={handleNext}
@@ -50,3 +51,4 @@
         bind:customerIndividual={customerIndividual}
 />
 
+-->

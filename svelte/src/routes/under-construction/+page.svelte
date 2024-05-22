@@ -1,5 +1,5 @@
 <script>
-    import Footer from "$lib/components/Footer/Footer.svelte";
+    import Footer from "$lib/page/LandingPage/components/Footer/Footer.svelte";
 </script>
 
 <div class="flex flex-col min-h-screen">
