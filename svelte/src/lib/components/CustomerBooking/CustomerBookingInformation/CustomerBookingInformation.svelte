@@ -3,6 +3,9 @@
     import CustomerBookingInformationForm
         from "$lib/components/Form/CustomerBookingInformationForm/CustomerBookingInformationForm.svelte";
     import {formatPhoneNumber} from "$lib/application/FormatPhoneNumber.js";
+    import { Button } from 'flowbite-svelte';
+    import { ArrowLeftOutline } from 'flowbite-svelte-icons';
+
 
     export let showCustomerBookingInformationFlagHeader = false;
     export let customerBookingInformationFormProps = {
@@ -45,30 +48,29 @@
 
 <div class="flex flex-col items-center">
     <div class="flex justify-between items-center px-4 pt-4 w-full">
-        <button
-                class="flex items-center justify-center px-4 py-2 rounded-lg bg-blue-500 hover:bg-blue-700 focus:outline-none focus:ring-4 focus:ring-blue-300 transition duration-150 ease-in-out"
-                on:click={handlePrev}
-                aria-label="Previous"
-        >
-            <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 12h14M5 12l4-4m-4 4 4 4"/>
-            </svg>
-        </button>
+        <Button pill={true} on:click={handlePrev} class="!p-2"><ArrowLeftOutline class="w-6 h-6" /></Button>
     </div>
 
-    <div class="flex justify-between items-center mb-4">
-        <h3 class="text-xl font-medium text-gray-900 dark:text-white">Booking information</h3>
+    <div class="max-w-md mb-1">
+        <h3 class="text-2xl font-medium text-gray-900 dark:text-white">Booking information</h3>
 
         {#if showCustomerBookingInformationFlagHeader}
-            <div class="flex items-center space-x-2">
-                <Toggle bind:checked={overrideFlag} class="toggle">Override</Toggle>
-                <Toggle bind:checked={sendSMSFlag} class="toggle">SMS</Toggle>
+            <div class="mt-4 flex justify-between flex-row md:items-center md:space-x-2">
+                <div class="flex items-center mb-1 md:mb-0">
+                    <Toggle bind:checked={overrideFlag} class="toggle">Override</Toggle>
+                </div>
+                <div class="flex items-center">
+                    <Toggle bind:checked={sendSMSFlag} class="toggle">SMS</Toggle>
+                </div>
             </div>
         {/if}
     </div>
 
+
+
+
     <!-- Customer booking information -->
-    <div class="mt-3 w-full max-w-md p-8 border-2 border-gray-200 shadow-md rounded-lg">
+    <div class="w-full max-w-md p-8">
         <CustomerBookingInformationForm
                 {...customerBookingInformationFormProps}
 

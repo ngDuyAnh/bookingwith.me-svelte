@@ -66,7 +66,7 @@
 
 </script>
 
-<div class="w-full">
+<div class="h-full w-full">
     {#if pageIndex === 0}
         <NumGuestSelect
                 businessInfo={business.businessInfo}
