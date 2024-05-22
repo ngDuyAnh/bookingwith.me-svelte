@@ -8,7 +8,6 @@
         CustomerIndividualBooking
     } from "$lib/api/api_server/customer-booking-portal/utility-functions/initialize_functions/CustomerBooking.js";
 
-    export let bookingChannel = CustomerBookingChannel.ONLINE;
     export let showCustomerBookingInformationFlagHeader = false;
 
     export let open = false;
@@ -23,8 +22,14 @@
         requiredAgreeToReceiveSMS: true
     };
 
-
-
+    // Reset
+    $: if (open)
+    {
+        customerBooking = {
+            ...CustomerBooking($now),
+            customerIndividualBookingList: [CustomerIndividualBooking()]
+        };
+    }
 </script>
 
 <div class="absolute top-0 left-0 right-0 ">
@@ -37,7 +42,7 @@
             </h1>
         </svelte:fragment>
         <CustomerBookingComponent
-                {bookingChannel}
+                bookingChannel={CustomerBookingChannel.LOBBY}
 
                 {showCustomerBookingInformationFlagHeader}
                 {customerBookingInformationFormProps}

@@ -1,7 +1,7 @@
 <script>
     import NumGuestSelect from "$lib/components/CustomerBooking/NumGuestSelect/NumGuestSelect.svelte";
     import {
-        CustomerBooking, CustomerBookingChannel, CustomerIndividualBooking
+        CustomerBooking, CustomerIndividualBooking
     } from "$lib/api/api_server/customer-booking-portal/utility-functions/initialize_functions/CustomerBooking.js";
     import {now} from "$lib/page/stores/now/now_dayjs_store.js";
     import CustomerIndividualBookingServiceSelect
@@ -9,9 +9,8 @@
     import CustomerBookingInformation
         from "$lib/components/CustomerBooking/CustomerBookingInformation/CustomerBookingInformation.svelte";
     import BookingSuccess from "$lib/components/CustomerBooking/BookingSuccess/BookingSuccess.svelte";
-    import {onMount} from "svelte";
 
-    export let bookingChannel = CustomerBookingChannel.ONLINE;
+    export let bookingChannel = undefined;
 
     export let showCustomerBookingInformationFlagHeader = false;
     export let customerBookingInformationFormProps = {
@@ -26,12 +25,14 @@
         customerIndividualBookingList: [CustomerIndividualBooking()]
     };
 
-    // Initialize customerBooking on mount
-    onMount(() => {
+    // Initialize the booking channel
+    $: if (customerBooking.bookingChannel === -1)
+    {
         customerBooking.bookingChannel = bookingChannel;
-    })
+    }
 
     let pageIndex = 0;
+    let guestIndex = 0;
 
     function gotoNumGuestSelect()
     {
@@ -79,6 +80,8 @@
                 {gotoNumGuestSelect}
                 {gotoCustomerBookingInformation}
                 customerIndividualBookingList={customerBooking.customerIndividualBookingList}
+
+                bind:guestIndex={guestIndex}
         />
     {:else if pageIndex === 2}
         <CustomerBookingInformation
