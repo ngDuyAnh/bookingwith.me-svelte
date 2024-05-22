@@ -28,7 +28,16 @@
     {
         if (guestIndex === (customerIndividualBookingList.length - 1))
         {
-            gotoCustomerBookingInformation();
+            // Check if all guest has selected at least a service
+            let allGuestSelectedService = false;
+            if (allGuestSelectedService)
+            {
+                gotoCustomerBookingInformation();
+            }
+            else
+            {
+                alert("At least one guest has not selected a service!");
+            }
         }
         else
         {
