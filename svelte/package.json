@@ -39,6 +39,7 @@
     "dexie": "^4.0.1",
     "flowbite-svelte-icons": "^1.5.0",
     "google-auth-library": "^9.9.0",
+    "openai": "^4.47.1",
     "svelte-routing": "^2.12.0",
     "twilio": "^5.0.4"
   }
