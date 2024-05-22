@@ -352,12 +352,11 @@
                 currentTimeString = $now.format(formatToTime);
             }
 
-            const response = await getSchedule(
+            const employeeTimetableList = await getSchedule(
                 $business.businessInfo.businessID,
                 selectedDate,
                 currentTimeString
             );
-            const employeeTimetableList = response;
 
             console.log("employeeTimetableList", employeeTimetableList);
 
