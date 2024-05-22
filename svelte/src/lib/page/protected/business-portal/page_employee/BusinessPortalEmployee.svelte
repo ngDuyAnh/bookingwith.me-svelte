@@ -1,21 +1,25 @@
 <script>
     import Header from "$lib/page/protected/components/Header/Header.svelte";
     import Setting from "$lib/page/protected/business-portal/page_employee/page/Setting/Setting.svelte";
-    import Timetable from "$lib/page/protected/business-portal/page_employee/page/Timetable/Timetable.svelte";
+    import Timetable from "$lib/page/protected/business-portal/page_employee/page/MyTimetable/Timetable.svelte";
+    import AllTimeTables
+        from "$lib/page/protected/business-portal/page_employee/page/AllTimeTables/AllTimeTables.svelte";
 
-    let tabs = ["Dashboard", "Setting"];
+    let tabs = ["My MyTimetable", "All Timetables", "Setting"];
     let selectedIndex = 0;
+
 </script>
+<div class="flex flex-col h-screen overflow-hidden z-[1006]">
+    <Header
+            {tabs}
+            bind:selectedIndex={selectedIndex}
+    />
 
-<Header
-        {tabs}
-        bind:selectedIndex={selectedIndex}
-/>
-
-<div class="m-1">
     {#if selectedIndex === 0}
-        <Timetable />
+        <Timetable/>
     {:else if selectedIndex === 1}
-        <Setting />
+        <AllTimeTables/>
+    {:else if selectedIndex === 2}
+        <Setting/>
     {/if}
 </div>
