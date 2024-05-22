@@ -15,9 +15,9 @@ export async function getCustomer(phoneNumber)
     return await response.json();
 }
 
-export async function getAppointmentBookingList(businessId, dateString)
+export async function getAppointmentBookingList(businessID, dateString)
 {
-    const FETCH_URL = `${API_URL}/get-appointment-booking-list/${businessId}?date=${dateString}`;
+    const FETCH_URL = `${API_URL}/get-appointment-booking-list/${businessID}?date=${dateString}`;
 
     const response = await fetch(`${FETCH_URL}`);
 
@@ -28,9 +28,9 @@ export async function getAppointmentBookingList(businessId, dateString)
     return await response.json();
 }
 
-export async function getLobbyBookingList(businessId, dateString)
+export async function getLobbyBookingList(businessID, dateString)
 {
-    const FETCH_URL = `${API_URL}/get-lobby-booking-list/${businessId}?date=${dateString}`;
+    const FETCH_URL = `${API_URL}/get-lobby-booking-list/${businessID}?date=${dateString}`;
 
     const response = await fetch(`${FETCH_URL}`);
 
@@ -41,9 +41,9 @@ export async function getLobbyBookingList(businessId, dateString)
     return await response.json();
 }
 
-export async function getRecentCustomerBooking(businessId, dateString)
+export async function getRecentCustomerBooking(businessID, dateString)
 {
-    const FETCH_URL = `${API_URL}/get-recent-customer-booking/${businessId}?date=${dateString}`;
+    const FETCH_URL = `${API_URL}/get-recent-customer-booking/${businessID}?date=${dateString}`;
 
     const response = await fetch(`${FETCH_URL}`);
 
@@ -73,9 +73,9 @@ export async function initializeCustomerBooking(customerBooking)
     return await response.json();
 }
 
-export async function getSchedule(businessId, dateString, timeString)
+export async function getSchedule(businessID, dateString, timeString)
 {
-    const FETCH_URL = `${API_URL}/get-schedule/${businessId}?date=${dateString}&time=${timeString}`;
+    const FETCH_URL = `${API_URL}/get-schedule/${businessID}?date=${dateString}&time=${timeString}`;
 
     const response = await fetch(`${FETCH_URL}`);
 
