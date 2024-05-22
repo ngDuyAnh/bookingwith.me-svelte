@@ -75,9 +75,9 @@
     <Sidebar>
         <SidebarWrapper divClass="overflow-y-auto py-4 px-3 rounded dark:bg-gray-800">
             <SidebarGroup>
-                {#each tabs as tab}
+                {#each tabs as tab, index}
                     <SidebarItem label={tab} on:click={() => {
-                        selectTab(tab);
+                        selectTab(index);
                         navigateButtonHidden = true;
                     }}
                     />
