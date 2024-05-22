@@ -3,7 +3,8 @@
     import {now} from "$lib/page/stores/now/now_dayjs_store.js";
     import CustomerBookingComponent from "$lib/components/CustomerBooking/CustomerBookingComponent.svelte";
     import {
-        CustomerBooking, CustomerBookingChannel,
+        CustomerBooking,
+        CustomerBookingChannel,
         CustomerIndividualBooking
     } from "$lib/api/api_server/customer-booking-portal/utility-functions/initialize_functions/CustomerBooking.js";
 
@@ -31,8 +32,15 @@
     }
 </script>
 
-<div class="absolute top-0 left-0 right-0">
-    <Modal bind:open={open} size="md" class="w-full max-w-3xl h-[80vh] border-dotted border-8" classBackdrop="fixed inset-0 z-50 bg-gray-900 bg-opacity-90 dark:bg-opacity-80"  outsideclose>
+<div class="absolute top-0 left-0 right-0 ">
+    <Modal bind:open={open} size="md" class="w-full max-w-3xl h-[80vh] border-8"
+           bodyClass="p-4 md:p-5 space-y-0 flex-1 overflow-y-auto overscroll-contain"
+           classBackdrop="fixed inset-0 z-50 bg-gray-900 bg-opacity-90 dark:bg-opacity-80">
+        <svelte:fragment slot="header">
+            <h1 class="text-2xl text-gray-700 font-bold">
+                New Booking
+            </h1>
+        </svelte:fragment>
         <CustomerBookingComponent
                 bookingChannel={CustomerBookingChannel.LOBBY}
 

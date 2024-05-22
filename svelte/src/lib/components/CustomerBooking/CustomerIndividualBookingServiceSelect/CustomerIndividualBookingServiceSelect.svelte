@@ -2,6 +2,8 @@
     import {Accordion, AccordionItem} from "flowbite-svelte";
     import ServiceOption
         from "$lib/components/CustomerBooking/CustomerIndividualBookingServiceSelect/components/ServiceOption/ServiceOption.svelte";
+    import { Button } from 'flowbite-svelte';
+    import { ArrowRightOutline, ArrowLeftOutline } from 'flowbite-svelte-icons';
 
     export let business
     export let gotoNumGuestSelect;
@@ -36,28 +38,12 @@
 </script>
 
 <div class="h-full w-full">
-    <div class="flex justify-between items-center px-4 pt-4 w-full">
-        <button
-                class="flex items-center justify-center px-4 py-2 rounded-lg bg-blue-500 hover:bg-blue-700 focus:outline-none focus:ring-4 focus:ring-blue-300 transition duration-150 ease-in-out"
-                on:click={handlePrev}
-                aria-label="Previous"
-        >
-            <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 12h14M5 12l4-4m-4 4 4 4"/>
-            </svg>
-        </button>
+    <div class="flex justify-between items-center px-6 pt-4 w-full">
+        <Button pill={true} on:click={handlePrev} class="!p-2"><ArrowLeftOutline class="w-6 h-6" /></Button>
         <h1 class="text-xl font-semibold flex-grow-0 ">
             Guest #{guestIndex + 1}
         </h1>
-        <button
-                class="flex items-center justify-center px-4 py-2 rounded-lg bg-blue-500 hover:bg-blue-700 focus:outline-none focus:ring-4 focus:ring-blue-300 transition duration-150 ease-in-out"
-                on:click={handleNext}
-                aria-label="Next"
-        >
-            <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 12H5m14 0l-4 4m4-4-4-4"/>
-            </svg>
-        </button>
+        <Button pill={true} on:click={handleNext} class="!p-2"><ArrowRightOutline class="w-6 h-6" /></Button>
     </div>
 
     <!-- Customer individual service select -->
