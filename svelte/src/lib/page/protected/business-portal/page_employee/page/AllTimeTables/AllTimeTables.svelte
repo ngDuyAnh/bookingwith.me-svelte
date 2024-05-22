@@ -17,5 +17,5 @@
 </script>
 
 <TimeTable
-    getSchedule={getAllEmployeeSchedule}
+        getSchedule={getAllEmployeeSchedule}
 />
