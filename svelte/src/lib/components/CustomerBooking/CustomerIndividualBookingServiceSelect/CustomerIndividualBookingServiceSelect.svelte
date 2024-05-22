@@ -8,7 +8,7 @@
     export let gotoCustomerBookingInformation;
     export let customerIndividualBookingList;
 
-    let guestIndex = 0;
+    export let guestIndex = 0;
 
     function handlePrev()
     {
