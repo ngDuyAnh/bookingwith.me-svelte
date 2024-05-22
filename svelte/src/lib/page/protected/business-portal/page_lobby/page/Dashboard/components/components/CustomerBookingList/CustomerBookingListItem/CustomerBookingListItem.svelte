@@ -9,7 +9,7 @@
 
 <div class="">
 
-    <span class="flex flex-row block text-gray-900 font-bold">
+    <span class="flex flex-row text-gray-900 font-bold">
         {customerBooking.customer.customerName} - {customerBooking.customer.phoneNumber}
         {#if !msg}
             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
