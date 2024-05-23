@@ -48,7 +48,7 @@
            bodyClass="p-4 md:p-5 space-y-0 flex-1 overflow-y-auto overscroll-contain"
            classBackdrop="fixed inset-0 z-50 bg-gray-900 bg-opacity-90 dark:bg-opacity-80">
         <svelte:fragment slot="header">
-            <h1 class="text-2xl text-gray-700 font-bold">
+            <h1 class="select-none text-2xl text-gray-700 font-bold">
                 New Booking
             </h1>
         </svelte:fragment>

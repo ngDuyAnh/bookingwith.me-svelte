@@ -5,10 +5,10 @@
 </script>
 
 <div class="flex flex-col items-center justify-center h-[80%] w-full">
-    <h1 class="text-2xl text-gray-700">
+    <h1 class="text-2xl text-gray-700 select-none">
         Welcome to {businessInfo.businessName}
     </h1>
-    <form class="max-w-sm mx-auto bg-white p-6 rounded-lg shadow-lg dark:bg-gray-800" on:submit|preventDefault={gotoCustomerIndividualBookingServiceSelect(selectedNumGuests)}>
+    <form class="select-none max-w-sm mx-auto bg-white p-6 rounded-lg shadow-lg dark:bg-gray-800" on:submit|preventDefault={gotoCustomerIndividualBookingServiceSelect(selectedNumGuests)}>
         <label for="zip-input" class="block text-sm font-medium text-gray-900 dark:text-white text-center mb-4">
             Please select the number of guests:
         </label>
