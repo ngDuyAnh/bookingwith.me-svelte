@@ -8,8 +8,8 @@
     import {Modal} from "flowbite-svelte";
     import {getCustomerBooking} from "$lib/api/api_server/customer-booking-portal/api.js";
     import dayjs from "dayjs";
-    import CustomerIndividualServiceBooking
-        from "$lib/page/protected/business-portal/page_lobby/page/Dashboard/components/Servicing/CustomerIndividualBooking/CustomerIndividualServiceBooking/CustomerIndividualServiceBooking.svelte";
+    import CustomerIndividualServiceBookingComponent
+        from "$lib/page/protected/business-portal/page_lobby/page/Dashboard/components/components/CustomerBookingClickModal/Servicing/components/CustomerIndivdualBookingComponent/CustomerIndividualServiceBookingComponent/CustomerIndividualServiceBookingComponent.svelte";
     import {
         findIndividualBookingByID,
         findServiceBookingByID,
@@ -58,9 +58,9 @@
         eventAllUpdated: function () {
             findECBody();
         },
-        eventMouseEnter: function (info) { //under weird circumstances, can be called infinetly when hovering over an event
+        eventMouseEnter: function (info) { //under weird circumstances, can be called infinitely when hovering over an event
             // until you move the mouse elsewhere. observed when an event occupies
-            // very little time range.
+            // very little time range.gitg
             if (info.event.title !== "") {
                 prevInfoID = info.event.id;
                 let bookingID = info.event.extendedProps.servicingTicket.bookingID;
@@ -220,20 +220,22 @@
     let openModal = false;
     let eventInfo = undefined;
     let customerBooking = undefined;
-    let individualBooking = undefined;
     let serviceBooking = undefined;
-    let preselectEmployee = undefined;
+    let preselectEmployeeID = undefined;
     let indicateToSendCustomerBookingToCompleted = false;
 
     async function openModalServicingTicket(info)
     {
-        console.log("openModalServicingTicket", info)
+        // console.log("openModalServicingTicket", info)
 
+        // Track the event servicing ticket that got clicked
         eventInfo = info;
+
+        // Get the customer booking and service booking associated with the servicing ticket
         customerBooking = await getCustomerBooking(
             eventInfo.event.extendedProps.servicingTicket.bookingID
         );
-        individualBooking = findIndividualBookingByID(
+        let individualBooking = findIndividualBookingByID(
             customerBooking,
             eventInfo.event.extendedProps.servicingTicket.individualID
         );
@@ -241,8 +243,9 @@
             individualBooking,
             eventInfo.event.extendedProps.servicingTicket.serviceBookingID
         );
-        preselectEmployee =
-            eventInfo.event.extendedProps.employeeTimetable.employee.id;
+
+        // Pre-select the employee with the employee timetable that it is currently with
+        preselectEmployeeID = eventInfo.event.extendedProps.employeeTimetable.employee.id;
 
         // Indicate to send the customer booking to completed
         // It must be under servicing
@@ -255,12 +258,12 @@
             ).flat();
 
             // Count completed and currently servicing bookings
-            let incompletedServiceBookingCount = 0;
-            let incompletedServicingTicketCount = 0;
+            let incompleteServiceBookingCount = 0;
+            let incompleteServicingTicketCount = 0;
             serviceBookingList.forEach((serviceBooking) => {
                 if (!serviceBooking.completed)
                 {
-                    incompletedServiceBookingCount += 1;
+                    incompleteServiceBookingCount += 1;
 
                     // Check if there is only one servicing ticket that is not completed
                     if (serviceBooking.servicingTicketList.length > 0)
@@ -268,7 +271,7 @@
                         serviceBooking.servicingTicketList.forEach((servicingTicket) => {
                             if (!servicingTicket.completed)
                             {
-                                incompletedServicingTicketCount += 1;
+                                incompleteServicingTicketCount += 1;
                             }
                         })
                     }
@@ -276,7 +279,7 @@
             });
 
             // All service bookings are completed or only one left, and it is currently being servicing
-            if (incompletedServiceBookingCount === 0 || (incompletedServiceBookingCount === 1 && incompletedServicingTicketCount === 1))
+            if (incompleteServiceBookingCount === 0 || (incompleteServiceBookingCount === 1 && incompleteServicingTicketCount === 1))
             {
                 indicateToSendCustomerBookingToCompleted = true;
             }
@@ -291,12 +294,15 @@
     let resources = [];
     let loading = true;
 
-    function bookingStateColour(servicingTicket) {
+    function bookingStateColour(servicingTicket)
+    {
         let servicingTicketColor = "#3399ff"; // Light blue, appointment state
         // Lobby
         if (servicingTicket.servicingTicketInfo.bookingState === CustomerBookingState.LOBBY) {
             servicingTicketColor = "#FFC300";
-        } else if (servicingTicket.servicingTicketInfo.bookingState === CustomerBookingState.SERVICING) {
+        }
+        // Ongoing servicing
+        else if (servicingTicket.servicingTicketInfo.bookingState === CustomerBookingState.SERVICING) {
             // In servicing queue waiting to be service
             servicingTicketColor = "#90ee90";
 
@@ -308,7 +314,9 @@
             else if (servicingTicket.isOngoing) {
                 servicingTicketColor = "#29c029";
             }
-        } else if (servicingTicket.bookingState === CustomerBookingState.COMPLETED) {
+        }
+        // Completed
+        else if (servicingTicket.servicingTicketInfo.bookingState === CustomerBookingState.COMPLETED) {
             servicingTicketColor = "gray";
         }
 
@@ -326,7 +334,7 @@
                     start: `${$now.format("YYYY-MM-DD")} ${servicingTicket.timePeriod.startTime}`,
                     end: `${$now.format("YYYY-MM-DD")} ${servicingTicket.timePeriod.endTime}`,
                     resourceId: employeeTable.employee.id,
-                    title: `${servicingTicket.service.serviceName}\n${servicingTicket.servicingTicketInfo.customerName}`,
+                    title: `${servicingTicket.servicingTicketInfo.service.serviceName}\n${servicingTicket.servicingTicketInfo.customerName}`,
 
                     // Ticket state
                     color: servicingTicketColor,
@@ -496,11 +504,10 @@
                 <div class="font-bold">Service:</div>
 
                 {#if customerBooking.bookingState !== 3 && isToday}
-                    <CustomerIndividualServiceBooking
+                    <CustomerIndividualServiceBookingComponent
                             {customerBooking}
-                            {individualBooking}
                             {serviceBooking}
-                            {preselectEmployee}
+                            {preselectEmployeeID}
                     />
 
                     <div class="mt-4 flex justify-end items-center space-x-2">

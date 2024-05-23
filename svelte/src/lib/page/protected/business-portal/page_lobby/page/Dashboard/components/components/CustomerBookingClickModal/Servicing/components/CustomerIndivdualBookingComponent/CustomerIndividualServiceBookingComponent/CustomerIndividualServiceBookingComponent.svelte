@@ -7,87 +7,80 @@
     import {formatToTime, formatToTimeAm} from "$lib/application/Formatter.js";
     import {getContext} from "svelte";
     import {
-        CustomerBookingState
-    } from "$lib/api/api_server/customer-booking-portal/utility-functions/initialize_functions/CustomerBooking.js";
-    import {moveToServicing} from "$lib/api/api_server/lobby-portal/utility-functions/handle_customer_booking_state.js";
+        CustomerBookingState, ServicingTicket
+    } from "$lib/api/initialize_functions/CustomerBooking.js";
+    import {moveToServicing} from "$lib/page/protected/business-portal/page_lobby/page/Dashboard/components/components/CustomerBookingClickModal/handle_customer_booking_state.js";
     import dayjs from "dayjs";
+    import {Employee} from "$lib/api/initialize_functions/Business.js";
 
     export let customerBooking;
-    export let individualBooking;
     export let serviceBooking;
 
-    export let preselectEmployee = undefined;
+    export let preselectEmployeeID = undefined;
 
-    let selectedEmployee = null;
-    if (preselectEmployee !== undefined)
-    {
-        selectedEmployee = preselectEmployee;
+    let selectedEmployeeID = null;
+    if (preselectEmployeeID !== undefined) {
+        selectedEmployeeID = preselectEmployeeID;
     }
 
     // Retrieve customer booking list update function
     const submitCustomerBooking = getContext('submitCustomerBooking');
 
     async function handleStartServicing() {
-        console.log('Start servicing:', serviceBooking, selectedEmployee);
-
         // If the customer is not in servicing queue, move them there
         customerBooking.bookingState = CustomerBookingState.SERVICING;
 
         // Create the servicing ticket
         let servicingTicket = {
-            bookingID: customerBooking.bookingID,
-            individualID: individualBooking.individualID,
-            serviceBookingID: serviceBooking.serviceBookingID,
-            ticketId: -1,
+            ...ServicingTicket(),
+
             employee: {
-                id: selectedEmployee,
-                employeeName: "",
-                archive: false
+                ...Employee(),
+                id: selectedEmployeeID
             },
+
             timePeriod: {
                 startTime: $now.format(formatToTime),
                 endTime: null
             },
-            completed: false
-        };
+        }
 
         // Add the servicing ticket to the service booking
         serviceBooking.servicingTicketList.push(servicingTicket);
+
+        console.log('Start servicing:', serviceBooking, selectedEmployeeID);
 
         // Service the customer booking
         await moveToServicing($now, customerBooking, submitCustomerBooking);
 
         // Reset the selected employee after starting servicing
-        selectedEmployee = null;
+        selectedEmployeeID = null;
     }
 
-    function handleEndServicing(servicingTicket)
-    {
-        console.log('End servicing:', servicingTicket);
-
+    function handleEndServicing(servicingTicket) {
         // Initialize the end time
         servicingTicket.timePeriod.endTime = $now.format(formatToTime);
+
+        console.log('End servicing:', servicingTicket);
 
         // Save the customer booking change
         submitCustomerBooking(customerBooking);
     }
 
-    function handleServiceBookingCompletedToggle()
-    {
-        console.log('Service booking completed:', serviceBooking);
-
+    function handleServiceBookingCompletedToggle() {
         // Set the service booking completed toggle
         serviceBooking.completed = !serviceBooking.completed;
 
         // End all ongoing servicing ticket associated to the service booking
         if (serviceBooking.completed) {
             serviceBooking.servicingTicketList.forEach(ticket => {
-                if (!ticket.completed) {
-                    ticket.completed = true;
+                if (!ticket.isCompleted) {
                     ticket.timePeriod.endTime = $now.format(formatToTime);
                 }
             });
         }
+
+        console.log('Service booking completed:', serviceBooking);
 
         // Save the customer booking change
         submitCustomerBooking(customerBooking);
@@ -104,14 +97,14 @@
         <form class="flex flex-row flex-grow items-center space-x-4" on:submit|preventDefault>
             <Select
                     items={$employeeSelectOptions}
-                    bind:value={selectedEmployee} class="flex-1"
+                    bind:value={selectedEmployeeID} class="flex-1"
                     disabled={serviceBooking.completed}
                     required
             />
             <Button
                     type="submit"
                     on:click={handleStartServicing}
-                    disabled={!selectedEmployee || serviceBooking.completed}
+                    disabled={!selectedEmployeeID || serviceBooking.completed}
             >
                 Start
             </Button>
@@ -119,8 +112,8 @@
 
         <!-- Service booking completed status -->
         <Button
-            on:click={handleServiceBookingCompletedToggle}
-            class={`px-4 py-2 text-white font-bold rounded ${!serviceBooking.completed ? 'bg-green-500 hover:bg-green-600' : 'bg-red-500 hover:bg-red-600'}`}
+                on:click={handleServiceBookingCompletedToggle}
+                class={`px-4 py-2 text-white font-bold rounded ${!serviceBooking.completed ? 'bg-green-500 hover:bg-green-600' : 'bg-red-500 hover:bg-red-600'}`}
         >
             {!serviceBooking.completed ? 'Mark service as done' : 'Mark service as not done'}
         </Button>
@@ -128,12 +121,13 @@
 
     <!-- Existing servicing ticket -->
     <!-- Only display ticket that is not completed -->
-    {#each serviceBooking.servicingTicketList.filter(ticket => !ticket.completed) as ticket}
+    {#each serviceBooking.servicingTicketList.filter(ticket => !ticket.isCompleted) as ticket}
         <div class="mt-4 p-4 border border-gray-500 rounded bg-gray-100">
             <div class="p-2">
                 <p><strong>Employee:</strong> {ticket.employee.employeeName}</p>
-                <p><strong>Start Time:</strong> {dayjs(ticket.timePeriod.startTime, formatToTime).format(formatToTimeAm)}</p>
-                <Button on:click={() => handleEndServicing(ticket)} disabled={ticket.completed}>
+                <p><strong>Start
+                    Time:</strong> {dayjs(ticket.timePeriod.startTime, formatToTime).format(formatToTimeAm)}</p>
+                <Button on:click={() => handleEndServicing(ticket)} disabled={ticket.isCompleted}>
                     End
                 </Button>
             </div>

@@ -9,6 +9,11 @@
   import {business} from "$lib/page/protected/stores/business.js";
   import BusinessPortalLobby from "$lib/page/protected/business-portal/page_lobby/BusinessPortalLobby.svelte";
   import BusinessPortalEmployee from "$lib/page/protected/business-portal/page_employee/BusinessPortalEmployee.svelte";
+  import {goto} from "$app/navigation";
+  import {
+    employeeSelectOptions,
+    employeeToSelectOption
+  } from "$lib/page/stores/EmployeeSelectOptions/employeeSelectOptions_store.js";
 
   export let data;
   let loading = true;
@@ -18,10 +23,23 @@
 
   onMount(async () => {
     // Get the business
-    if($userProfile.auth != null && $userProfile.user !=null)
+    if($userProfile.auth != null && $userProfile.user != null)
     {
       const response = await getBusiness($userProfile.user.businessInfo.businessID);
       business.set(response);
+    }
+
+    // The business is not active
+    // Send to error page
+    if (!$business.businessInfo.active)
+    {
+      await goto('/error');
+    }
+
+    // Convert the employee list to selectable options
+    if ($business.employeeList && Array.isArray($business.employeeList))
+    {
+      employeeSelectOptions.set($business.employeeList.map(employeeToSelectOption));
     }
 
     loading = false;

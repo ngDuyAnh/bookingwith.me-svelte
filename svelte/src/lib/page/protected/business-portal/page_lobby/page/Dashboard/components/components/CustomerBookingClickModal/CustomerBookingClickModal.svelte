@@ -2,12 +2,16 @@
     import {Modal} from "flowbite-svelte";
     import {
         CustomerBookingState
-    } from "$lib/api/api_server/customer-booking-portal/utility-functions/initialize_functions/CustomerBooking.js";
+    } from "$lib/api/initialize_functions/CustomerBooking.js";
     import {
         customerBookingClickModal
     } from "$lib/page/protected/business-portal/page_lobby/page/Dashboard/components/components/CustomerBookingClickModal/stores/customerBookingClickModal.js";
     import AppointmentModalComponent
         from "$lib/page/protected/business-portal/page_lobby/page/Dashboard/components/components/CustomerBookingClickModal/Appointment/AppointmentModalComponent.svelte";
+    import LobbyModalComponent
+        from "$lib/page/protected/business-portal/page_lobby/page/Dashboard/components/components/CustomerBookingClickModal/Lobby/LobbyModalComponent.svelte";
+    import ServicingModalComponent
+        from "$lib/page/protected/business-portal/page_lobby/page/Dashboard/components/components/CustomerBookingClickModal/Servicing/ServicingModalComponent.svelte";
 
     let customerBooking = undefined;
     $: customerBooking = $customerBookingClickModal.customerBooking;
@@ -18,9 +22,9 @@
         {#if customerBooking.bookingState === CustomerBookingState.APPOINTMENT}
             <AppointmentModalComponent/>
         {:else if customerBooking.bookingState === CustomerBookingState.LOBBY}
-            Lobby
+            <LobbyModalComponent/>
         {:else if customerBooking.bookingState === CustomerBookingState.SERVICING}
-            Servicing
+            <ServicingModalComponent/>
         {:else if customerBooking.bookingState === CustomerBookingState.COMPLETED}
             Completed
         {/if}

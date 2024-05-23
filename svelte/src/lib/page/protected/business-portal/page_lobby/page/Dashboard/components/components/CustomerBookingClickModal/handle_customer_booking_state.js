@@ -53,9 +53,8 @@ export async function moveToCompleted(now, customerBooking, submitCustomerBookin
 
                 // Mark all tickets within the service as completed
                 serviceBooking.servicingTicketList.forEach(ticket => {
-                    if (!ticket.completed)
+                    if (!ticket.isCompleted)
                     {
-                        ticket.completed = true;
                         ticket.timePeriod.endTime = dayjs().format(formatToTime); // Set end time to now
                     }
                 });
