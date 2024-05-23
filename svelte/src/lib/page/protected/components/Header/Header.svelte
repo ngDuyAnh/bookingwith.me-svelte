@@ -1,6 +1,5 @@
 <script>
     import LogoButton from "$lib/components/assets/Logo/LogoButton.svelte";
-    import report_icon from "$lib/images/report_icon/message-report.png";
     import {sineIn} from "svelte/easing";
     import {CloseButton, Drawer, Sidebar, SidebarGroup, SidebarItem, SidebarWrapper} from "flowbite-svelte";
 
@@ -47,14 +46,6 @@
     </div>
 
     <div class="corner flex items-center">
-        <div class="hidden lg:block">
-            <a href="/report">
-                <img src={report_icon}
-                     alt="Kid's helpline"
-                     title="Kid's helpline"
-                />
-            </a>
-        </div>
 
         <button class="lg:hidden flex items-center justify-center w-10 h-10 rounded focus:outline-none focus:ring-2 focus:ring-opacity-50"
                 on:click={() => navigateButtonHidden = false} aria-label="Show navigation">
@@ -96,23 +87,6 @@
     .corner {
         width: 3em;
         height: 3em;
-    }
-
-    .corner a {
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        width: 100%;
-        height: 100%;
-    }
-
-    img {
-        width: 2em;
-        height: 2em;
-    }
-
-    .corner img {
-        object-fit: contain;
     }
 
     nav {

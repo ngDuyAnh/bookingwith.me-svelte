@@ -4,7 +4,7 @@
   import Report from "$lib/page/protected/business-portal/page_business_admin/page/Report/Report.svelte";
   import Employee from "$lib/page/protected/business-portal/page_business_admin/page/Employee/Employee.svelte";
   import Service from "$lib/page/protected/business-portal/page_business_admin/page/Service/Service.svelte";
-  import Setting from "$lib/page/protected/business-portal/page_business_admin/page/Setting/Setting.svelte";
+  import Setting from "$lib/components/Setting/Setting.svelte";
 
   let tabs = ["Dashboard", "Report", "Employee", "Service", "Setting"];
   let selectedIndex = 0;
