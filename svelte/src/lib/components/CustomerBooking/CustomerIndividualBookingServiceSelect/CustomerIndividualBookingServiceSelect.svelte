@@ -26,11 +26,9 @@
     }
 
     function checkForGuestsWithNoServices() {
-        const guestsWithNoServices = customerIndividualBookingList
+        return customerIndividualBookingList
             .map((booking, index) => booking.customerIndividualServiceBookingList.length === 0 ? index+1 : -1)
             .filter(index => index !== -1);
-
-        return guestsWithNoServices;
     }
 
 
