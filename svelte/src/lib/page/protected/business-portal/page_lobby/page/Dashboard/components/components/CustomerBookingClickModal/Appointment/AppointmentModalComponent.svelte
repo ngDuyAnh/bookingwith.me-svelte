@@ -47,12 +47,9 @@
 <div>
     <p><strong>Customer name:</strong> {customerBooking.customer.customerName}</p>
     <p><strong>Phone number:</strong> {customerBooking.customer.phoneNumber}</p>
-    <p><strong>Booking
-        time:</strong> {dayjs(customerBooking.bookingTime, formatToTime).format(formatToTimeAM)}</p>
-    <p class="break-words"><strong>Message:</strong> {customerBooking.message}
-        {#if !hasMsg}
-            <span class="animate-ping absolute inline-flex h-1.5 w-1.5 rounded-full bg-sky-400 opacity-75"></span>
-        {/if}
+    <p><strong>Booking time:</strong> {dayjs(customerBooking.bookingTime, formatToTime).format(formatToTimeAM)}</p>
+    <p class="break-words">
+        <strong>Message:</strong> {customerBooking.message}
     </p>
     <div class="mt-4">
         <div class="font-bold">Guest(s):</div>
