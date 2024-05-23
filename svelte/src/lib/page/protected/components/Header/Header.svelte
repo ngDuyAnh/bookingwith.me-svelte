@@ -1,6 +1,5 @@
 <script>
     import LogoButton from "$lib/components/assets/Logo/LogoButton.svelte";
-    import report_icon from "$lib/images/report_icon/message-report.png";
     import {sineIn} from "svelte/easing";
     import {CloseButton, Drawer, Sidebar, SidebarGroup, SidebarItem, SidebarWrapper} from "flowbite-svelte";
 
@@ -88,23 +87,6 @@
     .corner {
         width: 3em;
         height: 3em;
-    }
-
-    .corner a {
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        width: 100%;
-        height: 100%;
-    }
-
-    img {
-        width: 2em;
-        height: 2em;
-    }
-
-    .corner img {
-        object-fit: contain;
     }
 
     nav {
