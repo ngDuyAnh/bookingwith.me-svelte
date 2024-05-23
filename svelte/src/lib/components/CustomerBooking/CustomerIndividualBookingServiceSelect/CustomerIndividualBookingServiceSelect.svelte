@@ -1,9 +1,10 @@
 <script>
-    import {Accordion, AccordionItem} from "flowbite-svelte";
+    import {Accordion, AccordionItem, Alert, Button} from "flowbite-svelte";
     import ServiceOption
         from "$lib/components/CustomerBooking/CustomerIndividualBookingServiceSelect/components/ServiceOption/ServiceOption.svelte";
-    import { Button } from 'flowbite-svelte';
-    import { ArrowRightOutline, ArrowLeftOutline } from 'flowbite-svelte-icons';
+    import {ArrowLeftOutline, ArrowRightOutline, InfoCircleSolid} from 'flowbite-svelte-icons';
+    import {fly} from 'svelte/transition';
+    import {selectedServiceIds} from "$lib/page/stores/ServiceSelectionOptions/service_options_store.js";
 
     export let business
     export let gotoNumGuestSelect;
@@ -12,49 +13,104 @@
 
     export let guestIndex = 0;
 
-    function handlePrev()
-    {
-        if (guestIndex === 0)
-        {
+    let showAlert = false;
+    let alertMsg = "";
+
+    function handlePrev() {
+        showAlert = false;
+        if (guestIndex === 0) {
             gotoNumGuestSelect();
-        }
-        else
-        {
+        } else {
             guestIndex--;
         }
     }
 
-    function handleNext()
-    {
-        if (guestIndex === (customerIndividualBookingList.length - 1))
-        {
-            // Check if all guest has selected at least a service
-            let allGuestSelectedService = true;
-            if (allGuestSelectedService)
-            {
+    function checkForGuestsWithNoServices() {
+        const guestsWithNoServices = customerIndividualBookingList
+            .map((booking, index) => booking.customerIndividualServiceBookingList.length === 0 ? index+1 : -1)
+            .filter(index => index !== -1);
+
+        return guestsWithNoServices;
+    }
+
+
+    function handleNext() {
+        showAlert = false;
+        alertMsg = "";
+        if (guestIndex === (customerIndividualBookingList.length - 1)) {
+            let allGuestSelectedService = checkForGuestsWithNoServices();
+
+            if (allGuestSelectedService.length === 0) {
                 gotoCustomerBookingInformation();
+            } else {
+                showAlert = true;
+                if (allGuestSelectedService.length <= 4) {
+                    if (allGuestSelectedService.length === 4) {
+                        alertMsg = `Guests # ${allGuestSelectedService.slice(0, -1).join(', ')} & ${allGuestSelectedService.slice(-1)} have not selected a service.`;
+                    } else {
+                        alertMsg = `Guest${allGuestSelectedService.length>1?'s':''} # ${allGuestSelectedService.join(' & ')} have not selected a service.`;
+                    }
+                } else {
+                    alertMsg = `${allGuestSelectedService.length} guests have not selected a service.`;
+                }
             }
-            else
-            {
-                alert("At least one guest has not selected a service!");
-            }
-        }
-        else
-        {
+        } else {
             guestIndex++;
         }
     }
+
+    $: {
+        const selectedIds = new Set(customerIndividualBookingList[guestIndex]?.customerIndividualServiceBookingList.map(serviceBooking => serviceBooking.service.id));
+        selectedServiceIds.set(selectedIds);
+        console.log("updating here");
+    }
+
+    $: console.log("business", business), console.log("customerIndividualBookingList", customerIndividualBookingList);
+
 </script>
 
+
+<style>
+
+    :global(.ripple){
+        display: block;
+        width: 30px;
+        height: 30px;
+        border-radius: 50%;
+        border:2px red solid;
+        animation: pulse 1s infinite;
+    }
+
+    @-webkit-keyframes pulse {
+        0% {
+            -webkit-box-shadow: 0 0 0 0 rgba(255,0,0, 0.4);
+        }
+        70% {
+            -webkit-box-shadow: 0 0 0 10px rgba(255,0,0, 0);
+        }
+        100% {
+            -webkit-box-shadow: 0 0 0 0 rgba(255,0,0, 0);
+        }
+    }
+</style>
+
+
 <div class="h-full w-full">
-    <div class="flex justify-between items-center px-6 pt-4 w-full">
-        <Button pill={true} on:click={handlePrev} class="!p-2"><ArrowLeftOutline class="w-6 h-6" /></Button>
+    <div class="flex justify-between items-center px-6 py-4 w-full">
+        <Button pill={true} on:click={handlePrev} class="!p-2">
+            <ArrowLeftOutline class="w-6 h-6"/>
+        </Button>
         <h1 class="text-xl font-semibold flex-grow-0 ">
             Guest #{guestIndex + 1}
         </h1>
-        <Button pill={true} on:click={handleNext} class="!p-2"><ArrowRightOutline class="w-6 h-6" /></Button>
+        <Button pill={true} on:click={handleNext} class="!p-2">
+            <ArrowRightOutline class="w-6 h-6"/>
+        </Button>
     </div>
-
+    <Alert class="{showAlert?'':'hidden'}" transition={fly} params={{ x: 200 }} dismissable>
+        <InfoCircleSolid slot="icon" class="w-5 h-5 ripple"/>
+        {alertMsg}
+    </Alert>
     <!-- Customer individual service select -->
     <div class="mt-3">
         <Accordion>
@@ -71,6 +127,8 @@
                         <ServiceOption
                                 {service}
                                 customerIndividualBooking={customerIndividualBookingList[guestIndex]}
+                                serviceGroup={serviceGroup.serviceList}
+                                multiselect={serviceGroup.multiselect}
                         />
                     {/each}
                 </AccordionItem>
@@ -78,3 +136,4 @@
         </Accordion>
     </div>
 </div>
+
