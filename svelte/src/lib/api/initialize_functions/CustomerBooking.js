@@ -66,6 +66,7 @@ export function ServicingTicketInfo()
         "customerName": "",
         "bookingTime": null,
         "bookingState": -1,
+        "service": null,
         "bookedEmployee": null
     };
 }
@@ -81,7 +82,6 @@ export function ServicingTicket()
         "servicingTicketInfo": ServicingTicketInfo(),
 
         "employee": null,
-        "service": null,
 
         "timePeriod": TimePeriod(),
 

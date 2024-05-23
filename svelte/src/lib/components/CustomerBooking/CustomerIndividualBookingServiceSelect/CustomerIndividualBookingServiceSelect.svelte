@@ -58,13 +58,11 @@
     }
 
     $: {
+        // console.log("Update selectedServiceIds", selectedIds);
+
         const selectedIds = new Set(customerIndividualBookingList[guestIndex]?.customerIndividualServiceBookingList.map(serviceBooking => serviceBooking.service.id));
         selectedServiceIds.set(selectedIds);
-        console.log("updating here");
     }
-
-    $: console.log("business", business), console.log("customerIndividualBookingList", customerIndividualBookingList);
-
 </script>
 
 

@@ -3,7 +3,7 @@ import {User} from "$lib/api/initialize_functions/User.js";
 export function Business()
 {
     return {
-        "business":BusinessInformation(),
+        "businessInfo": BusinessInformation(),
         "serviceGroupList":[],
         "employeeList":[],
     }
