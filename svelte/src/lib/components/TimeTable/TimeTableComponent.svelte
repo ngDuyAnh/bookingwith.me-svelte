@@ -60,7 +60,7 @@
         },
         eventMouseEnter: function (info) { //under weird circumstances, can be called infinitely when hovering over an event
             // until you move the mouse elsewhere. observed when an event occupies
-            // very little time range.gitg
+            // very little time range.
             if (info.event.title !== "") {
                 prevInfoID = info.event.id;
                 let bookingID = info.event.extendedProps.servicingTicket.bookingID;
