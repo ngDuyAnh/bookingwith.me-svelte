@@ -1,4 +1,4 @@
-import {User} from "$lib/api/api_server/user-portal/User.js";
+import {User} from "$lib/api/initialize_functions/User.js";
 
 export function Business()
 {

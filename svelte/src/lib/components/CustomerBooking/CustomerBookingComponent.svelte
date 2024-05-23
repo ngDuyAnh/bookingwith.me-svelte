@@ -2,7 +2,7 @@
     import NumGuestSelect from "$lib/components/CustomerBooking/NumGuestSelect/NumGuestSelect.svelte";
     import {
         CustomerBooking, CustomerIndividualBooking
-    } from "$lib/api/api_server/customer-booking-portal/utility-functions/initialize_functions/CustomerBooking.js";
+    } from "$lib/api/initialize_functions/CustomerBooking.js";
     import {now} from "$lib/page/stores/now/now_dayjs_store.js";
     import CustomerIndividualBookingServiceSelect
         from "$lib/components/CustomerBooking/CustomerIndividualBookingServiceSelect/CustomerIndividualBookingServiceSelect.svelte";

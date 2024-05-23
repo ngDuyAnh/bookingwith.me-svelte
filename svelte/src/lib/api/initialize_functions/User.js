@@ -1,6 +1,6 @@
 import {
     BusinessInformation
-} from "$lib/api/api_server/customer-booking-portal/utility-functions/initialize_functions/Business.js";
+} from "$lib/api/initialize_functions/Business.js";
 
 export const UserRole = {
     ADMIN: "ADMIN",

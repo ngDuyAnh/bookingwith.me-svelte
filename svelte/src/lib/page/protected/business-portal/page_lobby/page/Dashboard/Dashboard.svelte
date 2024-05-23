@@ -13,7 +13,7 @@
         from "$lib/page/protected/business-portal/page_lobby/page/Dashboard/components/Completed/Completed.svelte";
     import {
         CustomerBooking
-    } from "$lib/api/api_server/customer-booking-portal/utility-functions/initialize_functions/CustomerBooking.js";
+    } from "$lib/api/initialize_functions/CustomerBooking.js";
     import {business} from "$lib/page/protected/stores/business.js";
     import {
         bookingStateList,
@@ -31,10 +31,24 @@
     {
         // Get the customer booking list
         const response = await getLobbyBookingList($business.businessInfo.businessID, $now.format(formatToDate));
-
-        console.log("fetchCustomerBookingList", response)
-
         bookingStateList.set(response.bookingList);
+
+        // Find and reinitialize the customer booking for the modal
+        if ($customerBookingClickModal.customerBooking)
+        {
+            const findID = $customerBookingClickModal.customerBooking.id;
+            const foundCustomerBooking = findCustomerBookingById(findID);
+            if (foundCustomerBooking) {
+                customerBookingClickModal.update(current => {
+                    return {
+                        ...current,
+                        customerBooking: foundCustomerBooking
+                    };
+                });
+            } else {
+                console.log('Customer booking not found for customer booking click modal.');
+            }
+        }
     }
 
     async function updateCustomerBookingList()
@@ -53,7 +67,7 @@
                 // Get the customer booking list
                 await fetchCustomerBookingList();
 
-                console.log("bookingStateList", $bookingStateList);
+                //console.log("bookingStateList", $bookingStateList);
             }
         }
         catch (error)
@@ -98,23 +112,6 @@
 
         // Update the customer booking list
         await fetchCustomerBookingList();
-
-        // Find and reinitialize the customer booking for the modal
-        const findID = $customerBookingClickModal.customerBooking.id;
-        const foundCustomerBooking = findCustomerBookingById(findID);
-
-        console.log("foundCustomerBooking", foundCustomerBooking)
-
-        if (foundCustomerBooking) {
-            customerBookingClickModal.update(current => {
-                return {
-                    ...current,
-                    customerBooking: foundCustomerBooking
-                };
-            });
-        } else {
-            console.error('Customer booking not found');
-        }
     }
 
     setContext('submitCustomerBooking', submitCustomerBooking);

@@ -13,11 +13,11 @@
     import {
         findIndividualBookingByID,
         findServiceBookingByID,
-    } from "$lib/api/api_server/customer-booking-portal/utility-functions/customer-booking-utility-functions.js";
-    import {moveToCompleted} from "$lib/api/api_server/lobby-portal/utility-functions/handle_customer_booking_state.js";
+    } from "$lib/api/initialize_functions/customer-booking-utility-functions.js";
+    import {moveToCompleted} from "$lib/page/protected/business-portal/page_lobby/page/Dashboard/components/components/CustomerBookingClickModal/handle_customer_booking_state.js";
     import {
         CustomerBookingState
-    } from "$lib/api/api_server/customer-booking-portal/utility-functions/initialize_functions/CustomerBooking.js";
+    } from "$lib/api/initialize_functions/CustomerBooking.js";
     import {business} from "$lib/page/protected/stores/business.js";
 
     // Date select
@@ -293,21 +293,22 @@
 
     function bookingStateColour(servicingTicket) {
         let servicingTicketColor = "#3399ff"; // Light blue, appointment state
-        if (servicingTicket.bookingState === 1) {
+        // Lobby
+        if (servicingTicket.servicingTicketInfo.bookingState === CustomerBookingState.LOBBY) {
             servicingTicketColor = "#FFC300";
-        } else if (servicingTicket.bookingState === 2) {
+        } else if (servicingTicket.servicingTicketInfo.bookingState === CustomerBookingState.SERVICING) {
             // In servicing queue waiting to be service
             servicingTicketColor = "#90ee90";
 
             // In the case of servicing ticket is completed
-            if (servicingTicket.completed) {
+            if (servicingTicket.isCompleted) {
                 servicingTicketColor = "gray";
             }
             // The ticket is currently being service
-            else if (servicingTicket.ticketId !== -1) {
+            else if (servicingTicket.isOngoing) {
                 servicingTicketColor = "#29c029";
             }
-        } else if (servicingTicket.bookingState === 3) {
+        } else if (servicingTicket.bookingState === CustomerBookingState.COMPLETED) {
             servicingTicketColor = "gray";
         }
 

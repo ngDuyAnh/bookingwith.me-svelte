@@ -6,7 +6,7 @@
         CustomerBooking,
         CustomerBookingChannel,
         CustomerIndividualBooking
-    } from "$lib/api/api_server/customer-booking-portal/utility-functions/initialize_functions/CustomerBooking.js";
+    } from "$lib/api/initialize_functions/CustomerBooking.js";
 
     export let showCustomerBookingInformationFlagHeader = true;
 

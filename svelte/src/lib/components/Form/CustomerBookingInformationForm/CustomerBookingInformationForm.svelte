@@ -12,7 +12,7 @@
     import {getCustomer} from "$lib/api/api_server/lobby-portal/api.js";
     import {
         CustomerBookingState
-    } from "$lib/api/api_server/customer-booking-portal/utility-functions/initialize_functions/CustomerBooking.js";
+    } from "$lib/api/initialize_functions/CustomerBooking.js";
     import {send_SMS_BookingSuccess} from "$lib/api/api_twilio/api.js";
     import {rawPhoneNumber, formatPhoneNumber} from "$lib/application/FormatPhoneNumber.js";
 
@@ -220,7 +220,6 @@
             {
                 response = await forceSubmitBooking(
                     businessInfo.businessID,
-                    $now.format(),
                     customerBooking
                 );
             }

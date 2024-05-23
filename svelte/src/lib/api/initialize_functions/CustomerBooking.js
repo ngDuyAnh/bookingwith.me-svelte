@@ -1,4 +1,5 @@
 import {formatToDate} from "$lib/application/Formatter.js";
+import {TimePeriod} from "$lib/api/initialize_functions/TimePeriod.js";
 
 export const CustomerBookingState = {
     APPOINTMENT: 0,
@@ -56,5 +57,36 @@ export function CustomerIndividualServiceBooking()
         "service": null,
         "completed": false,
         "servicingTicketList": []
+    };
+}
+
+export function ServicingTicketInfo()
+{
+    return {
+        "customerName": "",
+        "bookingTime": null,
+        "bookingState": -1,
+        "bookedEmployee": null
+    };
+}
+
+export function ServicingTicket()
+{
+    return {
+        "bookingID": "",
+        "individualID": -1,
+        "serviceBookingID": -1,
+        "ticketID": -1,
+
+        "servicingTicketInfo": ServicingTicketInfo(),
+
+        "employee": null,
+        "service": null,
+
+        "timePeriod": TimePeriod(),
+
+        "isFiller": false,
+        "isOngoing": false,
+        "isCompleted": false
     };
 }

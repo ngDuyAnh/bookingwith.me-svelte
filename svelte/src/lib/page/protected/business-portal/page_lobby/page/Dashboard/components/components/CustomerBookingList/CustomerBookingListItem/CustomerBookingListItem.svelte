@@ -1,6 +1,6 @@
 <script>
     import dayjs from "dayjs";
-    import {formatToTime, formatToTimeAM} from "$lib/application/Formatter.js";
+    import {formatToTime, formatToTimeAm} from "$lib/application/Formatter.js";
 
     export let customerBooking;
 
@@ -24,6 +24,6 @@
       {customerBooking.customerIndividualBookingList.length} Guests
     </span>
     <span class="block mt-2 text-gray-600 text-sm">
-        Booking Time: {dayjs(customerBooking.bookingTime, formatToTime).format(formatToTimeAM)}
+        Booking Time: {dayjs(customerBooking.bookingTime, formatToTime).format(formatToTimeAm)}
     </span>
 </div>

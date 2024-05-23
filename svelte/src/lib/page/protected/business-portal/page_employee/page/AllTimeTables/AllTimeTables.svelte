@@ -1,5 +1,5 @@
 <script>
-    import TimeTable from "$lib/components/TimeTable/TimeTable.svelte";
+    import TimeTableComponent from "$lib/components/TimeTable/TimeTableComponent.svelte";
     import {getSchedule} from "$lib/api/api_server/lobby-portal/api.js";
     import {business} from "$lib/page/protected/stores/business.js";
 
@@ -16,6 +16,6 @@
     }
 </script>
 
-<TimeTable
+<TimeTableComponent
         getSchedule={getAllEmployeeSchedule}
 />

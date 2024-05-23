@@ -3,7 +3,7 @@
     import {createBusiness} from "$lib/api/api_server/business-portal/api.js";
     import {
         BusinessInformation
-    } from "$lib/api/api_server/customer-booking-portal/utility-functions/initialize_functions/Business.js";
+    } from "$lib/api/initialize_functions/Business.js";
     import {formatPhoneNumber} from "$lib/application/FormatPhoneNumber.js";
 
     let businessInfo = {
