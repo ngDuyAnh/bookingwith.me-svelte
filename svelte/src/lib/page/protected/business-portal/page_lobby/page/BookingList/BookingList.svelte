@@ -21,7 +21,7 @@
     {
         try
         {
-            const response = await getAppointmentBookingList($userProfile.user.business.businessID, selectedDate);
+            const response = await getAppointmentBookingList($userProfile.user.businessInfo.businessID, selectedDate);
             customerBookingList = response.customerBookingList;
         }
         catch (error)
