@@ -58,11 +58,11 @@
             <div class="mt-4 flex justify-between flex-row md:items-center md:space-x-2">
                 <div id="show-override-tooltip" class="flex items-center mb-1 md:mb-0">
                     <Toggle  bind:checked={overrideFlag} class="toggle">Override</Toggle>
-                    <Tooltip triggeredBy="#show-override-tooltip">Override Booking Time</Tooltip>
+                    <Tooltip triggeredBy="#show-override-tooltip">Override booking time</Tooltip>
                 </div>
                 <div id="show-sms-tooltip" class="flex items-center">
                     <Toggle   bind:checked={sendSMSFlag} class="toggle">SMS</Toggle>
-                    <Tooltip triggeredBy="#show-sms-tooltip">Notify Customer Through SMS</Tooltip>
+                    <Tooltip triggeredBy="#show-sms-tooltip">Notify customer through SMS</Tooltip>
                 </div>
             </div>
         {/if}
