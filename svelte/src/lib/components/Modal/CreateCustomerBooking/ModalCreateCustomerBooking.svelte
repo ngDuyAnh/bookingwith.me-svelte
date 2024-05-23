@@ -27,12 +27,19 @@
     };
 
     // Reset
-    $: if (open)
+    let wasOpen = open;
+    $: if (open && !wasOpen)
     {
+        wasOpen = true;
+        
         customerBooking = {
             ...CustomerBooking($now),
             customerIndividualBookingList: [CustomerIndividualBooking()]
         };
+    }
+    else if (!open)
+    {
+        wasOpen = false;
     }
 </script>
 
