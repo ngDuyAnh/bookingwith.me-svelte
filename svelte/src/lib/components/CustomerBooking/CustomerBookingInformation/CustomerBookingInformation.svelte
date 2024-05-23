@@ -1,5 +1,5 @@
 <script>
-    import {Toggle} from "flowbite-svelte";
+    import {Toggle, Tooltip} from "flowbite-svelte";
     import CustomerBookingInformationForm
         from "$lib/components/Form/CustomerBookingInformationForm/CustomerBookingInformationForm.svelte";
     import {formatPhoneNumber} from "$lib/application/FormatPhoneNumber.js";
@@ -56,11 +56,13 @@
 
         {#if showCustomerBookingInformationFlagHeader}
             <div class="mt-4 flex justify-between flex-row md:items-center md:space-x-2">
-                <div class="flex items-center mb-1 md:mb-0">
-                    <Toggle bind:checked={overrideFlag} class="toggle">Override</Toggle>
+                <div id="show-override-tooltip" class="flex items-center mb-1 md:mb-0">
+                    <Toggle  bind:checked={overrideFlag} class="toggle">Override</Toggle>
+                    <Tooltip triggeredBy="#show-override-tooltip">Override Booking Time</Tooltip>
                 </div>
-                <div class="flex items-center">
-                    <Toggle bind:checked={sendSMSFlag} class="toggle">SMS</Toggle>
+                <div id="show-sms-tooltip" class="flex items-center">
+                    <Toggle   bind:checked={sendSMSFlag} class="toggle">SMS</Toggle>
+                    <Tooltip triggeredBy="#show-sms-tooltip">Notify Customer Through SMS</Tooltip>
                 </div>
             </div>
         {/if}
