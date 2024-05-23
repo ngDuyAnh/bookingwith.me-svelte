@@ -12,6 +12,8 @@
         from "$lib/page/protected/business-portal/page_lobby/page/Dashboard/components/components/CustomerBookingClickModal/Lobby/LobbyModalComponent.svelte";
     import ServicingModalComponent
         from "$lib/page/protected/business-portal/page_lobby/page/Dashboard/components/components/CustomerBookingClickModal/Servicing/ServicingModalComponent.svelte";
+    import CompletedModalComponent
+        from "$lib/page/protected/business-portal/page_lobby/page/Dashboard/components/components/CustomerBookingClickModal/Completed/CompletedModalComponent.svelte";
 
     let customerBooking = undefined;
     $: customerBooking = $customerBookingClickModal.customerBooking;
@@ -26,7 +28,7 @@
         {:else if customerBooking.bookingState === CustomerBookingState.SERVICING}
             <ServicingModalComponent/>
         {:else if customerBooking.bookingState === CustomerBookingState.COMPLETED}
-            Completed
+            <CompletedModalComponent/>
         {/if}
     </Modal>
 </div>

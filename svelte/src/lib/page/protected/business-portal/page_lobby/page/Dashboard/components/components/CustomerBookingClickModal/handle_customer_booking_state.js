@@ -38,12 +38,8 @@ export async function moveToCompleted(now, customerBooking, submitCustomerBookin
     if (confirm("Are you sure you want to mark this as complete?"))
     {
         customerBooking.bookingState = CustomerBookingState.COMPLETED;
+        customerBooking.servicingEndTime = now.format(formatToTime);
 
-        if (!customerBooking.servicingEndTime)
-        {
-            customerBooking.servicingEndTime = now.format(formatToTime);
-        }
-        
         // Iterate over each individual booking
         customerBooking.customerIndividualBookingList.forEach(individualBooking => {
             // Iterate over each service booking in the individual booking

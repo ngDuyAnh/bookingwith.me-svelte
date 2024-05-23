@@ -46,9 +46,12 @@
     <p><strong>Customer name:</strong> {customerBooking.customer.customerName}</p>
     <p><strong>Phone number:</strong> {customerBooking.customer.phoneNumber}</p>
     <p><strong>Booking time:</strong> {dayjs(customerBooking.bookingTime, formatToTime).format(formatToTimeAm)}</p>
-    <p class="break-words">
-        <strong>Message:</strong> {customerBooking.message}
-    </p>
+    {#if customerBooking.message.length !== 0}
+        <p class="break-words">
+            <strong>Message:</strong> {customerBooking.message}
+        </p>
+    {/if}
+
     <div class="mt-4">
         <div class="font-bold">Guest(s):</div>
         {#each customerBooking.customerIndividualBookingList as individualBooking}

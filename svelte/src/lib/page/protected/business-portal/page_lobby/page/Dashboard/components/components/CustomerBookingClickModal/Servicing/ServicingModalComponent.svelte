@@ -35,9 +35,12 @@
     <p><strong>Booking time:</strong> {dayjs(customerBooking.bookingTime, formatToTime).format(formatToTimeAm)}</p>
     <p><strong>Check-in time:</strong> {dayjs(customerBooking.checkinTime, formatToTime).format(formatToTimeAm)}</p>
     <p><strong>Start time:</strong> {dayjs(customerBooking.servicingStartTime, formatToTime).format(formatToTimeAm)}</p>
-    <p class="break-words">
-        <strong>Message:</strong> {customerBooking.message}
-    </p>
+    {#if customerBooking.message.length !== 0}
+        <p class="break-words">
+            <strong>Message:</strong> {customerBooking.message}
+        </p>
+    {/if}
+
     <div class="mt-4">
         <div class="font-bold">Guest(s):</div>
         {#each customerBooking.customerIndividualBookingList as individualBooking (individualBooking.individualID)}
