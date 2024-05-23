@@ -12,9 +12,8 @@
     } from "flowbite-svelte";
     import { sineIn } from 'svelte/easing';
     import {
-        ArrowRightToBracketOutline,
-        EditOutline,
-        InfoCircleSolid,
+                EditOutline,
+        InfoCircleSolid, ArrowLeftToBracketOutline
     } from "flowbite-svelte-icons";
 
     export let tabs = [];
@@ -81,7 +80,7 @@
             <SidebarGroup>
                 <SidebarItem label="Login" href="/protected">
                     <svelte:fragment slot="icon">
-                        <ArrowRightToBracketOutline class="w-5 h-5 text-gray-500 transition duration-75 dark:text-gray-400 group-hover:text-gray-900 dark:group-hover:text-white" />
+                        <ArrowLeftToBracketOutline class="w-5 h-5 text-gray-500 transition duration-75 dark:text-gray-400 group-hover:text-gray-900 dark:group-hover:text-white" />
                     </svelte:fragment>
                 </SidebarItem>
 

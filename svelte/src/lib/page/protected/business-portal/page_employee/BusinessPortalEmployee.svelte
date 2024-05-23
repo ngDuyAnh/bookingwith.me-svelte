@@ -5,7 +5,7 @@
     import AllTimeTables
         from "$lib/page/protected/business-portal/page_employee/page/AllTimeTables/AllTimeTables.svelte";
 
-    let tabs = ["My MyTimetable", "All Timetables", "Setting"];
+    let tabs = ["My Timetable", "All Timetables", "Setting"];
     let selectedIndex = 0;
 
 </script>
