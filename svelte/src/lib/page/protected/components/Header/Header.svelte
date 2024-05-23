@@ -47,14 +47,6 @@
     </div>
 
     <div class="corner flex items-center">
-        <div class="hidden lg:block">
-            <a href="/report">
-                <img src={report_icon}
-                     alt="Kid's helpline"
-                     title="Kid's helpline"
-                />
-            </a>
-        </div>
 
         <button class="lg:hidden flex items-center justify-center w-10 h-10 rounded focus:outline-none focus:ring-2 focus:ring-opacity-50"
                 on:click={() => navigateButtonHidden = false} aria-label="Show navigation">

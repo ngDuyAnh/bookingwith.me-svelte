@@ -1,6 +1,6 @@
 <script>
     import Header from "$lib/page/protected/components/Header/Header.svelte";
-    import Setting from "$lib/page/protected/business-portal/page_employee/page/Setting/Setting.svelte";
+    import Setting from "$lib/components/Setting/Setting.svelte";
     import Timetable from "$lib/page/protected/business-portal/page_employee/page/MyTimetable/Timetable.svelte";
     import AllTimeTables
         from "$lib/page/protected/business-portal/page_employee/page/AllTimeTables/AllTimeTables.svelte";
