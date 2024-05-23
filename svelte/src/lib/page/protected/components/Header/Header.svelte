@@ -2,6 +2,17 @@
     import LogoButton from "$lib/components/assets/Logo/LogoButton.svelte";
     import {sineIn} from "svelte/easing";
     import {CloseButton, Drawer, Sidebar, SidebarGroup, SidebarItem, SidebarWrapper} from "flowbite-svelte";
+    import {
+        CalendarMonthOutline,
+        GridSolid,
+        GridPlusOutline,
+        ListOutline,
+        UserSettingsOutline,
+        UsersGroupSolid,
+        StoreSolid,
+        CalendarMonthSolid,
+        ClockSolid
+    } from "flowbite-svelte-icons";
 
     export let tabs;
     export let selectedIndex;
@@ -9,6 +20,19 @@
     function selectTab(index) {
         selectedIndex = index;
     }
+
+    // Mapping of tab names to icons
+    const tabIcons = {
+        "dashboard": GridSolid,
+        "timetable": ClockSolid,
+        "setting": UserSettingsOutline,
+        "list": ListOutline,
+        "create": GridPlusOutline,
+        "my timetable": CalendarMonthOutline,
+        "employee": UsersGroupSolid,
+        "service": StoreSolid,
+        "all timetables": CalendarMonthSolid
+    };
 
     let navigateButtonHidden = true;
     let transitionParams = {
@@ -57,6 +81,7 @@
     </div>
 </header>
 
+<div class="z-[10000]">
 <Drawer transitionType="fly" {transitionParams} bind:hidden={navigateButtonHidden} id="sidebar2">
     <div class="flex items-center">
         <h5 id="drawer-navigation-label-3" class="text-base font-semibold text-gray-500 uppercase dark:text-gray-400">
@@ -71,13 +96,20 @@
                         selectTab(index);
                         navigateButtonHidden = true;
                     }}
-                    />
+                    >
+                        <svelte:fragment slot="icon">
+                            {#if tabIcons[tab.toLowerCase()]}
+                                <svelte:component this={tabIcons[tab.toLowerCase()]} class="w-6 h-6 text-gray-500 transition duration-75 dark:text-gray-400 group-hover:text-gray-900 dark:group-hover:text-white" />
+                            {/if}
+                        </svelte:fragment>
+                    </SidebarItem>
                 {/each}
+
             </SidebarGroup>
         </SidebarWrapper>
     </Sidebar>
 </Drawer>
-
+</div>
 <style>
     header {
         display: flex;
