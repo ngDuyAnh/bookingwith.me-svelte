@@ -5,10 +5,6 @@
     import ModalCreateCustomerBooking
         from "$lib/components/Modal/CreateCustomerBooking/ModalCreateCustomerBooking.svelte";
     import {business} from "$lib/page/protected/stores/business.js";
-    import {getContext} from "svelte";
-
-    // Customer booking click
-    const handleCustomerBookingClick = getContext('handleCustomerBookingClick');
 
     let openModalNewCustomerBooking = false;
     function handleAddNewCustomerBookingClick()
@@ -35,7 +31,6 @@
 
     <CustomerBookingList
             customerBookingList={$bookingStateList[0]}
-            {handleCustomerBookingClick}
     />
 </div>
 

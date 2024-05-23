@@ -14,6 +14,7 @@
         CustomerBookingState
     } from "$lib/api/api_server/customer-booking-portal/utility-functions/initialize_functions/CustomerBooking.js";
     import {send_SMS_BookingSuccess} from "$lib/api/api_twilio/api.js";
+    import {rawPhoneNumber, formatPhoneNumber} from "$lib/application/FormatPhoneNumber.js";
 
     export let customerNameAutoComplete = false;
     export let requiredAgreeToReceiveSMS = true;
@@ -36,10 +37,17 @@
         // Empty
         availableTimeOptionList = [];
 
-        currentTimeString = "00:00";
-        if (customerBooking.bookingDate === $now.format(formatToDate))
+        const bookingDate = dayjs(customerBooking.bookingDate, formatToDate);
+        currentTimeString = "00:00"; // Booking date is in the future
+        if (bookingDate.isSame($now, 'day'))
         {
             currentTimeString = $now.format(formatToTime)
+        }
+        // Invalid, the date selected is before today
+        // Set it to the end of the day for no availability
+        else if (bookingDate.isBefore($now, 'day'))
+        {
+            currentTimeString = "23:59";
         }
 
         try
@@ -164,28 +172,6 @@
         getAvailableTimeOptionList();
     }
 
-    function formatPhoneNumber(phoneNumber)
-    {
-        let formattedPhoneNumber = "";
-        // Format as "(123) 456-7890"
-        if (phoneNumber.length > 6) {
-            // If more than 6 digits, format with parenthesis and dash
-            formattedPhoneNumber = `(${phoneNumber.slice(0, 3)}) ${phoneNumber.slice(3, 6)}-${phoneNumber.slice(6)}`;
-        } else if (phoneNumber.length > 3) {
-            // If more than 3 digits, include parenthesis
-            formattedPhoneNumber = `(${phoneNumber.slice(0, 3)}) ${phoneNumber.slice(3)}`;
-        } else if (phoneNumber.length > 0) {
-            // If 1-3 digits, just wrap in parentheses
-            formattedPhoneNumber = `(${phoneNumber}`;
-        } else {
-            // Empty input
-            formattedPhoneNumber = '';
-        }
-
-        // Return
-        return formattedPhoneNumber;
-    }
-
     async function customerExists()
     {
         if (customerNameAutoComplete)
@@ -201,18 +187,16 @@
     let formattedPhoneNumber = formatPhoneNumber(customerBooking.customer.phoneNumber);
 
     function handleBusinessPhoneNumberInput(event) {
-        const input = event.target;
-        let value = input.value.replace(/\D/g, ''); // Remove non-digit characters
-        value = value.slice(0, 10); // Limit to 10 digits
+        const input = event.target.value;
 
         // Update the raw customer phone number
-        customerBooking.customer.phoneNumber = value;
+        customerBooking.customer.phoneNumber = rawPhoneNumber(input);
 
         // Format as "(123) 456-7890"
-        formattedPhoneNumber = formatPhoneNumber(value);
+        formattedPhoneNumber = formatPhoneNumber(input);
 
         // When the formatted phone number is complete, fetch the customer name
-        if (value.length === 10) {
+        if (customerBooking.customer.phoneNumber.length === 10) {
             customerExists();
         }
     }
@@ -228,7 +212,7 @@
         {
             let response = {};
 
-            // Set the customer booking state
+            // Initialize customer booking
             customerBooking.bookingState = CustomerBookingState.APPOINTMENT;
 
             // Force submit if override is toggled
@@ -256,7 +240,6 @@
                     selectedAvailability.timePeriod,
                     customerBooking
                 );
-
             }
 
             // Success

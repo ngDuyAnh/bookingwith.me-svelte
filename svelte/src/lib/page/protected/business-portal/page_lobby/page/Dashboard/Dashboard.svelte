@@ -83,7 +83,10 @@
     function handleEditCustomerBooking()
     {
         openModalEditCustomerBooking = true;
-        Object.assign($customerBookingClickModal.customerBooking, clonedCustomerBooking);
+        clonedCustomerBooking = JSON.parse(JSON.stringify($customerBookingClickModal.customerBooking))
+
+        console.log("$customerBookingClickModal.customerBooking", $customerBookingClickModal.customerBooking)
+        console.log("clonedCustomerBooking", clonedCustomerBooking)
     }
 
     setContext('handleEditCustomerBooking', handleEditCustomerBooking);
@@ -99,11 +102,18 @@
         // Find and reinitialize the customer booking for the modal
         const findID = $customerBookingClickModal.customerBooking.id;
         const foundCustomerBooking = findCustomerBookingById(findID);
+
+        console.log("foundCustomerBooking", foundCustomerBooking)
+
         if (foundCustomerBooking) {
-            customerBookingClickModal.update(current => ({
-                ...current,
-                customerBooking: foundCustomerBooking
-            }));
+            customerBookingClickModal.update(current => {
+                return {
+                    ...current,
+                    customerBooking: foundCustomerBooking
+                };
+            });
+        } else {
+            console.error('Customer booking not found');
         }
     }
 
@@ -117,8 +127,10 @@
     <Completed/>
 </div>
 
+<!-- Modal for customer booking -->
 <CustomerBookingClickModal/>
 
+<!-- Modal for edit customer booking -->
 <ModalEditCustomerBooking
         bind:open={openModalEditCustomerBooking}
         business={$business}

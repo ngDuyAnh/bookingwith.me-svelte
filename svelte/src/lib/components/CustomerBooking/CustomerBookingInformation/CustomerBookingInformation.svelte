@@ -66,9 +66,6 @@
         {/if}
     </div>
 
-
-
-
     <!-- Customer booking information -->
     <div class="w-full max-w-md p-8">
         <CustomerBookingInformationForm

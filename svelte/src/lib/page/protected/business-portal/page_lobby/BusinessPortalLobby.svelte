@@ -28,5 +28,3 @@
         <Setting />
     {/if}
 </div>
-
-<!-- Modal for customer booking -->
