@@ -1,6 +1,6 @@
 <script>
     import dayjs from "dayjs";
-    import {formatToTime, formatToTimeAM} from "$lib/application/Formatter.js";
+    import {formatToTime, formatToTimeAm} from "$lib/application/Formatter.js";
     import {Button, Tooltip} from "flowbite-svelte";
     import {
         customerBookingClickModal
@@ -9,14 +9,12 @@
         moveToCompleted,
         moveToLobby,
         moveToServicing
-    } from "$lib/api/api_server/lobby-portal/utility-functions/handle_customer_booking_state.js";
+    } from "$lib/page/protected/business-portal/page_lobby/page/Dashboard/components/components/CustomerBookingClickModal/handle_customer_booking_state.js";
     import {now} from "$lib/page/stores/now/now_dayjs_store.js";
     import {getContext} from "svelte";
 
     let customerBooking = undefined;
     $: customerBooking = $customerBookingClickModal.customerBooking;
-
-    let hasMsg = ($customerBookingClickModal.customerBooking.message === "");
 
     // Retrieve edit customer booking function
     const handleEditCustomerBooking = getContext('handleEditCustomerBooking');
@@ -47,7 +45,7 @@
 <div>
     <p><strong>Customer name:</strong> {customerBooking.customer.customerName}</p>
     <p><strong>Phone number:</strong> {customerBooking.customer.phoneNumber}</p>
-    <p><strong>Booking time:</strong> {dayjs(customerBooking.bookingTime, formatToTime).format(formatToTimeAM)}</p>
+    <p><strong>Booking time:</strong> {dayjs(customerBooking.bookingTime, formatToTime).format(formatToTimeAm)}</p>
     <p class="break-words">
         <strong>Message:</strong> {customerBooking.message}
     </p>
