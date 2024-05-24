@@ -11,7 +11,8 @@
         UsersGroupSolid,
         StoreSolid,
         CalendarMonthSolid,
-        ClockSolid
+        ClockSolid,
+        FlagSolid
     } from "flowbite-svelte-icons";
 
     export let tabs;
@@ -31,7 +32,8 @@
         "my timetable": CalendarMonthOutline,
         "employee": UsersGroupSolid,
         "service": StoreSolid,
-        "all timetables": CalendarMonthSolid
+        "all timetables": CalendarMonthSolid,
+        "report": FlagSolid
     };
 
     let navigateButtonHidden = true;

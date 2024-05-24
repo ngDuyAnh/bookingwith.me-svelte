@@ -87,24 +87,41 @@
     }
 </script>
 
+<style>
+
+    :global(.butDisable){
+        border-radius: 0.5rem;
+        background: repeating-linear-gradient(
+                45deg,
+                #606dbc,
+                #606dbc 10px,
+                #465298 10px,
+                #465298 20px
+        );
+    }
+</style>
+
 <div>
     <!-- Display the service booking -->
     <p>{serviceBooking.service.serviceName} ({serviceBooking.employee?.employeeName || 'Any'})</p>
 
     <!-- Form to manage service booking -->
-    <div class="flex flex-row items-center space-x-4">
+    <div class="flex flex-row items-center space-x-4 p-1.5 {serviceBooking.completed? 'butDisable':''} ">
         <!-- Form to add new servicing ticket -->
         <form class="flex flex-row flex-grow items-center space-x-4" on:submit|preventDefault>
             <Select
                     items={$employeeSelectOptions}
-                    bind:value={selectedEmployeeID} class="flex-1"
+                    bind:value={selectedEmployeeID}
+                    class="flex-1"
                     disabled={serviceBooking.completed}
                     required
+
             />
             <Button
                     type="submit"
                     on:click={handleStartServicing}
                     disabled={!selectedEmployeeID || serviceBooking.completed}
+                    class="{serviceBooking.completed? 'bg-gray-900 hover:bg-gray-900 disabled':''}"
             >
                 Start
             </Button>
