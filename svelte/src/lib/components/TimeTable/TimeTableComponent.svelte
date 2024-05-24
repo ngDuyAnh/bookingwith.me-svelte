@@ -141,7 +141,7 @@
 
     function buildInnerHTML(time, description){
         const timeDiv =`<div class="timeDivClass">${time}</div>`;
-        const descriptionDiv=`<div class="text-sm text-ellipsis overflow-hidden ...">${description}</div>`;
+        const descriptionDiv=`<div class="text-sm text-ellipsis overflow-hidden ... whitespace-pre-line">${description}</div>`;
 
         return `<div class="flex flex-col">${timeDiv}${descriptionDiv}</div>`
     }
@@ -352,7 +352,7 @@
                     extendedProps: {
                         employeeTimetable: employeeTable,
                         servicingTicket: servicingTicket,
-                        description: `${servicingTicket.servicingTicketInfo.service.serviceName}\n${servicingTicket.servicingTicketInfo.customerName}`,
+                        description: `${servicingTicket.servicingTicketInfo.service.serviceName}\n(${servicingTicket.servicingTicketInfo.customerName})`,
                         time: `${formatTimeAm(servicingTicket.timePeriod.startTime)} - ${formatTimeAm(servicingTicket.timePeriod.endTime)}`
                     },
                 };

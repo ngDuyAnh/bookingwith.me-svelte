@@ -34,6 +34,8 @@ export function CustomerBooking(now)
         "servicingStartTime": null,
         "servicingEndTime": null,
 
+        "walkIn": false,
+
         "customerIndividualBookingList": []
     };
 }
