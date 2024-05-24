@@ -2,7 +2,7 @@
     import {onMount, setContext} from "svelte";
     import {initializeCustomerBooking} from "$lib/api/api_server/lobby-portal/api.js";
     import {now} from "$lib/page/stores/now/now_dayjs_store.js";
-    import {formatToDate, formatToTime, formatToTimeAm,} from "$lib/application/Formatter.js";
+    import {formatTimeAm, formatToDate, formatToTime, formatToTimeAm,} from "$lib/application/Formatter.js";
     import Calendar from "@event-calendar/core";
     import ResourceTimeGrid from "@event-calendar/resource-time-grid";
     import {Modal} from "flowbite-svelte";
@@ -53,17 +53,14 @@
         resources: [],
         events: [],
         eventClick: function (info) {
-            console.log("clicked");
             openModalServicingTicket(info);
         },
         eventAllUpdated: function (info) {
-            console.log("info is", info);
             findECBody();
         },
         eventMouseEnter: function (info) { //under weird circumstances, can be called infinitely when hovering over an event
             // until you move the mouse elsewhere. observed when an event occupies
             // very little time range.
-            console.log("hovering");
             if (info.event.title !== "") {
                 prevInfoID = info.event.id;
                 let bookingID = info.event.extendedProps.servicingTicket.bookingID;
@@ -131,7 +128,7 @@
                     info.el.className = `ec-event border-2 border-red-600`;
                 }
 
-                info.el.innerText = extendedProps.innerText;
+                info.el.innerHTML = buildInnerHTML(extendedProps.time, extendedProps.description);
 
                 if(!conflicted && conflictEmployeeEvents[info.event.id])
                 {
@@ -142,6 +139,12 @@
         }
     };
 
+    function buildInnerHTML(time, description){
+        const timeDiv =`<div class="timeDivClass">${time}</div>`;
+        const descriptionDiv=`<div class="text-sm text-ellipsis overflow-hidden ...">${description}</div>`;
+
+        return `<div class="flex flex-col">${timeDiv}${descriptionDiv}</div>`
+    }
 
 
     $: if (
@@ -348,7 +351,8 @@
                     extendedProps: {
                         employeeTimetable: employeeTable,
                         servicingTicket: servicingTicket,
-                        innerText: `${servicingTicket.timePeriod.startTime} - ${servicingTicket.timePeriod.endTime}\n${servicingTicket.servicingTicketInfo.service.serviceName}\n${servicingTicket.servicingTicketInfo.customerName}`
+                        description: `${servicingTicket.servicingTicketInfo.service.serviceName}\n${servicingTicket.servicingTicketInfo.customerName}`,
+                        time: `${formatTimeAm(servicingTicket.timePeriod.startTime)} - ${formatTimeAm(servicingTicket.timePeriod.endTime)}`
                     },
                 };
             })
@@ -437,6 +441,16 @@
 <style>
     :global(.ec-event-time){
         display: none;
+    }
+
+    :global(.timeDivClass) {
+        color: white;
+        text-shadow:
+                -1px -1px 0 #000,
+                1px -1px 0 #000,
+                -1px 1px 0 #000,
+                1px 1px 0 #000;
+
     }
 </style>
 <div class="flex flex-col items-center justify-center p-1.5">
