@@ -6,21 +6,15 @@
     import {formatToTime, formatToTimeAm} from "$lib/application/Formatter.js";
     import {Spinner} from "flowbite-svelte";
     import report_icon from "$lib/images/report_icon/message-report.png";
+    import Today from "$lib/page/customer-booking-portal/get/page/Today/Today.svelte";
+    import Future from "$lib/page/customer-booking-portal/get/page/Future/Future.svelte";
+    import Past from "$lib/page/customer-booking-portal/get/page/Past/Past.svelte";
+    import {bookingEstimate} from "$lib/page/customer-booking-portal/get/stores/bookingEstimate.js";
 
     export let data;
 
-    let customerBooking = undefined;
-    let queuePosition = -1;
-    let servicingTimePeriod = undefined;
-
     let relativeDate = 0;
-    let bookingDateFormatted = "";
-    let bookingTimeFormatted = "";
-
-    let estimateServicingStartTime = "";
-    let estimateServicingEndTime = "";
-
-    async function fetchCustomerEstimate() {
+    async function fetchCustomerBookingEstimate() {
         // Get the estimate
         // Assume it is today
         try
@@ -28,21 +22,30 @@
             const response = await getCustomerBookingEstimate(data.bookingID, $now.format(formatToTime));
 
             // Extract the response
-            customerBooking = response.customerBooking;
-            queuePosition = response.queuePosition;
-            servicingTimePeriod = response.servicingTimePeriod;
+            let customerBooking = response.customerBooking;
 
             // Display information
             let bookingDate = dayjs(customerBooking.bookingDate).startOf("day");
             relativeDate = bookingDate.diff($now.startOf("day"), "day");
 
             // Appointment date and time format for display
-            bookingDateFormatted = bookingDate.format('ddd, MMM D YYYY');
-            bookingTimeFormatted = dayjs(customerBooking.bookingTime, formatToTime).format(formatToTimeAm);
+            let bookingDateFormatted = bookingDate.format('ddd, MMM D YYYY');
+            let bookingTimeFormatted = dayjs(customerBooking.bookingTime, formatToTime).format(formatToTimeAm);
 
             // Estimate servicing time
-            estimateServicingStartTime = dayjs(servicingTimePeriod.startTime, formatToTime).format(formatToTimeAm);
-            estimateServicingEndTime = dayjs(servicingTimePeriod.endTime, formatToTime).format(formatToTimeAm);
+            let servicingTimePeriod = response.servicingTimePeriod;
+            let estimateServicingStartTime = dayjs(servicingTimePeriod.startTime, formatToTime).format(formatToTimeAm);
+            let estimateServicingEndTime = dayjs(servicingTimePeriod.endTime, formatToTime).format(formatToTimeAm);
+
+            // Set the information to the store
+            bookingEstimate.set({
+                ...response,
+                relativeDate,
+                bookingDateFormatted,
+                bookingTimeFormatted,
+                estimateServicingStartTime,
+                estimateServicingEndTime
+            });
         }
         catch (error)
         {
@@ -50,18 +53,19 @@
         }
     }
 
+    let loading = true;
+
     onMount(async () => {
-        await fetchCustomerEstimate();
+        await fetchCustomerBookingEstimate();
+
+        console.log("bookingEstimate", $bookingEstimate);
+
+        loading = false;
     });
 
     // Automatic fetch
-    setInterval(async () => fetchCustomerEstimate(), 10000);
+    setInterval(async () => fetchCustomerBookingEstimate(), 10000);
 
-    let loading = true;
-    $: if (customerBooking)
-    {
-        loading = false;
-    }
 </script>
 
 {#if loading}
@@ -86,60 +90,12 @@
             </div>
         </div>
 
-        <div class="flex-grow flex flex-col justify-center items-center text-xl p-8">
-            <!-- Appointment is today -->
-            {#if relativeDate === 0}
-                <p class="bg-blue-100 text-blue-700 font-semibold rounded-lg p-4 shadow">
-                    Your appointment is
-                    <span class="underline">today</span>!
-                </p>
-
-                <!-- Appointment and lobby -->
-                {#if customerBooking.bookingState === 0 || customerBooking.bookingState === 1}
-                    <div class="mt-4 bg-green-100 text-green-800 rounded-lg p-4 shadow">
-                        Your position in the queue is {queuePosition}
-                    </div>
-                    <div class="mt-2 bg-green-100 text-green-800 rounded-lg p-4 shadow">
-                        Estimate start servicing time is from {estimateServicingStartTime} to {estimateServicingEndTime}
-                    </div>
-                    <div class="mt-2 bg-red-100 text-green-800 rounded-lg p-4 shadow">
-                        Please arrive earlier than estimated to ensure smooth service. We apologize for any timing errors as our app is still in testing; your feedback is welcome at the top right corner.
-                    </div>
-
-                <!-- Servicing -->
-                {:else if customerBooking.bookingState === 2}
-                    <div class="mt-2 bg-green-100 text-green-800 rounded-lg p-4 shadow">
-                        Estimate servicing end time is {estimateServicingEndTime}
-                    </div>
-
-                <!-- Completed -->
-                {:else}
-                    <div class="mt-2 bg-green-100 text-green-800 rounded-lg p-4 shadow">
-                        Completed!
-                    </div>
-                {/if}
-
-            <!-- Appointment is in the future -->
-            {:else if relativeDate > 0}
-                <p class="bg-blue-100 text-blue-700 font-semibold rounded-lg p-4 shadow">
-                    Your appointment is on
-                    <span class="underline">{bookingDateFormatted}</span> at
-                    <span class="underline">{bookingTimeFormatted}</span>.
-                </p>
-
-                <div class="mt-2 bg-green-100 text-green-800 rounded-lg p-4 shadow">
-                    Please check this link on your appointment day for real-time updates!
-                </div>
-
-            <!-- Appointment is in the past -->
-            {:else}
-                <div class="mt-2 bg-green-100 text-green-800 rounded-lg p-4 shadow">
-                    Under construction!
-                </div>
-
-                We (me, myself, and I) are still working on features after the appointment is done.
-            {/if}
-        </div>
-
-</div>
+        {#if relativeDate === 0}
+            <Today/>
+        {:else if relativeDate > 0}
+            <Future/>
+        {:else if relativeDate < 0}
+            <Past/>
+        {/if}
+    </div>
 {/if}

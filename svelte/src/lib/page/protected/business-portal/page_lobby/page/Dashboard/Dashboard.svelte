@@ -67,7 +67,7 @@
                 // Get the customer booking list
                 await fetchCustomerBookingList();
 
-                //console.log("bookingStateList", $bookingStateList);
+                console.log("bookingStateList", $bookingStateList);
             }
         }
         catch (error)
