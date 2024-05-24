@@ -117,12 +117,13 @@
     setContext('submitCustomerBooking', submitCustomerBooking);
 </script>
 
-<div class="flex flex-row justify-between space-x-4 overflow-x-auto p-4 flex-1">
-    <Appointment/>
-    <Lobby/>
-    <Servicing/>
-    <Completed/>
+<div class="flex flex-row w-screen h-screen justify-between 2xl:items-center 2xl:justify-center space-x-4 overflow-x-auto p-4">
+        <Appointment/>
+        <Lobby/>
+        <Servicing/>
+        <Completed/>
 </div>
+
 
 <!-- Modal for customer booking -->
 <CustomerBookingClickModal/>

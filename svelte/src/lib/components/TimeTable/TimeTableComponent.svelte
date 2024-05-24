@@ -165,7 +165,8 @@
                 event.extendedProps.servicingTicket &&
                 event.extendedProps.servicingTicket.bookingID === bookingID
             ) {
-                event.backgroundColor = "pink";
+                event.backgroundColor = "#7d5821";
+
                 calendarInstance.updateEvent(event);
             }
         });
@@ -445,11 +446,11 @@
 
     :global(.timeDivClass) {
         color: white;
-        text-shadow:
-                -1px -1px 0 #000,
-                1px -1px 0 #000,
-                -1px 1px 0 #000,
-                1px 1px 0 #000;
+        /*text-shadow:*/
+        /*        -0.4px -0.4px 0 #000,*/
+        /*        0.4px -0.4px 0 #000,*/
+        /*        -0.4px 0.4px 0 #000,*/
+        /*        0.4px 0.4px 0 #000;*/
 
     }
 </style>

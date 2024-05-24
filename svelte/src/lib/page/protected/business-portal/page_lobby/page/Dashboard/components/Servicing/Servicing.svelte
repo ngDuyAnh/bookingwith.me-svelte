@@ -5,7 +5,7 @@
     import {getContext} from "svelte";
 </script>
 
-<div class="min-w-[348.4px] max-w-[348.4px] bg-gray-100 rounded shadow p-4 overflow-y-auto border border-sky-200">
+<div class="min-w-[348.4px] h-full bg-gray-100 rounded shadow p-4 overflow-y-auto border border-sky-200">
     <!-- List Header -->
     <div class="px-4 py-2 flex items-center justify-between select-none">
         <h2 class="text-lg font-bold">{"In Progress..."}</h2>
