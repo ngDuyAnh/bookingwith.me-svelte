@@ -43,8 +43,8 @@
 <Modal bind:open={openArrivalModal} size="xs" autoclose outsideclose>
     <div class="text-center">
         <ExclamationCircleOutline class="mx-auto mb-4 text-gray-400 w-12 h-12 dark:text-gray-200" />
-        <h3 class="mb-5 text-lg font-normal text-gray-500 dark:text-gray-400">Are you sure you want to delete this product?</h3>
-        <Button color="red" class="me-2" on:click={notifyArrival}>Yes, I'm sure</Button>
-        <Button color="alternative">No, cancel</Button>
+        <h3 class="mb-5 text-lg font-normal text-gray-500 dark:text-gray-400">You have arrived in the lobby?</h3>
+        <Button color="red" class="me-2" on:click={notifyArrival}>Yes, I am here!</Button>
+        <Button color="alternative">Cancel</Button>
     </div>
 </Modal>
