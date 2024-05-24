@@ -108,11 +108,11 @@
     <!-- Form to manage service booking -->
     <div class="flex flex-row items-center space-x-4 p-1.5 {serviceBooking.completed? 'butDisable':''} ">
         <!-- Form to add new servicing ticket -->
-        <form class="flex flex-row flex-grow items-center space-x-4" on:submit|preventDefault>
+        <form class="flex flex-row flex-grow items-center space-x-4 {serviceBooking.completed? 'cursor-not-allowed':''}" on:submit|preventDefault>
             <Select
                     items={$employeeSelectOptions}
                     bind:value={selectedEmployeeID}
-                    class="flex-1"
+                    class="flex-1 disabled:cursor-not-allowed"
                     disabled={serviceBooking.completed}
                     required
 
