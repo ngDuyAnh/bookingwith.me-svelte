@@ -81,7 +81,7 @@
     });
 
     // Automatic fetch for the latest customer booking list
-    // setInterval(async () => updateCustomerBookingList(), 10000);
+    setInterval(async () => updateCustomerBookingList(), 10000);
 
     function handleCustomerBookingClick(customerBooking) {
         customerBookingClickModal.set({
