@@ -80,7 +80,7 @@
             });
         }
 
-        console.log('Service booking completed:', serviceBooking);
+        //console.log('Service booking completed:', serviceBooking);
 
         // Save the customer booking change
         submitCustomerBooking(customerBooking);
