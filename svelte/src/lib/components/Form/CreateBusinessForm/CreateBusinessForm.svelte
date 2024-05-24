@@ -7,12 +7,19 @@
     import {formatPhoneNumber} from "$lib/application/FormatPhoneNumber.js";
 
     let businessInfo = {
-        "business": BusinessInformation(),
-        "businessEmail": "",
-        "lobbyEmail": "",
-        "contactEmail": "",
-        "contactName": "",
-        "contactPhoneNumber": "",
+        business: {
+            ...BusinessInformation(),
+
+            "city": "Winnipeg",
+            "province": "Manitoba",
+            "country": "Canada"
+        },
+
+        businessEmail: "",
+        lobbyEmail: "",
+        contactEmail: "",
+        contactName: "",
+        contactPhoneNumber: "",
     };
 
     let formattedBusinessPhoneNumber = formatPhoneNumber(businessInfo.business.businessPhoneNumber);
@@ -79,15 +86,15 @@
 
     <div class="form-group">
         <label for="businessEmail">Business Email:</label>
-        <input type="email" id="email" bind:value={businessInfo.businessEmail} class="input-field" required>
+        <input type="email" id="businessEmail" bind:value={businessInfo.businessEmail} class="input-field" required>
     </div>
     <div class="form-group">
         <label for="lobbyEmail">Lobby Email:</label>
-        <input type="email" id="email" bind:value={businessInfo.lobbyEmail} class="input-field" required>
+        <input type="email" id="lobbyEmail" bind:value={businessInfo.lobbyEmail} class="input-field" required>
     </div>
     <div class="form-group">
         <label for="contactEmail">Contact Email:</label>
-        <input type="email" id="email" bind:value={businessInfo.contactEmail} class="input-field" required>
+        <input type="email" id="contactEmail" bind:value={businessInfo.contactEmail} class="input-field" required>
     </div>
 
     <div class="form-group">
