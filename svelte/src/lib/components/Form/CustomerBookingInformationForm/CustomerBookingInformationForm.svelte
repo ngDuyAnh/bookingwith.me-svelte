@@ -214,6 +214,7 @@
 
             // Initialize customer booking
             customerBooking.bookingState = CustomerBookingState.APPOINTMENT;
+            customerBooking.walkIn = false;
 
             // Force submit if override is toggled
             if (overrideFlag)
@@ -231,6 +232,11 @@
                 if (!walkinAvailabilityFlag)
                 {
                     customerBooking.bookingState = CustomerBookingState.SCHEDULE;
+                }
+                // Asynchronous servicing
+                else
+                {
+                    customerBooking.walkIn = true;
                 }
 
                 response = await submitBooking(
