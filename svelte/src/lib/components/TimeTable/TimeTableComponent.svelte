@@ -53,14 +53,17 @@
         resources: [],
         events: [],
         eventClick: function (info) {
+            console.log("clicked");
             openModalServicingTicket(info);
         },
-        eventAllUpdated: function () {
+        eventAllUpdated: function (info) {
+            console.log("info is", info);
             findECBody();
         },
         eventMouseEnter: function (info) { //under weird circumstances, can be called infinitely when hovering over an event
             // until you move the mouse elsewhere. observed when an event occupies
             // very little time range.
+            console.log("hovering");
             if (info.event.title !== "") {
                 prevInfoID = info.event.id;
                 let bookingID = info.event.extendedProps.servicingTicket.bookingID;
@@ -71,7 +74,7 @@
                 // dont stay on events that are not supposed to have them anymore
                 if (prevSelectedServiceID && prevSelectedServiceID !== currServiceID) {
                     resetIndividualHighlight(prevSelectedServiceID);
-                    prevEL.className = `ec-event select-none ${conflictEmployeeEvents[prevInfoID]?conflictEmployeeEvents[prevInfoID]:"" }`;
+                    prevEL.className = `ec-event ${conflictEmployeeEvents[prevInfoID]?conflictEmployeeEvents[prevInfoID]:"" }`;
                 }
                 if (prevSelected && prevSelected !== bookingID) {
                     resetHighlight(prevSelected);
@@ -81,7 +84,7 @@
 
                 highlightRelatedEvents(bookingID);
 
-                info.el.className = `ec-event select-none border-2 border-black`;
+                info.el.className = `ec-event border-2 border-black`;
                 prevEL = info.el;
             } else {
                 // bug where moving mouse quick between events can make highlight stick,
@@ -95,7 +98,7 @@
                     resetIndividualHighlight(prevSelectedServiceID);
 
                     if (prevEL)
-                        prevEL.className = `ec-event select-none ${conflictEmployeeEvents[prevInfoID]?conflictEmployeeEvents[prevInfoID]:""}`;
+                        prevEL.className = `ec-event ${conflictEmployeeEvents[prevInfoID]?conflictEmployeeEvents[prevInfoID]:""}`;
                     prevEL = null;
                     prevSelectedServiceID = null;
                 }
@@ -111,7 +114,7 @@
 
                 let bookingID = info.event.extendedProps.servicingTicket.bookingID;
                 resetHighlight(bookingID);
-                info.el.className = `ec-event select-none ${conflictEmployeeEvents[info.event.id]?conflictEmployeeEvents[info.event.id]:"" }`;
+                info.el.className = `ec-event ${conflictEmployeeEvents[info.event.id]?conflictEmployeeEvents[info.event.id]:"" }`;
             }
         },
         eventDidMount: function(info){
@@ -125,8 +128,10 @@
                 if(bookedEmployee !== null && bookedEmployee.id !== employeeID){
                     conflicted = true;
                     conflictEmployeeEvents[info.event.id] = "border-2 border-red-600";
-                    info.el.className = `ec-event select-none border-2 border-red-600`;
+                    info.el.className = `ec-event border-2 border-red-600`;
                 }
+
+                info.el.innerText = extendedProps.innerText;
 
                 if(!conflicted && conflictEmployeeEvents[info.event.id])
                 {
@@ -334,7 +339,7 @@
                     start: `${$now.format("YYYY-MM-DD")} ${servicingTicket.timePeriod.startTime}`,
                     end: `${$now.format("YYYY-MM-DD")} ${servicingTicket.timePeriod.endTime}`,
                     resourceId: employeeTable.employee.id,
-                    title: `${servicingTicket.servicingTicketInfo.service.serviceName}\n${servicingTicket.servicingTicketInfo.customerName}`,
+                    title: ` `,
 
                     // Ticket state
                     color: servicingTicketColor,
@@ -343,6 +348,7 @@
                     extendedProps: {
                         employeeTimetable: employeeTable,
                         servicingTicket: servicingTicket,
+                        innerText: `${servicingTicket.timePeriod.startTime} - ${servicingTicket.timePeriod.endTime}\n${servicingTicket.servicingTicketInfo.service.serviceName}\n${servicingTicket.servicingTicketInfo.customerName}`
                     },
                 };
             })
@@ -428,7 +434,11 @@
         await moveToCompleted($now, customerBooking, submitCustomerBooking);
     }
 </script>
-
+<style>
+    :global(.ec-event-time){
+        display: none;
+    }
+</style>
 <div class="flex flex-col items-center justify-center p-1.5">
     <div class="flex items-center justify-center p-1.5">
         <input
