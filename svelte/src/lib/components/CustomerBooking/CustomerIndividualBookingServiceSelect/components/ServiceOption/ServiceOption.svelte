@@ -101,10 +101,17 @@
             currentSelectedServiceIds.add(service.id);
 
         }
+
         isSelected = !isSelected;
         selectedServiceIds.set(currentSelectedServiceIds);
-        // console.log("customerIndividualServiceBookingList",customerIndividualBooking );
     }
+
+    function callFromSelect()
+    {
+        isSelected = false;
+        toggleServiceSelection();
+    }
+
 </script>
 
 <div class="mb-8">
@@ -113,12 +120,12 @@
 
     <div class="mt-1">
         <label for="employee-select">Employee:</label>
-        <Select items={employeeSelectOptions} bind:value={employeeIdSelected}/>
+        <Select items={employeeSelectOptions} bind:value={employeeIdSelected} on:change={()=>{if(isSelected)callFromSelect()}}/>
     </div>
 
     <div class="mt-1">
         <Button class="{isSelected ? 'bg-red-500 hover:bg-red-600 text-white' : 'bg-transparent hover:bg-green-100 text-green-500'} border-2 border-green-500 hover:border-green-600 text-sm font-medium rounded-lg px-4 py-2 transition ease-in-out duration-150"
-                on:click={toggleServiceSelection}>
+                on:click={()=>toggleServiceSelection()}>
             {isSelected ? 'Deselect' : 'Select'}
         </Button>
     </div>
