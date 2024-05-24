@@ -22,9 +22,11 @@
     userProfile.set(data.props);
 
     onMount(async () => {
+        //console.log("userProfile", $userProfile)
 
         // Get the business
-        if($userProfile.auth != null && $userProfile.user != null)
+        if($userProfile.auth != null &&
+            $userProfile.user && $userProfile.user.businessInfo != null)
         {
             const response = await getBusiness($userProfile.user.businessInfo.businessID);
             business.set(response);
