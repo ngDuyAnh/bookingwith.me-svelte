@@ -57,11 +57,11 @@
             const businessResult = await createBusiness(businessInfo);
 
             // Redirect to the information page with the new created business
-            let businessID = businessResult.business.businessID;
+            let businessInfo = businessResult.business.businessID;
 
-            console.log(businessID);
+            console.log(businessInfo.businessID);
 
-            await goto(`/admin/business/get/${businessID}`);
+            await goto(`/admin/business/get/${businessInfo.businessID}`);
         } catch (error) {
             console.log(error)
             alert('Failed to create the business!');
