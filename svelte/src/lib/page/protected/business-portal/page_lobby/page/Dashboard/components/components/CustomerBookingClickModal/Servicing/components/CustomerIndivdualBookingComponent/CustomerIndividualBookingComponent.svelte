@@ -9,7 +9,7 @@
 
 <div class="mt-2 p-2 border rounded border-sky-500 bg-gray-50">
     {#each individualBooking.customerIndividualServiceBookingList as serviceBooking}
-        {#if serviceBooking.individualID !== specificBooking.individualID }
+        {#if specificBooking === null || (specificBooking && serviceBooking.individualID !== specificBooking.individualID) }
             <div class="mt-1 p-1">
                 <CustomerIndividualServiceBookingComponent
                         {customerBooking}
