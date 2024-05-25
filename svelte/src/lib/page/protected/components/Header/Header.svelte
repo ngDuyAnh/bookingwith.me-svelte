@@ -1,6 +1,6 @@
 <script>
     import LogoButton from "$lib/components/assets/Logo/LogoButton.svelte";
-    import {sineIn} from "svelte/easing";
+    //import {sineIn} from "svelte/easing";
     import {CloseButton, Drawer, Sidebar, SidebarGroup, SidebarItem, SidebarWrapper} from "flowbite-svelte";
     import {
         CalendarMonthOutline,
@@ -40,7 +40,7 @@
     let transitionParams = {
         x: -320,
         duration: 200,
-        easing: sineIn
+        //easing: sineIn
     };
 </script>
 
