@@ -27,7 +27,7 @@
 
     function checkForGuestsWithNoServices() {
         return customerIndividualBookingList
-            .map((booking, index) => booking.customerIndividualServiceBookingList.length === 0 ? index+1 : -1)
+            .map((booking, index) => booking.customerIndividualServiceBookingList.length === 0 ? index + 1 : -1)
             .filter(index => index !== -1);
     }
 
@@ -46,7 +46,7 @@
                     if (allGuestSelectedService.length === 4) {
                         alertMsg = `Guests # ${allGuestSelectedService.slice(0, -1).join(', ')} & ${allGuestSelectedService.slice(-1)} have not selected a service.`;
                     } else {
-                        alertMsg = `Guest${allGuestSelectedService.length>1?'s':''} # ${allGuestSelectedService.join(' & ')} have not selected a service.`;
+                        alertMsg = `Guest${allGuestSelectedService.length > 1 ? 's' : ''} # ${allGuestSelectedService.join(' & ')} have not selected a service.`;
                     }
                 } else {
                     alertMsg = `${allGuestSelectedService.length} guests have not selected a service.`;
@@ -68,24 +68,24 @@
 
 <style>
 
-    :global(.ripple){
+    :global(.ripple) {
         display: block;
         width: 30px;
         height: 30px;
         border-radius: 50%;
-        border:2px red solid;
+        border: 2px red solid;
         animation: pulse 1s infinite;
     }
 
     @-webkit-keyframes pulse {
         0% {
-            -webkit-box-shadow: 0 0 0 0 rgba(255,0,0, 0.4);
+            -webkit-box-shadow: 0 0 0 0 rgba(255, 0, 0, 0.4);
         }
         70% {
-            -webkit-box-shadow: 0 0 0 10px rgba(255,0,0, 0);
+            -webkit-box-shadow: 0 0 0 10px rgba(255, 0, 0, 0);
         }
         100% {
-            -webkit-box-shadow: 0 0 0 0 rgba(255,0,0, 0);
+            -webkit-box-shadow: 0 0 0 0 rgba(255, 0, 0, 0);
         }
     }
 </style>
@@ -119,15 +119,16 @@
                         </div>
                     </div>
 
-                    {#each serviceGroup.serviceList as service}
-                        <ServiceOption
-                                {service}
-                                customerIndividualBooking={customerIndividualBookingList[guestIndex]}
-                                serviceGroup={serviceGroup.serviceList}
-                                multiselect={serviceGroup.multiselect}
-                                {guestIndex}
-                        />
-                    {/each}
+                    {#key guestIndex}
+                        {#each serviceGroup.serviceList as service}
+                            <ServiceOption
+                                    {service}
+                                    customerIndividualBooking={customerIndividualBookingList[guestIndex]}
+                                    serviceGroup={serviceGroup.serviceList}
+                                    multiselect={serviceGroup.multiselect}
+                            />
+                        {/each}
+                    {/key}
                 </AccordionItem>
             {/each}
         </Accordion>
