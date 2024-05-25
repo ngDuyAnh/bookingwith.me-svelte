@@ -5,10 +5,7 @@ export const formatToTime = "HH:mm";
 export const formatToTimeAM = "hh:mm a";
 export const formatToTimeAm = "h:mm a";
 
-export function formatTimeWithoutSeconds(timeString) {
-    return dayjs(timeString, 'HH:mm:ss').format('HH:mm');
-}
-
-export function formatTimeAm(timeString) {
+export function formatTimeAm(timeString)
+{
     return dayjs(timeString, formatToTime).format(formatToTimeAm);
 }
