@@ -14,11 +14,13 @@
         findIndividualBookingByID,
         findServiceBookingByID,
     } from "$lib/api/initialize_functions/customer-booking-utility-functions.js";
-    import {moveToCompleted} from "$lib/page/protected/business-portal/page_lobby/page/Dashboard/components/components/CustomerBookingClickModal/handle_customer_booking_state.js";
     import {
-        CustomerBookingState
-    } from "$lib/api/initialize_functions/CustomerBooking.js";
+        moveToCompleted
+    } from "$lib/page/protected/business-portal/page_lobby/page/Dashboard/components/components/CustomerBookingClickModal/handle_customer_booking_state.js";
+    import {CustomerBookingState} from "$lib/api/initialize_functions/CustomerBooking.js";
     import {business} from "$lib/page/protected/stores/business.js";
+    import CustomerIndividualBookingComponent
+        from "$lib/page/protected/business-portal/page_lobby/page/Dashboard/components/components/CustomerBookingClickModal/Servicing/components/CustomerIndivdualBookingComponent/CustomerIndividualBookingComponent.svelte";
 
     // Date select
     let todayDate = $now.format(formatToDate);
@@ -30,7 +32,7 @@
     let prevSelected = null;
     let prevSelectedServiceID = null;
     let prevEL = null;
-    let prevInfoID= null;
+    let prevInfoID = null;
     let conflictEmployeeEvents = {};
 
     let plugins = [ResourceTimeGrid];
@@ -71,7 +73,7 @@
                 // dont stay on events that are not supposed to have them anymore
                 if (prevSelectedServiceID && prevSelectedServiceID !== currServiceID) {
                     resetIndividualHighlight(prevSelectedServiceID);
-                    prevEL.className = `ec-event ${conflictEmployeeEvents[prevInfoID]?conflictEmployeeEvents[prevInfoID]:"" }`;
+                    prevEL.className = `ec-event ${conflictEmployeeEvents[prevInfoID] ? conflictEmployeeEvents[prevInfoID] : ""}`;
                 }
                 if (prevSelected && prevSelected !== bookingID) {
                     resetHighlight(prevSelected);
@@ -95,7 +97,7 @@
                     resetIndividualHighlight(prevSelectedServiceID);
 
                     if (prevEL)
-                        prevEL.className = `ec-event ${conflictEmployeeEvents[prevInfoID]?conflictEmployeeEvents[prevInfoID]:""}`;
+                        prevEL.className = `ec-event ${conflictEmployeeEvents[prevInfoID] ? conflictEmployeeEvents[prevInfoID] : ""}`;
                     prevEL = null;
                     prevSelectedServiceID = null;
                 }
@@ -111,10 +113,10 @@
 
                 let bookingID = info.event.extendedProps.servicingTicket.bookingID;
                 resetHighlight(bookingID);
-                info.el.className = `ec-event ${conflictEmployeeEvents[info.event.id]?conflictEmployeeEvents[info.event.id]:"" }`;
+                info.el.className = `ec-event ${conflictEmployeeEvents[info.event.id] ? conflictEmployeeEvents[info.event.id] : ""}`;
             }
         },
-        eventDidMount: function(info){
+        eventDidMount: function (info) {
             if (info.event.title !== "") {
 
                 let extendedProps = info.event.extendedProps;
@@ -122,7 +124,7 @@
                 let bookedEmployee = extendedProps.servicingTicket.servicingTicketInfo.bookedEmployee;
                 let conflicted = false;
 
-                if(bookedEmployee !== null && bookedEmployee.id !== employeeID){
+                if (bookedEmployee !== null && bookedEmployee.id !== employeeID) {
                     conflicted = true;
                     conflictEmployeeEvents[info.event.id] = "border-2 border-red-600";
                     info.el.className = `ec-event border-2 border-red-600`;
@@ -130,8 +132,7 @@
 
                 info.el.innerHTML = buildInnerHTML(extendedProps.time, extendedProps.description);
 
-                if(!conflicted && conflictEmployeeEvents[info.event.id])
-                {
+                if (!conflicted && conflictEmployeeEvents[info.event.id]) {
                     delete conflictEmployeeEvents[info.event.id];
                 }
             }
@@ -139,9 +140,9 @@
         }
     };
 
-    function buildInnerHTML(time, description){
-        const timeDiv =`<div class="timeDivClass">${time}</div>`;
-        const descriptionDiv=`<div class="text-sm text-ellipsis overflow-hidden ... whitespace-pre-line">${description}</div>`;
+    function buildInnerHTML(time, description) {
+        const timeDiv = `<div class="timeDivClass">${time}</div>`;
+        const descriptionDiv = `<div class="text-sm text-ellipsis overflow-hidden ... whitespace-pre-line">${description}</div>`;
 
         return `<div class="flex flex-col">${timeDiv}${descriptionDiv}</div>`
     }
@@ -232,10 +233,9 @@
     let serviceBooking = undefined;
     let preselectEmployeeID = undefined;
     let indicateToSendCustomerBookingToCompleted = false;
+    let individualModalBooking;
 
-    async function openModalServicingTicket(info)
-    {
-        // console.log("openModalServicingTicket", info)
+    async function openModalServicingTicket(info) {
 
         // Track the event servicing ticket that got clicked
         eventInfo = info;
@@ -244,12 +244,12 @@
         customerBooking = await getCustomerBooking(
             eventInfo.event.extendedProps.servicingTicket.bookingID
         );
-        let individualBooking = findIndividualBookingByID(
+        individualModalBooking = findIndividualBookingByID(
             customerBooking,
             eventInfo.event.extendedProps.servicingTicket.individualID
         );
         serviceBooking = findServiceBookingByID(
-            individualBooking,
+            individualModalBooking,
             eventInfo.event.extendedProps.servicingTicket.serviceBookingID
         );
 
@@ -259,8 +259,7 @@
         // Indicate to send the customer booking to completed
         // It must be under servicing
         indicateToSendCustomerBookingToCompleted = false;
-        if (customerBooking.bookingState === CustomerBookingState.SERVICING)
-        {
+        if (customerBooking.bookingState === CustomerBookingState.SERVICING) {
             // Get the service booking list
             let serviceBookingList = customerBooking.customerIndividualBookingList.map(
                 individualBooking => individualBooking.customerIndividualServiceBookingList
@@ -270,16 +269,13 @@
             let incompleteServiceBookingCount = 0;
             let incompleteServicingTicketCount = 0;
             serviceBookingList.forEach((serviceBooking) => {
-                if (!serviceBooking.completed)
-                {
+                if (!serviceBooking.completed) {
                     incompleteServiceBookingCount += 1;
 
                     // Check if there is only one servicing ticket that is not completed
-                    if (serviceBooking.servicingTicketList.length > 0)
-                    {
+                    if (serviceBooking.servicingTicketList.length > 0) {
                         serviceBooking.servicingTicketList.forEach((servicingTicket) => {
-                            if (!servicingTicket.completed)
-                            {
+                            if (!servicingTicket.completed) {
                                 incompleteServicingTicketCount += 1;
                             }
                         })
@@ -288,8 +284,7 @@
             });
 
             // All service bookings are completed or only one left, and it is currently being servicing
-            if (incompleteServiceBookingCount === 0 || (incompleteServiceBookingCount === 1 && incompleteServicingTicketCount === 1))
-            {
+            if (incompleteServiceBookingCount === 0 || (incompleteServiceBookingCount === 1 && incompleteServicingTicketCount === 1)) {
                 indicateToSendCustomerBookingToCompleted = true;
             }
         }
@@ -303,8 +298,7 @@
     let resources = [];
     let loading = true;
 
-    function bookingStateColour(servicingTicket)
-    {
+    function bookingStateColour(servicingTicket) {
         let servicingTicketColor = "#3399ff"; // Light blue, appointment state
         // Lobby
         if (servicingTicket.servicingTicketInfo.bookingState === CustomerBookingState.LOBBY) {
@@ -440,7 +434,7 @@
     }
 </script>
 <style>
-    :global(.ec-event-time){
+    :global(.ec-event-time) {
         display: none;
     }
 
@@ -504,7 +498,7 @@
 {/if}
 
 <div class="absolute top-0 left-0 right-0" style="z-index: 1006;">
-    <Modal autoclose bind:open={openModal} outsideclose size="md">
+    <Modal autoclose bind:open={openModal} outsideclose size="md" >
         <div>
             <p>
                 <strong>Customer name:</strong>
@@ -526,35 +520,69 @@
             </p>
 
             <div class="mt-1 p-1">
-                <div class="font-bold">Service:</div>
+                <div class="font-bold">Selected service:</div>
 
                 {#if customerBooking.bookingState !== 3 && isToday}
-                    <CustomerIndividualServiceBookingComponent
-                            {customerBooking}
-                            {serviceBooking}
-                            {preselectEmployeeID}
-                    />
-
-                    <div class="mt-4 flex justify-end items-center space-x-2">
-                        <span class="text-gray-700 font-bold">Move to:</span>
-                        {#if indicateToSendCustomerBookingToCompleted}
-                            <button
-                                    class="animate-pulse bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded"
-                                    on:click={handleCompletedClick}>Complete
-                            </button
-                            >
-                        {:else}
-                            <button
-                                    class="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded"
-                                    on:click={handleCompletedClick}>Complete
-                            </button
-                            >
-                        {/if}
+                    <div class="border-2 border-green-400 rounded-md">
+                        <CustomerIndividualServiceBookingComponent
+                                {customerBooking}
+                                {serviceBooking}
+                                {preselectEmployeeID}
+                        />
                     </div>
+                    {#if individualModalBooking.customerIndividualServiceBookingList.length > 1}
+                        <div class="font-bold mt-2">Other services for this guest:</div>
+                        <div class="">
+                            {#each individualModalBooking.customerIndividualServiceBookingList as booking}
+                                {#if serviceBooking.serviceBookingID !== booking.serviceBookingID}
+                                    <CustomerIndividualServiceBookingComponent
+                                            {customerBooking}
+                                            serviceBooking={booking}
+                                            {preselectEmployeeID}
+                                    />
+                                {/if}
+                            {/each}
+                        </div>
+                    {/if}
+                    {#if customerBooking.customerIndividualBookingList.length > 1}
+                        <div class="mt-6">
+                            <div class="font-bold">Other related guest(s) for this booking:</div>
+                            {#each customerBooking.customerIndividualBookingList as individualBooking (individualBooking.individualID)}
+                                {#if individualBooking.individualID !== individualModalBooking.individualID }
+                                    <CustomerIndividualBookingComponent
+                                            {customerBooking}
+                                            {individualBooking}
+                                            specificBooking={serviceBooking}
+                                    />
+                                {/if}
+                            {/each}
+                        </div>
+                    {/if}
+
+
                 {:else}
                     <p>{serviceBooking.service.serviceName}</p>
                 {/if}
             </div>
         </div>
+
+        <svelte:fragment slot="footer">
+            <div class="w-full mt-4 flex justify-end items-center space-x-2">
+                <span class="text-gray-700 font-bold">Move to:</span>
+                {#if indicateToSendCustomerBookingToCompleted}
+                    <button
+                            class="animate-pulse bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded"
+                            on:click={handleCompletedClick}>Complete
+                    </button
+                    >
+                {:else}
+                    <button
+                            class="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded"
+                            on:click={handleCompletedClick}>Complete
+                    </button
+                    >
+                {/if}
+            </div>
+        </svelte:fragment>
     </Modal>
 </div>
