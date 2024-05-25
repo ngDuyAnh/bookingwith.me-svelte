@@ -10,10 +10,10 @@
     import CustomerBookingInformation
         from "$lib/page/customer-booking-portal/create/page/CustomerBookingInformation/CustomerBookingInformation.svelte";
     import BookingSuccess from "$lib/page/customer-booking-portal/create/page/BookingSuccess/BookingSuccess.svelte";
-    import {employeeSelectOptions} from "$lib/page/stores/EmployeeSelectOptions/employeeSelectOptions_store.js";
     import {
+        employeeSelectOptions,
         employeeToSelectOption
-    } from "$lib/components/CustomerBooking/CustomerIndividualBookingServiceSelect/components/ServiceOption/ServiceOption.js";
+    } from "$lib/page/stores/EmployeeSelectOptions/employeeSelectOptions_store.js";
     import {onMount} from "svelte";
     import {getBusiness} from "$lib/api/api_server/customer-booking-portal/api.js";
     import {goto} from "$app/navigation";

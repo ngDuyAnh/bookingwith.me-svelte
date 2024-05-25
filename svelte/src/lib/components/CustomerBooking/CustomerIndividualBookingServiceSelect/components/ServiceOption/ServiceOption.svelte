@@ -1,104 +1,117 @@
 <script>
-    import {Button, Select} from "flowbite-svelte";
+    import { Button, Select } from "flowbite-svelte";
+    import { onMount } from "svelte";
     import {formatCost} from "$lib/application/FormatCost.js";
-    import {CustomerIndividualServiceBooking} from "$lib/api/initialize_functions/CustomerBooking.js";
-    import {
-        employeeToSelectOption
-    } from "$lib/components/CustomerBooking/CustomerIndividualBookingServiceSelect/components/ServiceOption/ServiceOption.js";
+    import { CustomerIndividualServiceBooking } from "$lib/api/initialize_functions/CustomerBooking.js";
+    import {selectedServiceIds} from "$lib/page/stores/ServiceSelectionOptions/service_options_store.js";
 
-    export let serviceGroup;
     export let service;
-    export let customerIndividualBookingList;
-    export let guestIndex;
+    export let customerIndividualBooking;
+    export let serviceGroup; // Receive the serviceGroup list
+    export let multiselect; // Receive the multiselect flag
 
-    let serviceBooking = undefined;
+    let employeeSelectOptions = [];
     let isSelected = false;
     let employeeIdSelected = -1;
+    let serviceBookingInfo = undefined;
 
-    // Initialize employee select options immediately
-    let employeeSelectOptions = [
-        {
-            value: -1,
-            name: "Any",
-            data: null
-        },
-        ...service.employeeList.map(employee => employeeToSelectOption(employee))
-    ];
-
-    function getServiceBooking()
-    {
-        return customerIndividualBookingList[guestIndex].customerIndividualServiceBookingList.find(serviceBooking => serviceBooking.service.id === service.id);
+    function getServiceBookingInfo() {
+        return customerIndividualBooking.customerIndividualServiceBookingList.find(serviceBooking => serviceBooking.service.id === service.id);
     }
 
-    function getEmployeeFromEmployeeId(employeeId)
-    {
+    function getEmployeeFromEmployeeId(employeeId) {
         return service.employeeList.find(employee => employee.id === employeeId) || null;
     }
 
-    // Initialize the state of the service select
-    function initializeServiceBooking() {
-        serviceBooking = getServiceBooking();
-        if (serviceBooking) {
-            isSelected = true;
-            employeeIdSelected = serviceBooking?.employee?.id ?? -1;
-        } else {
-            isSelected = false;
-            employeeIdSelected = -1;
-        }
+    function employeeToSelectOption(employee) {
+        return {
+            value: employee.id,
+            name: employee.employeeName,
+            data: employee // holding the full employee object
+        };
     }
 
-    // Reactive statement to update serviceBooking when guestIndex changes
-    $: if (guestIndex !== undefined)
-    {
-        initializeServiceBooking();
+    function initializeSelectedServiceBookingInfo(serviceBooking) {
+        serviceBookingInfo = serviceBooking;
+        employeeIdSelected = serviceBookingInfo && serviceBookingInfo.employee ? serviceBookingInfo.employee.id : -1;
     }
 
-    // Watch employeeIdSelected and update serviceBooking when it changes
-    $: if (isSelected && serviceBooking && serviceBooking.employee?.id !== employeeIdSelected)
-    {
-        serviceBooking.employee = getEmployeeFromEmployeeId(employeeIdSelected);
-    }
-
-    function toggleServiceSelection()
-    {
-        console.log("toggleServiceSelection isSelected", isSelected);
-
-        // Deselect
-        if (isSelected)
-        {
-            const index = customerIndividualBookingList[guestIndex].customerIndividualServiceBookingList.findIndex(sb => sb.service.id === service.id);
-            if (index !== -1) {
-                customerIndividualBookingList[guestIndex].customerIndividualServiceBookingList.splice(index, 1);
-            }
-
-            console.log("Deselected", customerIndividualBookingList[guestIndex].customerIndividualServiceBookingList)
-        }
-        // Select
-        else
-        {
-            // The service group is not multiselect
-            // If there is existing selected service that is part of the group, remove it
-            if (!serviceGroup.multiselect)
+    onMount(() => {
+        employeeSelectOptions = [
             {
-                customerIndividualBookingList[guestIndex].customerIndividualServiceBookingList = customerIndividualBookingList[guestIndex].customerIndividualServiceBookingList.filter(
-                    serviceBooking => !serviceGroup.serviceList.some(service => service.id === serviceBooking.service.id)
-                );
+                value: -1,
+                name: "Any",
+                data: null
+            },
+            ...service.employeeList.map(employee => employeeToSelectOption(employee))
+        ];
+        employeeIdSelected = -1;
+
+        let selected = getServiceBookingInfo();
+        initializeSelectedServiceBookingInfo(selected);
+    });
+
+    $: isSelected = $selectedServiceIds.has(service.id)
+
+
+    // Employee selected change
+    $: if (isSelected) {
+        // Get the selected employee id from the service booking
+        let serviceBookingSelectedEmployeeId = serviceBookingInfo?.employee?.id ?? -1;
+        if (serviceBookingSelectedEmployeeId !== employeeIdSelected) {
+            serviceBookingInfo.employee = getEmployeeFromEmployeeId(employeeIdSelected);
+        }
+    }
+
+    // Reactively update whenever customerIndividual changes
+    $: {
+        let selectedServiceBooking = getServiceBookingInfo();
+        initializeSelectedServiceBookingInfo(selectedServiceBooking);
+    }
+
+    function toggleServiceSelection() {
+        let currentSelectedServiceIds = new Set($selectedServiceIds);
+
+
+        if (isSelected) {
+            const index = customerIndividualBooking.customerIndividualServiceBookingList.findIndex(serviceBookingInfo => serviceBookingInfo.service.id === service.id);
+            if (index !== -1) {
+                customerIndividualBooking.customerIndividualServiceBookingList.splice(index, 1);
+                currentSelectedServiceIds.delete(service.id);
+            }
+        } else {
+            if (!multiselect) {
+                serviceGroup.forEach(groupService => currentSelectedServiceIds.delete(groupService.id));
+                // If multiselect is false, remove other services from the same group
+                customerIndividualBooking.customerIndividualServiceBookingList = customerIndividualBooking.customerIndividualServiceBookingList.filter(serviceBooking => !serviceGroup.some(groupService => groupService.id === serviceBooking.service.id));
             }
 
-            // Create the service booking
-            serviceBooking = {
-                ...CustomerIndividualServiceBooking(),
+            let employeeSelected = getEmployeeFromEmployeeId(employeeIdSelected);
+            serviceBookingInfo = {
                 service: service,
-                employee: getEmployeeFromEmployeeId(employeeIdSelected)
+                employee: employeeSelected
             };
 
-            // Add the selected service
-            customerIndividualBookingList[guestIndex].customerIndividualServiceBookingList.push(serviceBooking);
+            customerIndividualBooking.customerIndividualServiceBookingList.push({
+                ...CustomerIndividualServiceBooking(),
+                service: service,
+                employee: employeeSelected
+            });
+
+            currentSelectedServiceIds.add(service.id);
+
         }
 
-        // Update the selected state
         isSelected = !isSelected;
+        selectedServiceIds.set(currentSelectedServiceIds);
     }
+
+    function callFromSelect()
+    {
+        isSelected = false;
+        toggleServiceSelection();
+    }
+
 </script>
 
 <div class="mb-8">
@@ -107,12 +120,12 @@
 
     <div class="mt-1">
         <label for="employee-select">Employee:</label>
-        <Select items={employeeSelectOptions} bind:value={employeeIdSelected}/>
+        <Select items={employeeSelectOptions} bind:value={employeeIdSelected} on:change={()=>{if(isSelected)callFromSelect()}}/>
     </div>
 
     <div class="mt-1">
         <Button class="{isSelected ? 'bg-red-500 hover:bg-red-600 text-white' : 'bg-transparent hover:bg-green-100 text-green-500'} border-2 border-green-500 hover:border-green-600 text-sm font-medium rounded-lg px-4 py-2 transition ease-in-out duration-150"
-                on:click={toggleServiceSelection}>
+                on:click={()=>toggleServiceSelection()}>
             {isSelected ? 'Deselect' : 'Select'}
         </Button>
     </div>

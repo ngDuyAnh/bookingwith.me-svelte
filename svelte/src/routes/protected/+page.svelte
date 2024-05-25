@@ -10,10 +10,10 @@
     import BusinessPortalLobby from "$lib/page/protected/business-portal/page_lobby/BusinessPortalLobby.svelte";
     import BusinessPortalEmployee from "$lib/page/protected/business-portal/page_employee/BusinessPortalEmployee.svelte";
     import {goto} from "$app/navigation";
-    import {employeeSelectOptions} from "$lib/page/stores/EmployeeSelectOptions/employeeSelectOptions_store.js";
     import {
-        employeeToSelectOption
-    } from "$lib/components/CustomerBooking/CustomerIndividualBookingServiceSelect/components/ServiceOption/ServiceOption.js";
+    employeeSelectOptions,
+    employeeToSelectOption
+    } from "$lib/page/stores/EmployeeSelectOptions/employeeSelectOptions_store.js";
 
     export let data;
     let loading = true;
