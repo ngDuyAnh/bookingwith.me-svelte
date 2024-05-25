@@ -9,6 +9,7 @@
     export let customerIndividualBooking;
     export let serviceGroup; // Receive the serviceGroup list
     export let multiselect; // Receive the multiselect flag
+    export let guestIndex;
 
     let employeeSelectOptions = [];
     let isSelected = false;
@@ -47,9 +48,30 @@
         ];
         employeeIdSelected = -1;
 
-        let selected = getServiceBookingInfo();
-        initializeSelectedServiceBookingInfo(selected);
+        let selectedBooking = getServiceBookingInfo();
+        initializeSelectedServiceBookingInfo(selectedBooking);
     });
+
+
+
+    // Initialize the state of the service select
+    function initializeServiceBooking() {
+        let selectedBooking = getServiceBookingInfo();
+        if (selectedBooking) {
+            isSelected = true;
+            employeeIdSelected = selectedBooking?.employee?.id ?? -1;
+        } else {
+            isSelected = false;
+            employeeIdSelected = -1;
+        }
+    }
+
+
+    // Reactive statement to update serviceBooking when guestIndex changes
+    $: if (guestIndex !== undefined)
+    {
+        initializeServiceBooking();
+    }
 
     $: isSelected = $selectedServiceIds.has(service.id)
 

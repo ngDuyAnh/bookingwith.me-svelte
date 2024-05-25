@@ -125,6 +125,7 @@
                                 customerIndividualBooking={customerIndividualBookingList[guestIndex]}
                                 serviceGroup={serviceGroup.serviceList}
                                 multiselect={serviceGroup.multiselect}
+                                {guestIndex}
                         />
                     {/each}
                 </AccordionItem>
