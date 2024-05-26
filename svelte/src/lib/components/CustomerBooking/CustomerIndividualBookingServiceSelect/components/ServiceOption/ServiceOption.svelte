@@ -4,6 +4,9 @@
     import {formatCost} from "$lib/application/FormatCost.js";
     import { CustomerIndividualServiceBooking } from "$lib/api/initialize_functions/CustomerBooking.js";
     import {selectedServiceIds} from "$lib/page/stores/ServiceSelectionOptions/service_options_store.js";
+    import {
+        employeeToSelectOption
+    } from "$lib/components/CustomerBooking/CustomerIndividualBookingServiceSelect/components/ServiceOption/functions.js";
 
     export let service;
     export let customerIndividualBooking;
@@ -21,14 +24,6 @@
 
     function getEmployeeFromEmployeeId(employeeId) {
         return service.employeeList.find(employee => employee.id === employeeId) || null;
-    }
-
-    function employeeToSelectOption(employee) {
-        return {
-            value: employee.id,
-            name: employee.employeeName,
-            data: employee // holding the full employee object
-        };
     }
 
     function initializeSelectedServiceBookingInfo(serviceBooking) {
