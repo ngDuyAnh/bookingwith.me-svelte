@@ -10,8 +10,10 @@
     import {Modal} from "flowbite-svelte";
     import {deleteBooking} from "$lib/api/api_server/customer-booking-portal/api.js";
 
-    let tomorrow  = $now.add(1, 'day').format(formatToDate); // default to today
-    let selectedDate = tomorrow;
+    let tomorrow  = $now.startOf('day').add(1, 'day');
+    $: tomorrow = $now.startOf('day').add(1, 'day');
+
+    let selectedDate = tomorrow.format(formatToDate);
     let customerBookingList = [];
 
     let openModal = false;
@@ -19,9 +21,15 @@
 
     async function fetchBookingsForDate()
     {
+        // Ensure the boundary for date
+        if (dayjs(selectedDate, formatToDate).startOf('day').isBefore(tomorrow))
+        {
+            selectedDate = tomorrow.format(formatToDate);
+        }
+
         try
         {
-            const response = await getAppointmentBookingList($userProfile.user.business.businessID, selectedDate);
+            const response = await getAppointmentBookingList($userProfile.user.businessInfo.businessID, selectedDate);
             customerBookingList = response.customerBookingList;
         }
         catch (error)
@@ -57,7 +65,7 @@
     }
 </script>
 
-<input type="date" bind:value={selectedDate} min={tomorrow}/>
+<input type="date" bind:value={selectedDate} min={tomorrow.format(formatToDate)}/>
 
 <!-- Appointment list -->
 <ul>

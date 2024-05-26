@@ -3,20 +3,27 @@
     import {createBusiness} from "$lib/api/api_server/business-portal/api.js";
     import {
         BusinessInformation
-    } from "$lib/api/api_server/customer-booking-portal/utility-functions/initialize_functions/Business.js";
-    import {formatPhoneNumberInput} from "$lib/application/FormatPhoneNumber.js";
+    } from "$lib/api/initialize_functions/Business.js";
+    import {formatPhoneNumber} from "$lib/application/FormatPhoneNumber.js";
 
     let businessInfo = {
-        "business": BusinessInformation(),
-        "businessEmail": "",
-        "lobbyEmail": "",
-        "contactEmail": "",
-        "contactName": "",
-        "contactPhoneNumber": "",
+        business: {
+            ...BusinessInformation(),
+
+            "city": "Winnipeg",
+            "province": "Manitoba",
+            "country": "Canada"
+        },
+
+        businessEmail: "",
+        lobbyEmail: "",
+        contactEmail: "",
+        contactName: "",
+        contactPhoneNumber: "",
     };
 
-    let formattedBusinessPhoneNumber = formatPhoneNumberInput(businessInfo.business.businessPhoneNumber);
-    let formattedContactPhoneNumber = formatPhoneNumberInput(businessInfo.contactPhoneNumber);
+    let formattedBusinessPhoneNumber = formatPhoneNumber(businessInfo.business.businessPhoneNumber);
+    let formattedContactPhoneNumber = formatPhoneNumber(businessInfo.contactPhoneNumber);
 
     function handleBusinessPhoneNumberInput(event) {
         if (event.target instanceof HTMLInputElement)
@@ -28,7 +35,7 @@
             // Update the phone number
             businessInfo.business.businessPhoneNumber = rawPhoneNumber;
 
-            formattedBusinessPhoneNumber = formatPhoneNumberInput(businessInfo.business.businessPhoneNumber);
+            formattedBusinessPhoneNumber = formatPhoneNumber(businessInfo.business.businessPhoneNumber);
         }
     }
 
@@ -41,7 +48,7 @@
             // Update the phone number
             businessInfo.contactPhoneNumber = rawPhoneNumber;
 
-            formattedContactPhoneNumber = formatPhoneNumberInput(businessInfo.contactPhoneNumber);
+            formattedContactPhoneNumber = formatPhoneNumber(businessInfo.contactPhoneNumber);
         }
     }
 
@@ -50,11 +57,11 @@
             const businessResult = await createBusiness(businessInfo);
 
             // Redirect to the information page with the new created business
-            let businessID = businessResult.business.businessID;
+            let businessInfo = businessResult.business.businessID;
 
-            console.log(businessID);
+            console.log(businessInfo.businessID);
 
-            await goto(`/admin/business/get/${businessID}`);
+            await goto(`/admin/business/get/${businessInfo.businessID}`);
         } catch (error) {
             console.log(error)
             alert('Failed to create the business!');
@@ -79,15 +86,15 @@
 
     <div class="form-group">
         <label for="businessEmail">Business Email:</label>
-        <input type="email" id="email" bind:value={businessInfo.businessEmail} class="input-field" required>
+        <input type="email" id="businessEmail" bind:value={businessInfo.businessEmail} class="input-field" required>
     </div>
     <div class="form-group">
         <label for="lobbyEmail">Lobby Email:</label>
-        <input type="email" id="email" bind:value={businessInfo.lobbyEmail} class="input-field" required>
+        <input type="email" id="lobbyEmail" bind:value={businessInfo.lobbyEmail} class="input-field" required>
     </div>
     <div class="form-group">
         <label for="contactEmail">Contact Email:</label>
-        <input type="email" id="email" bind:value={businessInfo.contactEmail} class="input-field" required>
+        <input type="email" id="contactEmail" bind:value={businessInfo.contactEmail} class="input-field" required>
     </div>
 
     <div class="form-group">

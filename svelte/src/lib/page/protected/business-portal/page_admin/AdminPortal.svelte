@@ -1,19 +1,21 @@
 <script>
-  import { selectedTab } from "$lib/page/protected/business-portal/page_admin/stores/selected_tab_store.js";
-  import Header from "$lib/page/protected/business-portal/components/Header/Header.svelte";
+  import Header from "$lib/page/protected/components/Header/Header.svelte";
   import CreateBusiness from "$lib/page/protected/business-portal/page_admin/page/CreateBusiness/CreateBusiness.svelte";
-  import Setting from "$lib/page/protected/business-portal/page_admin/page/Setting/Setting.svelte";
+  import Setting from "$lib/components/Setting/Setting.svelte";
 
   let tabs = ["Create Business", "Setting"];
-  selectedTab.set(tabs[0]);
+  let selectedIndex = 0;
 </script>
 
-<Header {tabs} {selectedTab} />
+<Header
+        {tabs}
+        bind:selectedIndex={selectedIndex}
+/>
 
 <div class="m-1">
-  {#if $selectedTab === "Create Business"}
+  {#if selectedIndex === 0}
     <CreateBusiness />
-  {:else if $selectedTab === "Setting"}
+  {:else if selectedIndex === 1}
     <Setting/>
   {/if}
 </div>

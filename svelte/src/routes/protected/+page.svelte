@@ -1,34 +1,55 @@
 <script>
-  import { userProfile } from "$lib/page/protected/stores/userProfile.js";
-  import { Spinner } from "flowbite-svelte";
-  import { onMount } from "svelte";
-  import Login from "$lib/page/protected/page_login/Login.svelte";
-  import AdminPortal from "$lib/page/protected/business-portal/page_admin/AdminPortal.svelte";
-  import BusinessPortalAdmin from "$lib/page/protected/business-portal/page_business_admin/BusinessPortalAdmin.svelte";
-  import {getBusiness} from "$lib/api/api_server/business-portal/api.js";
-  import {business} from "$lib/page/protected/stores/business.js";
-  import BusinessPortalLobby from "$lib/page/protected/business-portal/page_lobby/BusinessPortalLobby.svelte";
+    import { userProfile } from "$lib/page/protected/stores/userProfile.js";
+    import { Spinner } from "flowbite-svelte";
+    import { onMount } from "svelte";
+    import Login from "$lib/page/protected/page_login/Login.svelte";
+    import AdminPortal from "$lib/page/protected/business-portal/page_admin/AdminPortal.svelte";
+    import BusinessPortalAdmin from "$lib/page/protected/business-portal/page_business_admin/BusinessPortalAdmin.svelte";
+    import {getBusiness} from "$lib/api/api_server/business-portal/api.js";
+    import {business} from "$lib/page/protected/stores/business.js";
+    import BusinessPortalLobby from "$lib/page/protected/business-portal/page_lobby/BusinessPortalLobby.svelte";
+    import BusinessPortalEmployee from "$lib/page/protected/business-portal/page_employee/BusinessPortalEmployee.svelte";
+    import {goto} from "$app/navigation";
+    import {
+    employeeSelectOptions,
+    employeeToSelectOption
+    } from "$lib/page/stores/EmployeeSelectOptions/employeeSelectOptions_store.js";
 
-  export let data;
-  let loading = true;
+    export let data;
+    let loading = true;
 
-  // User profile
-  userProfile.set(data.props);
+    // User profile
+    userProfile.set(data.props);
 
-  onMount(async () => {
-    if($userProfile.auth != null && $userProfile.user !=null)
-    // Get the business
-    {
-      const response = await getBusiness($userProfile.user.businessInfo.businessID);
-      console.log("Response is", response);
-      business.set(response);
-    }
+    onMount(async () => {
+        //console.log("userProfile", $userProfile)
 
-    loading = false;
-  });
+        // Get the business
+        if($userProfile.auth != null &&
+            $userProfile.user && $userProfile.user.businessInfo != null)
+        {
+            const response = await getBusiness($userProfile.user.businessInfo.businessID);
+            business.set(response);
 
-  $: console.log("userProfile", $userProfile);
-  $: console.log("business", $business);
+            // The business is not active
+            // Send to error page
+            if (!$business.businessInfo.active)
+            {
+            await goto('/error');
+            }
+
+            // Convert the employee list to selectable options
+            if ($business.employeeList && Array.isArray($business.employeeList))
+            {
+            employeeSelectOptions.set($business.employeeList.map(employeeToSelectOption));
+            }
+        }
+
+        loading = false;
+    });
+
+    //$: console.log("userProfile", $userProfile);
+    //$: console.log("business", $business);
 </script>
 
 <div class="min-h-screen w-full">
@@ -44,11 +65,10 @@
     <BusinessPortalAdmin/>
   {:else if $userProfile.user.role === "LOBBY"}
     <BusinessPortalLobby/>
-    <p>BusinessPortalLobby</p>
   {:else if $userProfile.user.role === "EMPLOYEE"}
-    <p>BusinessPortalEmployee</p>
+    <BusinessPortalEmployee/>
   {:else if $userProfile.user.role === "REGISTER"}
-    <p>BusinessPortalRegister</p>
+    <p>Account is not associated to a business.</p>
   {:else}
     <p>Unexpected user state, please contact support.</p>
   {/if}

@@ -67,7 +67,7 @@
     async function handleEditServiceGroup() {
         console.log('Updating service group with new details:', editingServiceGroup);
 
-        // Initialize
+        // Deep clone
         Object.assign(editingServiceGroup, editingCloneServiceGroup);
 
         // Request the server to update
@@ -110,7 +110,7 @@
 
         console.log('Updating service with new details:', editingCloneService);
 
-        // Initialize
+        // Deep clone
         Object.assign(editingService, editingCloneService);
 
         // Request the server to update

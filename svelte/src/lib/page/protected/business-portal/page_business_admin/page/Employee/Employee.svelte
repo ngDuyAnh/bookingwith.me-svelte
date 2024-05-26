@@ -6,8 +6,8 @@
         initializeEmployeeWorkSchedule
     } from "$lib/api/api_server/business-portal/api.js";
     import {business} from "$lib/page/protected/stores/business.js";
-    import {Employee} from "$lib/api/api_server/customer-booking-portal/utility-functions/initialize_functions/Business.js";
-    import {User} from "$lib/api/api_server/user-portal/User.js";
+    import {Employee} from "$lib/api/initialize_functions/Business.js";
+    import {User} from "$lib/api/initialize_functions/User.js";
 
     let newEmployeeName = "";
     let newEmployeeEmail = "";
@@ -77,7 +77,7 @@
     {
         console.log('Updating employee with new details:', editingEmployee);
 
-        // Initialize
+        // Deep clone
         Object.assign(editingEmployee, editingCloneEmployee);
 
         // Request the server to update

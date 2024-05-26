@@ -4,7 +4,6 @@
     import {Button, Input, Label, Select, Textarea} from "flowbite-svelte";
     import {
         availability,
-        walkin_availability,
         forceSubmitBooking,
         submitBooking
     } from "$lib/api/api_server/customer-booking-portal/api.js";
@@ -13,49 +12,59 @@
     import {getCustomer} from "$lib/api/api_server/lobby-portal/api.js";
     import {
         CustomerBookingState
-    } from "$lib/api/api_server/customer-booking-portal/utility-functions/initialize_functions/CustomerBooking.js";
-    // import {sendTextBookingSuccess} from "$lib/api/api_twilio/api.js";
-
-    export let businessId;
-    // export let businessName;
-    export let customerBooking;
-    export let customerIndividualList;
-    export let submitCallback = undefined;
-
+    } from "$lib/api/initialize_functions/CustomerBooking.js";
+    import {send_SMS_BookingSuccess} from "$lib/api/api_twilio/api.js";
+    import {rawPhoneNumber, formatPhoneNumber} from "$lib/application/FormatPhoneNumber.js";
 
     export let customerNameAutoComplete = false;
+    export let requiredAgreeToReceiveSMS = true;
+
+    export let businessInfo;
+    // export let businessName;
+    export let customerBooking;
+
+    export let submitCallback = undefined;
+
     export let overrideFlag = false;
-    export let sendSMS = false;
+    export let sendSMSFlag = false;
 
-    export let requiredAgreeToReceiveSMS = false;
+    let walkinAvailabilityFlag = false;
 
-    export let walkinAvailabilityFlag = false;
-
+    let currentTimeString = "00:00";
     let availableTimeOptionList = [];
     async function fetchAvailableTimeList()
     {
         // Empty
         availableTimeOptionList = [];
 
-        let currentTimeString = "00:00";
-        if (customerBooking.bookingDate === $now.format(formatToDate))
+        const bookingDate = dayjs(customerBooking.bookingDate, formatToDate);
+        currentTimeString = "00:00"; // Booking date is in the future
+        if (bookingDate.isSame($now, 'day'))
         {
             currentTimeString = $now.format(formatToTime)
+        }
+        // Invalid, the date selected is before today
+        // Set it to the end of the day for no availability
+        else if (bookingDate.isBefore($now, 'day'))
+        {
+            currentTimeString = "23:59";
         }
 
         try
         {
             let response = {};
 
-            console.log("walkinAvailabilityFlag", walkinAvailabilityFlag)
-
             if (walkinAvailabilityFlag)
             {
-                response = await walkin_availability(
-                    businessId,
+                customerBooking.bookingState = CustomerBookingState.APPOINTMENT;
+
+                // Get the availabilities
+                response = await availability(
+                    businessInfo.businessID,
                     customerBooking.bookingDate,
                     currentTimeString,
-                    customerIndividualList
+                    customerBooking,
+                    5
                 );
 
                 // Initialize the available time
@@ -70,11 +79,15 @@
             }
             else
             {
+                customerBooking.bookingState = CustomerBookingState.SCHEDULE;
+
+                // Get the availabilities
                 response = await availability(
-                    businessId,
+                    businessInfo.businessID,
                     customerBooking.bookingDate,
                     currentTimeString,
-                    customerIndividualList
+                    customerBooking,
+                    10
                 );
 
                 // Initialize the available time
@@ -88,6 +101,7 @@
                     });
             }
 
+            // Currently the walk-in availability flag is not selected
             if (!walkinAvailabilityFlag)
             {
                 // Add the option to fetch walk-in availability
@@ -108,7 +122,7 @@
                 }
             }
 
-            console.log("availableTimeOptionList", availableTimeOptionList)
+            //console.log("availableTimeOptionList", availableTimeOptionList)
         }
         catch (error)
         {
@@ -158,28 +172,6 @@
         getAvailableTimeOptionList();
     }
 
-    function formatPhoneNumber(phoneNumber)
-    {
-        let formattedPhoneNumber = "";
-        // Format as "(123) 456-7890"
-        if (phoneNumber.length > 6) {
-            // If more than 6 digits, format with parenthesis and dash
-            formattedPhoneNumber = `(${phoneNumber.slice(0, 3)}) ${phoneNumber.slice(3, 6)}-${phoneNumber.slice(6)}`;
-        } else if (phoneNumber.length > 3) {
-            // If more than 3 digits, include parenthesis
-            formattedPhoneNumber = `(${phoneNumber.slice(0, 3)}) ${phoneNumber.slice(3)}`;
-        } else if (phoneNumber.length > 0) {
-            // If 1-3 digits, just wrap in parentheses
-            formattedPhoneNumber = `(${phoneNumber}`;
-        } else {
-            // Empty input
-            formattedPhoneNumber = '';
-        }
-
-        // Return
-        return formattedPhoneNumber;
-    }
-
     async function customerExists()
     {
         if (customerNameAutoComplete)
@@ -195,25 +187,24 @@
     let formattedPhoneNumber = formatPhoneNumber(customerBooking.customer.phoneNumber);
 
     function handleBusinessPhoneNumberInput(event) {
-        const input = event.target;
-        let value = input.value.replace(/\D/g, ''); // Remove non-digit characters
-        value = value.slice(0, 10); // Limit to 10 digits
+        const input = event.target.value;
 
         // Update the raw customer phone number
-        customerBooking.customer.phoneNumber = value;
+        customerBooking.customer.phoneNumber = rawPhoneNumber(input);
 
         // Format as "(123) 456-7890"
-        formattedPhoneNumber = formatPhoneNumber(value);
+        formattedPhoneNumber = formatPhoneNumber(input);
 
         // When the formatted phone number is complete, fetch the customer name
-        if (value.length === 10) {
+        if (customerBooking.customer.phoneNumber.length === 10) {
             customerExists();
         }
     }
 
     async function submit()
     {
-        console.log("submit()", customerBooking, customerIndividualList);
+        console.log("submit()", customerBooking);
+
         let success = false;
         let error = false;
 
@@ -221,17 +212,16 @@
         {
             let response = {};
 
-            // Set the customer booking state
+            // Initialize customer booking
             customerBooking.bookingState = CustomerBookingState.APPOINTMENT;
+            customerBooking.walkIn = false;
 
             // Force submit if override is toggled
             if (overrideFlag)
             {
                 response = await forceSubmitBooking(
-                    businessId,
-                    customerBooking,
-                    $now.format(),
-                    customerIndividualList
+                    businessInfo.businessID,
+                    customerBooking
                 );
             }
             // Submit appointment
@@ -243,16 +233,18 @@
                 {
                     customerBooking.bookingState = CustomerBookingState.SCHEDULE;
                 }
+                // Asynchronous servicing
+                else
+                {
+                    customerBooking.walkIn = true;
+                }
 
                 response = await submitBooking(
-                    businessId,
-                    $now.format(formatToTime),
+                    businessInfo.businessID,
+                    currentTimeString,
                     selectedAvailability.timePeriod,
-                    customerBooking,
-                    $now.format(),
-                    customerIndividualList
+                    customerBooking
                 );
-
             }
 
             // Success
@@ -261,19 +253,19 @@
                 success = true;
 
                 // Send SMS
-                if (sendSMS) {
+                if (sendSMSFlag) {
                     try {
-                        // await sendTextBookingSuccess(businessName, response.customerBooking);
+                        await send_SMS_BookingSuccess(businessInfo.businessName, response.customerBooking);
                     } catch (error) {
-                        console.error(error);
+                        console.error("Failed to send SMS message.", error);
                     }
                 }
             }
         }
         catch (err)
         {
-            console.error("Error submitting booking:", err);
             error = true;
+            console.error("Error submitting booking:", err);
         }
 
         // Call the callback function for submit

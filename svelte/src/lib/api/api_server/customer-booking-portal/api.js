@@ -2,23 +2,16 @@ import {API_BASE_URL} from "$lib/api/api_server/API-URL.js";
 
 const API_URL = `${API_BASE_URL}/customer-booking-portal`;
 
-export async function availability(id, dateString, currentTimeString, customerIndividualList)
+export async function availability(id, dateString, currentTimeString, customerBooking, timeSlot)
 {
-    const FETCH_URL = `${API_URL}/availability/${id}`;
-
-    // Convert guestList to the appropriate format
-    const availableBooking = {
-        date: dateString,
-        currentTime: currentTimeString,
-        customerIndividualList: customerIndividualList
-    };
+    const FETCH_URL = `${API_URL}/availability/${id}?time=${currentTimeString}&slot=${timeSlot}`;
 
     const response = await fetch(`${FETCH_URL}`, {
         method: 'POST',
         headers: {
         'Content-Type': 'application/json'
         },
-            body: JSON.stringify(availableBooking)
+        body: JSON.stringify(customerBooking)
     });
 
     if (!response.ok) {
@@ -29,48 +22,14 @@ export async function availability(id, dateString, currentTimeString, customerIn
     return await response.json();
 }
 
-export async function walkin_availability(id, dateString, currentTimeString, customerIndividualList)
+export async function submitBooking(id, currentTimeString, timePeriod, customerBooking)
 {
-    const FETCH_URL = `${API_URL}/walk-in-availability/${id}`;
-
-    // Convert guestList to the appropriate format
-    const availableBooking = {
-        availableBooking: {
-            date: dateString,
-            currentTime: currentTimeString,
-            customerIndividualList: customerIndividualList
-        }
-    };
-
-    console.log("availableBooking", JSON.stringify(availableBooking))
-
-    const response = await fetch(`${FETCH_URL}`, {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json'
-        },
-        body: JSON.stringify(availableBooking)
-    });
-
-    if (!response.ok) {
-        const errorBody = await response.text(); // or response.json() if the server responds with JSON
-        throw new Error(`walk_in_availability(). Status: ${response.status}, Body: ${errorBody}`);
-    }
-
-    return await response.json();
-}
-
-export async function submitBooking(id, currentTime, timePeriod, customerBooking, timestamp, customerIndividualList)
-{
-    const FETCH_URL = `${API_URL}/submit-booking/${id}`;
+    const FETCH_URL = `${API_URL}/submit-booking/${id}?time=${currentTimeString}`;
 
     // Convert guestList to the appropriate format
     const submitBooking = {
-        "currentTime": currentTime,
         "timePeriod": timePeriod,
         "customerBooking": customerBooking,
-        "timestamp": timestamp,
-        "customerIndividualList": customerIndividualList
     };
 
     const response = await fetch(`${FETCH_URL}`, {
@@ -89,23 +48,16 @@ export async function submitBooking(id, currentTime, timePeriod, customerBooking
     return await response.json();
 }
 
-export async function forceSubmitBooking(id, customerBooking, timestamp, customerIndividualList)
+export async function forceSubmitBooking(id, customerBooking)
 {
     const FETCH_URL = `${API_URL}/force-submit-booking/${id}`;
-
-    // Convert guestList to the appropriate format
-    const submitBooking = {
-        "customerBooking": customerBooking,
-        "timestamp": timestamp,
-        "customerIndividualList": customerIndividualList
-    };
 
     const response = await fetch(`${FETCH_URL}`, {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json'
         },
-        body: JSON.stringify(submitBooking)
+        body: JSON.stringify(customerBooking)
     });
 
     if (!response.ok) {

@@ -3,8 +3,6 @@
     import {getLobbyBookingList, initializeCustomerBooking} from "$lib/api/api_server/lobby-portal/api.js";
     import {formatToDate} from "$lib/application/Formatter.js";
     import {now} from "$lib/page/stores/now/now_dayjs_store.js";
-    import {bookingStateList}
-        from "$lib/page/protected/business-portal/page_lobby/stores/bookingStateList_store.js";
     import {getRecentCustomerBooking} from "$lib/api/api_server/lobby-portal/api.js";
     import Appointment
         from "$lib/page/protected/business-portal/page_lobby/page/Dashboard/components/Appointment/Appointment.svelte";
@@ -15,22 +13,49 @@
         from "$lib/page/protected/business-portal/page_lobby/page/Dashboard/components/Completed/Completed.svelte";
     import {
         CustomerBooking
-    } from "$lib/api/api_server/customer-booking-portal/utility-functions/initialize_functions/CustomerBooking.js";
-    import {userProfile} from "$lib/page/protected/stores/userProfile.js";
+    } from "$lib/api/initialize_functions/CustomerBooking.js";
+    import {business} from "$lib/page/protected/stores/business.js";
+    import {
+        bookingStateList,
+        findCustomerBookingById
+    } from "$lib/page/protected/business-portal/page_lobby/stores/dashboard_store.js";
+    import {
+        customerBookingClickModal
+    } from "$lib/page/protected/business-portal/page_lobby/page/Dashboard/components/components/CustomerBookingClickModal/stores/customerBookingClickModal.js";
+    import CustomerBookingClickModal
+        from "$lib/page/protected/business-portal/page_lobby/page/Dashboard/components/components/CustomerBookingClickModal/CustomerBookingClickModal.svelte";
+    import ModalEditCustomerBooking from "$lib/components/Modal/EditCustomerBooking/ModalEditCustomerBooking.svelte";
 
     let latestCustomerBooking = CustomerBooking($now);
     async function fetchCustomerBookingList()
     {
         // Get the customer booking list
-        const response = await getLobbyBookingList($userProfile.user.business.businessID, $now.format(formatToDate));
+        const response = await getLobbyBookingList($business.businessInfo.businessID, $now.format(formatToDate));
         bookingStateList.set(response.bookingList);
+
+        // Find and reinitialize the customer booking for the modal
+        if ($customerBookingClickModal.customerBooking)
+        {
+            const findID = $customerBookingClickModal.customerBooking.id;
+            const foundCustomerBooking = findCustomerBookingById(findID);
+            if (foundCustomerBooking) {
+                customerBookingClickModal.update(current => {
+                    return {
+                        ...current,
+                        customerBooking: foundCustomerBooking
+                    };
+                });
+            } else {
+                console.log('Customer booking not found for customer booking click modal.');
+            }
+        }
     }
 
     async function updateCustomerBookingList()
     {
         try
         {
-            const customerBooking = await getRecentCustomerBooking($userProfile.user.business.businessID, $now.format(formatToDate));
+            const customerBooking = await getRecentCustomerBooking($business.businessInfo.businessID, $now.format(formatToDate));
 
             //console.log("updateCustomerBookingList()", customerBooking)
 
@@ -58,6 +83,28 @@
     // Automatic fetch for the latest customer booking list
     setInterval(async () => updateCustomerBookingList(), 10000);
 
+    function handleCustomerBookingClick(customerBooking) {
+        customerBookingClickModal.set({
+            open: true,
+            customerBooking: customerBooking
+        });
+    }
+
+    setContext('handleCustomerBookingClick', handleCustomerBookingClick);
+
+    let openModalEditCustomerBooking = false;
+    let clonedCustomerBooking = undefined;
+    function handleEditCustomerBooking()
+    {
+        openModalEditCustomerBooking = true;
+        clonedCustomerBooking = JSON.parse(JSON.stringify($customerBookingClickModal.customerBooking))
+
+        console.log("$customerBookingClickModal.customerBooking", $customerBookingClickModal.customerBooking)
+        console.log("clonedCustomerBooking", clonedCustomerBooking)
+    }
+
+    setContext('handleEditCustomerBooking', handleEditCustomerBooking);
+
     async function submitCustomerBooking(customerBooking)
     {
         // Submit the change to the server
@@ -70,9 +117,20 @@
     setContext('submitCustomerBooking', submitCustomerBooking);
 </script>
 
-<div class="flex flex-row justify-between space-x-4 overflow-x-auto p-4 flex-1">
-    <Appointment/>
-    <Lobby/>
-    <Servicing/>
-    <Completed/>
+<div class="flex flex-row w-screen h-screen justify-between 2xl:items-center 2xl:justify-center space-x-4 overflow-x-auto p-4">
+        <Appointment/>
+        <Lobby/>
+        <Servicing/>
+        <Completed/>
 </div>
+
+
+<!-- Modal for customer booking -->
+<CustomerBookingClickModal/>
+
+<!-- Modal for edit customer booking -->
+<ModalEditCustomerBooking
+        bind:open={openModalEditCustomerBooking}
+        business={$business}
+        customerBooking={clonedCustomerBooking}
+/>

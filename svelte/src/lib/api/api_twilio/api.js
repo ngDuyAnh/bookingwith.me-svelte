@@ -4,7 +4,7 @@ import {sendText} from "$lib/api/api_twilio/twilio_endpoints/twilio_endpoints.js
 
 const WEB_PAGE_URL = "https://app.bookingwith.me";
 
-export async function sendTextBookingSuccess(businessName, customerBooking)
+export async function send_SMS_BookingSuccess(businessName, customerBooking)
 {
     // https://help.twilio.com/articles/223183008-Formatting-International-Phone-Numbers
     let formattedPhoneNumber = "+1" + customerBooking.customer.phoneNumber;

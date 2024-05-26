@@ -1,8 +1,8 @@
 <script>
 	import welcome from '$lib/images/landing/svelte-welcome.webp';
 	import welcome_fallback from '$lib/images/landing/svelte-welcome.png';
-	import Header from "$lib/components/Header/Header.svelte";
-	import Footer from "$lib/components/Footer/Footer.svelte";
+	import Header from "$lib/page/LandingPage/components/Header/Header.svelte";
+	import Footer from "$lib/page/LandingPage/components/Footer/Footer.svelte";
 	import ContactForm from "$lib/components/Form/ContactForm/ContactForm.svelte";
 
 	let tabs = [
