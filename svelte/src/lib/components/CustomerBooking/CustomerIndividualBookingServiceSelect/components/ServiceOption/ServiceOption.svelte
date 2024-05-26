@@ -121,7 +121,7 @@
 
     <div class="mt-1">
         <label for="employee-select">Employee:</label>
-        <Select items={employeeSelectOptions} bind:value={employeeIdSelected} on:change={()=>{if(isSelected)callFromSelect()}}/>
+        <Select items={employeeSelectOptions} bind:value={employeeIdSelected} on:change={()=>{if(isSelected && !multiselect)callFromSelect()}}/>
     </div>
 
     <div class="mt-1">
