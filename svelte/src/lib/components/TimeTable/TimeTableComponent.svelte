@@ -2,25 +2,24 @@
     import {onMount, setContext} from "svelte";
     import {initializeCustomerBooking} from "$lib/api/api_server/lobby-portal/api.js";
     import {now} from "$lib/page/stores/now/now_dayjs_store.js";
-    import {formatTimeAm, formatToDate, formatToTime, formatToTimeAm,} from "$lib/application/Formatter.js";
+    import {formatTimeAm, formatToDate, formatToTime} from "$lib/application/Formatter.js";
     import Calendar from "@event-calendar/core";
     import ResourceTimeGrid from "@event-calendar/resource-time-grid";
-    import {Modal} from "flowbite-svelte";
     import {getCustomerBooking} from "$lib/api/api_server/customer-booking-portal/api.js";
     import dayjs from "dayjs";
-    import CustomerIndividualServiceBookingComponent
-        from "$lib/page/protected/business-portal/page_lobby/page/Dashboard/components/components/CustomerBookingClickModal/Servicing/components/CustomerIndivdualBookingComponent/CustomerIndividualServiceBookingComponent/CustomerIndividualServiceBookingComponent.svelte";
     import {
-        findIndividualBookingByID,
-        findServiceBookingByID,
+        findServiceBookingFromCustomerBooking
     } from "$lib/api/initialize_functions/customer-booking-utility-functions.js";
-    import {
-        moveToCompleted
-    } from "$lib/page/protected/business-portal/page_lobby/page/Dashboard/components/components/CustomerBookingClickModal/handle_customer_booking_state.js";
     import {CustomerBookingState} from "$lib/api/initialize_functions/CustomerBooking.js";
     import {business} from "$lib/page/protected/stores/business.js";
-    import CustomerIndividualBookingComponent
-        from "$lib/page/protected/business-portal/page_lobby/page/Dashboard/components/components/CustomerBookingClickModal/Servicing/components/CustomerIndivdualBookingComponent/CustomerIndividualBookingComponent.svelte";
+    import ServicingTicketClickModal from "$lib/components/Timetable/TimetableModal/ServicingTicketClickModal.svelte";
+    import {
+        servicingTicketClickModal
+    } from "$lib/components/Timetable/TimetableModal/stores/servicingTicketClickModal.js";
+    import {
+        customerBookingClickModal
+    } from "$lib/page/protected/business-portal/page_lobby/page/Dashboard/components/components/CustomerBookingClickModal/stores/customerBookingClickModal.js";
+    import {findCustomerBookingById} from "$lib/page/protected/business-portal/page_lobby/stores/dashboard_store.js";
 
     // Date select
     let todayDate = $now.format(formatToDate);
@@ -154,7 +153,7 @@
         !dayjs(prevSelectedDate).isSame(selectedDate, "day")
     ) {
         prevSelectedDate = selectedDate;
-        isToday = selectedDate === todayDate;
+        isToday = (selectedDate === todayDate);
         options.nowIndicator = isToday;
         fetchSchedule();
     }
@@ -226,71 +225,29 @@
             element.style.background = "rgba(0,0,0,0.1)";
         });
     }
-
-    let openModal = false;
-    let eventInfo = undefined;
-    let customerBooking = undefined;
-    let serviceBooking = undefined;
-    let preselectEmployeeID = undefined;
-    let indicateToSendCustomerBookingToCompleted = false;
-    let individualModalBooking;
-
-    async function openModalServicingTicket(info) {
-
-        // Track the event servicing ticket that got clicked
-        eventInfo = info;
-
+    async function openModalServicingTicket(eventInfo)
+    {
         // Get the customer booking and service booking associated with the servicing ticket
-        customerBooking = await getCustomerBooking(
+        let customerBooking = await getCustomerBooking(
             eventInfo.event.extendedProps.servicingTicket.bookingID
         );
-        individualModalBooking = findIndividualBookingByID(
+        let serviceBooking = findServiceBookingFromCustomerBooking(
             customerBooking,
-            eventInfo.event.extendedProps.servicingTicket.individualID
-        );
-        serviceBooking = findServiceBookingByID(
-            individualModalBooking,
             eventInfo.event.extendedProps.servicingTicket.serviceBookingID
         );
 
         // Pre-select the employee with the employee timetable that it is currently with
-        preselectEmployeeID = eventInfo.event.extendedProps.employeeTimetable.employee.id;
-
-        // Indicate to send the customer booking to completed
-        // It must be under servicing
-        indicateToSendCustomerBookingToCompleted = false;
-        if (customerBooking.bookingState === CustomerBookingState.SERVICING) {
-            // Get the service booking list
-            let serviceBookingList = customerBooking.customerIndividualBookingList.map(
-                individualBooking => individualBooking.customerIndividualServiceBookingList
-            ).flat();
-
-            // Count completed and currently servicing bookings
-            let incompleteServiceBookingCount = 0;
-            let incompleteServicingTicketCount = 0;
-            serviceBookingList.forEach((serviceBooking) => {
-                if (!serviceBooking.completed) {
-                    incompleteServiceBookingCount += 1;
-
-                    // Check if there is only one servicing ticket that is not completed
-                    if (serviceBooking.servicingTicketList.length > 0) {
-                        serviceBooking.servicingTicketList.forEach((servicingTicket) => {
-                            if (!servicingTicket.completed) {
-                                incompleteServicingTicketCount += 1;
-                            }
-                        })
-                    }
-                }
-            });
-
-            // All service bookings are completed or only one left, and it is currently being servicing
-            if (incompleteServiceBookingCount === 0 || (incompleteServiceBookingCount === 1 && incompleteServicingTicketCount === 1)) {
-                indicateToSendCustomerBookingToCompleted = true;
-            }
-        }
+        //preselectEmployeeID = eventInfo.event.extendedProps.employeeTimetable.employee.id;
 
         // Open the servicing ticket modal
-        openModal = true;
+        servicingTicketClickModal.update(modal => {
+            return {
+                ...modal,
+                open: true,
+                customerBooking: customerBooking,
+                serviceBooking: serviceBooking
+            };
+        });
     }
 
     let employeeEvents = [];
@@ -356,7 +313,8 @@
 
     export let getSchedule;
 
-    async function fetchSchedule() {
+    async function fetchSchedule()
+    {
         loading = true;
 
         try {
@@ -374,6 +332,32 @@
 
             console.log("employeeTimetableList", employeeTimetableList);
 
+            // Set the new employee timetable list
+            servicingTicketClickModal.update(modal => {
+                return {
+                    ...modal,
+                    employeeTimetableList: employeeTimetableList
+                };
+            });
+
+            // Find and reinitialize the customer booking for the modal
+            if ($servicingTicketClickModal.customerBooking)
+            {
+                const findID = $servicingTicketClickModal.customerBooking.id;
+                const foundCustomerBooking = findCustomerBookingById(findID);
+                if (foundCustomerBooking) {
+                    customerBookingClickModal.update(current => {
+                        return {
+                            ...current,
+                            customerBooking: foundCustomerBooking
+                        };
+                    });
+                } else {
+                    console.log('Customer booking not found for customer booking click modal.');
+                }
+            }
+
+            // Generate the events for display
             employeeWorkHourEvent = [];
             resources = employeeTimetableList.flatMap((employeeTable) => {
                 employeeWorkHourEvent.push({
@@ -426,28 +410,8 @@
     }
 
     setContext("submitCustomerBooking", submitCustomerBooking);
-
-    async function handleCompletedClick() {
-        console.log("Moving to completed:", customerBooking);
-
-        await moveToCompleted($now, customerBooking, submitCustomerBooking);
-    }
 </script>
-<style>
-    :global(.ec-event-time) {
-        display: none;
-    }
 
-    :global(.timeDivClass) {
-        color: white;
-        /*text-shadow:*/
-        /*        -0.4px -0.4px 0 #000,*/
-        /*        0.4px -0.4px 0 #000,*/
-        /*        -0.4px 0.4px 0 #000,*/
-        /*        0.4px 0.4px 0 #000;*/
-
-    }
-</style>
 <div class="flex flex-col items-center justify-center p-1.5">
     <div class="flex items-center justify-center p-1.5">
         <input
@@ -497,92 +461,24 @@
     </div>
 {/if}
 
-<div class="absolute top-0 left-0 right-0" style="z-index: 1006;">
-    <Modal autoclose bind:open={openModal} outsideclose size="md" >
-        <div>
-            <p>
-                <strong>Customer name:</strong>
-                {customerBooking.customer.customerName}
-            </p>
-            <p>
-                <strong>Booking time:</strong>
-                {dayjs(customerBooking.bookingTime, formatToTime).format(
-                    formatToTimeAm
-                )}
-            </p>
-            <p>
-                <strong>Number of guest(s):</strong>
-                {customerBooking.customerIndividualBookingList.length}
-            </p>
-            <p class="break-words">
-                <strong>Message:</strong>
-                {customerBooking.message}
-            </p>
-
-            <div class="mt-1 p-1">
-                <div class="font-bold">Selected service:</div>
-
-                {#if customerBooking.bookingState !== 3 && isToday}
-                    <div class="border-2 border-green-400 rounded-md">
-                        <CustomerIndividualServiceBookingComponent
-                                {customerBooking}
-                                {serviceBooking}
-                                {preselectEmployeeID}
-                        />
-                    </div>
-                    {#if individualModalBooking.customerIndividualServiceBookingList.length > 1}
-                        <div class="font-bold mt-2">Other services for this guest:</div>
-                        <div class="">
-                            {#each individualModalBooking.customerIndividualServiceBookingList as booking}
-                                {#if serviceBooking.serviceBookingID !== booking.serviceBookingID}
-                                    <CustomerIndividualServiceBookingComponent
-                                            {customerBooking}
-                                            serviceBooking={booking}
-                                            {preselectEmployeeID}
-                                    />
-                                {/if}
-                            {/each}
-                        </div>
-                    {/if}
-                    {#if customerBooking.customerIndividualBookingList.length > 1}
-                        <div class="mt-6">
-                            <div class="font-bold">Other related guest(s) for this booking:</div>
-                            {#each customerBooking.customerIndividualBookingList as individualBooking (individualBooking.individualID)}
-                                {#if individualBooking.individualID !== individualModalBooking.individualID }
-                                    <CustomerIndividualBookingComponent
-                                            {customerBooking}
-                                            {individualBooking}
-                                            specificBooking={serviceBooking}
-                                    />
-                                {/if}
-                            {/each}
-                        </div>
-                    {/if}
-
-
-                {:else}
-                    <p>{serviceBooking.service.serviceName}</p>
-                {/if}
-            </div>
-        </div>
-
-        <svelte:fragment slot="footer">
-            <div class="w-full mt-4 flex justify-end items-center space-x-2">
-                <span class="text-gray-700 font-bold">Move to:</span>
-                {#if indicateToSendCustomerBookingToCompleted}
-                    <button
-                            class="animate-pulse bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded"
-                            on:click={handleCompletedClick}>Complete
-                    </button
-                    >
-                {:else}
-                    <button
-                            class="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded"
-                            on:click={handleCompletedClick}>Complete
-                    </button
-                    >
-                {/if}
-            </div>
-        </svelte:fragment>
-    </Modal>
+<div style="z-index: 1006;">
+    <ServicingTicketClickModal
+            {isToday}
+    />
 </div>
+
+<style>
+    :global(.ec-event-time) {
+        display: none;
+    }
+
+    :global(.timeDivClass) {
+        color: white;
+        /*text-shadow:*/
+        /*        -0.4px -0.4px 0 #000,*/
+        /*        0.4px -0.4px 0 #000,*/
+        /*        -0.4px 0.4px 0 #000,*/
+        /*        0.4px 0.4px 0 #000;*/
+
+    }
+</style>
