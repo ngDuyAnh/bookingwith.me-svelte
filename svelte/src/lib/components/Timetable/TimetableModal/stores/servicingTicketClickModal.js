@@ -6,3 +6,10 @@ export const servicingTicketClickModal = writable({
     customerBooking: undefined,
     serviceBooking: undefined
 });
+
+export function toggleOpen()
+{
+    servicingTicketClickModal.update(modal => {
+        return { ...modal, open: !modal.open };
+    });
+}

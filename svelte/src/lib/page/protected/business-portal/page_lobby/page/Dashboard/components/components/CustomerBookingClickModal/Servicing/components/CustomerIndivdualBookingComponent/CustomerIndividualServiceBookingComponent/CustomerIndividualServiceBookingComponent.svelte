@@ -1,4 +1,5 @@
 <script>
+    import dayjs from "dayjs";
     import {
         employeeSelectOptions
     } from "$lib/page/stores/EmployeeSelectOptions/employeeSelectOptions_store.js";
@@ -10,7 +11,6 @@
         CustomerBookingState, ServicingTicket
     } from "$lib/api/initialize_functions/CustomerBooking.js";
     import {moveToServicing} from "$lib/page/protected/business-portal/page_lobby/page/Dashboard/components/components/CustomerBookingClickModal/handle_customer_booking_state.js";
-    import dayjs from "dayjs";
     import {Employee} from "$lib/api/initialize_functions/Business.js";
 
     export let customerBooking;

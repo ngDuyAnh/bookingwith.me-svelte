@@ -5,7 +5,7 @@
     import CustomerIndividualServiceBookingComponent
         from "$lib/page/protected/business-portal/page_lobby/page/Dashboard/components/components/CustomerBookingClickModal/Servicing/components/CustomerIndivdualBookingComponent/CustomerIndividualServiceBookingComponent/CustomerIndividualServiceBookingComponent.svelte";
     import {
-        servicingTicketClickModal
+        servicingTicketClickModal, toggleOpen
     } from "$lib/components/Timetable/TimetableModal/stores/servicingTicketClickModal.js";
     import {
         findPreselectEmployeeID,
@@ -20,6 +20,7 @@
         findIndividualBookingFromCustomerBooking
     } from "$lib/api/initialize_functions/customer-booking-utility-functions.js";
     import {CustomerBookingState} from "$lib/api/initialize_functions/CustomerBooking.js";
+    import {handleEditCustomerBooking} from "$lib/components/Modal/EditCustomerBooking/editCustomerBooking.js";
 
     export let isToday;
 
@@ -42,8 +43,6 @@
     }
 
     const submitCustomerBooking = getContext('submitCustomerBooking');
-    // Retrieve edit customer booking function
-    const handleEditCustomerBooking = getContext('handleEditCustomerBooking');
 
     async function handleCompletedClick() {
         console.log("Moving to completed:", customerBooking);
@@ -121,7 +120,12 @@
             {/if}-->
             <svelte:fragment slot="footer">
                 <div class="justify-start">
-                    <Button id="show-tooltip" on:click={handleEditCustomerBooking} color="light" outline>
+                    <Button id="show-tooltip" color="light" outline
+                            on:click={() => {
+                                toggleOpen();
+                                handleEditCustomerBooking($servicingTicketClickModal.customerBooking)
+                            }}
+                    >
                         <svg class="w-6 h-6 text-gray-800 dark:text-white" aria-hidden="true"
                              xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
                             <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"

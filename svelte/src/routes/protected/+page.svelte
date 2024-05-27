@@ -64,6 +64,8 @@
 />
 
 <!-- Modal for edit customer booking -->
-<ModalEditCustomerBooking
-        business={$business}
-/>
+<div style="z-index: 1006;">
+    <ModalEditCustomerBooking
+            business={$business}
+    />
+</div>
