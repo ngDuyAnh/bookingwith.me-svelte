@@ -11,6 +11,9 @@
     import {
       employeeToSelectOption
     } from "$lib/components/CustomerBooking/CustomerIndividualBookingServiceSelect/components/ServiceOption/functions.js";
+    import ModalEditCustomerBooking from "$lib/components/Modal/EditCustomerBooking/ModalEditCustomerBooking.svelte";
+    import ModalCreateCustomerBooking
+        from "$lib/components/Modal/CreateCustomerBooking/ModalCreateCustomerBooking.svelte";
 
     export let data;
     let loading = true;
@@ -54,3 +57,13 @@
         <p>Unexpected user state, please contact support.</p>
     {/if}
 </div>
+
+<!-- Create a new customer booking -->
+<ModalCreateCustomerBooking
+        business={$business}
+/>
+
+<!-- Modal for edit customer booking -->
+<ModalEditCustomerBooking
+        business={$business}
+/>
