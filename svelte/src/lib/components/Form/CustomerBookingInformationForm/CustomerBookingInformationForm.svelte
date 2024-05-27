@@ -53,17 +53,20 @@
         try
         {
             let response = {};
+            const clonedCustomerBooking = {
+                ...customerBooking
+            };
 
             if (walkinAvailabilityFlag)
             {
-                customerBooking.bookingState = CustomerBookingState.APPOINTMENT;
+                clonedCustomerBooking.bookingState = CustomerBookingState.APPOINTMENT;
 
                 // Get the availabilities
                 response = await availability(
                     businessInfo.businessID,
-                    customerBooking.bookingDate,
+                    clonedCustomerBooking.bookingDate,
                     currentTimeString,
-                    customerBooking,
+                    clonedCustomerBooking,
                     5
                 );
 
@@ -79,14 +82,14 @@
             }
             else
             {
-                customerBooking.bookingState = CustomerBookingState.SCHEDULE;
+                clonedCustomerBooking.bookingState = CustomerBookingState.SCHEDULE;
 
                 // Get the availabilities
                 response = await availability(
                     businessInfo.businessID,
-                    customerBooking.bookingDate,
+                    clonedCustomerBooking.bookingDate,
                     currentTimeString,
-                    customerBooking,
+                    clonedCustomerBooking,
                     10
                 );
 
@@ -213,7 +216,10 @@
             let response = {};
 
             // Initialize customer booking
-            customerBooking.bookingState = CustomerBookingState.APPOINTMENT;
+            // Keep the current booking state if it is not in schedule state
+            customerBooking.bookingState = (!customerBooking.bookingState || customerBooking.bookingState === CustomerBookingState.SCHEDULE)
+                ? CustomerBookingState.APPOINTMENT
+                : customerBooking.bookingState;
             customerBooking.walkIn = false;
 
             // Force submit if override is toggled
@@ -227,14 +233,8 @@
             // Submit appointment
             else
             {
-                // Synchronize servicing
-                // Submit appointment aim to schedule to be service at the same time
-                if (!walkinAvailabilityFlag)
-                {
-                    customerBooking.bookingState = CustomerBookingState.SCHEDULE;
-                }
                 // Asynchronous servicing
-                else
+                if (walkinAvailabilityFlag)
                 {
                     customerBooking.walkIn = true;
                 }

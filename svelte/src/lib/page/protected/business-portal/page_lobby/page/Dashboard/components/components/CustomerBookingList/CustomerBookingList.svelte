@@ -1,13 +1,11 @@
 <script>
-    import {getContext} from "svelte";
     import CustomerBookingListItem
         from "$lib/page/protected/business-portal/page_lobby/page/Dashboard/components/components/CustomerBookingList/CustomerBookingListItem/CustomerBookingListItem.svelte";
+    import {
+        handleCustomerBookingClick
+    } from "$lib/page/protected/business-portal/page_lobby/page/Dashboard/components/components/CustomerBookingClickModal/stores/customerBookingClickModal.js";
 
     export let customerBookingList;
-
-    // Customer booking click
-    const handleCustomerBookingClick = getContext('handleCustomerBookingClick');
-
 </script>
 
 <!-- List -->

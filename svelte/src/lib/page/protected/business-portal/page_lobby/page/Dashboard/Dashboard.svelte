@@ -22,6 +22,7 @@
     import {
         customerBookingClickModal
     } from "$lib/page/protected/business-portal/page_lobby/page/Dashboard/components/components/CustomerBookingClickModal/stores/customerBookingClickModal.js";
+    import {Spinner} from "flowbite-svelte";
     import CustomerBookingClickModal
         from "$lib/page/protected/business-portal/page_lobby/page/Dashboard/components/components/CustomerBookingClickModal/CustomerBookingClickModal.svelte";
     import ModalEditCustomerBooking from "$lib/components/Modal/EditCustomerBooking/ModalEditCustomerBooking.svelte";
@@ -76,34 +77,15 @@
         }
     }
 
+    let loading = true;
     onMount(async () => {
         await updateCustomerBookingList();
+
+        loading = false;
     });
 
     // Automatic fetch for the latest customer booking list
     setInterval(async () => updateCustomerBookingList(), 10000);
-
-    function handleCustomerBookingClick(customerBooking) {
-        customerBookingClickModal.set({
-            open: true,
-            customerBooking: customerBooking
-        });
-    }
-
-    setContext('handleCustomerBookingClick', handleCustomerBookingClick);
-
-    let openModalEditCustomerBooking = false;
-    let clonedCustomerBooking = undefined;
-    function handleEditCustomerBooking()
-    {
-        openModalEditCustomerBooking = true;
-        clonedCustomerBooking = JSON.parse(JSON.stringify($customerBookingClickModal.customerBooking))
-
-        console.log("$customerBookingClickModal.customerBooking", $customerBookingClickModal.customerBooking)
-        console.log("clonedCustomerBooking", clonedCustomerBooking)
-    }
-
-    setContext('handleEditCustomerBooking', handleEditCustomerBooking);
 
     async function submitCustomerBooking(customerBooking)
     {
@@ -117,20 +99,18 @@
     setContext('submitCustomerBooking', submitCustomerBooking);
 </script>
 
-<div class="flex flex-row w-screen h-screen justify-between 2xl:items-center 2xl:justify-center space-x-4 overflow-x-auto p-4">
+{#if loading}
+    <div class="flex justify-center items-center h-screen">
+        <Spinner />
+    </div>
+{:else}
+    <div class="flex flex-row w-screen h-screen justify-between 2xl:items-center 2xl:justify-center space-x-4 overflow-x-auto p-4">
         <Appointment/>
         <Lobby/>
         <Servicing/>
         <Completed/>
-</div>
+    </div>
+{/if}
 
-
-<!-- Modal for customer booking -->
+<!-- Modal for customer booking click -->
 <CustomerBookingClickModal/>
-
-<!-- Modal for edit customer booking -->
-<ModalEditCustomerBooking
-        bind:open={openModalEditCustomerBooking}
-        business={$business}
-        customerBooking={clonedCustomerBooking}
-/>
