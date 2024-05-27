@@ -27,7 +27,7 @@ export function CustomerBooking(now)
         "bookingTime": null,
         "message": "",
 
-        "bookingState": -1,
+        "bookingState": CustomerBookingState.SCHEDULE,
         "bookingChannel": -1,
 
         "checkinTime": null,
