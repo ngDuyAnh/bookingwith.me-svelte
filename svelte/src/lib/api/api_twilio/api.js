@@ -1,6 +1,6 @@
 import dayjs from "dayjs";
 import {formatToTime, formatToTimeAm} from "$lib/application/Formatter.js";
-import {sendText} from "$lib/api/api_twilio/twilio_endpoints/twilio_endpoints.js";
+import {sendConfirmation} from "$lib/api/api_twilio/twilio_endpoints/twilio_endpoints.js";
 
 const WEB_PAGE_URL = "https://app.bookingwith.me";
 
@@ -17,6 +17,8 @@ export async function send_SMS_BookingSuccess(businessName, customerBooking)
     // Build the SMS message
     let message = `Your appointment at ${businessName} is set for ${formattedDate} at ${formattedTime}. Check this link for real-time updates on your servicing time: ${customerBookingURL}`;
 
+    const response = await sendConfirmation(formattedPhoneNumber, message);
     // Send text
-    console.log(sendText(formattedPhoneNumber, message));
+    console.log("Response is", response);
+    console.log("status is", response.status);
 }
