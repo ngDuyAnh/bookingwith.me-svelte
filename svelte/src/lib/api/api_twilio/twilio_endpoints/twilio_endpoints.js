@@ -8,15 +8,13 @@ async function fetchInit(endPoint, toPhoneNumber, message) {
     body.append('to', toPhoneNumber);
     body.append('body', message);
 
-    const response = await fetch(FETCH_URL, {
+    return await fetch(FETCH_URL, {
         method: 'POST',
         headers: {
             'Content-Type': 'application/x-www-form-urlencoded',
         },
         body: body
     });
-
-    return response;
 }
 
 export async function sendConfirmation(toPhoneNumber, message) {
