@@ -3,7 +3,6 @@
     import {getLobbyBookingList, initializeCustomerBooking} from "$lib/api/api_server/lobby-portal/api.js";
     import {formatToDate} from "$lib/application/Formatter.js";
     import {now} from "$lib/page/stores/now/now_dayjs_store.js";
-    import {getRecentCustomerBooking} from "$lib/api/api_server/lobby-portal/api.js";
     import Appointment
         from "$lib/page/protected/business-portal/page_lobby/page/Dashboard/components/Appointment/Appointment.svelte";
     import Lobby from "$lib/page/protected/business-portal/page_lobby/page/Dashboard/components/Lobby/Lobby.svelte";
@@ -11,9 +10,6 @@
         from "$lib/page/protected/business-portal/page_lobby/page/Dashboard/components/Servicing/Servicing.svelte";
     import Completed
         from "$lib/page/protected/business-portal/page_lobby/page/Dashboard/components/Completed/Completed.svelte";
-    import {
-        CustomerBooking
-    } from "$lib/api/initialize_functions/CustomerBooking.js";
     import {business} from "$lib/page/protected/stores/business.js";
     import {
         bookingStateList,
@@ -25,9 +21,7 @@
     import {Spinner} from "flowbite-svelte";
     import CustomerBookingClickModal
         from "$lib/page/protected/business-portal/page_lobby/page/Dashboard/components/components/CustomerBookingClickModal/CustomerBookingClickModal.svelte";
-    import ModalEditCustomerBooking from "$lib/components/Modal/EditCustomerBooking/ModalEditCustomerBooking.svelte";
 
-    let latestCustomerBooking = CustomerBooking($now);
     async function fetchCustomerBookingList()
     {
         // Get the customer booking list
@@ -50,42 +44,19 @@
                 console.log('Customer booking not found for customer booking click modal.');
             }
         }
-    }
 
-    async function updateCustomerBookingList()
-    {
-        try
-        {
-            const customerBooking = await getRecentCustomerBooking($business.businessInfo.businessID, $now.format(formatToDate));
-
-            //console.log("updateCustomerBookingList()", customerBooking)
-
-            if (latestCustomerBooking.bookingID !== customerBooking.bookingID ||
-                latestCustomerBooking.bookingState !== customerBooking.bookingState) {
-
-                latestCustomerBooking = customerBooking;
-
-                // Get the customer booking list
-                await fetchCustomerBookingList();
-
-                console.log("bookingStateList", $bookingStateList);
-            }
-        }
-        catch (error)
-        {
-            console.error(error);
-        }
+        console.log("bookingStateList", $bookingStateList);
     }
 
     let loading = true;
     onMount(async () => {
-        await updateCustomerBookingList();
+        await fetchCustomerBookingList();
 
         loading = false;
     });
 
     // Automatic fetch for the latest customer booking list
-    setInterval(async () => updateCustomerBookingList(), 10000);
+    //setInterval(async () => fetchCustomerBookingList(), 10000);
 
     async function submitCustomerBooking(customerBooking)
     {
