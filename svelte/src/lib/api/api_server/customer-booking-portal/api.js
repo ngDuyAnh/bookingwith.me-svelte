@@ -48,9 +48,9 @@ export async function submitBooking(id, currentTimeString, timePeriod, customerB
     return await response.json();
 }
 
-export async function forceSubmitBooking(id, customerBooking)
+export async function forceSubmitBooking(id, currentTimeString, customerBooking)
 {
-    const FETCH_URL = `${API_URL}/force-submit-booking/${id}`;
+    const FETCH_URL = `${API_URL}/force-submit-booking/${id}?time=${currentTimeString}`;
 
     const response = await fetch(`${FETCH_URL}`, {
         method: 'POST',

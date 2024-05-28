@@ -227,6 +227,7 @@
             {
                 response = await forceSubmitBooking(
                     businessInfo.businessID,
+                    currentTimeString,
                     customerBooking
                 );
             }
