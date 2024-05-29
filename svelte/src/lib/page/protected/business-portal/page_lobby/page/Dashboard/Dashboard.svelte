@@ -47,6 +47,7 @@
             }
         }
         loading = false;
+        console.log("bookingStateList",$bookingStateList);
     }
 
     setContext('fetchCustomerBookingList', fetchCustomerBookingList);
@@ -56,6 +57,7 @@
         await fetchCustomerBookingList();
 
         loading = false;
+
     });
 
     // Automatic fetch for the latest customer booking list
