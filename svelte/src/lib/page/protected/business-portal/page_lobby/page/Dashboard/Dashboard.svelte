@@ -25,6 +25,7 @@
 
     async function fetchCustomerBookingList()
     {
+        loading = true;
         // Get the customer booking list
         const response = await getLobbyBookingList($business.businessInfo.businessID, $now.format(formatToDate));
         bookingStateList.set(response.bookingList);
@@ -45,9 +46,10 @@
                 console.log('Customer booking not found for customer booking click modal.');
             }
         }
-
-        console.log("bookingStateList", $bookingStateList);
+        loading = false;
     }
+
+    setContext('fetchCustomerBookingList', fetchCustomerBookingList);
 
     let loading = true;
     onMount(async () => {

@@ -2,13 +2,35 @@
     import CustomerBookingList
         from "$lib/page/protected/business-portal/page_lobby/page/Dashboard/components/components/CustomerBookingList/CustomerBookingList.svelte";
     import {bookingStateList} from "$lib/page/protected/business-portal/page_lobby/stores/dashboard_store.js";
+    import {getContext} from "svelte";
+
+    const fetchCustomerBookingList = getContext('fetchCustomerBookingList');
 </script>
 
 <div class="min-w-[348.4px] h-full bg-gray-100 rounded shadow p-4 overflow-y-auto border border-sky-200">
     <!-- List Header -->
     <div class="px-4 py-2 flex items-center justify-between select-none">
         <h2 class="text-lg font-bold">{"Lobby"}</h2>
-        <span class="text-sm">{$bookingStateList[1].length}</span>
+
+        <div class="flex items-center space-x-4">
+            <span class="text-sm">{$bookingStateList[1].length}</span>
+
+            <button on:click={fetchCustomerBookingList} class="text-blue-500 hover:text-blue-700 focus:outline-none">
+                <svg
+                        aria-hidden="true"
+                        xmlns="http://www.w3.org/2000/svg"
+                        fill="none"
+
+                        viewBox="0 0 24 24"
+                        stroke-width="1.5"
+                        stroke="currentColor"
+
+                        class="w-6 h-6"
+                >
+                    <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.651 7.65a7.131 7.131 0 0 0-12.68 3.15M18.001 4v4h-4m-7.652 8.35a7.13 7.13 0 0 0 12.68-3.15M6 20v-4h4"/>
+                </svg>
+            </button>
+        </div>
     </div>
 
     <CustomerBookingList
