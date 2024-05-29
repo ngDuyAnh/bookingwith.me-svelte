@@ -160,6 +160,11 @@
     </div>
 
     <div class="form-group">
+        <label for="active">Passive Management Flag:</label>
+        <input type="checkbox" id="active" bind:checked={businessInfo.business.passiveManagement} class="input-field">
+    </div>
+
+    <div class="form-group">
         <button type="submit" class="submit-button">Submit</button>
     </div>
 </form>

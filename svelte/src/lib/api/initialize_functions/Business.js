@@ -25,8 +25,11 @@ export function BusinessInformation()
         "businessType": "",
         "socialMediaLink": "",
         "googleReviewLink": "",
-        "timestamp": "",
+
         "active": true,
+        "passiveManagement": false,
+
+        "timestamp": "",
     };
 }
 
