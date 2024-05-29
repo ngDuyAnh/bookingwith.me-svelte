@@ -30,7 +30,7 @@ export async function send_SMS_BookingSuccess(businessName, customerBooking)
     console.log("sendConfirmation status is", response.status);
 }
 
-export async function send_SMS_ReviewReminder(customerBooking)
+export async function send_SMS_ReviewReminder(businessName, customerBooking)
 {
     // https://help.twilio.com/articles/223183008-Formatting-International-Phone-Numbers
     let formattedPhoneNumber = "+1" + customerBooking.customer.phoneNumber;
@@ -39,7 +39,7 @@ export async function send_SMS_ReviewReminder(customerBooking)
     let customerBookingURL = `${WEB_PAGE_URL}/customer-booking-portal/get/${customerBooking.bookingID}`;
 
     // Build the SMS message
-    let message = `If you would like to share your experience, make sure to leave a review! ${customerBookingURL}`;
+    let message = `Thank you for visiting ${businessName}! How did we do today? Please let us know using this link: ${customerBookingURL}`;
 
     const response = await sendScheduledReview(formattedPhoneNumber, message);
 
