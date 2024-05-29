@@ -1,6 +1,7 @@
 <script>
     import {onMount, setContext} from "svelte";
-    import {getLobbyBookingList, initializeCustomerBooking} from "$lib/api/api_server/lobby-portal/api.js";
+    import {getLobbyBookingList} from "$lib/api/api_server/lobby-portal/api.js";
+    import {initializeCustomerBooking} from "$lib/api/api_server/customer-booking-portal/api.js";
     import {formatToDate} from "$lib/application/Formatter.js";
     import {now} from "$lib/page/stores/now/now_dayjs_store.js";
     import Appointment

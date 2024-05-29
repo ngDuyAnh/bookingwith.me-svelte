@@ -68,6 +68,25 @@ export async function forceSubmitBooking(id, currentTimeString, customerBooking)
     return await response.json();
 }
 
+export async function initializeCustomerBooking(customerBooking)
+{
+    const FETCH_URL = `${API_URL}/initialize-customer-booking`;
+
+    const response = await fetch(`${FETCH_URL}`, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(customerBooking)
+    });
+
+    if (!response.ok) {
+        throw new Error(`Failed to fetch valid access. Status: ${response.status}`);
+    }
+
+    return await response.json();
+}
+
 export async function getCustomerBooking(bookingid)
 {
     const FETCH_URL = `${API_URL}/get-customer-booking?bookingid=${bookingid}`;

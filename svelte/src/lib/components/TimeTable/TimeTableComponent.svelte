@@ -1,6 +1,6 @@
 <script>
     import {onMount, setContext} from "svelte";
-    import {initializeCustomerBooking} from "$lib/api/api_server/lobby-portal/api.js";
+    import {initializeCustomerBooking} from "$lib/api/api_server/customer-booking-portal/api.js";
     import {now} from "$lib/page/stores/now/now_dayjs_store.js";
     import {formatTimeAm, formatToDate, formatToTime} from "$lib/application/Formatter.js";
     import Calendar from "@event-calendar/core";
