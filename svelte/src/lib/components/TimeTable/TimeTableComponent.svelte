@@ -362,7 +362,7 @@
             resources = employeeTimetableList.flatMap((employeeTable) => {
                 employeeWorkHourEvent.push({
                     resourceId: employeeTable.employee.id,
-                    color: employeeTable.employee.id === -1 ? "red" : "#FFF9D0",
+                    color: employeeTable.employee.id === -1 || !employeeTable.employee.id? "red" : "#FFF9D0",
                     start: `${$now.format("YYYY-MM-DD")} ${employeeTable.timePeriod.startTime}`,
                     end: `${$now.format("YYYY-MM-DD")} ${employeeTable.timePeriod.endTime}`,
                     display: "background",
