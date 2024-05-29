@@ -94,9 +94,9 @@ export async function getCustomerBookingEstimate(bookingID, currentTime)
     return await response.json();
 }
 
-export async function deleteBooking(id)
+export async function deleteBooking(businessID, id)
 {
-    const FETCH_URL = `${API_URL}/delete-customer-booking?id=${id}`;
+    const FETCH_URL = `${API_URL}/delete-customer-booking/${businessID}?id=${id}`;
 
     const response = await fetch(`${FETCH_URL}`);
 

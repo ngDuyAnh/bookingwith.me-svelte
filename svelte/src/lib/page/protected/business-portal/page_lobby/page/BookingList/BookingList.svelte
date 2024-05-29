@@ -2,13 +2,13 @@
     import { onMount } from 'svelte';
     import {now} from "$lib/page/stores/now/now_dayjs_store.js";
     import {getAppointmentBookingList} from "$lib/api/api_server/lobby-portal/api.js";
-    import {userProfile} from "$lib/page/protected/stores/userProfile.js";
     import {formatToDate, formatToTime, formatToTimeAM} from "$lib/application/Formatter.js";
     import CustomerBookingListItem
         from "$lib/page/protected/business-portal/page_lobby/page/Dashboard/components/components/CustomerBookingList/CustomerBookingListItem/CustomerBookingListItem.svelte";
     import dayjs from "dayjs";
     import {Modal} from "flowbite-svelte";
     import {deleteBooking} from "$lib/api/api_server/customer-booking-portal/api.js";
+    import {business} from "$lib/page/protected/stores/business.js";
 
     let tomorrow  = $now.startOf('day').add(1, 'day');
     $: tomorrow = $now.startOf('day').add(1, 'day');
@@ -29,7 +29,7 @@
 
         try
         {
-            const response = await getAppointmentBookingList($userProfile.user.businessInfo.businessID, selectedDate);
+            const response = await getAppointmentBookingList($business.businessInfo.businessID, selectedDate);
             customerBookingList = response.customerBookingList;
         }
         catch (error)
@@ -57,7 +57,7 @@
     {
         if (confirm("Are you sure you want to cancel this appointment?"))
         {
-            await deleteBooking(selectedCustomerBooking.id);
+            await deleteBooking($business.businessInfo.businessID, selectedCustomerBooking.id);
 
             // Re-fetch the customer booking list
             await fetchBookingsForDate(selectedDate);
