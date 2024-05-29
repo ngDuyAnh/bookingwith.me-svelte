@@ -24,6 +24,7 @@ export function BusinessInformation()
         "websiteUrl": "",
         "businessType": "",
         "socialMediaLink": "",
+        "googleReviewLink": "",
         "timestamp": "",
         "active": true,
     };
