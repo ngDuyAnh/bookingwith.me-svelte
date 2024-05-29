@@ -14,6 +14,16 @@ export const CustomerBookingChannel = {
     ONLINE: 1
 }
 
+export function CustomerBookingReview()
+{
+    return {
+        "id": -1,
+        "bookingID": "",
+        "reviewText": "",
+        "rating": 0
+    };
+}
+
 export function CustomerBooking(now)
 {
     return {
