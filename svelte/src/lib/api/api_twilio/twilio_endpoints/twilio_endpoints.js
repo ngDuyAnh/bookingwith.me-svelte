@@ -1,4 +1,4 @@
-const API_URL = "https://bookingwithme-8394-dev.twil.io";
+const API_URL = "https://bookingwithme-8555-dev.twil.io";
 
 async function fetchInit(endPoint, toPhoneNumber, message) {
     const FETCH_URL = `${API_URL}${endPoint}`;
