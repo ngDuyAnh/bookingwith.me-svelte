@@ -21,7 +21,6 @@
 
             // Extract the response
             let customerBooking = response.customerBooking;
-            console.log("response", customerBooking)
 
             // Display information
             let bookingDate = dayjs(customerBooking.bookingDate).startOf("day");

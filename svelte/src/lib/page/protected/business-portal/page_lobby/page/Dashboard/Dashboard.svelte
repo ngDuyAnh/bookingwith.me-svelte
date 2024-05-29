@@ -47,6 +47,8 @@
             }
         }
         loading = false;
+
+        console.log("bookingStateList", $bookingStateList)
     }
 
     setContext('fetchCustomerBookingList', fetchCustomerBookingList);

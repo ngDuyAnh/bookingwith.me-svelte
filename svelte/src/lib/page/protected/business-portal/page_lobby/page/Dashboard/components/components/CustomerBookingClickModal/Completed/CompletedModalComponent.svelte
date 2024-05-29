@@ -10,7 +10,7 @@
     import {now} from "$lib/page/stores/now/now_dayjs_store.js";
     import {getContext} from "svelte";
     import {Button, Tooltip} from "flowbite-svelte";
-    import {send_SMS_ReviewReminder} from "$lib/api/api_twilio/api.js";
+    import {sendSMSAskingForReview} from "$lib/api/api_twilio/api.js";
     import {business} from "$lib/page/protected/stores/business.js";
 
     let customerBooking = undefined;
@@ -28,7 +28,7 @@
     async function handleReviewSend(){
         if(!customerBooking.reviewSmsSent){
             customerBooking.reviewSmsSent = true;
-            await send_SMS_ReviewReminder($business.businessInfo.businessName,customerBooking);
+            await sendSMSAskingForReview($business.businessInfo.businessName,customerBooking);
         }
     }
 </script>

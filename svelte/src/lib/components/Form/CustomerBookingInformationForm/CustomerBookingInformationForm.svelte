@@ -4,7 +4,7 @@
     import {Button, Input, Label, Select, Textarea} from "flowbite-svelte";
     import {
         availability,
-        forceSubmitBooking,
+        forceSubmitBooking, initializeCustomerBooking,
         submitBooking
     } from "$lib/api/api_server/customer-booking-portal/api.js";
     import dayjs from "dayjs";
@@ -13,8 +13,9 @@
     import {
         CustomerBookingState
     } from "$lib/api/initialize_functions/CustomerBooking.js";
-    import {send_SMS_BookingSuccess} from "$lib/api/api_twilio/api.js";
+    import {cancelScheduledReminderSms, sendSmsConfirmBookingSuccess} from "$lib/api/api_twilio/api.js";
     import {rawPhoneNumber, formatPhoneNumber} from "$lib/application/FormatPhoneNumber.js";
+    import {sendSmsBookingReminder} from "$lib/api/api_twilio/api.js";
 
     export let customerNameAutoComplete = false;
     export let requiredAgreeToReceiveSMS = true;
@@ -256,8 +257,26 @@
                 // Send SMS
                 if (sendSMSFlag) {
                     try {
-                        await send_SMS_BookingSuccess(businessInfo.businessName, response.customerBooking);
-                    } catch (error) {
+                        await sendSmsConfirmBookingSuccess(businessInfo.businessName, response.customerBooking);
+
+                        // Customer booking is reschedule
+                        // Cancel the current scheduled sms
+                        if (customerBooking.reminderSid)
+                        {
+                            const cancelScheduledSmsResponse = await cancelScheduledReminderSms(response.customerBooking);
+                            console.log("Cancel scheduled sms", cancelScheduledSmsResponse);
+                        }
+
+                        // Schedule sms for reminder for the appointment
+                        let scheduledReminderResponse = await sendSmsBookingReminder(businessInfo.businessName, response.customerBooking);
+                        console.log(`Schedule sms response`, scheduledReminderResponse);
+
+                        // Submit the sid to the customer booking
+                        response.customerBooking.reminderSid = scheduledReminderResponse.sid;
+                        await initializeCustomerBooking(response.customerBooking);
+                    }
+                    catch (error)
+                    {
                         console.error("Failed to send SMS message.", error);
                     }
                 }

@@ -33,18 +33,24 @@ export function CustomerBooking(now)
             "phoneNumber": "",
             "customerName": ""
         },
-        "bookingDate": now.format(formatToDate),
-        "bookingTime": null,
-        "message": "",
 
         "bookingState": CustomerBookingState.SCHEDULE,
         "bookingChannel": -1,
+
+        "bookingDate": now.format(formatToDate),
+        "bookingTime": null,
+        "message": "",
 
         "checkinTime": null,
         "servicingStartTime": null,
         "servicingEndTime": null,
 
         "walkIn": false,
+        "deleted": false,
+        "reminderSid": null,
+        "reviewSmsSent": false,
+
+        "customerBookingReview": null,
 
         "customerIndividualBookingList": []
     };
