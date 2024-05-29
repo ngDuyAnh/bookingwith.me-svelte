@@ -58,6 +58,7 @@
         await fetchCustomerBookingList();
 
         loading = false;
+
     });
 
     // Automatic fetch for the latest customer booking list

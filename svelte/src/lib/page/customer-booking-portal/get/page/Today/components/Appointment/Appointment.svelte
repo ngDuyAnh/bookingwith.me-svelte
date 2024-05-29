@@ -35,10 +35,14 @@
         <span class="underline">today</span>!
     </p>
     <div class="bg-green-100 text-green-800 rounded-lg p-4 shadow-md flex items-center">
-        <span>Your position in the queue is {$bookingEstimate.queuePosition}</span>
+        <span>Your position in the queue is: </span>
+        <span class="text-lgn font-semibold">{$bookingEstimate.queuePosition}</span>
     </div>
-    <div class="bg-green-100 text-green-800 rounded-lg p-4 shadow-md flex items-center">
-        <span>Estimate start servicing time is from {$bookingEstimate.estimateServicingStartTime} to {$bookingEstimate.estimateServicingEndTime}</span>
+    <div class="bg-green-100 text-green-800 rounded-lg p-4 shadow-lg items-center">
+        <span class="">Estimate start servicing time is from </span>
+        <span class="text-lgn font-semibold">{$bookingEstimate.estimateServicingStartTime}</span>
+        <span class="">to</span>
+        <span class="text-lgn font-semibold">{$bookingEstimate.estimateServicingEndTime}</span>
     </div>
     <div class="bg-red-100 text-red-800 rounded-lg p-4 shadow-md flex items-center">
         <span>
