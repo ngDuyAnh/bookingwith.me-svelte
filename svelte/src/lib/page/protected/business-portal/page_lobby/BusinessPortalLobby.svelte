@@ -4,6 +4,7 @@
     import Timetable from "$lib/page/protected/business-portal/page_lobby/page/Timetable/Timetable.svelte";
     import BookingList from "$lib/page/protected/business-portal/page_lobby/page/BookingList/BookingList.svelte";
     import Setting from "$lib/components/Setting/Setting.svelte";
+
     let tabs = ['Dashboard', 'Timetable', "List", "Setting"];
     let selectedIndex = 0;
 </script>

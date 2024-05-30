@@ -4,6 +4,9 @@
     import {formatCost} from "$lib/application/FormatCost.js";
     import { CustomerIndividualServiceBooking } from "$lib/api/initialize_functions/CustomerBooking.js";
     import {selectedServiceIds} from "$lib/page/stores/ServiceSelectionOptions/service_options_store.js";
+    import {
+        employeeToSelectOption
+    } from "$lib/components/CustomerBooking/CustomerIndividualBookingServiceSelect/components/ServiceOption/functions.js";
 
     export let service;
     export let customerIndividualBooking;
@@ -21,14 +24,6 @@
 
     function getEmployeeFromEmployeeId(employeeId) {
         return service.employeeList.find(employee => employee.id === employeeId) || null;
-    }
-
-    function employeeToSelectOption(employee) {
-        return {
-            value: employee.id,
-            name: employee.employeeName,
-            data: employee // holding the full employee object
-        };
     }
 
     function initializeSelectedServiceBookingInfo(serviceBooking) {
@@ -110,6 +105,15 @@
     function callFromSelect()
     {
         isSelected = false;
+        if(multiselect)
+        {
+            let currentSelectedServiceIds = new Set($selectedServiceIds);
+            const index = customerIndividualBooking.customerIndividualServiceBookingList.findIndex(serviceBookingInfo => serviceBookingInfo.service.id === service.id);
+            if (index !== -1) {
+                customerIndividualBooking.customerIndividualServiceBookingList.splice(index, 1);
+                currentSelectedServiceIds.delete(service.id);
+            }
+        }
         toggleServiceSelection();
     }
 
@@ -121,7 +125,7 @@
 
     <div class="mt-1">
         <label for="employee-select">Employee:</label>
-        <Select items={employeeSelectOptions} bind:value={employeeIdSelected} on:change={()=>{if(isSelected && !multiselect)callFromSelect()}}/>
+        <Select items={employeeSelectOptions} bind:value={employeeIdSelected} on:change={()=>{if(isSelected)callFromSelect()}}/>
     </div>
 
     <div class="mt-1">

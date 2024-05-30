@@ -14,6 +14,16 @@ export const CustomerBookingChannel = {
     ONLINE: 1
 }
 
+export function CustomerBookingReview()
+{
+    return {
+        "id": -1,
+        "bookingID": "",
+        "reviewText": "",
+        "rating": 0
+    };
+}
+
 export function CustomerBooking(now)
 {
     return {
@@ -23,18 +33,24 @@ export function CustomerBooking(now)
             "phoneNumber": "",
             "customerName": ""
         },
+
+        "bookingState": CustomerBookingState.SCHEDULE,
+        "bookingChannel": -1,
+
         "bookingDate": now.format(formatToDate),
         "bookingTime": null,
         "message": "",
-
-        "bookingState": -1,
-        "bookingChannel": -1,
 
         "checkinTime": null,
         "servicingStartTime": null,
         "servicingEndTime": null,
 
         "walkIn": false,
+        "deleted": false,
+        "reminderSid": null,
+        "reviewSmsSent": false,
+
+        "customerBookingReview": null,
 
         "customerIndividualBookingList": []
     };

@@ -54,25 +54,6 @@ export async function getRecentCustomerBooking(businessID, dateString)
     return await response.json();
 }
 
-export async function initializeCustomerBooking(customerBooking)
-{
-    const FETCH_URL = `${API_URL}/initialize-customer-booking`;
-
-    const response = await fetch(`${FETCH_URL}`, {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json'
-        },
-        body: JSON.stringify(customerBooking)
-    });
-
-    if (!response.ok) {
-        throw new Error(`Failed to fetch valid access. Status: ${response.status}`);
-    }
-
-    return await response.json();
-}
-
 export async function getSchedule(businessID, dateString, timeString)
 {
     const FETCH_URL = `${API_URL}/get-schedule/${businessID}?date=${dateString}&time=${timeString}`;

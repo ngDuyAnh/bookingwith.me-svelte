@@ -48,9 +48,9 @@ export async function submitBooking(id, currentTimeString, timePeriod, customerB
     return await response.json();
 }
 
-export async function forceSubmitBooking(id, customerBooking)
+export async function forceSubmitBooking(id, currentTimeString, customerBooking)
 {
-    const FETCH_URL = `${API_URL}/force-submit-booking/${id}`;
+    const FETCH_URL = `${API_URL}/force-submit-booking/${id}?time=${currentTimeString}`;
 
     const response = await fetch(`${FETCH_URL}`, {
         method: 'POST',
@@ -63,6 +63,25 @@ export async function forceSubmitBooking(id, customerBooking)
     if (!response.ok) {
         const errorBody = await response.text(); // or response.json() if the server responds with JSON
         throw new Error(`Failed to create business. Status: ${response.status}, Body: ${errorBody}`);
+    }
+
+    return await response.json();
+}
+
+export async function initializeCustomerBooking(customerBooking)
+{
+    const FETCH_URL = `${API_URL}/initialize-customer-booking`;
+
+    const response = await fetch(`${FETCH_URL}`, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(customerBooking)
+    });
+
+    if (!response.ok) {
+        throw new Error(`Failed to fetch valid access. Status: ${response.status}`);
     }
 
     return await response.json();
@@ -94,9 +113,9 @@ export async function getCustomerBookingEstimate(bookingID, currentTime)
     return await response.json();
 }
 
-export async function deleteBooking(id)
+export async function deleteBooking(businessID, id)
 {
-    const FETCH_URL = `${API_URL}/delete-customer-booking?id=${id}`;
+    const FETCH_URL = `${API_URL}/delete-customer-booking/${businessID}?id=${id}`;
 
     const response = await fetch(`${FETCH_URL}`);
 

@@ -24,8 +24,12 @@ export function BusinessInformation()
         "websiteUrl": "",
         "businessType": "",
         "socialMediaLink": "",
-        "timestamp": "",
+        "googleReviewLink": "",
+
         "active": true,
+        "passiveManagement": false,
+
+        "timestamp": "",
     };
 }
 

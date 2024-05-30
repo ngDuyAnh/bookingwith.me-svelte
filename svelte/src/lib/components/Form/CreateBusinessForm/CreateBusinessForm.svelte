@@ -150,8 +150,18 @@
     </div>
 
     <div class="form-group">
+        <label for="googleReviewLink">Google Review Link:</label>
+        <input type="text" id="googleReviewLink" bind:value={businessInfo.business.googleReviewLink} class="input-field" required>
+    </div>
+
+    <div class="form-group">
         <label for="active">Active Flag:</label>
         <input type="checkbox" id="active" bind:checked={businessInfo.business.active} class="input-field">
+    </div>
+
+    <div class="form-group">
+        <label for="active">Passive Management Flag:</label>
+        <input type="checkbox" id="active" bind:checked={businessInfo.business.passiveManagement} class="input-field">
     </div>
 
     <div class="form-group">

@@ -5,10 +5,8 @@
     import {getCustomerBookingEstimate} from "$lib/api/api_server/customer-booking-portal/api.js";
     import {formatToTime, formatToTimeAm} from "$lib/application/Formatter.js";
     import {Spinner} from "flowbite-svelte";
-    import report_icon from "$lib/images/report_icon/message-report.png";
     import Today from "$lib/page/customer-booking-portal/get/page/Today/Today.svelte";
     import Future from "$lib/page/customer-booking-portal/get/page/Future/Future.svelte";
-    import Past from "$lib/page/customer-booking-portal/get/page/Past/Past.svelte";
     import {bookingEstimate} from "$lib/page/customer-booking-portal/get/stores/bookingEstimate.js";
 
     export let data;
@@ -59,15 +57,13 @@
 
     onMount(async () => {
         await fetchCustomerBookingEstimate();
-
-        console.log("bookingEstimate", $bookingEstimate);
-
         loading = false;
     });
 
     // Automatic fetch
-    setInterval(async () => fetchCustomerBookingEstimate(), 10000);
+    setInterval(async () => fetchCustomerBookingEstimate(), 60000);
 
+    //console.log("bookingEstimate", $bookingEstimate);
 </script>
 
 {#if loading}
@@ -76,28 +72,10 @@
     </div>
 {:else}
     <div class="flex flex-col text-gray-900">
-
-        <div class="bg-white shadow-md flex justify-between items-center p-4 md:p-6 relative">
-            <h2 class="text-lg md:text-xl lg:text-2xl font-light text-gray-800 flex-grow">
-                Today: {$now.format('ddd, MMM D YYYY')}
-            </h2>
-
-            <div class="absolute top-3 right-3 md:top-4 md:right-4">
-                <a href="/report" class="block hover:scale-110 transition-transform duration-300">
-                    <img src={report_icon}
-                         alt="Kid's helpline"
-                         title="Kid's helpline"
-                         class="w-8 h-8" />
-                </a>
-            </div>
-        </div>
-
-        {#if relativeDate === 0}
+        {#if relativeDate <= 0}
             <Today/>
         {:else if relativeDate > 0}
             <Future/>
-        {:else if relativeDate < 0}
-            <Past/>
         {/if}
     </div>
 {/if}
