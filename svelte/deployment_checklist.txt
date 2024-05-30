@@ -1,0 +1,18 @@
+
+1) .env
+Google authentication key.
+OpenAI key.
+
+2) Protected route.
+Check all the protected route to ensure that it can be login and function.
+Submit an appointment.
+Force submit an appointment.
+Logout.
+
+Customer booking portal Google review polish max 3 requests.
+
+3) Twilio.
+Send SMS confirm appointment.
+Success schedule appointment reminder.
+Reschedule appointment will reschedule the SMS reminder.
+Send SMS asking the customer for Google review.
