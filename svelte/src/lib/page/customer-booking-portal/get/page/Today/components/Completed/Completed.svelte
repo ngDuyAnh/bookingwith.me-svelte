@@ -69,6 +69,8 @@
     let numPolishReview = 0;
     async function handlePolishReview()
     {
+        numPolishReview++;
+
         isLoading = true;
         errorMessage = "";
         try {
