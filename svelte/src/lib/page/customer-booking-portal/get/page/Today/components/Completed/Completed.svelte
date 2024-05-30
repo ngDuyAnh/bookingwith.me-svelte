@@ -73,8 +73,9 @@
 
         isLoading = true;
         errorMessage = "";
+
         try {
-            const response = await fetch('/customer-booking-portal/review', {
+            const response = await fetch('/customer-booking-portal/get/review', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'
