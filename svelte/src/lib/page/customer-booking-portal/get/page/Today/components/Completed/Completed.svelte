@@ -244,7 +244,7 @@
                 {/if}
             {/if}
         {:else}
-            Thank you!
+            Thank you for taking the time to write the review!
         {/if}
     </div>
 </div>
