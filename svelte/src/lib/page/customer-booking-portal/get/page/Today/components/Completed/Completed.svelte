@@ -111,9 +111,9 @@
     }
 </script>
 
-<div class="flex items-center justify-center h-screen  bg-gray-100 rounded-lg space-y-4">
-    {#if getReview}
-        <div class="flex flex-col justify-center items-center p-4 bg-white shadow-lg rounded-lg w-full max-w-lg">
+<div class="flex items-center justify-center h-screen bg-gray-100 rounded-lg space-y-4">
+    <div class="flex flex-col justify-center items-center p-4 bg-white shadow-lg rounded-lg w-full max-w-lg">
+        {#if getReview}
             <div class="text-xl font-semibold mb-4">
                 How was your service? Please rate us!
             </div>
@@ -181,11 +181,18 @@
                         Take me directly to Google review
                     </a>
                 {:else}
-                    <div class="text-gray-600 font-medium mb-2">
-                        Write about your experience and press <span class="text-purple-500">"Polish Review"</span> to
-                        enhance it for Google reviews. <br/>
-                        Once finished, select <span class="text-blue-500">"Copy Review"</span> and then click <span
-                            class="text-green-500">"Post on Google"</span> to share your review.
+                    <div class="text-gray-600 font-medium mb-4 p-4 border border-gray-300 rounded-lg">
+                        <ol class="list-decimal list-inside space-y-2">
+                            <li>
+                                Write about your experience and press <span class="text-purple-500 font-semibold">"Polish Review"</span> to refine your feedback.
+                            </li>
+                            <li>
+                                Once finished, select <span class="text-blue-500 font-semibold">"Copy Review"</span>.
+                            </li>
+                            <li>
+                                Click <span class="text-green-500 font-semibold">"Post on Google"</span> to share your review.
+                            </li>
+                        </ol>
                     </div>
 
                     <Toast bind:open={errorMessage} transition={fly} params={{ y: 50 }} color="red"
@@ -236,8 +243,8 @@
                     </Toast>
                 {/if}
             {/if}
-        </div>
-    {:else}
-        Thank you!
-    {/if}
+        {:else}
+            Thank you!
+        {/if}
+    </div>
 </div>
