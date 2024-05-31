@@ -416,7 +416,6 @@
     <div class="flex items-center justify-center p-1.5">
         <input
                 bind:value={selectedDate}
-                min={$now.format(formatToDate)}
                 type="date"
         />
         <button
