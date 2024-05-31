@@ -121,7 +121,7 @@
             <!-- Get the review stars -->
             <div class="flex mb-4">
                 {#each [1, 2, 3, 4, 5] as star}
-                    <button disabled={review.rating !==0} on:click={() => review.rating = star}
+                    <button on:click={() => review.rating = star}
                             class="text-3xl focus:outline-none {star <= review.rating ? 'text-yellow-300' : 'text-gray-300'}">
                         {#if star <= review.rating}
                             &#9733; <!-- Filled star -->
