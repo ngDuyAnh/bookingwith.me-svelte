@@ -10,6 +10,7 @@
     import {deleteBooking} from "$lib/api/api_server/customer-booking-portal/api.js";
     import {business} from "$lib/page/protected/stores/business.js";
     import {handleEditCustomerBooking} from "$lib/components/Modal/EditCustomerBooking/editCustomerBooking.js";
+    import {cancelScheduledReminderSms} from "$lib/api/api_twilio/api.js";
 
     let tomorrow  = $now.startOf('day').add(1, 'day');
     $: tomorrow = $now.startOf('day').add(1, 'day');
@@ -58,6 +59,10 @@
     {
         if (confirm("Are you sure you want to cancel this appointment?"))
         {
+            // Remove the scheduled sms appointment reminder
+            cancelScheduledReminderSms(selectedCustomerBooking);
+
+            // Mark the customer booking as deleted in the database
             await deleteBooking($business.businessInfo.businessID, selectedCustomerBooking.id);
 
             // Re-fetch the customer booking list

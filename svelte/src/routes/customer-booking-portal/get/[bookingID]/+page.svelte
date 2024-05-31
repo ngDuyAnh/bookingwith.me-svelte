@@ -8,6 +8,7 @@
     import Today from "$lib/page/customer-booking-portal/get/page/Today/Today.svelte";
     import Future from "$lib/page/customer-booking-portal/get/page/Future/Future.svelte";
     import {bookingEstimate} from "$lib/page/customer-booking-portal/get/stores/bookingEstimate.js";
+    import Deleted from "$lib/page/customer-booking-portal/get/page/Deleted/Deleted.svelte";
 
     export let data;
 
@@ -72,10 +73,12 @@
     </div>
 {:else}
     <div class="flex flex-col text-gray-900">
-        {#if relativeDate <= 0}
-            <Today/>
+        {#if $bookingEstimate.customerBooking.deleted}
+            <Deleted/>
         {:else if relativeDate > 0}
             <Future/>
+        {:else if relativeDate <= 0}
+            <Today/>
         {/if}
     </div>
 {/if}

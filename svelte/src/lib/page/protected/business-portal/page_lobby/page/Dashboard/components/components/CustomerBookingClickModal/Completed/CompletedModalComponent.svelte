@@ -26,9 +26,12 @@
     }
 
     async function handleReviewSend(){
-        if(!customerBooking.reviewSmsSent){
+        if(!customerBooking.reviewSmsSent)
+        {
+            sendSMSAskingForReview($business.businessInfo.businessName, customerBooking);
+
             customerBooking.reviewSmsSent = true;
-            await sendSMSAskingForReview($business.businessInfo.businessName,customerBooking);
+            submitCustomerBooking(customerBooking);
         }
     }
 </script>

@@ -13,7 +13,7 @@
     import {
         CustomerBookingState
     } from "$lib/api/initialize_functions/CustomerBooking.js";
-    import {cancelScheduledReminderSms, sendSmsConfirmBookingSuccess} from "$lib/api/api_twilio/api.js";
+    import {sendSmsConfirmBookingSuccess} from "$lib/api/api_twilio/api.js";
     import {rawPhoneNumber, formatPhoneNumber} from "$lib/application/FormatPhoneNumber.js";
     import {sendSmsBookingReminder} from "$lib/api/api_twilio/api.js";
 
@@ -255,25 +255,28 @@
                 success = true;
 
                 // Send SMS
-                if (sendSMSFlag) {
-                    try {
-                        await sendSmsConfirmBookingSuccess(businessInfo.businessName, response.customerBooking);
+                if (sendSMSFlag)
+                {
+                    try
+                    {
+                        // Send SMS confirmation for the appointment
+                        sendSmsConfirmBookingSuccess(businessInfo.businessName, response.customerBooking);
 
-                        // Customer booking is reschedule
-                        // Cancel the current scheduled sms
-                        if (customerBooking.reminderSid)
-                        {
-                            const cancelScheduledSmsResponse = await cancelScheduledReminderSms(response.customerBooking);
-                            console.log("Cancel scheduled sms", cancelScheduledSmsResponse);
-                        }
+                        // Schedule SMS for reminder for the appointment
+                        sendSmsBookingReminder(businessInfo.businessName, response.customerBooking)
+                            .then((scheduledReminderResponse) => {
+                                console.log('Scheduled SMS appointment reminder.', scheduledReminderResponse);
 
-                        // Schedule sms for reminder for the appointment
-                        let scheduledReminderResponse = await sendSmsBookingReminder(businessInfo.businessName, response.customerBooking);
-                        console.log(`Schedule sms response`, scheduledReminderResponse);
-
-                        // Submit the sid to the customer booking
-                        response.customerBooking.reminderSid = scheduledReminderResponse.sid;
-                        await initializeCustomerBooking(response.customerBooking);
+                                // Submit the SID to the customer booking
+                                response.customerBooking.reminderSid = scheduledReminderResponse.sid;
+                                initializeCustomerBooking(response.customerBooking);
+                            })
+                            .then(() => {
+                                console.log('Initialized customer booking with reminder SID.');
+                            })
+                            .catch(error => {
+                                console.error('Error sending SMS appointment confirmation:', error);
+                            });
                     }
                     catch (error)
                     {
