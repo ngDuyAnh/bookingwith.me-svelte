@@ -5,7 +5,7 @@
         initializeBusiness,
         initializeEmployeeWorkSchedule
     } from "$lib/api/api_server/business-portal/api.js";
-    import {business} from "$lib/page/protected/stores/business.js";
+    import {business} from "$lib/page/stores/business/business.js";
     import {Employee} from "$lib/api/initialize_functions/Business.js";
     import {User} from "$lib/api/initialize_functions/User.js";
 

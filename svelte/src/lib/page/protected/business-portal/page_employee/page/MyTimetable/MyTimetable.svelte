@@ -1,7 +1,7 @@
 <script>
     import TimeTableComponent from "$lib/components/Timetable/TimeTableComponent.svelte";
     import {getSchedule} from "$lib/api/api_server/lobby-portal/api.js";
-    import {userProfile} from "$lib/page/protected/stores/userProfile.js";
+    import {userProfile} from "$lib/page/stores/userProfile/userProfile.js";
 
     async function getEmployeeSchedule(businessID, selectedDate, currentTimeString) {
         const response = await getSchedule(

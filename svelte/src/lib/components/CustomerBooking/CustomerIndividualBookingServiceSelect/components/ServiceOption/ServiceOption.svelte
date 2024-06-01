@@ -3,7 +3,7 @@
     import { onMount } from "svelte";
     import {formatCost} from "$lib/application/FormatCost.js";
     import { CustomerIndividualServiceBooking } from "$lib/api/initialize_functions/CustomerBooking.js";
-    import {selectedServiceIds} from "$lib/page/stores/ServiceSelectionOptions/service_options_store.js";
+    import {selectedServiceIds} from "$lib/page/stores/selectedServiceIds/selectedServiceIds.js";
     import {
         employeeToSelectOption
     } from "$lib/components/CustomerBooking/CustomerIndividualBookingServiceSelect/components/ServiceOption/functions.js";

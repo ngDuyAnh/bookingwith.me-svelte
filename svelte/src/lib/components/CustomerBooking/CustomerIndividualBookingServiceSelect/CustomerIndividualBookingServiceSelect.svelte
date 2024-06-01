@@ -4,7 +4,7 @@
         from "$lib/components/CustomerBooking/CustomerIndividualBookingServiceSelect/components/ServiceOption/ServiceOption.svelte";
     import {ArrowLeftOutline, ArrowRightOutline, InfoCircleSolid} from 'flowbite-svelte-icons';
     import {fly} from 'svelte/transition';
-    import {selectedServiceIds} from "$lib/page/stores/ServiceSelectionOptions/service_options_store.js";
+    import {selectedServiceIds} from "$lib/page/stores/selectedServiceIds/selectedServiceIds.js";
 
     export let business
     export let gotoNumGuestSelect;

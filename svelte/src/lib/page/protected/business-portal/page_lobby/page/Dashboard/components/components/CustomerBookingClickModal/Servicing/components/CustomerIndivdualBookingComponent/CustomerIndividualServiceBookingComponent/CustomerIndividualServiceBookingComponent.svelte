@@ -1,8 +1,6 @@
 <script>
     import dayjs from "dayjs";
-    import {
-        employeeSelectOptions
-    } from "$lib/page/stores/EmployeeSelectOptions/employeeSelectOptions_store.js";
+    import {employeeSelectOptions} from "$lib/page/stores/employeeSelectOptions/employeeSelectOptions.js";
     import {Button, Select} from "flowbite-svelte";
     import {now} from "$lib/page/stores/now/now_dayjs_store.js";
     import {formatToTime, formatToTimeAm} from "$lib/application/Formatter.js";

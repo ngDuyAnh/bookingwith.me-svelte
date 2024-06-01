@@ -8,7 +8,7 @@
     import dayjs from "dayjs";
     import {Button, Modal, Tooltip} from "flowbite-svelte";
     import {deleteBooking} from "$lib/api/api_server/customer-booking-portal/api.js";
-    import {business} from "$lib/page/protected/stores/business.js";
+    import {business} from "$lib/page/stores/business/business.js";
     import {handleEditCustomerBooking} from "$lib/components/Modal/EditCustomerBooking/editCustomerBooking.js";
     import {cancelScheduledReminderSms} from "$lib/api/api_twilio/api.js";
 

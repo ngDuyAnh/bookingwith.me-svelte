@@ -11,7 +11,7 @@
     import {getContext} from "svelte";
     import {Button, Tooltip} from "flowbite-svelte";
     import {sendSMSAskingForReview} from "$lib/api/api_twilio/api.js";
-    import {business} from "$lib/page/protected/stores/business.js";
+    import {business} from "$lib/page/stores/business/business.js";
 
     let customerBooking = undefined;
     $: customerBooking = $customerBookingClickModal.customerBooking;

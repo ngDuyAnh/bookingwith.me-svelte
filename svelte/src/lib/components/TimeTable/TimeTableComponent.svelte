@@ -11,7 +11,7 @@
         findServiceBookingFromCustomerBooking
     } from "$lib/api/initialize_functions/customer-booking-utility-functions.js";
     import {CustomerBookingState} from "$lib/api/initialize_functions/CustomerBooking.js";
-    import {business} from "$lib/page/protected/stores/business.js";
+    import {business} from "$lib/page/stores/business/business.js";
     import ServicingTicketClickModal from "$lib/components/Timetable/TimetableModal/ServicingTicketClickModal.svelte";
     import {
         servicingTicketClickModal
