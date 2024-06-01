@@ -31,7 +31,7 @@
     };
 
     // Initialize the booking channel
-    export let bookingChannel = undefined;
+    export let bookingChannel;
     $: if (customerBooking.bookingChannel === -1)
     {
         customerBooking.bookingChannel = bookingChannel;

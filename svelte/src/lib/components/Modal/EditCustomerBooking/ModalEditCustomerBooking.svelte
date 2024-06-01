@@ -2,17 +2,7 @@
     import {Modal} from "flowbite-svelte";
     import CustomerBookingComponent from "$lib/components/CustomerBooking/CustomerBookingComponent.svelte";
     import {modalEditCustomerBooking} from "$lib/components/Modal/EditCustomerBooking/modalEditCustomerBooking.js";
-
-    export let showCustomerBookingInformationFlagHeader = true;
-
-    export let customerBookingInformationProps ={
-        overrideFlag: false,
-        sendSMSFlag: false
-    };
-    export let customerBookingInformationFormProps = {
-        customerNameAutoComplete: true,
-        requiredAgreeToReceiveSMS: false
-    };
+    import {CustomerBookingChannel} from "$lib/api/initialize_functions/CustomerBooking.js";
 
     export let business;
 </script>
@@ -27,12 +17,22 @@
             </h1>
         </svelte:fragment>
         <CustomerBookingComponent
-                {showCustomerBookingInformationFlagHeader}
-                {customerBookingInformationProps}
-                {customerBookingInformationFormProps}
+                bookingChannel={CustomerBookingChannel.LOBBY}
 
                 {business}
                 customerBooking={$modalEditCustomerBooking.customerBooking}
+
+                showCustomerBookingInformationOptionHeader={$modalEditCustomerBooking.showCustomerBookingInformationOptionHeader}
+
+                customerBookingInformationProps={{
+                    overrideFlag: $modalEditCustomerBooking.overrideFlag,
+                    sendSMSFlag: $modalEditCustomerBooking.sendSMSFlag
+                }}
+
+                customerBookingInformationFormProps={{
+                    customerNameAutoComplete: $modalEditCustomerBooking.customerNameAutoComplete,
+                    requiredAgreeToReceiveSMS: $modalEditCustomerBooking.requiredAgreeToReceiveSMS
+                }}
         />
     </Modal>
 </div>
