@@ -5,10 +5,9 @@ const openai = new OpenAI({ apiKey: OPENAI_API_KEY});
 let assistant = undefined;
 let thread = undefined;
 let createdAssistant = false;
-let count = 0;
 
-async function polishReview(reviewText) {
-    console.log(reviewText ,"  ",count++);
+async function polishReview(reviewText)
+{
     try {
         await openai.beta.threads.messages.create(thread.id,
             {
