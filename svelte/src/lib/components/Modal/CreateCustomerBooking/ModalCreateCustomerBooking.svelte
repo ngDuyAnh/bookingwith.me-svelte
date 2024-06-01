@@ -9,17 +9,6 @@
     } from "$lib/api/initialize_functions/CustomerBooking.js";
     import {modalCreateCustomerBooking} from "$lib/components/Modal/CreateCustomerBooking/modalCreateCustomerBooking.js";
 
-    export let showCustomerBookingInformationFlagHeader = true;
-
-    export let customerBookingInformationProps = {
-        overrideFlag: false,
-        sendSMSFlag: false
-    };
-    export let customerBookingInformationFormProps = {
-        customerNameAutoComplete: true,
-        requiredAgreeToReceiveSMS: false
-    };
-
     export let business;
     export let customerBooking = {
         ...CustomerBooking($now),
@@ -55,15 +44,22 @@
         <CustomerBookingComponent
                 bookingChannel={CustomerBookingChannel.LOBBY}
 
-                {showCustomerBookingInformationFlagHeader}
-
-                {customerBookingInformationProps}
-                {customerBookingInformationFormProps}
-
                 {business}
                 {customerBooking}
 
+                showCustomerBookingInformationOptionHeader={$modalCreateCustomerBooking.showCustomerBookingInformationOptionHeader}
+
                 preselectForWalkin={$modalCreateCustomerBooking.preselectForWalkin}
+
+                customerBookingInformationProps={{
+                    overrideFlag: $modalCreateCustomerBooking.overrideFlag,
+                    sendSMSFlag: $modalCreateCustomerBooking.sendSMSFlag
+                }}
+
+                customerBookingInformationFormProps={{
+                    customerNameAutoComplete: $modalCreateCustomerBooking.customerNameAutoComplete,
+                    requiredAgreeToReceiveSMS: $modalCreateCustomerBooking.requiredAgreeToReceiveSMS
+                }}
         />
     </Modal>
 </div>

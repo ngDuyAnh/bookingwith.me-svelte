@@ -10,7 +10,9 @@
         from "$lib/components/CustomerBooking/CustomerBookingInformation/CustomerBookingInformation.svelte";
     import BookingSuccess from "$lib/components/CustomerBooking/BookingSuccess/BookingSuccess.svelte";
 
-    export let showCustomerBookingInformationFlagHeader = false;
+    export let showCustomerBookingInformationOptionHeader = false;
+
+    export let preselectForWalkin = false;
 
     export let customerBookingInformationProps = {
         overrideFlag: false,
@@ -20,8 +22,6 @@
         customerNameAutoComplete: false,
         requiredAgreeToReceiveSMS: true
     };
-
-    export let preselectForWalkin = false;
 
     export let business;
 
@@ -91,7 +91,7 @@
         />
     {:else if pageIndex === 2}
         <CustomerBookingInformation
-                {showCustomerBookingInformationFlagHeader}
+                {showCustomerBookingInformationOptionHeader}
                 {...customerBookingInformationProps}
                 {customerBookingInformationFormProps}
 

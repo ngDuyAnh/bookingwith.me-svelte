@@ -5,10 +5,8 @@
     import {formatPhoneNumber} from "$lib/application/FormatPhoneNumber.js";
     import { Button } from 'flowbite-svelte';
     import { ArrowLeftOutline } from 'flowbite-svelte-icons';
-    import {modalCreateCustomerBooking} from "$lib/components/Modal/CreateCustomerBooking/modalCreateCustomerBooking.js";
 
-
-    export let showCustomerBookingInformationFlagHeader = false;
+    export let showCustomerBookingInformationOptionHeader = false;
     export let customerBookingInformationFormProps = {
         customerNameAutoComplete: false,
         requiredAgreeToReceiveSMS: true
@@ -57,7 +55,7 @@
     <div class="max-w-md mb-1">
         <h3 class="text-2xl font-medium text-gray-900 dark:text-white">Booking information</h3>
 
-        {#if showCustomerBookingInformationFlagHeader}
+        {#if showCustomerBookingInformationOptionHeader}
             <div class="mt-4 flex justify-between flex-row md:items-center md:space-x-2">
                 <div id="show-override-tooltip" class="flex items-center mb-1 md:mb-0">
                     <Toggle  bind:checked={overrideFlag} class="toggle">Override</Toggle>
