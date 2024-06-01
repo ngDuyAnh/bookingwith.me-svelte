@@ -21,6 +21,8 @@
         requiredAgreeToReceiveSMS: true
     };
 
+    export let preselectForWalkin = false;
+
     export let business;
 
     export let customerBooking = {
@@ -97,6 +99,8 @@
                 {customerBooking}
                 {gotoCustomerIndividualBookingServiceSelect}
                 {gotoBookingSuccess}
+
+                {preselectForWalkin}
         />
     {:else if pageIndex === 3}
        <BookingSuccess/>

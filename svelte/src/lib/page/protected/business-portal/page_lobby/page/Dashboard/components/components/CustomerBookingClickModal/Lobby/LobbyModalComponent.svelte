@@ -11,7 +11,7 @@
     } from "$lib/page/protected/business-portal/page_lobby/page/Dashboard/components/components/CustomerBookingClickModal/handle_customer_booking_state.js";
     import {now} from "$lib/page/stores/now/now_dayjs_store.js";
     import {getContext} from "svelte";
-    import {handleEditCustomerBooking} from "$lib/components/Modal/EditCustomerBooking/editCustomerBooking.js";
+    import {handleEditCustomerBooking} from "$lib/components/Modal/EditCustomerBooking/modalEditCustomerBooking.js";
 
     let customerBooking = undefined;
     $: customerBooking = $customerBookingClickModal.customerBooking;

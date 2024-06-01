@@ -5,6 +5,7 @@
     import {formatPhoneNumber} from "$lib/application/FormatPhoneNumber.js";
     import { Button } from 'flowbite-svelte';
     import { ArrowLeftOutline } from 'flowbite-svelte-icons';
+    import {modalCreateCustomerBooking} from "$lib/components/Modal/CreateCustomerBooking/modalCreateCustomerBooking.js";
 
 
     export let showCustomerBookingInformationFlagHeader = false;
@@ -20,6 +21,8 @@
 
     export let overrideFlag = false;
     export let sendSMSFlag = true;
+
+    export let preselectForWalkin = false;
 
     function handlePrev()
     {
@@ -79,6 +82,9 @@
 
                 {overrideFlag}
                 {sendSMSFlag}
+
+                walkinAvailabilityFlag={preselectForWalkin}
+                {preselectForWalkin}
         />
     </div>
 </div>

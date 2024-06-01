@@ -12,7 +12,7 @@
     import {getContext} from "svelte";
     import CustomerIndividualBookingComponent
         from "$lib/page/protected/business-portal/page_lobby/page/Dashboard/components/components/CustomerBookingClickModal/Servicing/components/CustomerIndivdualBookingComponent/CustomerIndividualBookingComponent.svelte";
-    import {handleEditCustomerBooking} from "$lib/components/Modal/EditCustomerBooking/editCustomerBooking.js";
+    import {handleEditCustomerBooking} from "$lib/components/Modal/EditCustomerBooking/modalEditCustomerBooking.js";
 
     let customerBooking = undefined;
     $: customerBooking = $customerBookingClickModal.customerBooking;

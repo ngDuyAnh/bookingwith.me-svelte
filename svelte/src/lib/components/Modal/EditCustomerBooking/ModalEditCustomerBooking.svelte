@@ -1,7 +1,7 @@
 <script>
     import {Modal} from "flowbite-svelte";
     import CustomerBookingComponent from "$lib/components/CustomerBooking/CustomerBookingComponent.svelte";
-    import {editCustomerBooking} from "$lib/components/Modal/EditCustomerBooking/editCustomerBooking.js";
+    import {modalEditCustomerBooking} from "$lib/components/Modal/EditCustomerBooking/modalEditCustomerBooking.js";
 
     export let showCustomerBookingInformationFlagHeader = true;
 
@@ -18,7 +18,7 @@
 </script>
 
 <div class="absolute top-0 left-0 right-0 z-[2000]">
-    <Modal bind:open={$editCustomerBooking.open} size="md"
+    <Modal bind:open={$modalEditCustomerBooking.open} size="md"
            class="w-full max-w-3xl h-[80vh] border-8 border-dotted"
            classBackdrop="fixed inset-0 z-50 bg-gray-900 bg-opacity-90 dark:bg-opacity-80">
         <svelte:fragment slot="header">
@@ -32,7 +32,7 @@
                 {customerBookingInformationFormProps}
 
                 {business}
-                customerBooking={$editCustomerBooking.customerBooking}
+                customerBooking={$modalEditCustomerBooking.customerBooking}
         />
     </Modal>
 </div>

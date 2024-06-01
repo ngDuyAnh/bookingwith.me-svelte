@@ -16,6 +16,7 @@
     import {sendSmsConfirmBookingSuccess} from "$lib/api/api_twilio/api.js";
     import {rawPhoneNumber, formatPhoneNumber} from "$lib/application/FormatPhoneNumber.js";
     import {sendSmsBookingReminder} from "$lib/api/api_twilio/api.js";
+    import {modalCreateCustomerBooking} from "$lib/components/Modal/CreateCustomerBooking/modalCreateCustomerBooking.js";
 
     export let customerNameAutoComplete = false;
     export let requiredAgreeToReceiveSMS = true;
@@ -29,7 +30,8 @@
     export let overrideFlag = false;
     export let sendSMSFlag = false;
 
-    let walkinAvailabilityFlag = false;
+    export let walkinAvailabilityFlag = false;
+    export let preselectForWalkin = false;
 
     let currentTimeString = "00:00";
     let availableTimeOptionList = [];
@@ -105,7 +107,7 @@
                     });
             }
 
-            // Currently the walk-in availability flag is not selected
+            // Currently the availability is not walk-in
             if (!walkinAvailabilityFlag)
             {
                 // Add the option to fetch walk-in availability
@@ -124,6 +126,16 @@
                     walkinAvailabilityFlag = true;
                     await fetchAvailableTimeList();
                 }
+            }
+
+            // Preselect for walk-in
+            if (preselectForWalkin && availableTimeOptionList.length > 0)
+            {
+                // Only preselect the first time
+                preselectForWalkin = false;
+
+                // Select the first option
+                customerBooking.bookingTime = availableTimeOptionList[0].value;
             }
 
             //console.log("availableTimeOptionList", availableTimeOptionList)
@@ -156,9 +168,12 @@
         customerBooking.bookingDate = dateSelected;
 
         // Reset
-        walkinAvailabilityFlag = false;
         customerBooking.bookingTime = null;
         selectedAvailability = undefined;
+        if (!preselectForWalkin)
+        {
+            walkinAvailabilityFlag = false;
+        }
 
         // Get the new available time
         fetchAvailableTimeList();

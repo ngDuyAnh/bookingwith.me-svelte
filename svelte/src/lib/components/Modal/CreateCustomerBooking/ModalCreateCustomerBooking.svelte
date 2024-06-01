@@ -7,7 +7,7 @@
         CustomerBookingChannel,
         CustomerIndividualBooking
     } from "$lib/api/initialize_functions/CustomerBooking.js";
-    import {newCustomerBooking} from "$lib/components/Modal/CreateCustomerBooking/newCustomerBooking.js";
+    import {modalCreateCustomerBooking} from "$lib/components/Modal/CreateCustomerBooking/modalCreateCustomerBooking.js";
 
     export let showCustomerBookingInformationFlagHeader = true;
 
@@ -27,8 +27,8 @@
     };
 
     // Reset
-    let wasOpen = $newCustomerBooking.open;
-    $: if ($newCustomerBooking.open && !wasOpen)
+    let wasOpen = $modalCreateCustomerBooking.open;
+    $: if ($modalCreateCustomerBooking.open && !wasOpen)
     {
         wasOpen = true;
         
@@ -37,14 +37,14 @@
             customerIndividualBookingList: [CustomerIndividualBooking()]
         };
     }
-    else if (!$newCustomerBooking.open)
+    else if (!$modalCreateCustomerBooking.open)
     {
         wasOpen = false;
     }
 </script>
 
 <div class="absolute top-0 left-0 right-0 ">
-    <Modal bind:open={$newCustomerBooking.open} size="md" class="w-full max-w-3xl h-[80vh] border-8"
+    <Modal bind:open={$modalCreateCustomerBooking.open} size="md" class="w-full max-w-3xl h-[80vh] border-8"
            bodyClass="p-4 md:p-5 space-y-0 flex-1 overflow-y-auto overscroll-contain"
            classBackdrop="fixed inset-0 z-50 bg-gray-900 bg-opacity-90 dark:bg-opacity-80">
         <svelte:fragment slot="header">
@@ -62,6 +62,8 @@
 
                 {business}
                 {customerBooking}
+
+                preselectForWalkin={$modalCreateCustomerBooking.preselectForWalkin}
         />
     </Modal>
 </div>
