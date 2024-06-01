@@ -155,6 +155,11 @@
     </div>
 
     <div class="form-group">
+        <label for="googleMapsLink">Google Maps Link:</label>
+        <input type="text" id="googleMapsLink" bind:value={businessInfo.business.googleMapsLink} class="input-field" required>
+    </div>
+
+    <div class="form-group">
         <label for="active">Active Flag:</label>
         <input type="checkbox" id="active" bind:checked={businessInfo.business.active} class="input-field">
     </div>

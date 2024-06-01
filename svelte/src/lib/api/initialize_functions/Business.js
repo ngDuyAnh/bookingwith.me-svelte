@@ -25,6 +25,7 @@ export function BusinessInformation()
         "businessType": "",
         "socialMediaLink": "",
         "googleReviewLink": "",
+        "googleMapsLink": "",
 
         "active": true,
         "passiveManagement": false,
