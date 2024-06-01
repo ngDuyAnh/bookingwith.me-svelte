@@ -286,9 +286,6 @@
                                 response.customerBooking.reminderSid = scheduledReminderResponse.sid;
                                 initializeCustomerBooking(response.customerBooking);
                             })
-                            .then(() => {
-                                console.log('Initialized customer booking with reminder SID.');
-                            })
                             .catch(error => {
                                 console.error('Error sending SMS appointment confirmation:', error);
                             });
