@@ -85,26 +85,13 @@
     }
 </script>
 
-<style>
-
-    :global(.butDisable){
-        border-radius: 0.5rem;
-        background: repeating-linear-gradient(
-                45deg,
-                #606dbc,
-                #606dbc 10px,
-                #465298 10px,
-                #465298 20px
-        );
-    }
-</style>
-
 <div>
     <!-- Display the service booking -->
     <p>{serviceBooking.service.serviceName} ({serviceBooking.employee?.employeeName || 'Any'})</p>
 
     <!-- Form to manage service booking -->
-    <div class="flex flex-row items-center space-x-4 p-1.5 {serviceBooking.completed? 'butDisable':''} ">
+    <div class="flex flex-row items-center space-x-4 p-1.5"
+         style="{serviceBooking.completed ? 'border-radius: 0.5rem; background: repeating-linear-gradient(45deg, #606dbc, #606dbc 10px, #465298 10px, #465298 20px)' : ''}">
         <!-- Form to add new servicing ticket -->
         <form class="flex flex-row flex-grow items-center space-x-4 {serviceBooking.completed? 'cursor-not-allowed':''}" on:submit|preventDefault>
             <Select
