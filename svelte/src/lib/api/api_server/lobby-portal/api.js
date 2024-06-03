@@ -41,9 +41,9 @@ export async function getLobbyBookingList(businessID, dateString)
     return await response.json();
 }
 
-export async function getRecentCustomerBooking(businessID, dateString)
+export async function getSchedule(businessID, dateString, timeString)
 {
-    const FETCH_URL = `${API_URL}/get-recent-customer-booking/${businessID}?date=${dateString}`;
+    const FETCH_URL = `${API_URL}/get-schedule/${businessID}?date=${dateString}&time=${timeString}`;
 
     const response = await fetch(`${FETCH_URL}`);
 
@@ -54,9 +54,9 @@ export async function getRecentCustomerBooking(businessID, dateString)
     return await response.json();
 }
 
-export async function getSchedule(businessID, dateString, timeString)
+export async function checkAbleToSendReviewReminder(customerBooking)
 {
-    const FETCH_URL = `${API_URL}/get-schedule/${businessID}?date=${dateString}&time=${timeString}`;
+    const FETCH_URL = `${API_URL}/able-to-send-sms-review-reminder/${customerBooking.bookingID}`;
 
     const response = await fetch(`${FETCH_URL}`);
 

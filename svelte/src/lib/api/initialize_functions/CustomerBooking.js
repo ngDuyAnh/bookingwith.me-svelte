@@ -47,8 +47,8 @@ export function CustomerBooking(now)
 
         "walkIn": false,
         "deleted": false,
-        "reminderSid": null,
-        "reviewSmsSent": false,
+        "smsAppointmentReminderSid": null,
+        "smsReviewReminderSent": false,
 
         "customerBookingReview": null,
 

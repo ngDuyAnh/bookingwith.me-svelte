@@ -191,15 +191,20 @@
         getAvailableTimeOptionList();
     }
 
-    async function customerExists()
-    {
+    function customerExists() {
         if (customerNameAutoComplete)
         {
-            const customer = await getCustomer(customerBooking.customer.phoneNumber);
-            if (customer && customer.customerName)
-            {
-                customerBooking.customer.customerName = customer.customerName;
-            }
+            getCustomer(customerBooking.customer.phoneNumber)
+                .then(customer => {
+                    if (customer && customer.customerName) {
+                        customerBooking.customer.customerName = customer.customerName;
+
+                        console.log(`Autofilled customer name ${customer.customerName}`);
+                    }
+                })
+                .catch(error => {
+                    console.error('Failed to get customer:', error);
+                });
         }
     }
 

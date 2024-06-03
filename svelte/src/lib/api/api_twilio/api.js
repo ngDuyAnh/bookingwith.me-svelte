@@ -78,7 +78,7 @@ export function sendSMSAskingForReview(businessName, customerBooking)
     let message = `Thank you for visiting ${businessName}! How did we do today? Please let us know using this link: ${customerBookingURL}`;
 
     // Ensure to only send review reminder one time
-    if(!customerBooking.reviewSmsSent)
+    if(!customerBooking.smsReviewReminderSent)
     {
         scheduleSendSms(formattedPhoneNumber, message, 16)
             .then(() => {
@@ -93,12 +93,12 @@ export function sendSMSAskingForReview(businessName, customerBooking)
 export function cancelScheduledReminderSms(customerBooking)
 {
     // Cancel the current scheduled
-    if (customerBooking && customerBooking.reminderSid)
+    if (customerBooking && customerBooking.smsAppointmentReminderSid)
     {
-        cancelScheduledSms(customerBooking.reminderSid)
+        cancelScheduledSms(customerBooking.smsAppointmentReminderSid)
             .then(() => {
                 console.log('Scheduled reminder SMS successfully cancelled.');
-                customerBooking.reminderSid = null;
+                customerBooking.smsAppointmentReminderSid = null;
             })
             .catch(error => {
                 console.error('Error cancelling scheduled reminder SMS:', error);
