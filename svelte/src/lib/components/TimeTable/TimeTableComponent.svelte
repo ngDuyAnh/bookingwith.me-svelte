@@ -14,11 +14,10 @@
     import {business} from "$lib/page/stores/business/business.js";
     import ServicingTicketClickModal from "$lib/components/Timetable/TimetableModal/ServicingTicketClickModal.svelte";
     import {
-        servicingTicketClickModal
+        servicingTicketClickModal,
+        servicingTicketClickModalOpen,
+        servicingTicketClickModalSetEmployeeTimetableList
     } from "$lib/components/Timetable/TimetableModal/stores/servicingTicketClickModal.js";
-    import {
-        customerBookingClickModal
-    } from "$lib/page/protected/business-portal/page_lobby/page/Dashboard/components/components/CustomerBookingClickModal/stores/customerBookingClickModal.js";
     import {findCustomerBookingById} from "$lib/page/protected/business-portal/page_lobby/stores/dashboard_store.js";
 
     // Date select
@@ -240,14 +239,7 @@
         //preselectEmployeeID = eventInfo.event.extendedProps.employeeTimetable.employee.id;
 
         // Open the servicing ticket modal
-        servicingTicketClickModal.update(modal => {
-            return {
-                ...modal,
-                open: true,
-                customerBooking: customerBooking,
-                serviceBooking: serviceBooking
-            };
-        });
+        servicingTicketClickModalOpen(customerBooking, serviceBooking);
     }
 
     let employeeEvents = [];
@@ -333,26 +325,26 @@
             console.log("employeeTimetableList", employeeTimetableList);
 
             // Set the new employee timetable list
-            servicingTicketClickModal.update(modal => {
-                return {
-                    ...modal,
-                    employeeTimetableList: employeeTimetableList
-                };
-            });
+            servicingTicketClickModalSetEmployeeTimetableList(employeeTimetableList);
 
-            // Find and reinitialize the customer booking for the modal
+            // Fetch and reinitialize the customer booking for the modal
             if ($servicingTicketClickModal.customerBooking)
             {
-                const findID = $servicingTicketClickModal.customerBooking.id;
-                const foundCustomerBooking = findCustomerBookingById(findID);
-                if (foundCustomerBooking) {
-                    customerBookingClickModal.update(current => {
-                        return {
-                            ...current,
-                            customerBooking: foundCustomerBooking
-                        };
-                    });
-                } else {
+                // Fetch the recent changes to the customer booking
+                const fetchCustomerBooking = await getCustomerBooking($servicingTicketClickModal.customerBooking.bookingID)
+
+                if (fetchCustomerBooking)
+                {
+                    // Get the latest service booking from the customer booking
+                    let fetchServiceBooking = findServiceBookingFromCustomerBooking(
+                        fetchCustomerBooking,
+                        $servicingTicketClickModal.serviceBooking.serviceBookingID
+                    );
+
+                    servicingTicketClickModalOpen(fetchCustomerBooking, fetchServiceBooking);
+                }
+                else
+                {
                     console.log('Customer booking not found for customer booking click modal.');
                 }
             }

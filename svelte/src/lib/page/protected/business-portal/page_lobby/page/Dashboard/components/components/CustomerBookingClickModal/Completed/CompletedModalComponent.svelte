@@ -18,12 +18,12 @@
     let ableToSendSmsReviewReminder = false;
 
     $: {
+        // Change customer booking
         customerBooking = $customerBookingClickModal.customerBooking;
 
         // Check if sms review reminder can be sent
         if (customerBooking)
         {
-            ableToSendSmsReviewReminder = false;
             checkAbleToSendReviewReminder(customerBooking)
                 .then(response => {
                     const { allowToSendReviewReminderSMS, mostRecentDateReviewReminderSent } = response;
@@ -36,7 +36,7 @@
 
                     ableToSendSmsReviewReminder = allowToSendReviewReminderSMS && moreThan3Months;
 
-                    console.log(`ableToSendSmsReviewReminder ${ableToSendSmsReviewReminder}, allowToSendReviewReminderSMS ${allowToSendReviewReminderSMS}, moreThan3Months ${moreThan3Months}`)
+                    //console.log(`ableToSendSmsReviewReminder ${ableToSendSmsReviewReminder}, allowToSendReviewReminderSMS ${allowToSendReviewReminderSMS}, moreThan3Months ${moreThan3Months}`)
                 })
                 .catch(error => {
                     console.error('Failed at checkAbleToSendReviewReminder():', error);

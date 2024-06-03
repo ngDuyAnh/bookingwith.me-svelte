@@ -6,8 +6,7 @@
     import CustomerIndividualServiceBookingComponent
         from "$lib/page/protected/business-portal/page_lobby/page/Dashboard/components/components/CustomerBookingClickModal/Servicing/components/CustomerIndivdualBookingComponent/CustomerIndividualServiceBookingComponent/CustomerIndividualServiceBookingComponent.svelte";
     import {
-        servicingTicketClickModal,
-        toggleOpen
+        servicingTicketClickModal, servicingTicketClickModalToggleOpen
     } from "$lib/components/Timetable/TimetableModal/stores/servicingTicketClickModal.js";
     import {
         findPreselectEmployeeID,
@@ -40,14 +39,13 @@
         customerBooking = $servicingTicketClickModal.customerBooking;
         serviceBooking = $servicingTicketClickModal.serviceBooking;
 
-        console.log("serviceBooking", serviceBooking)
+        //console.log("serviceBooking", serviceBooking)
 
         // Get the individual booking from customer booking and service booking
         if (customerBooking && serviceBooking) {
             individualBooking = findIndividualBookingFromCustomerBooking(customerBooking, serviceBooking.individualID);
             indicateSendToCompleted = indicateToSendCustomerBookingToCompleted(customerBooking);
 
-            ableToSendSmsReviewReminder = false;
             checkAbleToSendReviewReminder(customerBooking)
                 .then(response => {
                     const { allowToSendReviewReminderSMS, mostRecentDateReviewReminderSent } = response;
@@ -60,7 +58,7 @@
 
                     ableToSendSmsReviewReminder = allowToSendReviewReminderSMS && moreThan3Months;
 
-                    console.log(`ableToSendSmsReviewReminder ${ableToSendSmsReviewReminder}, allowToSendReviewReminderSMS ${allowToSendReviewReminderSMS}, moreThan3Months ${moreThan3Months}`)
+                    //console.log(`ableToSendSmsReviewReminder ${ableToSendSmsReviewReminder}, allowToSendReviewReminderSMS ${allowToSendReviewReminderSMS}, moreThan3Months ${moreThan3Months}`)
                 })
                 .catch(error => {
                     console.error('Failed at checkAbleToSendReviewReminder():', error);
@@ -90,8 +88,8 @@
         }
     }
 
-    $: if ($servicingTicketClickModal.open) {
-
+    $: if ($servicingTicketClickModal.open)
+    {
         // not sure about reliability but due to svelte basically abandoning fragment manipulation, forced to take shortcuts
         tick().then(() => {
             if(!isToday)
@@ -185,7 +183,7 @@
                         <div class="justify-start">
                             <Button id="show-tooltip" color="light" outline
                                     on:click={() => {
-                            toggleOpen();
+                            servicingTicketClickModalToggleOpen();
                             handleEditCustomerBooking($servicingTicketClickModal.customerBooking)
                         }}
                             >
