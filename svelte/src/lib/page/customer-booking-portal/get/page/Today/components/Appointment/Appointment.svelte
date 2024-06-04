@@ -8,21 +8,13 @@
     import {Button, Modal} from "flowbite-svelte";
     import {ExclamationCircleOutline} from "flowbite-svelte-icons";
 
-    /* import {getContext} from "svelte";
-
-    const fetchCustomerBookingEstimate = getContext('fetchCustomerBookingEstimate');
-    */
     let openArrivalModal = false;
     async function notifyArrival()
     {
-        await moveToLobby($now, $bookingEstimate.customerBooking, initializeCustomerBooking);
-
-        console.log("moveToLobby", $bookingEstimate.customerBooking)
+        moveToLobby($now, $bookingEstimate.customerBooking, initializeCustomerBooking);
 
         // Force react
         bookingEstimate.set($bookingEstimate);
-
-        //await fetchCustomerBookingEstimate();
 
         // Send an alert to let the customer know that they have been moved to lobby
         alert("Thank you for letting us know you have arrived. Please wait in the lobby until you are called.");

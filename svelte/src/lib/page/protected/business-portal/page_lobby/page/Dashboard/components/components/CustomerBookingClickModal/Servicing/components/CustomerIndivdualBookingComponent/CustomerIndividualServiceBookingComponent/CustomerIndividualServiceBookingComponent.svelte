@@ -24,10 +24,8 @@
     // Retrieve customer booking list update function
     const submitCustomerBooking = getContext('submitCustomerBooking');
 
-    async function handleStartServicing() {
-        // If the customer is not in servicing queue, move them there
-        customerBooking.bookingState = CustomerBookingState.SERVICING;
-
+    async function handleStartServicing()
+    {
         // Create the servicing ticket
         let servicingTicket = {
             ...ServicingTicket(),
@@ -49,7 +47,7 @@
         console.log('Start servicing:', serviceBooking, selectedEmployeeID);
 
         // Service the customer booking
-        await moveToServicing($now, customerBooking, submitCustomerBooking);
+        moveToServicing($now, customerBooking, submitCustomerBooking);
 
         // Reset the selected employee after starting servicing
         selectedEmployeeID = null;

@@ -22,21 +22,17 @@
 
     async function handleLobbyClick()
     {
-        console.log('Moving to lobby:', customerBooking);
-
-        await moveToLobby($now, customerBooking, submitCustomerBooking);
+        moveToLobby($now, customerBooking, submitCustomerBooking);
     }
 
-    async function handleServicingClick() {
-        console.log('Moving to servicing:', customerBooking);
-
-        await moveToServicing($now, customerBooking, submitCustomerBooking);
+    async function handleServicingClick()
+    {
+        moveToServicing($now, customerBooking, submitCustomerBooking);
     }
 
-    async function handleCompleteClick() {
-        console.log('Moving to completed:', customerBooking);
-
-        await moveToCompleted($now, customerBooking, submitCustomerBooking);
+    async function handleCompleteClick()
+    {
+        moveToCompleted($now, customerBooking, submitCustomerBooking);
     }
 </script>
 

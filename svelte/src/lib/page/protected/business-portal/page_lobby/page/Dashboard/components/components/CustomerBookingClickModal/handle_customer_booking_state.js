@@ -2,7 +2,7 @@ import {formatToTime} from "$lib/application/Formatter.js";
 import {CustomerBookingState} from "$lib/api/initialize_functions/CustomerBooking.js";
 import dayjs from "dayjs";
 
-export async function moveToLobby(now, customerBooking, submitCustomerBooking)
+export function moveToLobby(now, customerBooking, submitCustomerBooking)
 {
     customerBooking.bookingState = CustomerBookingState.LOBBY;
 
@@ -12,10 +12,16 @@ export async function moveToLobby(now, customerBooking, submitCustomerBooking)
     }
 
     // Save the customer booking change
-    submitCustomerBooking(customerBooking);
+    submitCustomerBooking(customerBooking)
+        .then(() => {
+            console.log("Moved customer booking to lobby.");
+        })
+        .catch(error => {
+            console.error('Error moving customer booking to lobby:', error);
+        });
 }
 
-export async function moveToServicing(now, customerBooking, submitCustomerBooking)
+export function moveToServicing(now, customerBooking, submitCustomerBooking)
 {
     customerBooking.bookingState = CustomerBookingState.SERVICING;
 
@@ -30,10 +36,16 @@ export async function moveToServicing(now, customerBooking, submitCustomerBookin
     }
 
     // Save the customer booking change
-    submitCustomerBooking(customerBooking);
+    submitCustomerBooking(customerBooking)
+        .then(() => {
+            console.log("Moved customer booking to servicing.");
+        })
+        .catch(error => {
+            console.error('Error moving customer booking to servicing:', error);
+        });
 }
 
-export async function moveToCompleted(now, customerBooking, submitCustomerBooking)
+export function moveToCompleted(now, customerBooking, submitCustomerBooking)
 {
     if (confirm("Are you sure you want to mark this as complete?"))
     {
@@ -58,6 +70,12 @@ export async function moveToCompleted(now, customerBooking, submitCustomerBookin
         });
 
         // Save the customer booking change
-        await submitCustomerBooking(customerBooking);
+        submitCustomerBooking(customerBooking)
+            .then(() => {
+                console.log("Moved customer booking to completed.");
+            })
+            .catch(error => {
+                console.error('Error moving customer booking to completed:', error);
+            });
     }
 }

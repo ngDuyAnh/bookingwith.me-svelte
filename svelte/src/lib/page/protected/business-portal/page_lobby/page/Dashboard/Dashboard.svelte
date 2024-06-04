@@ -26,6 +26,7 @@
     async function fetchCustomerBookingList()
     {
         loading = true;
+
         // Get the customer booking list
         const response = await getLobbyBookingList($business.businessInfo.businessID, $now.format(formatToDate));
         bookingStateList.set(response.bookingList);

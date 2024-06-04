@@ -15,23 +15,10 @@ export async function createBusiness(businessInformation)
     });
 
     if (!response.ok) {
-        const errorBody = await response.text(); // or response.json() if the server responds with JSON
-        throw new Error(`Failed to create business. Status: ${response.status}, Body: ${errorBody}`);
+        throw new Error(`Failed to fetch. Status: ${response.status}`);
     }
 
-    return await response.json();
-}
-
-export async function getBusinessInformation(id)
-{
-    const FETCH_URL = `${API_URL}/get-business-information/${id}`;
-    const response = await fetch(`${FETCH_URL}`);
-
-    if (!response.ok) {
-        throw new Error(`Failed to fetch available bookings. Status: ${response.status}`);
-    }
-
-    return await response.json();
+    return response.json();
 }
 
 export async function getBusiness(id)
@@ -41,7 +28,7 @@ export async function getBusiness(id)
     const response = await fetch(`${FETCH_URL}`);
 
     if (!response.ok) {
-        throw new Error(`Failed to fetch available bookings. Status: ${response.status}`);
+        throw new Error(`Failed to fetch. Status: ${response.status}`);
     }
 
     return await response.json();
@@ -60,7 +47,7 @@ export async function initializeBusiness(business)
     });
 
     if (!response.ok) {
-        throw new Error(`Failed to fetch valid access. Status: ${response.status}`);
+        throw new Error(`Failed to fetch. Status: ${response.status}`);
     }
 
     return await response.json();
@@ -73,7 +60,7 @@ export async function getEmployeeWorkSchedule(employeeId)
     const response = await fetch(`${FETCH_URL}`);
 
     if (!response.ok) {
-        throw new Error(`Failed to fetch available bookings. Status: ${response.status}`);
+        throw new Error(`Failed to fetch. Status: ${response.status}`);
     }
 
     return await response.json();
@@ -92,7 +79,7 @@ export async function initializeEmployeeWorkSchedule(employeeWorkSchedule)
     });
 
     if (!response.ok) {
-        throw new Error(`Failed to fetch valid access. Status: ${response.status}`);
+        throw new Error(`Failed to fetch. Status: ${response.status}`);
     }
 
     return await response.json();

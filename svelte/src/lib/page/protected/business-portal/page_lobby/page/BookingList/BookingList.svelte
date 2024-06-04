@@ -21,7 +21,7 @@
     let openModal = false;
     let selectedCustomerBooking = {};
 
-    async function fetchBookingsForDate()
+    function fetchBookingsForDate()
     {
         // Ensure the boundary for date
         if (dayjs(selectedDate, formatToDate).startOf('day').isBefore(tomorrow))
@@ -31,8 +31,13 @@
 
         try
         {
-            const response = await getAppointmentBookingList($business.businessInfo.businessID, selectedDate);
-            customerBookingList = response.customerBookingList;
+            getAppointmentBookingList($business.businessInfo.businessID, selectedDate)
+                .then(response => {
+                    customerBookingList = response.customerBookingList;
+                })
+                .catch(error => {
+                    console.error('Error get appointment booking list:', error);
+                });
         }
         catch (error)
         {
@@ -55,7 +60,7 @@
         selectedCustomerBooking = {...customerBooking};
     }
 
-    async function handleRemoveBookingClick()
+    function handleRemoveBookingClick()
     {
         if (confirm("Are you sure you want to cancel this appointment?"))
         {
@@ -63,10 +68,16 @@
             cancelScheduledReminderSms(selectedCustomerBooking);
 
             // Mark the customer booking as deleted in the database
-            await deleteBooking($business.businessInfo.businessID, selectedCustomerBooking.id);
+            deleteBooking($business.businessInfo.businessID, selectedCustomerBooking.id)
+                .then(() => {
+                    console.log("Deleted customer booking.");
 
-            // Re-fetch the customer booking list
-            await fetchBookingsForDate(selectedDate);
+                    // Re-fetch the customer booking list
+                    fetchBookingsForDate(selectedDate);
+                })
+                .catch(error => {
+                    console.error('Error deleting customer booking:', error);
+                });
         }
     }
 </script>

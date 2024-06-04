@@ -308,7 +308,7 @@
                                 console.log('Scheduled SMS appointment reminder.', scheduledReminderResponse);
 
                                 // Submit the SID to the customer booking
-                                response.customerBooking.reminderSid = scheduledReminderResponse.sid;
+                                response.customerBooking.smsAppointmentReminderSid = scheduledReminderResponse.sid;
                                 initializeCustomerBooking(response.customerBooking);
                             })
                             .catch(error => {
@@ -324,13 +324,7 @@
                 // Move the customer booking to lobby
                 if (customerBookingInformationProps.lobbyBookingStateFlag)
                 {
-                    moveToLobby($now, response.customerBooking, initializeCustomerBooking)
-                        .then(() => {
-                            console.log("Moved customer booking to lobby.");
-                        })
-                        .catch(error => {
-                            console.error('Error moving customer booking to lobby:', error);
-                        });
+                    moveToLobby($now, response.customerBooking, initializeCustomerBooking);
                 }
             }
         }
