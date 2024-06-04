@@ -3,13 +3,9 @@
     import {now} from "$lib/page/stores/now/now_dayjs_store.js";
     import report_icon from "$lib/images/report_icon/message-report.png";
     import {formatPhoneNumber} from "$lib/application/FormatPhoneNumber.js";
-    import dayjs from "dayjs";
-    // import {isTomorrow} from "dayjs/plugin/isTomorrow";
-    //
-    // $now.extends(isTomorrow);
-    let isTomorrow = false;
-    $: isTomorrow = dayjs($bookingEstimate.customerBooking.bookingDate).isSame(dayjs().add(1, 'day'), 'day');
-    $:console.log($bookingEstimate);
+    import {isTomorrow} from "$lib/page/stores/now/now_dayjs_store.js";
+
+    //$:console.log($bookingEstimate);
 </script>
 
 <div class="p-6">
@@ -31,7 +27,7 @@
 <div class="p-6 rounded-lg space-y-4">
     <p class="bg-blue-100 text-blue-700 font-semibold rounded-lg p-4 shadow">
         Your appointment is
-        {#if isTomorrow}
+        {#if isTomorrow($bookingEstimate.customerBooking.bookingDate)}
             <span class="underline">Tomorrow</span>
         {:else}
             on <span class="underline">{$bookingEstimate.bookingDateFormatted}</span>
@@ -43,7 +39,7 @@
 
 
     <div class="mt-2 bg-green-100 text-green-800 rounded-lg p-4 shadow">
-        Please check this link on your appointment day for real-time updates!
+        Please check this link on your appointment day for live updates!
     </div>
 
     <div class="mt-2 bg-green-100 text-green-800 rounded-lg p-4 shadow">
