@@ -27,7 +27,7 @@ export function handleNewCustomerBooking()
 {
     modalCreateCustomerBooking.set({
         open: true,
-        preselectForWalkin: false,
+        preselectForWalkin: true,
 
         // Option header
         showCustomerBookingInformationOptionHeader: true,
