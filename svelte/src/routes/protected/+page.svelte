@@ -27,7 +27,7 @@
     // Convert the employee list to selectable options
     if ($business && $business.employeeList && Array.isArray($business.employeeList))
     {
-      employeeSelectOptions.set($business.employeeList.map(employeeToSelectOption));
+        employeeSelectOptions.set($business.employeeList.map(employeeToSelectOption));
     }
 
     loading = false;

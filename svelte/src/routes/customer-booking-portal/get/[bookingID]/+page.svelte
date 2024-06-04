@@ -9,6 +9,12 @@
     import Future from "$lib/page/customer-booking-portal/get/page/Future/Future.svelte";
     import {bookingEstimate} from "$lib/page/customer-booking-portal/get/stores/bookingEstimate.js";
     import Deleted from "$lib/page/customer-booking-portal/get/page/Deleted/Deleted.svelte";
+    import {business} from "$lib/page/stores/business/business.js";
+    import {
+        employeeToSelectOption
+    } from "$lib/components/CustomerBooking/CustomerIndividualBookingServiceSelect/components/ServiceOption/functions.js";
+    import {employeeSelectOptions} from "$lib/page/stores/employeeSelectOptions/employeeSelectOptions.js";
+    import ModalEditCustomerBooking from "$lib/components/Modal/EditCustomerBooking/ModalEditCustomerBooking.svelte";
 
     export let data;
 
@@ -45,6 +51,13 @@
                 estimateServicingStartTime,
                 estimateServicingEndTime
             });
+
+            // Convert the employee list to selectable options
+            business.set($bookingEstimate.business);
+            if ($business && $business.employeeList && Array.isArray($business.employeeList))
+            {
+                employeeSelectOptions.set($business.employeeList.map(employeeToSelectOption));
+            }
         }
         catch (error)
         {
@@ -64,7 +77,7 @@
     // Automatic fetch
     setInterval(async () => fetchCustomerBookingEstimate(), 60000);
 
-    //console.log("bookingEstimate", $bookingEstimate);
+    $: console.log("bookingEstimate", $bookingEstimate);
 </script>
 
 {#if loading}
@@ -81,4 +94,9 @@
             <Today/>
         {/if}
     </div>
+
+    <!-- Modal for edit customer booking -->
+    <ModalEditCustomerBooking
+            business={$bookingEstimate.business}
+    />
 {/if}

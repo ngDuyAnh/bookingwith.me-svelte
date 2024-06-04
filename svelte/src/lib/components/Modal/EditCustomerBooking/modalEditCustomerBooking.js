@@ -48,3 +48,29 @@ export function handleEditCustomerBooking(customerBooking)
         }
     });
 }
+
+export function handleCustomerBookingPortalEditCustomerBooking(customerBooking)
+{
+    modalEditCustomerBooking.set({
+        open: true,
+        customerBooking: JSON.parse(JSON.stringify(customerBooking)),
+
+        // Option header
+        showCustomerBookingInformationOptionHeader: false,
+        customerBookingInformationProps: {
+            showOverride: false,
+            showSendSms: false,
+            showLobbyBookingState: false,
+
+            overrideFlag: false,
+            sendSMSFlag: false,
+            lobbyBookingStateFlag: false
+        },
+
+        // Customer information form
+        customerBookingInformationFormProps: {
+            customerNameAutoComplete: false,
+            requiredAgreeToReceiveSms: false
+        }
+    });
+}

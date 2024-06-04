@@ -93,7 +93,7 @@
                     'Content-Type': 'application/json'
                 },
                 body: JSON.stringify({
-                    businessName: $bookingEstimate.businessName,
+                    businessName: $bookingEstimate.business.businessInfo.businessName,
                     reviewText: review.reviewText
                 })
             });
@@ -191,7 +191,7 @@
                     </button>
                     <a
                             class="bg-green-500 text-white py-2 px-4 mt-2 rounded-md hover:bg-green-600"
-                            href={$bookingEstimate.googleReviewLink}
+                            href={$bookingEstimate.business.businessInfo.googleReviewLink}
                             target="_blank"
                             on:click={handleGoogleReviewClick}
                     >
@@ -239,7 +239,7 @@
                         </button>
                         <a
                                 class="bg-green-500 text-white py-2 px-4 rounded-md hover:bg-green-600"
-                                href={$bookingEstimate.googleReviewLink}
+                                href={$bookingEstimate.business.businessInfo.googleReviewLink}
                                 target="_blank"
                                 on:click={handleGoogleReviewClick}
                         >
