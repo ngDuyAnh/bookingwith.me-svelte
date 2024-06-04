@@ -328,7 +328,7 @@
             servicingTicketClickModalSetEmployeeTimetableList(employeeTimetableList);
 
             // Fetch and reinitialize the customer booking for the modal
-            if ($servicingTicketClickModal.customerBooking)
+            if ($servicingTicketClickModal.open && $servicingTicketClickModal.customerBooking)
             {
                 // Fetch the recent changes to the customer booking
                 const fetchCustomerBooking = await getCustomerBooking($servicingTicketClickModal.customerBooking.bookingID)

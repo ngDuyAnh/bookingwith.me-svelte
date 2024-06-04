@@ -81,7 +81,6 @@
                 {overrideFlag}
                 {sendSMSFlag}
 
-                walkinAvailabilityFlag={preselectForWalkin}
                 {preselectForWalkin}
         />
     </div>

@@ -5,6 +5,8 @@
     import {CustomerBookingChannel} from "$lib/api/initialize_functions/CustomerBooking.js";
 
     export let business;
+
+    //$: console.log("$modalEditCustomerBooking.customerBooking", $modalEditCustomerBooking.customerBooking)
 </script>
 
 <div class="absolute top-0 left-0 right-0 z-[2000]">
