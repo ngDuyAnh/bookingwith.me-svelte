@@ -18,7 +18,6 @@
         servicingTicketClickModalOpen,
         servicingTicketClickModalSetEmployeeTimetableList
     } from "$lib/components/Timetable/TimetableModal/stores/servicingTicketClickModal.js";
-    import {findCustomerBookingById} from "$lib/page/protected/business-portal/page_lobby/stores/dashboard_store.js";
 
     // Date select
     let todayDate = $now.format(formatToDate);
