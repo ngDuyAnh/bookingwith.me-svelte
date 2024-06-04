@@ -34,6 +34,8 @@
             getAppointmentBookingList($business.businessInfo.businessID, selectedDate)
                 .then(response => {
                     customerBookingList = response.customerBookingList;
+
+                    console.log("fetchBookingsForDate()", customerBookingList);
                 })
                 .catch(error => {
                     console.error('Error get appointment booking list:', error);
@@ -44,8 +46,6 @@
             console.error(error);
             customerBookingList = [];
         }
-
-        console.log("fetchBookingsForDate()", customerBookingList);
     }
 
     onMount(() => {
