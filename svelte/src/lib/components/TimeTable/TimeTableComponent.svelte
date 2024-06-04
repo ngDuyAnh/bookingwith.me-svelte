@@ -18,7 +18,6 @@
         servicingTicketClickModalOpen,
         servicingTicketClickModalSetEmployeeTimetableList
     } from "$lib/components/Timetable/TimetableModal/stores/servicingTicketClickModal.js";
-    import {findCustomerBookingById} from "$lib/page/protected/business-portal/page_lobby/stores/dashboard_store.js";
 
     // Date select
     let todayDate = $now.format(formatToDate);
@@ -32,6 +31,7 @@
     let prevEL = null;
     let prevInfoID = null;
     let conflictEmployeeEvents = {};
+    let assignedEmployeeEvents={};
 
     let plugins = [ResourceTimeGrid];
 
@@ -71,7 +71,7 @@
                 // dont stay on events that are not supposed to have them anymore
                 if (prevSelectedServiceID && prevSelectedServiceID !== currServiceID) {
                     resetIndividualHighlight(prevSelectedServiceID);
-                    prevEL.className = `ec-event ${conflictEmployeeEvents[prevInfoID] ? conflictEmployeeEvents[prevInfoID] : ""}`;
+                    prevEL.className = `ec-event ${assignedEmployeeEvents[info.event.id] ? assignedEmployeeEvents[info.event.id] : ""} ${conflictEmployeeEvents[prevInfoID] ? conflictEmployeeEvents[prevInfoID] : ""}`;
                 }
                 if (prevSelected && prevSelected !== bookingID) {
                     resetHighlight(prevSelected);
@@ -95,7 +95,7 @@
                     resetIndividualHighlight(prevSelectedServiceID);
 
                     if (prevEL)
-                        prevEL.className = `ec-event ${conflictEmployeeEvents[prevInfoID] ? conflictEmployeeEvents[prevInfoID] : ""}`;
+                        prevEL.className = `ec-event ${assignedEmployeeEvents[info.event.id] ? assignedEmployeeEvents[info.event.id] : ""} ${conflictEmployeeEvents[prevInfoID] ? conflictEmployeeEvents[prevInfoID] : ""}`;
                     prevEL = null;
                     prevSelectedServiceID = null;
                 }
@@ -111,7 +111,7 @@
 
                 let bookingID = info.event.extendedProps.servicingTicket.bookingID;
                 resetHighlight(bookingID);
-                info.el.className = `ec-event ${conflictEmployeeEvents[info.event.id] ? conflictEmployeeEvents[info.event.id] : ""}`;
+                info.el.className = `ec-event ${assignedEmployeeEvents[info.event.id] ? assignedEmployeeEvents[info.event.id] : ""} ${conflictEmployeeEvents[info.event.id] ? conflictEmployeeEvents[info.event.id] : ""}`;
             }
         },
         eventDidMount: function (info) {
@@ -126,6 +126,10 @@
                     conflicted = true;
                     conflictEmployeeEvents[info.event.id] = "border-2 border-red-600";
                     info.el.className = `ec-event border-2 border-red-600`;
+                } else if (bookedEmployee !== null && bookedEmployee.id === employeeID)
+                {
+                    info.el.className = `ec-event border-2 border-purple-600`;
+                    assignedEmployeeEvents[info.event.id]= "border-2 border-purple-600";
                 }
 
                 info.el.innerHTML = buildInnerHTML(extendedProps.time, extendedProps.description);
