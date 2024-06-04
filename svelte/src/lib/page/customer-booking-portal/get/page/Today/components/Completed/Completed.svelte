@@ -27,6 +27,18 @@
         });
     }
 
+    function handleGoogleReviewClick()
+    {
+        // Review text is empty
+        if (!review.reviewText)
+        {
+            review.reviewText = "Customer clicked take me directly to Google review.";
+        }
+
+        // Submit the review to the database
+        submitReviewToDatabase();
+    }
+
     let reviewCopyGood = false;
     let reviewCopyBad = false;
     let copyToastTimer;
@@ -173,11 +185,16 @@
                         We're glad you had a great experience! Please consider leaving a review.
                     </div>
                     <button on:click={showReviewWritingOptions}
-                            class="bg-blue-500 text-white py-2 px-4 mt-2 rounded-md hover:bg-blue-600">
+                            class="bg-blue-500 text-white py-2 px-4 mt-2 rounded-md hover:bg-blue-600"
+                    >
                         Help me write a review
                     </button>
-                    <a href={$bookingEstimate.googleReviewLink} target="_blank"
-                       class="bg-green-500 text-white py-2 px-4 mt-2 rounded-md hover:bg-green-600">
+                    <a
+                            class="bg-green-500 text-white py-2 px-4 mt-2 rounded-md hover:bg-green-600"
+                            href={$bookingEstimate.googleReviewLink}
+                            target="_blank"
+                            on:click={handleGoogleReviewClick}
+                    >
                         Take me directly to Google review
                     </a>
                 {:else}
@@ -220,8 +237,12 @@
                                 class="bg-blue-500 text-white py-2 px-4 rounded-md hover:bg-blue-600">
                             Copy Review
                         </button>
-                        <a href={$bookingEstimate.googleReviewLink} target="_blank"
-                           class="bg-green-500 text-white py-2 px-4 rounded-md hover:bg-green-600">
+                        <a
+                                class="bg-green-500 text-white py-2 px-4 rounded-md hover:bg-green-600"
+                                href={$bookingEstimate.googleReviewLink}
+                                target="_blank"
+                                on:click={handleGoogleReviewClick}
+                        >
                             Post on Google
                         </a>
                     </div>
