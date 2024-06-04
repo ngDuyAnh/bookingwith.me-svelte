@@ -20,7 +20,7 @@ export function sendSmsConfirmBookingSuccess(businessName, customerBooking)
     let formattedTime = dayjs(customerBooking.bookingTime, formatToTime).format(formatToTimeAm);
 
     // Build the SMS message
-    let message = `Your appointment at ${businessName} is set for ${formattedDate} at ${formattedTime}. Check this link for updates on your servicing time: ${customerBookingURL}`;
+    let message = `PLEASE, PLEASE, PLEASE CLICK THE LINK! Your appointment at ${businessName} is set for ${formattedDate} at ${formattedTime}. Check this link for updates on your servicing time: ${customerBookingURL}`;
 
     sendSms(formattedPhoneNumber, message)
         .then(() => {
