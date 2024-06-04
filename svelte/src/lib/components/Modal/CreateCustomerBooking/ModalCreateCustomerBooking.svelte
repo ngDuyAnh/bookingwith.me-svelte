@@ -47,19 +47,12 @@
                 {business}
                 {customerBooking}
 
-                showCustomerBookingInformationOptionHeader={$modalCreateCustomerBooking.showCustomerBookingInformationOptionHeader}
-
                 preselectForWalkin={$modalCreateCustomerBooking.preselectForWalkin}
 
-                customerBookingInformationProps={{
-                    overrideFlag: $modalCreateCustomerBooking.overrideFlag,
-                    sendSMSFlag: $modalCreateCustomerBooking.sendSMSFlag
-                }}
+                showCustomerBookingInformationOptionHeader={$modalCreateCustomerBooking.showCustomerBookingInformationOptionHeader}
+                customerBookingInformationProps={$modalCreateCustomerBooking.customerBookingInformationProps}
 
-                customerBookingInformationFormProps={{
-                    customerNameAutoComplete: $modalCreateCustomerBooking.customerNameAutoComplete,
-                    requiredAgreeToReceiveSMS: $modalCreateCustomerBooking.requiredAgreeToReceiveSMS
-                }}
+                customerBookingInformationFormProps={$modalCreateCustomerBooking.customerBookingInformationFormProps}
         />
     </Modal>
 </div>

@@ -6,12 +6,21 @@ export const modalCreateCustomerBooking = writable({
 
     // Option header
     showCustomerBookingInformationOptionHeader: true,
-    overrideFlag: false,
-    sendSMSFlag: true,
+    customerBookingInformationProps: {
+        showOverride: true,
+        showSendSms: true,
+        showLobbyBookingState: false,
+
+        overrideFlag: false,
+        sendSmsFlag: true,
+        lobbyBookingStateFlag: false
+    },
 
     // Customer information form
-    customerNameAutoComplete: true,
-    requiredAgreeToReceiveSMS: false
+    customerBookingInformationFormProps: {
+        customerNameAutoComplete: true,
+        requiredAgreeToReceiveSms: false
+    }
 });
 
 export function handleNewCustomerBooking()
@@ -22,12 +31,21 @@ export function handleNewCustomerBooking()
 
         // Option header
         showCustomerBookingInformationOptionHeader: true,
-        overrideFlag: false,
-        sendSMSFlag: true,
+        customerBookingInformationProps: {
+            showOverride: true,
+            showSendSms: true,
+            showLobbyBookingState: false,
+
+            overrideFlag: false,
+            sendSmsFlag: true,
+            lobbyBookingStateFlag: false
+        },
 
         // Customer information form
-        customerNameAutoComplete: true,
-        requiredAgreeToReceiveSMS: false
+        customerBookingInformationFormProps: {
+            customerNameAutoComplete: true,
+            requiredAgreeToReceiveSms: false
+        }
     });
 }
 
@@ -39,11 +57,20 @@ export function handleNewCustomerBookingWalkin()
 
         // Option header
         showCustomerBookingInformationOptionHeader: true,
-        overrideFlag: false,
-        sendSMSFlag: false,
+        customerBookingInformationProps: {
+            showOverride: true,
+            showSendSms: true,
+            showLobbyBookingState: true,
+
+            overrideFlag: false,
+            sendSmsFlag: false,
+            lobbyBookingStateFlag: true,
+        },
 
         // Customer information form
-        customerNameAutoComplete: true,
-        requiredAgreeToReceiveSMS: false
+        customerBookingInformationFormProps: {
+            customerNameAutoComplete: true,
+            requiredAgreeToReceiveSms: false
+        }
     });
 }

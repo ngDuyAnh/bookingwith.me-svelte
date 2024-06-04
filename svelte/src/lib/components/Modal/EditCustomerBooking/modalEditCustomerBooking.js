@@ -6,12 +6,21 @@ export const modalEditCustomerBooking = writable({
 
     // Option header
     showCustomerBookingInformationOptionHeader: true,
-    overrideFlag: false,
-    sendSMSFlag: false,
+    customerBookingInformationProps: {
+        showOverride: true,
+        showSendSms: true,
+        showLobbyBookingState: false,
+
+        overrideFlag: false,
+        sendSMSFlag: false,
+        lobbyBookingStateFlag: false
+    },
 
     // Customer information form
-    customerNameAutoComplete: true,
-    requiredAgreeToReceiveSMS: false
+    customerBookingInformationFormProps: {
+        customerNameAutoComplete: true,
+        requiredAgreeToReceiveSms: false
+    }
 });
 
 export function handleEditCustomerBooking(customerBooking)
@@ -22,11 +31,20 @@ export function handleEditCustomerBooking(customerBooking)
 
         // Option header
         showCustomerBookingInformationOptionHeader: true,
-        overrideFlag: false,
-        sendSMSFlag: false,
+        customerBookingInformationProps: {
+            showOverride: true,
+            showSendSms: true,
+            showLobbyBookingState: false,
+
+            overrideFlag: false,
+            sendSMSFlag: false,
+            lobbyBookingStateFlag: false
+        },
 
         // Customer information form
-        customerNameAutoComplete: true,
-        requiredAgreeToReceiveSMS: false
+        customerBookingInformationFormProps: {
+            customerNameAutoComplete: true,
+            requiredAgreeToReceiveSms: false
+        }
     });
 }

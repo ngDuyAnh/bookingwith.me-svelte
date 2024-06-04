@@ -6,21 +6,17 @@
     import { Button } from 'flowbite-svelte';
     import { ArrowLeftOutline } from 'flowbite-svelte-icons';
 
-    export let showCustomerBookingInformationOptionHeader = false;
-    export let customerBookingInformationFormProps = {
-        customerNameAutoComplete: false,
-        requiredAgreeToReceiveSMS: true
-    };
+    export let preselectForWalkin = false;
+
+    export let showCustomerBookingInformationOptionHeader;
+    export let customerBookingInformationProps;
+
+    export let customerBookingInformationFormProps;
 
     export let business;
     export let customerBooking;
     export let gotoCustomerIndividualBookingServiceSelect;
     export let gotoBookingSuccess;
-
-    export let overrideFlag = false;
-    export let sendSMSFlag = true;
-
-    export let preselectForWalkin = false;
 
     function handlePrev()
     {
@@ -57,14 +53,26 @@
 
         {#if showCustomerBookingInformationOptionHeader}
             <div class="mt-4 flex justify-between flex-row md:items-center md:space-x-2">
-                <div id="show-override-tooltip" class="flex items-center mb-1 md:mb-0">
-                    <Toggle  bind:checked={overrideFlag} class="toggle">Override</Toggle>
-                    <Tooltip triggeredBy="#show-override-tooltip">Override booking time</Tooltip>
-                </div>
-                <div id="show-sms-tooltip" class="flex items-center">
-                    <Toggle   bind:checked={sendSMSFlag} class="toggle">SMS</Toggle>
-                    <Tooltip triggeredBy="#show-sms-tooltip">Notify customer through SMS</Tooltip>
-                </div>
+                {#if customerBookingInformationProps.showOverride}
+                    <div id="show-override-tooltip" class="flex items-center mb-1 md:mb-0">
+                        <Toggle  bind:checked={customerBookingInformationProps.overrideFlag} class="toggle">Override</Toggle>
+                        <Tooltip triggeredBy="#show-override-tooltip">Override booking time</Tooltip>
+                    </div>
+                {/if}
+
+                {#if customerBookingInformationProps.showSendSms}
+                    <div id="show-sms-tooltip" class="flex items-center">
+                        <Toggle   bind:checked={customerBookingInformationProps.sendSmsFlag} class="toggle">SMS</Toggle>
+                        <Tooltip triggeredBy="#show-sms-tooltip">Notify customer through SMS</Tooltip>
+                    </div>
+                {/if}
+
+                {#if customerBookingInformationProps.showLobbyBookingState}
+                    <div id="show-sms-tooltip" class="flex items-center">
+                        <Toggle   bind:checked={customerBookingInformationProps.lobbyBookingStateFlag} class="toggle">Lobby</Toggle>
+                        <Tooltip triggeredBy="#show-sms-tooltip">Move appointment to lobby</Tooltip>
+                    </div>
+                {/if}
             </div>
         {/if}
     </div>
@@ -72,16 +80,15 @@
     <!-- Customer booking information -->
     <div class="w-full max-w-md p-8">
         <CustomerBookingInformationForm
-                {...customerBookingInformationFormProps}
+                {preselectForWalkin}
+
+                {customerBookingInformationFormProps}
 
                 businessInfo={business.businessInfo}
                 customerBooking={customerBooking}
                 {submitCallback}
 
-                {overrideFlag}
-                {sendSMSFlag}
-
-                {preselectForWalkin}
+                {customerBookingInformationProps}
         />
     </div>
 </div>

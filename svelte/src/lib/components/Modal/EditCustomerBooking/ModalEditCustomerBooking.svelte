@@ -25,16 +25,9 @@
                 customerBooking={$modalEditCustomerBooking.customerBooking}
 
                 showCustomerBookingInformationOptionHeader={$modalEditCustomerBooking.showCustomerBookingInformationOptionHeader}
+                customerBookingInformationProps={$modalEditCustomerBooking.customerBookingInformationProps}
 
-                customerBookingInformationProps={{
-                    overrideFlag: $modalEditCustomerBooking.overrideFlag,
-                    sendSMSFlag: $modalEditCustomerBooking.sendSMSFlag
-                }}
-
-                customerBookingInformationFormProps={{
-                    customerNameAutoComplete: $modalEditCustomerBooking.customerNameAutoComplete,
-                    requiredAgreeToReceiveSMS: $modalEditCustomerBooking.requiredAgreeToReceiveSMS
-                }}
+                customerBookingInformationFormProps={$modalEditCustomerBooking.customerBookingInformationFormProps}
         />
     </Modal>
 </div>

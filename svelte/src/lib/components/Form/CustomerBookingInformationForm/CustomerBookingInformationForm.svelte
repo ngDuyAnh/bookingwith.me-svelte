@@ -16,20 +16,21 @@
     import {sendSmsConfirmBookingSuccess} from "$lib/api/api_twilio/api.js";
     import {rawPhoneNumber, formatPhoneNumber} from "$lib/application/FormatPhoneNumber.js";
     import {sendSmsBookingReminder} from "$lib/api/api_twilio/api.js";
+    import {
+        moveToLobby
+    } from "$lib/page/protected/business-portal/page_lobby/page/Dashboard/components/components/CustomerBookingClickModal/handle_customer_booking_state.js";
 
-    export let customerNameAutoComplete = false;
-    export let requiredAgreeToReceiveSMS = true;
+    export let preselectForWalkin;
+
+    export let customerBookingInformationFormProps;
 
     export let businessInfo;
     export let customerBooking;
-
     export let submitCallback = undefined;
 
-    export let overrideFlag = false;
-    export let sendSMSFlag = false;
+    export let customerBookingInformationProps;
 
-    export let preselectForWalkin = false;
-
+    // Get the availability from the server
     let walkinAvailabilityFlag = false;
 
     let currentTimeString = "00:00";
@@ -210,7 +211,7 @@
     }
 
     function customerExists() {
-        if (customerNameAutoComplete)
+        if (customerBookingInformationFormProps.customerNameAutoComplete)
         {
             getCustomer(customerBooking.customer.phoneNumber)
                 .then(customer => {
@@ -256,13 +257,14 @@
 
             // Initialize customer booking
             // Keep the current booking state if it is not in schedule state
+            // The backend will handle walk-in flag on creating the customer booking
             customerBooking.bookingState = (!customerBooking.bookingState || customerBooking.bookingState === CustomerBookingState.SCHEDULE)
                 ? CustomerBookingState.APPOINTMENT
                 : customerBooking.bookingState;
             customerBooking.walkIn = false;
 
             // Force submit if override is toggled
-            if (overrideFlag)
+            if (customerBookingInformationProps.overrideFlag)
             {
                 response = await forceSubmitBooking(
                     businessInfo.businessID,
@@ -293,7 +295,7 @@
                 success = true;
 
                 // Send SMS
-                if (sendSMSFlag)
+                if (customerBookingInformationProps.sendSmsFlag)
                 {
                     try
                     {
@@ -317,6 +319,18 @@
                     {
                         console.error("Failed to send SMS message.", error);
                     }
+                }
+
+                // Move the customer booking to lobby
+                if (customerBookingInformationProps.lobbyBookingStateFlag)
+                {
+                    moveToLobby($now, response.customerBooking, initializeCustomerBooking)
+                        .then(() => {
+                            console.log("Moved customer booking to lobby.");
+                        })
+                        .catch(error => {
+                            console.error('Error moving customer booking to lobby:', error);
+                        });
                 }
             }
         }
@@ -373,7 +387,7 @@
 
     <Label class="space-y-2">
         <span>Time:</span>
-        {#if overrideFlag}
+        {#if customerBookingInformationProps.overrideFlag}
             <Input
                     type="time"
                     bind:value={customerBooking.bookingTime}
@@ -402,7 +416,7 @@
         />
     </Label>
 
-    {#if requiredAgreeToReceiveSMS}
+    {#if customerBookingInformationFormProps.requiredAgreeToReceiveSms}
         <Label class="space-y-2">
             <input type="checkbox"
                    bind:checked={isConsentChecked}

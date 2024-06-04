@@ -19,16 +19,14 @@
     // Retrieve customer booking list update function
     const submitCustomerBooking = getContext('submitCustomerBooking');
 
-    async function handleServicingClick() {
-        console.log('Moving to servicing:', customerBooking);
-
-        await moveToServicing($now, customerBooking, submitCustomerBooking);
+    function handleServicingClick()
+    {
+        moveToServicing($now, customerBooking, submitCustomerBooking);
     }
 
-    async function handleCompleteClick() {
-        console.log('Moving to completed:', customerBooking);
-
-        await moveToCompleted($now, customerBooking, submitCustomerBooking);
+    function handleCompleteClick()
+    {
+        moveToCompleted($now, customerBooking, submitCustomerBooking);
     }
 </script>
 
