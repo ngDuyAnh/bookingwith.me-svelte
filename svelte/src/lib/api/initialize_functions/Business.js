@@ -16,21 +16,16 @@ export function BusinessInformation()
         "businessID": null,
         "businessName": "",
         "businessPhoneNumber": "",
-        "address": "",
-        "city": "",
-        "province": "",
-        "country": "",
-        "postalCode": "",
         "websiteUrl": "",
         "businessType": "",
         "socialMediaLink": "",
+
         "googleReviewLink": "",
         "googleMapsLink": "",
+        "googleEmbedMapLink": "",
+        "googleMapsDirectionLink": "",
 
         "active": true,
-        "passiveManagement": false,
-
-        "timestamp": "",
     };
 }
 
