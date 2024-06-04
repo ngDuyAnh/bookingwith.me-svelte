@@ -1,12 +1,11 @@
 <script>
     import {onMount, setContext} from "svelte";
     import {initializeCustomerBooking} from "$lib/api/api_server/customer-booking-portal/api.js";
-    import {now} from "$lib/page/stores/now/now_dayjs_store.js";
-    import {formatTimeAm, formatToDate, formatToTime} from "$lib/application/Formatter.js";
+    import {now, today, isToday} from "$lib/page/stores/now/now_dayjs_store.js";
+    import {formatTimeAm, formatToTime} from "$lib/application/Formatter.js";
     import Calendar from "@event-calendar/core";
     import ResourceTimeGrid from "@event-calendar/resource-time-grid";
     import {getCustomerBooking} from "$lib/api/api_server/customer-booking-portal/api.js";
-    import dayjs from "dayjs";
     import {
         findServiceBookingFromCustomerBooking
     } from "$lib/api/initialize_functions/customer-booking-utility-functions.js";
@@ -20,10 +19,8 @@
     } from "$lib/components/Timetable/TimetableModal/stores/servicingTicketClickModal.js";
 
     // Date select
-    let todayDate = $now.format(formatToDate);
-    let prevSelectedDate = todayDate;
-    let selectedDate = todayDate;
-    let isToday = true;
+    let prevSelectedDate = today(); // To help trigger fetch schedule
+    let selectedDate = prevSelectedDate;
     let calendarInstance;
 
     let prevSelected = null;
@@ -41,7 +38,7 @@
             resourceTimeGridDay: {pointer: true},
         },
         allDaySlot: false,
-        nowIndicator: isToday,
+        nowIndicator: isToday(selectedDate),
         dayMaxEvents: true,
         slotDuration: "00:05:00",
         scrollTime: $now.format("HH:mm:ss"),
@@ -150,14 +147,10 @@
     }
 
 
-    $: if (
-        prevSelectedDate &&
-        selectedDate &&
-        !dayjs(prevSelectedDate).isSame(selectedDate, "day")
-    ) {
+    $: if (prevSelectedDate !== selectedDate)
+    {
         prevSelectedDate = selectedDate;
-        isToday = (selectedDate === todayDate);
-        options.nowIndicator = isToday;
+        options.nowIndicator = isToday(selectedDate);
         fetchSchedule();
     }
 
@@ -316,9 +309,11 @@
         try {
             // Get the current time based on if it is today
             let currentTimeString = "00:00";
-            if (isToday) {
+            if (isToday(selectedDate)) {
                 currentTimeString = $now.format(formatToTime);
             }
+
+            console.log("selectedDate", selectedDate)
 
             const employeeTimetableList = await getSchedule(
                 $business.businessInfo.businessID,
@@ -458,7 +453,7 @@
 
 <div style="z-index: 1006;">
     <ServicingTicketClickModal
-            {isToday}
+            isToday={isToday(selectedDate)}
     />
 </div>
 
