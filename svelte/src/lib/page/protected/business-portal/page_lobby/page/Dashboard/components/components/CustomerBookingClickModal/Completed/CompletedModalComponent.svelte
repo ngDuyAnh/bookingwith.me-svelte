@@ -28,10 +28,10 @@
                 .then(response => {
                     const { allowToSendReviewReminderSMS, mostRecentDateReviewReminderSent } = response;
 
-                    // Check if the most recent send date is more than 3 months ago
+                    // Check if the most recent send date is more than 6 months ago
                     // The customer is new to the business
                     const moreThan3Months = mostRecentDateReviewReminderSent
-                        ? dayjs().diff(dayjs(mostRecentDateReviewReminderSent, formatToDate), 'month') > 3
+                        ? dayjs().diff(dayjs(mostRecentDateReviewReminderSent, formatToDate), 'month') > 6
                         : true;
 
                     ableToSendSmsReviewReminder = allowToSendReviewReminderSMS && moreThan3Months;
