@@ -29,7 +29,7 @@
   $: googleMapsLink = $bookingEstimate.googleMapsLink;
 </script>
 
-<div class=" p-6 rounded-lg space-y-4">
+<div class="w-screen h-screen flex flex-col items-center justify-center  p-6 rounded-lg space-y-4">
   <div class="flex items-center justify-center">
     <div class="w-[max-content]">
       <div
@@ -72,7 +72,7 @@
     </div>
   </div>
 
-  <div class="mt-auto flex justify-center">
+  <div class="mt-1 flex justify-center">
     <button
       on:click={() => {
         openArrivalModal = true;
@@ -114,7 +114,7 @@
       class="mx-auto mb-4 text-gray-400 w-12 h-12 dark:text-gray-200"
     />
     <h3 class="mb-5 text-lg font-normal text-gray-500 dark:text-gray-400">
-      You have arrived in the lobby?
+        Are you in the lobby now?
     </h3>
     <Button color="red" class="me-2" on:click={notifyArrival}
       >Yes, I am here!</Button
