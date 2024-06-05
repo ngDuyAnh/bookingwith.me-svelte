@@ -28,48 +28,36 @@
 
 </div>
 
-<div class="w-full h-full flex flex-col items-center justify-center  p-6 rounded-lg space-y-4">
+<div class="w-full h-full flex flex-col items-center justify-center p-6 rounded-lg space-y-4">
     <div class="flex items-center justify-center">
-        <div class="w-[max-content]">
-            <div
-                    class="relative text-xl rounded-t-lg font-bold flex bg-white text-blue-900 p-4 border-t-2 border-x-2"
-            >
-        <span>
-          Your appointment is
-            {#if isTomorrow($bookingEstimate.customerBooking.bookingDate)}
-            <span class="underline">Tomorrow</span>
-        {:else}
-            on <span class="underline">{$bookingEstimate.bookingDateFormatted}</span>
-
-        {/if}
-            at
-        <span class="underline">{$bookingEstimate.bookingTimeFormatted}</span>.
-        </span>
-
+        <div class="w-full max-w-4xl">
+            <div class="relative text-xl rounded-t-lg font-bold flex bg-white text-blue-900 p-4 border-t-2 border-x-2">
+                <span class="whitespace-normal">
+                  Your appointment is
+                    {#if isTomorrow($bookingEstimate.customerBooking.bookingDate)}
+                    <span class="underline">Tomorrow</span>
+                    {:else}
+                    on <span class="underline">{$bookingEstimate.bookingDateFormatted}</span>
+                    {/if}
+                    at <span class="underline">{$bookingEstimate.bookingTimeFormatted}</span>.
+                </span>
             </div>
 
-            <div class="bg-white text-green-800 p-4 flex flex-col justify-between border-x-2 text-sm">
-
-            </div>
-
-            <div
-                    class="relative bg-white flex flex-col  justify-between text-green-800 p-4 border-x-2 border-b-2 rounded-b-lg w-full"
-            >
+            <div class="relative bg-white flex flex-col justify-between text-green-800 p-4 border-x-2 border-b-2 rounded-b-lg w-full">
                 <div class="flex flex-col justify-between w-full mt-auto">
-<span class="flex mt-1">
-                    Please visit this link on the day of your appointment for live updates!
-                </span>
-                    <span class="flex mt-1">
-                    You can edit your appointment online any time
-                    <span class="ml-1 font-semibold">before the day of your appointment</span>.
-                </span>
-
-                    <span class="flex mt-1">
-                    For further information, you can reach
-                    <span class="font-semibold mx-1">{$bookingEstimate.business.businessInfo.businessName}</span>
-                    at
-                    <span class="font-semibold ml-1">{formatPhoneNumber($bookingEstimate.business.businessInfo.businessPhoneNumber)}</span>.
-                </span>
+                    <span class="flex flex-wrap mt-1">
+                        Please visit this link on the day of your appointment for live updates!
+                    </span>
+                    <span class="flex flex-wrap mt-1">
+                        You can edit your appointment online any time
+                        <span class="ml-1 font-semibold">before the day of your appointment</span>.
+                    </span>
+                    <span class="flex flex-wrap mt-1">
+                        For further information, you can reach
+                        <span class="font-semibold mx-1">{$bookingEstimate.business.businessInfo.businessName}</span>
+                        at
+                        <span class="font-semibold ml-1">{formatPhoneNumber($bookingEstimate.business.businessInfo.businessPhoneNumber)}</span>.
+                    </span>
                 </div>
             </div>
         </div>
@@ -87,7 +75,5 @@
         </Button>
         <Tooltip triggeredBy="#show-tooltip">Edit Booking</Tooltip>
     </div>
-
 </div>
-
 

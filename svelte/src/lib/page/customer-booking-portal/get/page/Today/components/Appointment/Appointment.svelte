@@ -30,14 +30,15 @@
 
 <div class="w-screen h-screen flex flex-col items-center justify-center  p-6 rounded-lg space-y-4">
     <div class="flex items-center justify-center">
-        <div class="w-[max-content]">
+        <div class="w-full max-w-4xl">
             <div
                     class="relative text-xl rounded-t-lg font-bold flex bg-white text-blue-900 p-4 border-t-2 border-x-2"
             >
-        <span>
-          Your appointment is <span class="underline">today</span>!
-        </span>
-                <LiveIndicator/>
+        <span class="flex items-center flex-wrap">
+    Your appointment is <span class="underline ml-1">today</span>!
+    <LiveIndicator/>
+</span>
+
             </div>
 
             <div class="bg-white text-red-800 p-4 flex border-x-2 text-sm">
