@@ -2,7 +2,10 @@
     import dayjs from 'dayjs';
     import {onMount, setContext} from "svelte";
     import {now} from "$lib/page/stores/now/now_dayjs_store.js";
-    import {getCustomerBookingEstimate} from "$lib/api/api_server/customer-booking-portal/api.js";
+    import {
+        getCustomerBookingEstimate,
+        initializeCustomerBooking
+    } from "$lib/api/api_server/customer-booking-portal/api.js";
     import {formatToTime, formatToTimeAm} from "$lib/application/Formatter.js";
     import {Spinner} from "flowbite-svelte";
     import Today from "$lib/page/customer-booking-portal/get/page/Today/Today.svelte";
@@ -51,13 +54,6 @@
                 estimateServicingStartTime,
                 estimateServicingEndTime
             });
-
-            // Convert the employee list to selectable options
-            business.set($bookingEstimate.business);
-            if ($business && $business.employeeList && Array.isArray($business.employeeList))
-            {
-                employeeSelectOptions.set($business.employeeList.map(employeeToSelectOption));
-            }
         }
         catch (error)
         {
@@ -71,6 +67,33 @@
 
     onMount(async () => {
         await fetchCustomerBookingEstimate();
+
+        // Convert the employee list to selectable options
+        business.set($bookingEstimate.business);
+        if ($business && $business.employeeList && Array.isArray($business.employeeList))
+        {
+            employeeSelectOptions.set($business.employeeList.map(employeeToSelectOption));
+        }
+
+        // SMS confirmation
+        if (!$bookingEstimate.customerBooking.smsConfirmation)
+        {
+            $bookingEstimate.customerBooking.smsConfirmation = true;
+
+            initializeCustomerBooking($bookingEstimate.customerBooking)
+                .then(customerBooking => {
+                    // Update the booking estimate store with the new data
+                    bookingEstimate.update(current => ({
+                        ...current,
+                        customerBooking: customerBooking
+                    }));
+                    console.log('SMS confirmation initialized and saved to database.');
+                })
+                .catch(error => {
+                    console.error('Error initializing SMS confirmation:', error);
+                });
+        }
+
         loading = false;
     });
 

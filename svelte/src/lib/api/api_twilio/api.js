@@ -20,7 +20,7 @@ export function sendSmsConfirmBookingSuccess(businessName, customerBooking)
     let formattedTime = dayjs(customerBooking.bookingTime, formatToTime).format(formatToTimeAm);
 
     // Build the SMS message
-    let message = `PLEASE, PLEASE, PLEASE CLICK THE LINK! Your appointment at ${businessName} is set for ${formattedDate} at ${formattedTime}. Check this link for updates on your servicing time: ${customerBookingURL}`;
+    let message = `Please click the link to confirm your appointment! Your appointment at ${businessName} is set for ${formattedDate} at ${formattedTime}: ${customerBookingURL}`;
 
     sendSms(formattedPhoneNumber, message)
         .then(() => {
@@ -48,7 +48,7 @@ export async function sendSmsBookingReminder(businessName, customerBooking)
     let reminderDateTime = appointmentDateTime.subtract(1, 'day');
 
     // Build the SMS message
-    let message = `Reminder: Your appointment at ${businessName} is set for tomorrow at ${formattedTime}. Please use the booking link for updates on your servicing time. Looking forward to seeing you!`;
+    let message = `Reminder: Your appointment at ${businessName} is set for tomorrow at ${formattedTime}. PLEASE USE THE BOOKING LINK for live updates on your servicing time. Looking forward to seeing you!`;
     let daysUntilAppointment = appointmentDateTime.startOf('day').diff(currentDateTime.startOf('day'), 'day');
     let futureMinutes = reminderDateTime.diff(currentDateTime, 'minute');
 
