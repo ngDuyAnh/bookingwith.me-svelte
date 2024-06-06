@@ -8,6 +8,7 @@
 
     let getReview = !$bookingEstimate.customerBooking.customerBookingReview;
     let review = CustomerBookingReview();
+    let polishUsed = false;
 
     async function submitReviewToDatabase() {
         let customerBooking = {
@@ -73,6 +74,7 @@
     let numPolishReview = 0;
 
     async function handlePolishReview() {
+        polishUsed = true;
         numPolishReview++;
 
         isLoading = true;
@@ -201,7 +203,7 @@
                 <div class="flex mt-2 space-x-2">
                     <button disabled={isLoading || !review.reviewText.trim() || isNumeric(review.reviewText) || numPolishReview > 2}
                             on:click={handlePolishReview}
-                            class="text-white p-2 rounded-md {isLoading || !review.reviewText.trim() || isNumeric(review.reviewText) ? 'bg-purple-500' : 'bg-purple-500 hover:bg-purple-600'}">
+                            class="flex flex-row text-white p-2 rounded-md items-center justify-center {isLoading || !review.reviewText.trim() || isNumeric(review.reviewText) || numPolishReview > 2 ? 'bg-gray-500' : 'bg-purple-500 hover:bg-purple-600'}">
                         {#if isLoading}
                             <Spinner/>
                             Polishing...
@@ -210,11 +212,11 @@
                         {/if}
                     </button>
                     <button on:click={() => copyToClipboard(review.reviewText)}
-                            class="bg-blue-500 text-white p-2 rounded-md hover:bg-blue-600">
+                            class="flex flex-row items-center justify-center bg-blue-500 text-white p-2 rounded-md hover:bg-blue-600">
                         Copy Review
                     </button>
                     <a
-                            class="bg-green-500 text-white p-2 rounded-md hover:bg-green-600"
+                            class="flex flex-row items-center justify-center bg-green-500 text-white p-2 rounded-md hover:bg-green-600"
                             href={$bookingEstimate.business.businessInfo.googleReviewLink}
                             target="_blank"
                             on:click={handleGoogleReviewClick}
@@ -238,6 +240,12 @@
                     <CloseCircleSolid slot="icon" class="w-5 h-5"/>
                     Failed to Copy.
                 </Toast>
+
+                {#if polishUsed}
+                    <div>
+                        {numPolishReview} out of 3 Polishes used.
+                    </div>
+                {/if}
 
             {/if}
         {:else}
