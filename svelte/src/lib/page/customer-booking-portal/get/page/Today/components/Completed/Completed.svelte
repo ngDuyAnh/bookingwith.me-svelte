@@ -200,7 +200,7 @@
                           class="border {errorMessage ? 'border-red-600' : 'border-gray-300'} {isLoading ? 'animate-pulse':''} border-gray-300 p-2 mt-2 w-full h-32 rounded-md"
                           placeholder="Your review..."></textarea>
 
-                <div class="flex mt-2 p-1 space-x-2">
+                <div class="flex mt-2 p-1 space-x-4">
                     <button disabled={isLoading || !review.reviewText.trim() || isNumeric(review.reviewText) || numPolishReview > 2}
                             on:click={handlePolishReview}
                             class="text-center p-2 flex flex-row text-white rounded-md items-center justify-center {isLoading || !review.reviewText.trim() || isNumeric(review.reviewText) || numPolishReview > 2 ? 'bg-gray-500' : 'bg-purple-500 hover:bg-purple-600'}">
