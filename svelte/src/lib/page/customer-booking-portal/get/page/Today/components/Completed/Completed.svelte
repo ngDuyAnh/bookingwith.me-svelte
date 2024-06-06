@@ -9,8 +9,7 @@
     let getReview = !$bookingEstimate.customerBooking.customerBookingReview;
     let review = CustomerBookingReview();
 
-    async function submitReviewToDatabase()
-    {
+    async function submitReviewToDatabase() {
         let customerBooking = {
             ...$bookingEstimate.customerBooking,
             customerBookingReview: review
@@ -27,11 +26,9 @@
         });
     }
 
-    function handleGoogleReviewClick()
-    {
+    function handleGoogleReviewClick() {
         // Review text is empty
-        if (!review.reviewText)
-        {
+        if (!review.reviewText) {
             review.reviewText = "Customer clicked take me directly to Google review.";
         }
 
@@ -79,8 +76,8 @@
     }
 
     let numPolishReview = 0;
-    async function handlePolishReview()
-    {
+
+    async function handlePolishReview() {
         numPolishReview++;
 
         isLoading = true;
@@ -201,13 +198,15 @@
                     <div class="text-gray-600 font-medium mb-4 p-4 border border-gray-300 rounded-lg">
                         <ol class="list-decimal list-inside space-y-2">
                             <li>
-                                Write about your experience and press <span class="text-purple-500 font-semibold">"Polish Review"</span> to refine your feedback.
+                                Write about your experience and press <span class="text-purple-500 font-semibold">"Polish Review"</span>
+                                to refine your feedback.
                             </li>
                             <li>
                                 Once finished, select <span class="text-blue-500 font-semibold">"Copy Review"</span>.
                             </li>
                             <li>
-                                Click <span class="text-green-500 font-semibold">"Post on Google"</span> to share your review.
+                                Click <span class="text-green-500 font-semibold">"Post on Google"</span> to share your
+                                review.
                             </li>
                         </ol>
                     </div>
@@ -225,7 +224,7 @@
                     <div class="flex mt-2 space-x-2">
                         <button disabled={isLoading || !review.reviewText.trim() || isNumeric(review.reviewText) || numPolishReview > 2}
                                 on:click={handlePolishReview}
-                                class="text-white py-2 px-4 rounded-md {isLoading || !review.reviewText.trim() || isNumeric(review.reviewText) ? 'bg-purple-500' : 'bg-purple-500 hover:bg-purple-600'}">
+                                class="text-white p-2 rounded-md {isLoading || !review.reviewText.trim() || isNumeric(review.reviewText) ? 'bg-purple-500' : 'bg-purple-500 hover:bg-purple-600'}">
                             {#if isLoading}
                                 <Spinner/>
                                 Polishing...
@@ -234,11 +233,11 @@
                             {/if}
                         </button>
                         <button on:click={() => copyToClipboard(review.reviewText)}
-                                class="bg-blue-500 text-white py-2 px-4 rounded-md hover:bg-blue-600">
+                                class="bg-blue-500 text-white p-2 rounded-md hover:bg-blue-600">
                             Copy Review
                         </button>
                         <a
-                                class="bg-green-500 text-white py-2 px-4 rounded-md hover:bg-green-600"
+                                class="bg-green-500 text-white p-2 rounded-md hover:bg-green-600"
                                 href={$bookingEstimate.business.businessInfo.googleReviewLink}
                                 target="_blank"
                                 on:click={handleGoogleReviewClick}
