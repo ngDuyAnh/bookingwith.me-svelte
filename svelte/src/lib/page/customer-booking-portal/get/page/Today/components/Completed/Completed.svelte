@@ -39,7 +39,6 @@
     let reviewCopyGood = false;
     let reviewCopyBad = false;
     let copyToastTimer;
-    let showReviewOptions = false;
     let isLoading = false;
     let errorMessage = "";
     let errorToastTimer;
@@ -61,10 +60,6 @@
         if (--copyToastTimer > 0) return setTimeout(timeoutCopyToast, 1000);
         reviewCopyGood = false;
         reviewCopyBad = false;
-    }
-
-    function showReviewWritingOptions() {
-        showReviewOptions = true;
     }
 
     function isNumeric(str) {
