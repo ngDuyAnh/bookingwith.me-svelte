@@ -1,8 +1,6 @@
-
-export async function load({ params })
-{
+export async function load({params}) {
     // Access the dynamic parameter from the URL
-    const { bookingID } = params;
+    const {bookingID} = params;
 
     return {
         bookingID
