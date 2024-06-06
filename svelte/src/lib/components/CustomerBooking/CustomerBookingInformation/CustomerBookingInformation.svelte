@@ -41,7 +41,7 @@
             <ArrowLeftOutline class="w-6 h-6"/>
         </Button>
     </div>
-    
+
     <h3 class="text-2xl font-medium text-gray-900 dark:text-white">Booking information</h3>
 
     <div class="mt-4 flex flex-wrap justify-center items-center w-full space-x-1">

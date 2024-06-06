@@ -1,11 +1,10 @@
 <script>
     import {onMount, setContext} from "svelte";
-    import {initializeCustomerBooking} from "$lib/api/api_server/customer-booking-portal/api.js";
-    import {now, today, isToday} from "$lib/page/stores/now/now_dayjs_store.js";
+    import {getCustomerBooking, initializeCustomerBooking} from "$lib/api/api_server/customer-booking-portal/api.js";
+    import {isToday, now, today} from "$lib/page/stores/now/now_dayjs_store.js";
     import {formatTimeAm, formatToTime} from "$lib/application/Formatter.js";
     import Calendar from "@event-calendar/core";
     import ResourceTimeGrid from "@event-calendar/resource-time-grid";
-    import {getCustomerBooking} from "$lib/api/api_server/customer-booking-portal/api.js";
     import {
         findServiceBookingFromCustomerBooking
     } from "$lib/api/initialize_functions/customer-booking-utility-functions.js";
@@ -17,6 +16,9 @@
         servicingTicketClickModalOpen,
         servicingTicketClickModalSetEmployeeTimetableList
     } from "$lib/components/Timetable/TimetableModal/stores/servicingTicketClickModal.js";
+    import {
+        handleNewCustomerBookingWalkin
+    } from "$lib/components/Modal/CreateCustomerBooking/modalCreateCustomerBooking.js";
 
     // Date select
     let prevSelectedDate = today(); // To help trigger fetch schedule
@@ -28,7 +30,7 @@
     let prevEL = null;
     let prevInfoID = null;
     let conflictEmployeeEvents = {};
-    let assignedEmployeeEvents={};
+    let assignedEmployeeEvents = {};
 
     let plugins = [ResourceTimeGrid];
 
@@ -123,10 +125,9 @@
                     conflicted = true;
                     conflictEmployeeEvents[info.event.id] = "border-2 border-red-600";
                     info.el.className = `ec-event border-2 border-red-600`;
-                } else if (bookedEmployee !== null && bookedEmployee.id === employeeID)
-                {
+                } else if (bookedEmployee !== null && bookedEmployee.id === employeeID) {
                     info.el.className = `ec-event border-2 border-purple-600`;
-                    assignedEmployeeEvents[info.event.id]= "border-2 border-purple-600";
+                    assignedEmployeeEvents[info.event.id] = "border-2 border-purple-600";
                 }
 
                 info.el.innerHTML = buildInnerHTML(extendedProps.time, extendedProps.description);
@@ -147,8 +148,7 @@
     }
 
 
-    $: if (prevSelectedDate !== selectedDate)
-    {
+    $: if (prevSelectedDate !== selectedDate) {
         prevSelectedDate = selectedDate;
         options.nowIndicator = isToday(selectedDate);
         fetchSchedule();
@@ -221,8 +221,8 @@
             element.style.background = "rgba(0,0,0,0.1)";
         });
     }
-    async function openModalServicingTicket(eventInfo)
-    {
+
+    async function openModalServicingTicket(eventInfo) {
         // Get the customer booking and service booking associated with the servicing ticket
         let customerBooking = await getCustomerBooking(
             eventInfo.event.extendedProps.servicingTicket.bookingID
@@ -302,8 +302,7 @@
 
     export let getSchedule;
 
-    async function fetchSchedule()
-    {
+    async function fetchSchedule() {
         loading = true;
 
         try {
@@ -327,13 +326,11 @@
             servicingTicketClickModalSetEmployeeTimetableList(employeeTimetableList);
 
             // Fetch and reinitialize the customer booking for the modal
-            if ($servicingTicketClickModal.open && $servicingTicketClickModal.customerBooking)
-            {
+            if ($servicingTicketClickModal.open && $servicingTicketClickModal.customerBooking) {
                 // Fetch the recent changes to the customer booking
                 const fetchCustomerBooking = await getCustomerBooking($servicingTicketClickModal.customerBooking.bookingID)
 
-                if (fetchCustomerBooking)
-                {
+                if (fetchCustomerBooking) {
                     // Get the latest service booking from the customer booking
                     let fetchServiceBooking = findServiceBookingFromCustomerBooking(
                         fetchCustomerBooking,
@@ -341,9 +338,7 @@
                     );
 
                     servicingTicketClickModalOpen(fetchCustomerBooking, fetchServiceBooking);
-                }
-                else
-                {
+                } else {
                     console.log('Customer booking not found for customer booking click modal.');
                 }
             }
@@ -353,7 +348,7 @@
             resources = employeeTimetableList.flatMap((employeeTable) => {
                 employeeWorkHourEvent.push({
                     resourceId: employeeTable.employee.id,
-                    color: employeeTable.employee.id === -1 || !employeeTable.employee.id? "red" : "#FFF9D0",
+                    color: employeeTable.employee.id === -1 || !employeeTable.employee.id ? "red" : "#FFF9D0",
                     start: `${$now.format("YYYY-MM-DD")} ${employeeTable.timePeriod.startTime}`,
                     end: `${$now.format("YYYY-MM-DD")} ${employeeTable.timePeriod.endTime}`,
                     display: "background",
@@ -415,6 +410,19 @@
                 on:click={fetchSchedule}
         >
             Refresh
+        </button>
+        <button class="text-blue-500 hover:text-blue-700 focus:outline-none" on:click={handleNewCustomerBookingWalkin}>
+            <svg
+                    class="w-10 h-10"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="1.5"
+                    viewBox="0 0 24 24"
+                    xmlns="http://www.w3.org/2000/svg"
+            >
+                <path d="M12 9v6m3-3H9m12 0a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" stroke-linecap="round"
+                      stroke-linejoin="round"/>
+            </svg>
         </button>
     </div>
 
