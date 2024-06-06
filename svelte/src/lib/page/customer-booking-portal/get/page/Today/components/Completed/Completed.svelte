@@ -177,91 +177,73 @@
                     </button>
                 </div>
             {:else if review.rating === 5}
-                {#if !showReviewOptions}
-                    <div class="text-green-500 font-medium mb-2">
-                        We're glad you had a great experience! Please consider leaving a review.
-                    </div>
-                    <button on:click={showReviewWritingOptions}
-                            class="bg-blue-500 text-white py-2 px-4 mt-2 rounded-md hover:bg-blue-600"
-                    >
-                        Help me write a review
+                <div class="text-gray-600 font-medium mb-4 p-4 border border-gray-300 rounded-lg">
+                    <ol class="list-decimal list-inside space-y-2">
+                        <li>
+                            Write about your experience. Optionally, press <span class="text-purple-500 font-semibold">"Polish Review"</span>
+                            to refine your feedback.
+                        </li>
+                        <li>
+                            Once finished, select <span class="text-blue-500 font-semibold">"Copy Review"</span>.
+                        </li>
+                        <li>
+                            Click <span class="text-green-500 font-semibold">"Post on Google"</span> to share your
+                            review.
+                        </li>
+                    </ol>
+                </div>
+
+                <Toast bind:open={errorMessage} transition={fly} params={{ y: 50 }} color="red"
+                       class="mt-4 w-auto p-4 flex items-center justify-center" divClass="bg-red-300" position="">
+                    {errorMessage}
+                </Toast>
+                <textarea disabled={isLoading}
+                          id="review-text" bind:value={review.reviewText}
+                          required
+                          class="border {errorMessage ? 'border-red-600' : 'border-gray-300'} {isLoading ? 'animate-pulse':''} border-gray-300 p-2 mt-2 w-full h-32 rounded-md"
+                          placeholder="Your review..."></textarea>
+
+                <div class="flex mt-2 space-x-2">
+                    <button disabled={isLoading || !review.reviewText.trim() || isNumeric(review.reviewText) || numPolishReview > 2}
+                            on:click={handlePolishReview}
+                            class="text-white p-2 rounded-md {isLoading || !review.reviewText.trim() || isNumeric(review.reviewText) ? 'bg-purple-500' : 'bg-purple-500 hover:bg-purple-600'}">
+                        {#if isLoading}
+                            <Spinner/>
+                            Polishing...
+                        {:else}
+                            Polish Review
+                        {/if}
+                    </button>
+                    <button on:click={() => copyToClipboard(review.reviewText)}
+                            class="bg-blue-500 text-white p-2 rounded-md hover:bg-blue-600">
+                        Copy Review
                     </button>
                     <a
-                            class="bg-green-500 text-white py-2 px-4 mt-2 rounded-md hover:bg-green-600"
+                            class="bg-green-500 text-white p-2 rounded-md hover:bg-green-600"
                             href={$bookingEstimate.business.businessInfo.googleReviewLink}
                             target="_blank"
                             on:click={handleGoogleReviewClick}
                     >
-                        Take me directly to Google review
+                        Post on Google
                     </a>
-                {:else}
-                    <div class="text-gray-600 font-medium mb-4 p-4 border border-gray-300 rounded-lg">
-                        <ol class="list-decimal list-inside space-y-2">
-                            <li>
-                                Write about your experience and press <span class="text-purple-500 font-semibold">"Polish Review"</span>
-                                to refine your feedback.
-                            </li>
-                            <li>
-                                Once finished, select <span class="text-blue-500 font-semibold">"Copy Review"</span>.
-                            </li>
-                            <li>
-                                Click <span class="text-green-500 font-semibold">"Post on Google"</span> to share your
-                                review.
-                            </li>
-                        </ol>
-                    </div>
+                </div>
 
-                    <Toast bind:open={errorMessage} transition={fly} params={{ y: 50 }} color="red"
-                           class="mt-4 w-auto p-4 flex items-center justify-center" divClass="bg-red-300" position="">
-                        {errorMessage}
-                    </Toast>
-                    <textarea disabled={isLoading}
-                              id="review-text" bind:value={review.reviewText}
-                              required
-                              class="border {errorMessage ? 'border-red-600' : 'border-gray-300'} {isLoading ? 'animate-pulse':''} border-gray-300 p-2 mt-2 w-full h-32 rounded-md"
-                              placeholder="Your review..."></textarea>
+                <Toast
+                        color="green"
+                        transition={slide}
+                        class="mt-4 w-auto p-4 flex items-center justify-center"
+                        position="bottom-right"
+                        bind:open={reviewCopyGood}
+                >
+                    <CheckCircleSolid slot="icon" class="w-5 h-5 "/>
+                    Review Copied.
+                </Toast>
+                <Toast color="red" class="mt-4 w-auto p-4 flex items-center justify-center" dismissable={false}
+                       position="bottom-right" bind:open={reviewCopyBad}>
+                    <CloseCircleSolid slot="icon" class="w-5 h-5"/>
+                    Failed to Copy.
+                </Toast>
 
-                    <div class="flex mt-2 space-x-2">
-                        <button disabled={isLoading || !review.reviewText.trim() || isNumeric(review.reviewText) || numPolishReview > 2}
-                                on:click={handlePolishReview}
-                                class="text-white p-2 rounded-md {isLoading || !review.reviewText.trim() || isNumeric(review.reviewText) ? 'bg-purple-500' : 'bg-purple-500 hover:bg-purple-600'}">
-                            {#if isLoading}
-                                <Spinner/>
-                                Polishing...
-                            {:else}
-                                Polish Review
-                            {/if}
-                        </button>
-                        <button on:click={() => copyToClipboard(review.reviewText)}
-                                class="bg-blue-500 text-white p-2 rounded-md hover:bg-blue-600">
-                            Copy Review
-                        </button>
-                        <a
-                                class="bg-green-500 text-white p-2 rounded-md hover:bg-green-600"
-                                href={$bookingEstimate.business.businessInfo.googleReviewLink}
-                                target="_blank"
-                                on:click={handleGoogleReviewClick}
-                        >
-                            Post on Google
-                        </a>
-                    </div>
-
-                    <Toast
-                            color="green"
-                            transition={slide}
-                            class="mt-4 w-auto p-4 flex items-center justify-center"
-                            position="bottom-right"
-                            bind:open={reviewCopyGood}
-                    >
-                        <CheckCircleSolid slot="icon" class="w-5 h-5 "/>
-                        Review Copied.
-                    </Toast>
-                    <Toast color="red" class="mt-4 w-auto p-4 flex items-center justify-center" dismissable={false}
-                           position="bottom-right" bind:open={reviewCopyBad}>
-                        <CloseCircleSolid slot="icon" class="w-5 h-5"/>
-                        Failed to Copy.
-                    </Toast>
-                {/if}
             {/if}
         {:else}
             Thank you for taking the time to write the review!
