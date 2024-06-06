@@ -30,13 +30,13 @@
 
                     // Check if the most recent send date is more than 6 months ago
                     // The customer is new to the business
-                    const moreThan3Months = mostRecentDateReviewReminderSent
+                    const moreThan6Months = mostRecentDateReviewReminderSent
                         ? dayjs().diff(dayjs(mostRecentDateReviewReminderSent, formatToDate), 'month') > 6
                         : true;
 
-                    ableToSendSmsReviewReminder = allowToSendReviewReminderSMS && moreThan3Months;
+                    ableToSendSmsReviewReminder = allowToSendReviewReminderSMS && moreThan6Months;
 
-                    //console.log(`ableToSendSmsReviewReminder ${ableToSendSmsReviewReminder}, allowToSendReviewReminderSMS ${allowToSendReviewReminderSMS}, moreThan3Months ${moreThan3Months}`)
+                    //console.log(`customerBooking.smsReviewReminderSent ${customerBooking.smsReviewReminderSent} ableToSendSmsReviewReminder ${ableToSendSmsReviewReminder}, allowToSendReviewReminderSMS ${allowToSendReviewReminderSMS}, moreThan6Months ${moreThan6Months}`)
                 })
                 .catch(error => {
                     console.error('Failed at checkAbleToSendReviewReminder():', error);
