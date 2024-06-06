@@ -4,7 +4,7 @@
     export let selectedNumGuests;
 </script>
 
-<div class="flex flex-col items-center justify-center h-[80%] w-full">
+<div class="flex flex-col items-center justify-center h-full w-full">
     <h1 class="text-2xl text-gray-700 select-none">
         Welcome to {businessInfo.businessName}
     </h1>
