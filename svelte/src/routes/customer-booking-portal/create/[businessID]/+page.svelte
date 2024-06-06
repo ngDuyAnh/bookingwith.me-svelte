@@ -4,7 +4,6 @@
         employeeToSelectOption
     } from "$lib/components/CustomerBooking/CustomerIndividualBookingServiceSelect/components/ServiceOption/functions.js";
     import {business} from "$lib/page/stores/business/business.js";
-    import {userProfile} from "$lib/page/stores/userProfile/userProfile.js";
     import {Spinner} from "flowbite-svelte";
     import CustomerBookingComponent from "$lib/components/CustomerBooking/CustomerBookingComponent.svelte";
     import {CustomerBookingChannel} from "$lib/api/initialize_functions/CustomerBooking.js";
@@ -29,10 +28,13 @@
         <div class="flex justify-center items-center h-screen">
             <Spinner />
         </div>
-    {:else if !$userProfile.auth || !$userProfile.user}
+    {:else}
         <CustomerBookingComponent
-                business={$business}
                 bookingChannel={CustomerBookingChannel.ONLINE}
+
+                business={$business}
+
+                preselectForWalkin={true}
         />
     {/if}
 </div>
