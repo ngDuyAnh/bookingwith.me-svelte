@@ -7,7 +7,7 @@
 
     export let preselectForWalkin = false;
 
-    export let showCustomerBookingInformationOptionHeader;
+    // export let showCustomerBookingInformationOptionHeader;
     export let customerBookingInformationProps;
 
     export let customerBookingInformationFormProps;
