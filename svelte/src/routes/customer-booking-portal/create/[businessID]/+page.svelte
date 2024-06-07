@@ -25,7 +25,7 @@
 
 <div class="h-dvh w-screen">
     {#if loading}
-        <div class="flex justify-center items-center h-dvh">
+        <div class="flex justify-center items-center h-full w-full">
             <Spinner />
         </div>
     {:else}

@@ -103,23 +103,25 @@
     $: console.log("bookingEstimate", $bookingEstimate);
 </script>
 
-{#if loading}
-    <div class="flex justify-center items-center h-screen">
-        <Spinner />
-    </div>
-{:else}
-    <div class="flex flex-col text-gray-900">
-        {#if $bookingEstimate.customerBooking.deleted}
-            <Deleted/>
-        {:else if relativeDate > 0}
-            <Future/>
-        {:else if relativeDate <= 0}
-            <Today/>
-        {/if}
-    </div>
+<div class="h-dvh w-screen">
+    {#if loading}
+        <div class="flex justify-center items-center h-full w-full">
+            <Spinner />
+        </div>
+    {:else}
+        <div class="flex flex-col text-gray-900 h-full w-full">
+            {#if $bookingEstimate.customerBooking.deleted}
+                <Deleted/>
+            {:else if relativeDate > 0}
+                <Future/>
+            {:else if relativeDate <= 0}
+                <Today/>
+            {/if}
+        </div>
 
-    <!-- Modal for edit customer booking -->
-    <ModalEditCustomerBooking
-            business={$bookingEstimate.business}
-    />
-{/if}
+        <!-- Modal for edit customer booking -->
+        <ModalEditCustomerBooking
+                business={$bookingEstimate.business}
+        />
+    {/if}
+</div>
