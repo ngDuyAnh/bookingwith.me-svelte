@@ -200,10 +200,10 @@
                           class="border {errorMessage ? 'border-red-600' : 'border-gray-300'} {isLoading ? 'animate-pulse':''} border-gray-300 p-2 mt-2 w-full h-32 rounded-md"
                           placeholder="Your review..."></textarea>
 
-                <div class="flex mt-2 space-x-2">
+                <div class="flex mt-2 p-1 space-x-4">
                     <button disabled={isLoading || !review.reviewText.trim() || isNumeric(review.reviewText) || numPolishReview > 2}
                             on:click={handlePolishReview}
-                            class="flex flex-row text-white p-2 rounded-md items-center justify-center {isLoading || !review.reviewText.trim() || isNumeric(review.reviewText) || numPolishReview > 2 ? 'bg-gray-500' : 'bg-purple-500 hover:bg-purple-600'}">
+                            class="text-center p-2 flex flex-row text-white rounded-md items-center justify-center {isLoading || !review.reviewText.trim() || isNumeric(review.reviewText) || numPolishReview > 2 ? 'bg-gray-500' : 'bg-purple-500 hover:bg-purple-600'}">
                         {#if isLoading}
                             <Spinner/>
                             Polishing...
@@ -212,11 +212,11 @@
                         {/if}
                     </button>
                     <button on:click={() => copyToClipboard(review.reviewText)}
-                            class="flex flex-row items-center justify-center bg-blue-500 text-white p-2 rounded-md hover:bg-blue-600">
+                            class=" text-center	 flex flex-row items-center justify-center bg-blue-500 text-white p-2  rounded-md hover:bg-blue-600">
                         Copy Review
                     </button>
                     <a
-                            class="flex flex-row items-center justify-center bg-green-500 text-white p-2 rounded-md hover:bg-green-600"
+                            class="text-center flex flex-row items-center justify-center bg-green-500 text-white p-2 rounded-md hover:bg-green-600"
                             href={$bookingEstimate.business.businessInfo.googleReviewLink}
                             target="_blank"
                             on:click={handleGoogleReviewClick}
@@ -243,7 +243,7 @@
 
                 {#if polishUsed}
                     <div>
-                        {numPolishReview} out of 3 Polishes used.
+                        {numPolishReview} out of 3 polishes used.
                     </div>
                 {/if}
 
