@@ -93,13 +93,13 @@
 
 <div class="h-full w-full">
     <div class="flex justify-between items-center px-6 py-4 w-full">
-        <Button class="!p-2" on:click={handlePrev} pill={true}>
+        <Button class="disable-double-tap-zoom !p-2" on:click={handlePrev} pill={true}>
             <ArrowLeftOutline class="w-6 h-6"/>
         </Button>
         <h1 class="text-xl font-semibold flex-grow-0 ">
             Guest #{guestIndex + 1}
         </h1>
-        <Button class="!p-2" on:click={handleNext} pill={true}>
+        <Button class="disable-double-tap-zoom !p-2" on:click={handleNext} pill={true}>
             <ArrowRightOutline class="w-6 h-6"/>
         </Button>
     </div>
