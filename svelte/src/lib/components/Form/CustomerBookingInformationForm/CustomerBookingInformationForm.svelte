@@ -33,7 +33,7 @@
     let walkinAvailabilityFlag = false;
 
     let preselectForWalkIn = isToday(customerBooking.bookingDate) ||
-        customerBooking.bookingState === CustomerBookingState.SERVICING;;
+        customerBooking.bookingState === CustomerBookingState.SERVICING;
 
     let currentTimeString = "00:00";
     let availableTimeOptionList = [];
@@ -80,7 +80,7 @@
                     availability => {
                         return {
                             value: availability.timePeriod.startTime,
-                            name: `${dayjs(availability.timePeriod.startTime, formatToTime).format(formatToTimeAM)} to ${dayjs(availability.timePeriod.endTime, formatToTime).format(formatToTimeAM)} (${availability.duration} minutes)`,
+                            name: `${dayjs(availability.timePeriod.startTime, formatToTime).format(formatToTimeAM)} to ${dayjs(availability.timePeriod.endTime, formatToTime).format(formatToTimeAM)} (~${availability.duration} minutes)`,
                             availability: availability
                         };
                     });
@@ -198,7 +198,7 @@
             customerBooking.bookingTime = null;
         }
 
-        console.log(`Date selected ${dateSelected} walk-in ${walkinAvailabilityFlag}`);
+        //console.log(`Date selected ${dateSelected} walk-in ${walkinAvailabilityFlag}`);
 
         // Get the new available time
         fetchAvailableTimeList();
