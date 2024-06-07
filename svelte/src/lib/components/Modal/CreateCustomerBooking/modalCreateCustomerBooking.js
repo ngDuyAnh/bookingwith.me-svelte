@@ -4,7 +4,6 @@ export const modalCreateCustomerBooking = writable({
     open: false,
 
     // Option header
-    showCustomerBookingInformationOptionHeader: true,
     customerBookingInformationProps: {
         showOverride: true,
         showSendSms: true,
@@ -28,7 +27,6 @@ export function handleNewCustomerBooking()
         open: true,
 
         // Option header
-        showCustomerBookingInformationOptionHeader: true,
         customerBookingInformationProps: {
             showOverride: true,
             showSendSms: true,
@@ -53,7 +51,6 @@ export function handleNewCustomerBookingWalkin()
         open: true,
 
         // Option header
-        showCustomerBookingInformationOptionHeader: true,
         customerBookingInformationProps: {
             showOverride: true,
             showSendSms: true,
