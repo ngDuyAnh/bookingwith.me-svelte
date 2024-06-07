@@ -21,6 +21,7 @@
                 min="1"
                 max="9"
                 pattern="^[1-9]\d*$"
+                inputmode="numeric"
                 bind:value={selectedNumGuests}
                 required
         />
