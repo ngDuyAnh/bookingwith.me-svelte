@@ -49,9 +49,6 @@
                 customerBookingInformationFormProps={$modalCreateCustomerBooking.customerBookingInformationFormProps}
 
                 customerBookingInformationProps={$modalCreateCustomerBooking.customerBookingInformationProps}
-                preselectForWalkin={$modalCreateCustomerBooking.preselectForWalkin}
-
-                showCustomerBookingInformationOptionHeader={$modalCreateCustomerBooking.showCustomerBookingInformationOptionHeader}
         />
     </Modal>
 </div>

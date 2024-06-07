@@ -2,7 +2,6 @@ import { writable } from 'svelte/store';
 
 export const modalCreateCustomerBooking = writable({
     open: false,
-    preselectForWalkin: false,
 
     // Option header
     showCustomerBookingInformationOptionHeader: true,
@@ -27,7 +26,6 @@ export function handleNewCustomerBooking()
 {
     modalCreateCustomerBooking.set({
         open: true,
-        preselectForWalkin: true,
 
         // Option header
         showCustomerBookingInformationOptionHeader: true,
@@ -53,7 +51,6 @@ export function handleNewCustomerBookingWalkin()
 {
     modalCreateCustomerBooking.set({
         open: true,
-        preselectForWalkin: true,
 
         // Option header
         showCustomerBookingInformationOptionHeader: true,

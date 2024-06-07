@@ -19,8 +19,7 @@
     import {
         moveToLobby
     } from "$lib/page/protected/business-portal/page_lobby/page/Dashboard/components/components/CustomerBookingClickModal/handle_customer_booking_state.js";
-
-    export let preselectForWalkin;
+    import {isToday} from "$lib/page/stores/now/now_dayjs_store.js";
 
     export let customerBookingInformationFormProps;
 
@@ -32,6 +31,9 @@
 
     // Get the availability from the server
     let walkinAvailabilityFlag = false;
+
+    let preselectForWalkIn = isToday(customerBooking.bookingDate) ||
+        customerBooking.bookingState === CustomerBookingState.SERVICING;;
 
     let currentTimeString = "00:00";
     let availableTimeOptionList = [];
@@ -59,14 +61,6 @@
             const clonedCustomerBooking = {
                 ...customerBooking
             };
-
-            // Preselect for walk-in
-            // Or booking state is servicing
-            // Search for walk-in
-            if (preselectForWalkin || customerBooking.bookingState === CustomerBookingState.SERVICING)
-            {
-                walkinAvailabilityFlag = true;
-            }
 
             if (walkinAvailabilityFlag)
             {
@@ -144,29 +138,25 @@
             availableTimeOptionList = [];
         }
 
-        // Preselect for walk-in or servicing
-        if (preselectForWalkin && availableTimeOptionList.length > 0)
-        {
-            // Only preselect the first time
-            preselectForWalkin = false;
-
-            // Select the first option
-            customerBooking.bookingTime = availableTimeOptionList[0].value;
-        }
-        // Preselect for customer booking is in servicing state
-        else if (customerBooking.bookingState === CustomerBookingState.SERVICING &&
-            availableTimeOptionList.length > 0)
-        {
-            customerBooking.bookingTime = availableTimeOptionList[0].value;
-        }
         // Customer booking already have a select booking time
         // Preselect that time
         // This could be from edit customer booking
         // If the selected booking time no longer available, unselected it by setting it to null
-        else if (customerBooking.bookingTime)
+        if (customerBooking.bookingTime)
         {
             customerBooking.bookingTime =
                 availableTimeOptionList.find(option => option.value === customerBooking.bookingTime)?.value ?? null;
+        }
+        // Preselect booking time
+        // Select the first option
+        else if (preselectForWalkIn && availableTimeOptionList.length > 0)
+        {
+            customerBooking.bookingTime = availableTimeOptionList[0].value;
+        }
+        // Default and safeguard, no booking time selected
+        else
+        {
+            customerBooking.bookingTime = null;
         }
     }
 
@@ -194,6 +184,22 @@
         selectedAvailability = undefined;
         walkinAvailabilityFlag = false;
 
+        // Search for walk-in if trying to book today
+        // Or booking state is servicing
+        preselectForWalkIn = isToday(customerBooking.bookingDate) ||
+            customerBooking.bookingState === CustomerBookingState.SERVICING;
+        if (preselectForWalkIn)
+        {
+            walkinAvailabilityFlag = true;
+        }
+        // Reset the booking time
+        else
+        {
+            customerBooking.bookingTime = null;
+        }
+
+        console.log(`Date selected ${dateSelected} walk-in ${walkinAvailabilityFlag}`);
+
         // Get the new available time
         fetchAvailableTimeList();
     }
@@ -206,7 +212,6 @@
     // Reactive statement to fetch times when the date changes
     $: if (dateSelected !== customerBooking.bookingDate)
     {
-        // Fetch availability
         getAvailableTimeOptionList();
     }
 

@@ -33,8 +33,6 @@
                 bookingChannel={CustomerBookingChannel.ONLINE}
 
                 business={$business}
-
-                preselectForWalkin={true}
         />
     {/if}
 </div>

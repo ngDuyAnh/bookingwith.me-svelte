@@ -8,9 +8,6 @@
         from "$lib/components/CustomerBooking/CustomerBookingInformation/CustomerBookingInformation.svelte";
     import BookingSuccess from "$lib/components/CustomerBooking/BookingSuccess/BookingSuccess.svelte";
 
-    export let preselectForWalkin = false;
-
-    export let showCustomerBookingInformationOptionHeader = false;
     export let customerBookingInformationProps = {
         showOverride: false,
         showSendSms: false,
@@ -89,9 +86,6 @@
         />
     {:else if pageIndex === 2}
         <CustomerBookingInformation
-                {preselectForWalkin}
-
-                {showCustomerBookingInformationOptionHeader}
                 {customerBookingInformationProps}
 
                 {customerBookingInformationFormProps}

@@ -5,9 +5,6 @@
     import {formatPhoneNumber} from "$lib/application/FormatPhoneNumber.js";
     import {ArrowLeftOutline} from 'flowbite-svelte-icons';
 
-    export let preselectForWalkin = false;
-
-    // export let showCustomerBookingInformationOptionHeader;
     export let customerBookingInformationProps;
 
     export let customerBookingInformationFormProps;
@@ -80,7 +77,6 @@
 
                 {customerBookingInformationFormProps}
                 {customerBookingInformationProps}
-                {preselectForWalkin}
 
                 {submitCallback}
         />

@@ -24,7 +24,6 @@
                 {business}
                 customerBooking={$modalEditCustomerBooking.customerBooking}
 
-                showCustomerBookingInformationOptionHeader={$modalEditCustomerBooking.showCustomerBookingInformationOptionHeader}
                 customerBookingInformationProps={$modalEditCustomerBooking.customerBookingInformationProps}
 
                 customerBookingInformationFormProps={$modalEditCustomerBooking.customerBookingInformationFormProps}
