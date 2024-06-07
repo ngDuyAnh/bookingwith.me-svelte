@@ -7,7 +7,7 @@
     dayjs.extend(customParseFormat);
 </script>
 
-<div class="app w-full min-h-screen">
+<div class="app h-full w-full">
     <main>
         <slot/>
     </main>

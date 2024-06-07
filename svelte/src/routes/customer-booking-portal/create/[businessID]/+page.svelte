@@ -23,9 +23,9 @@
     loading = false;
 </script>
 
-<div class="h-screen w-screen">
+<div class="h-dvh w-screen">
     {#if loading}
-        <div class="flex justify-center items-center h-screen">
+        <div class="flex justify-center items-center h-dvh">
             <Spinner />
         </div>
     {:else}

@@ -16,7 +16,7 @@
 	<meta name="bookingwith.me home page" content="Welcome to bookingwith.me" />
 </svelte:head>
 
-<div class="relative flex flex-col w-full min-h-screen">
+<div class="relative flex flex-col h-full w-full">
 	<div class="z-10 sticky top-0">
 		<Header {tabs}/>
 	</div>

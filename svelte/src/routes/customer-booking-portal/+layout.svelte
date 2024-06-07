@@ -1,4 +1,4 @@
-<div class="w-screen h-screen bg-white">
+<div class="w-screen h-dvh bg-white">
     <main>
         <slot/>
     </main>
