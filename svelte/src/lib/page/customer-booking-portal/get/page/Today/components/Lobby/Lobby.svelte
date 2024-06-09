@@ -4,25 +4,30 @@
         from "$lib/page/customer-booking-portal/get/page/components/LiveIndicator/LiveIndicator.svelte";
 </script>
 
-
-<div class="flex items-center justify-center min-h-screen"> <!-- Centering on the screen -->
-    <div class="p-6 bg-white rounded-lg space-y-4 max-w-4xl w-full"> <!-- Limiting the max width and setting full width -->
-        <div class="relative flex flex-col bg-white text-green-800 p-4 border-x-2 border-y-2 rounded-lg w-full">
-            <div class="mx-auto">
-                <LiveIndicator/>
-            </div>
-            <div class="flex justify-between w-full">
-                <div class="flex flex-col">
-                    <span>Queue position </span>
-                    <span class="animate-pulse text-sm font-semibold">{$bookingEstimate.queuePosition}</span>
+<div class="h-full w-full flex flex-col items-center justify-center p-6 rounded-lg space-y-4">
+    <div class="flex items-center justify-center">
+        <div class="w-full max-w-4xl">
+            <!-- Appointment header -->
+            <div class="relative text-xl rounded-t-lg font-bold flex bg-white text-blue-900 p-4 border-t-2 border-x-2">
+                <div class="flex flex-row items-center justify-center w-full">
+                    <LiveIndicator/>
                 </div>
+            </div>
 
-                <div class="flex flex-col items-end">
-                    <span>Servicing time</span>
-                    <div>
-                        <span class="animate-pulse text-sm font-semibold">{$bookingEstimate.estimateServicingStartTime}</span>
-                        <span class="text-sm">to</span>
-                        <span class="animate-pulse text-sm font-semibold">{$bookingEstimate.estimateServicingEndTime}</span>
+            <!-- Appointment information -->
+            <div class="relative flex flex-col bg-white text-green-800 p-4 border-x-2 border-b-2 rounded-b-lg w-full">
+                <div class="flex justify-between w-full mt-auto space-x-2">
+                    <div class="flex flex-col">
+                        <span>Queue position</span>
+                        <span class="animate-pulse text-sm font-semibold">{$bookingEstimate.queuePosition}</span>
+                    </div>
+                    <div class="flex flex-col items-end">
+                        <span>Servicing time</span>
+                        <div>
+                            <span class="animate-pulse text-sm font-semibold">{$bookingEstimate.estimateServicingStartTime}</span>
+                            <span class="text-sm">to</span>
+                            <span class="animate-pulse text-sm font-semibold">{$bookingEstimate.estimateServicingEndTime}</span>
+                        </div>
                     </div>
                 </div>
             </div>

@@ -29,42 +29,33 @@
     }
 </script>
 
-<div class="w-screen h-screen flex flex-col items-center justify-center  p-6 rounded-lg space-y-4">
+<div class="h-full w-full flex flex-col items-center justify-center p-6 rounded-lg space-y-4">
     <div class="flex items-center justify-center">
         <div class="w-full max-w-4xl">
-            <div
-                    class="relative text-xl rounded-t-lg font-bold flex bg-white text-blue-900 p-4 border-t-2 border-x-2"
-            >
-        <span class="flex items-center flex-wrap">
-                Your appointment is <span class="underline ml-1">today</span>!
-        <LiveIndicator/>
-        </span>
+            <!-- Appointment header -->
+            <div class="relative text-xl rounded-t-lg font-bold flex bg-white text-blue-900 p-4 border-t-2 border-x-2">
+                <div class="flex flex-col items-center sm:flex-row sm:items-center justify-center sm:justify-between w-full">
+                    <span class="block sm:inline mb-2 sm:mb-0">Your appointment is <span class="underline">today</span>!</span>
+                    <LiveIndicator/>
+                </div>
             </div>
 
+            <!-- Appointment information -->
             <div class="bg-white text-red-800 p-4 flex border-x-2 text-sm">
-                <span> Please arrive early to ensure smooth service. </span>
+                <span>Please arrive early to ensure smooth service.</span>
             </div>
-
-            <div
-                    class="relative flex flex-col bg-white text-green-800 p-4 border-x-2 border-b-2 rounded-b-lg w-full"
-            >
-                <div class="flex justify-between w-full mt-auto">
+            <div class="relative flex flex-col bg-white text-green-800 p-4 border-x-2 border-b-2 rounded-b-lg w-full">
+                <div class="flex justify-between w-full mt-auto space-x-2">
                     <div class="flex flex-col">
-                        <span>Queue position </span>
-                        <span class="animate-pulse text-sm font-semibold"
-                        >{$bookingEstimate.queuePosition}</span
-                        >
+                        <span>Queue position</span>
+                        <span class="animate-pulse text-sm font-semibold">{$bookingEstimate.queuePosition}</span>
                     </div>
                     <div class="flex flex-col items-end">
                         <span>Servicing time</span>
                         <div>
-              <span class="animate-pulse text-sm font-semibold"
-              >{$bookingEstimate.estimateServicingStartTime}</span
-              >
+                            <span class="animate-pulse text-sm font-semibold">{$bookingEstimate.estimateServicingStartTime}</span>
                             <span class="text-sm">to</span>
-                            <span class="animate-pulse text-sm font-semibold"
-                            >{$bookingEstimate.estimateServicingEndTime}</span
-                            >
+                            <span class="animate-pulse text-sm font-semibold">{$bookingEstimate.estimateServicingEndTime}</span>
                         </div>
                     </div>
                 </div>

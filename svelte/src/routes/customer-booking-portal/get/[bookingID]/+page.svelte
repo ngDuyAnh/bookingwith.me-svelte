@@ -18,6 +18,8 @@
     } from "$lib/components/CustomerBooking/CustomerIndividualBookingServiceSelect/components/ServiceOption/functions.js";
     import {employeeSelectOptions} from "$lib/page/stores/employeeSelectOptions/employeeSelectOptions.js";
     import ModalEditCustomerBooking from "$lib/components/Modal/EditCustomerBooking/ModalEditCustomerBooking.svelte";
+    import {CustomerBookingState} from "$lib/api/initialize_functions/CustomerBooking.js";
+    import Past from "$lib/page/customer-booking-portal/get/page/Past/Past.svelte";
 
     export let data;
 
@@ -114,8 +116,11 @@
                 <Deleted/>
             {:else if relativeDate > 0}
                 <Future/>
-            {:else if relativeDate <= 0}
+            {:else if relativeDate === 0 ||
+                    $bookingEstimate.customerBooking.bookingState === CustomerBookingState.COMPLETED}
                 <Today/>
+            {:else}
+                <Past/>
             {/if}
         </div>
 
