@@ -29,52 +29,52 @@
     }
 </script>
 
-<div class="h-full w-full flex flex-col items-center justify-center p-6 rounded-lg space-y-4">
-    <div class="flex items-center justify-center">
-        <div class="w-full max-w-4xl">
-            <!-- Appointment header -->
-            <div class="relative text-xl rounded-t-lg font-bold flex bg-white text-blue-900 p-4 border-t-2 border-x-2">
-                <div class="flex flex-col items-center sm:flex-row sm:items-center justify-center sm:justify-between w-full">
-                    <span class="block sm:inline mb-2 sm:mb-0">Your appointment is <span class="underline">today</span>!</span>
-                    <LiveIndicator/>
-                </div>
+<div class="h-full w-full flex flex-col items-center justify-center">
+    <!-- Appointment information box -->
+    <div class="bg-white max-w-4xl border-2 rounded-lg">
+        <!-- Appointment header -->
+        <div class="p-4 text-xl font-bold text-blue-900">
+            <div class="flex flex-col items-center sm:flex-row sm:items-center justify-center sm:justify-between w-full">
+                <span class="block sm:inline mb-2 sm:mb-0">Your appointment is <span
+                        class="underline">today</span>!</span>
+                <LiveIndicator/>
             </div>
+        </div>
 
-            <!-- Appointment information -->
-            <div class="bg-white text-red-800 p-4 flex border-x-2 text-sm">
-                <span>Please arrive early to ensure smooth service.</span>
+        <!-- Appointment information -->
+        <div class="p-4 text-red-800 text-sm">
+            <span>Please arrive early to ensure smooth service.</span>
+        </div>
+
+        <div class="p-4 flex justify-between text-green-800 space-x-2">
+            <div class="flex flex-col">
+                <span>Queue position</span>
+                <span class="animate-pulse text-sm font-semibold">{$bookingEstimate.queuePosition}</span>
             </div>
-            <div class="relative flex flex-col bg-white text-green-800 p-4 border-x-2 border-b-2 rounded-b-lg w-full">
-                <div class="flex justify-between w-full mt-auto space-x-2">
-                    <div class="flex flex-col">
-                        <span>Queue position</span>
-                        <span class="animate-pulse text-sm font-semibold">{$bookingEstimate.queuePosition}</span>
-                    </div>
-                    <div class="flex flex-col items-end">
-                        <span>Servicing time</span>
-                        <div>
-                            <span class="animate-pulse text-sm font-semibold">{$bookingEstimate.estimateServicingStartTime}</span>
-                            <span class="text-sm">to</span>
-                            <span class="animate-pulse text-sm font-semibold">{$bookingEstimate.estimateServicingEndTime}</span>
-                        </div>
-                    </div>
+            <div class="flex flex-col items-end">
+                <span>Servicing time</span>
+                <div>
+                    <span class="animate-pulse text-sm font-semibold">{$bookingEstimate.estimateServicingStartTime}</span>
+                    <span class="text-sm">to</span>
+                    <span class="animate-pulse text-sm font-semibold">{$bookingEstimate.estimateServicingEndTime}</span>
                 </div>
             </div>
         </div>
     </div>
 
-    <div class="mt-1 flex justify-center">
-        <button
-                class="animate-pulse bg-blue-500 text-white font-semibold py-2 px-4 rounded shadow-lg hover:bg-blue-700 transition duration-300 ease-in-out transform hover:scale-105"
+    <!-- Action options -->
+    <div class="mt-4 flex flex-wrap justify-center">
+        <Button
+                class="mr-2 animate-pulse bg-blue-500 text-white font-semibold rounded shadow-lg hover:bg-blue-700 transition duration-300 ease-in-out transform hover:scale-105"
                 on:click={() => {
-        openArrivalModal = true;
-      }}
+                    openArrivalModal = true;
+                }}
         >
             Check in
-        </button>
+        </Button>
 
         <a
-                class="ml-2 text-gray-900 bg-white border border-gray-300 focus:outline-none hover:bg-gray-100 focus:ring-4 focus:ring-gray-100 font-medium rounded-lg text-sm px-3 py-2.5 dark:bg-gray-800 dark:text-white dark:border-gray-600 dark:hover:bg-gray-700 dark:hover:border-gray-600 dark:focus:ring-gray-700"
+                class="mr-2 text-gray-900 bg-white border border-gray-300 focus:outline-none hover:bg-gray-100 focus:ring-4 focus:ring-gray-100 font-medium rounded-lg text-sm px-3 py-2.5 dark:bg-gray-800 dark:text-white dark:border-gray-600 dark:hover:bg-gray-700 dark:hover:border-gray-600 dark:focus:ring-gray-700"
                 href={$bookingEstimate.business.businessInfo.googleMapsDirectionLink}
                 target="_blank"
                 type="button"
@@ -97,7 +97,7 @@
         </a>
 
         <a
-                class="ml-2 text-gray-900 bg-white border border-gray-300 focus:outline-none hover:bg-gray-100 focus:ring-4 focus:ring-gray-100 font-medium rounded-lg text-sm px-3 py-2.5 dark:bg-gray-800 dark:text-white dark:border-gray-600 dark:hover:bg-gray-700 dark:hover:border-gray-600 dark:focus:ring-gray-700"
+                class="text-gray-900 bg-white border border-gray-300 focus:outline-none hover:bg-gray-100 focus:ring-4 focus:ring-gray-100 font-medium rounded-lg text-sm px-3 py-2.5 dark:bg-gray-800 dark:text-white dark:border-gray-600 dark:hover:bg-gray-700 dark:hover:border-gray-600 dark:focus:ring-gray-700"
                 href="tel:{$bookingEstimate.business.businessInfo.businessPhoneNumber}"
                 target="_blank"
                 type="button"
@@ -126,10 +126,11 @@
         <h3 class="mb-5 text-lg font-normal text-gray-500 dark:text-gray-400">
             Are you in the lobby now?
         </h3>
-        <Button class="me-2" color="red" on:click={notifyArrival}
-        >Yes, I am here!
-        </Button
-        >
+
+        <Button class="me-2" color="red" on:click={notifyArrival}>
+            Yes, I am here!
+        </Button>
+
         <Button color="alternative">Cancel</Button>
     </div>
 </Modal>
