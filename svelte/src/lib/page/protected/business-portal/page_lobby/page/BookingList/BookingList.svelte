@@ -8,8 +8,9 @@
     import dayjs from "dayjs";
     import {Button, Modal, Tooltip} from "flowbite-svelte";
     import {deleteBooking} from "$lib/api/api_server/customer-booking-portal/api.js";
-    import {business} from "$lib/page/protected/stores/business.js";
-    import {handleEditCustomerBooking} from "$lib/components/Modal/EditCustomerBooking/editCustomerBooking.js";
+    import {business} from "$lib/page/stores/business/business.js";
+    import {handleEditCustomerBooking} from "$lib/components/Modal/EditCustomerBooking/modalEditCustomerBooking.js";
+    import {cancelScheduledReminderSms} from "$lib/api/api_twilio/api.js";
 
     let tomorrow  = $now.startOf('day').add(1, 'day');
     $: tomorrow = $now.startOf('day').add(1, 'day');
@@ -20,7 +21,7 @@
     let openModal = false;
     let selectedCustomerBooking = {};
 
-    async function fetchBookingsForDate()
+    function fetchBookingsForDate()
     {
         // Ensure the boundary for date
         if (dayjs(selectedDate, formatToDate).startOf('day').isBefore(tomorrow))
@@ -30,16 +31,21 @@
 
         try
         {
-            const response = await getAppointmentBookingList($business.businessInfo.businessID, selectedDate);
-            customerBookingList = response.customerBookingList;
+            getAppointmentBookingList($business.businessInfo.businessID, selectedDate)
+                .then(response => {
+                    customerBookingList = response.customerBookingList;
+
+                    console.log("fetchBookingsForDate()", customerBookingList);
+                })
+                .catch(error => {
+                    console.error('Error get appointment booking list:', error);
+                });
         }
         catch (error)
         {
             console.error(error);
             customerBookingList = [];
         }
-
-        console.log("fetchBookingsForDate()", customerBookingList);
     }
 
     onMount(() => {
@@ -54,14 +60,24 @@
         selectedCustomerBooking = {...customerBooking};
     }
 
-    async function handleRemoveBookingClick()
+    function handleRemoveBookingClick()
     {
         if (confirm("Are you sure you want to cancel this appointment?"))
         {
-            await deleteBooking($business.businessInfo.businessID, selectedCustomerBooking.id);
+            // Remove the scheduled sms appointment reminder
+            cancelScheduledReminderSms(selectedCustomerBooking);
 
-            // Re-fetch the customer booking list
-            await fetchBookingsForDate(selectedDate);
+            // Mark the customer booking as deleted in the database
+            deleteBooking($business.businessInfo.businessID, selectedCustomerBooking.id)
+                .then(() => {
+                    console.log("Deleted customer booking.");
+
+                    // Re-fetch the customer booking list
+                    fetchBookingsForDate(selectedDate);
+                })
+                .catch(error => {
+                    console.error('Error deleting customer booking:', error);
+                });
         }
     }
 </script>

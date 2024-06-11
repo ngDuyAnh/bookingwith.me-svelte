@@ -17,7 +17,7 @@
 }
 
 body {
-	min-height: 100vh;
+	min-height: 100dvh;
 	margin: 0;
 	background-attachment: fixed;
 	background-color: var(--color-bg-1);
@@ -104,4 +104,8 @@ button:focus:not(:focus-visible) {
 	position: absolute;
 	width: 1px;
 	white-space: nowrap;
+}
+
+.disable-double-tap-zoom {
+	touch-action: manipulation;
 }

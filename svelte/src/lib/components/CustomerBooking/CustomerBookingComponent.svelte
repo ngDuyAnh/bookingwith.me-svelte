@@ -1,8 +1,6 @@
 <script>
     import NumGuestSelect from "$lib/components/CustomerBooking/NumGuestSelect/NumGuestSelect.svelte";
-    import {
-        CustomerBooking, CustomerIndividualBooking
-    } from "$lib/api/initialize_functions/CustomerBooking.js";
+    import {CustomerBooking, CustomerIndividualBooking} from "$lib/api/initialize_functions/CustomerBooking.js";
     import {now} from "$lib/page/stores/now/now_dayjs_store.js";
     import CustomerIndividualBookingServiceSelect
         from "$lib/components/CustomerBooking/CustomerIndividualBookingServiceSelect/CustomerIndividualBookingServiceSelect.svelte";
@@ -10,12 +8,16 @@
         from "$lib/components/CustomerBooking/CustomerBookingInformation/CustomerBookingInformation.svelte";
     import BookingSuccess from "$lib/components/CustomerBooking/BookingSuccess/BookingSuccess.svelte";
 
-    export let showCustomerBookingInformationFlagHeader = false;
-
     export let customerBookingInformationProps = {
+        showOverride: false,
+        showSendSms: false,
+        showLobbyBookingState: false,
+
         overrideFlag: false,
-        sendSMSFlag: true
+        sendSmsFlag: true,
+        lobbyBookingStateFlag: false,
     };
+
     export let customerBookingInformationFormProps = {
         customerNameAutoComplete: false,
         requiredAgreeToReceiveSMS: true
@@ -29,22 +31,19 @@
     };
 
     // Initialize the booking channel
-    export let bookingChannel = undefined;
-    $: if (customerBooking.bookingChannel === -1)
-    {
+    export let bookingChannel;
+    $: if (customerBooking.bookingChannel === -1) {
         customerBooking.bookingChannel = bookingChannel;
     }
 
     let pageIndex = 0;
     let guestIndex = 0;
 
-    function gotoNumGuestSelect()
-    {
+    function gotoNumGuestSelect() {
         pageIndex = 0;
     }
 
-    function gotoCustomerIndividualBookingServiceSelect(numGuest)
-    {
+    function gotoCustomerIndividualBookingServiceSelect(numGuest) {
         // Adjust the number of guests, individual booking
         let currentLength = customerBooking.customerIndividualBookingList.length;
         if (numGuest < currentLength) {
@@ -59,19 +58,17 @@
         pageIndex = 1;
     }
 
-    function gotoCustomerBookingInformation()
-    {
+    function gotoCustomerBookingInformation() {
         pageIndex = 2;
     }
 
-    function gotoBookingSuccess()
-    {
+    function gotoBookingSuccess() {
         pageIndex = 3;
     }
 
 </script>
 
-<div class="h-full w-full">
+<div class="h-full w-full overflow-auto">
     {#if pageIndex === 0}
         <NumGuestSelect
                 businessInfo={business.businessInfo}
@@ -89,8 +86,8 @@
         />
     {:else if pageIndex === 2}
         <CustomerBookingInformation
-                {showCustomerBookingInformationFlagHeader}
-                {...customerBookingInformationProps}
+                {customerBookingInformationProps}
+
                 {customerBookingInformationFormProps}
 
                 {business}
@@ -99,6 +96,6 @@
                 {gotoBookingSuccess}
         />
     {:else if pageIndex === 3}
-       <BookingSuccess/>
+        <BookingSuccess/>
     {/if}
 </div>

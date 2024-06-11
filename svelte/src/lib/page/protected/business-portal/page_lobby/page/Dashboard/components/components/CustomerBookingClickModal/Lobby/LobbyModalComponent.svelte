@@ -11,7 +11,7 @@
     } from "$lib/page/protected/business-portal/page_lobby/page/Dashboard/components/components/CustomerBookingClickModal/handle_customer_booking_state.js";
     import {now} from "$lib/page/stores/now/now_dayjs_store.js";
     import {getContext} from "svelte";
-    import {handleEditCustomerBooking} from "$lib/components/Modal/EditCustomerBooking/editCustomerBooking.js";
+    import {handleEditCustomerBooking} from "$lib/components/Modal/EditCustomerBooking/modalEditCustomerBooking.js";
 
     let customerBooking = undefined;
     $: customerBooking = $customerBookingClickModal.customerBooking;
@@ -19,16 +19,14 @@
     // Retrieve customer booking list update function
     const submitCustomerBooking = getContext('submitCustomerBooking');
 
-    async function handleServicingClick() {
-        console.log('Moving to servicing:', customerBooking);
-
-        await moveToServicing($now, customerBooking, submitCustomerBooking);
+    function handleServicingClick()
+    {
+        moveToServicing($now, customerBooking, submitCustomerBooking);
     }
 
-    async function handleCompleteClick() {
-        console.log('Moving to completed:', customerBooking);
-
-        await moveToCompleted($now, customerBooking, submitCustomerBooking);
+    function handleCompleteClick()
+    {
+        moveToCompleted($now, customerBooking, submitCustomerBooking);
     }
 </script>
 

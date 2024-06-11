@@ -15,8 +15,7 @@ export async function availability(id, dateString, currentTimeString, customerBo
     });
 
     if (!response.ok) {
-        const errorBody = await response.text(); // or response.json() if the server responds with JSON
-        throw new Error(`availableBooking(). Status: ${response.status}, Body: ${errorBody}`);
+        throw new Error(`Failed to fetch. Status: ${response.status}`);
     }
 
     return await response.json();
@@ -41,8 +40,7 @@ export async function submitBooking(id, currentTimeString, timePeriod, customerB
     });
 
     if (!response.ok) {
-        const errorBody = await response.text(); // or response.json() if the server responds with JSON
-        throw new Error(`Failed to create business. Status: ${response.status}, Body: ${errorBody}`);
+        throw new Error(`Failed to fetch. Status: ${response.status}`);
     }
 
     return await response.json();
@@ -61,8 +59,7 @@ export async function forceSubmitBooking(id, currentTimeString, customerBooking)
     });
 
     if (!response.ok) {
-        const errorBody = await response.text(); // or response.json() if the server responds with JSON
-        throw new Error(`Failed to create business. Status: ${response.status}, Body: ${errorBody}`);
+        throw new Error(`Failed to fetch. Status: ${response.status}`);
     }
 
     return await response.json();
@@ -81,7 +78,7 @@ export async function initializeCustomerBooking(customerBooking)
     });
 
     if (!response.ok) {
-        throw new Error(`Failed to fetch valid access. Status: ${response.status}`);
+        throw new Error(`Failed to fetch. Status: ${response.status}`);
     }
 
     return await response.json();
@@ -133,7 +130,7 @@ export async function getBusiness(id)
     const response = await fetch(`${FETCH_URL}`);
 
     if (!response.ok) {
-        throw new Error(`Failed to fetch available bookings. Status: ${response.status}`);
+        throw new Error(`Failed to fetch. Status: ${response.status}`);
     }
 
     return await response.json();

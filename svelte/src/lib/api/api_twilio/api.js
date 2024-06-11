@@ -9,7 +9,7 @@ import {now} from "$lib/page/stores/now/now_dayjs_store.js";
 
 const WEB_PAGE_URL = "https://app.bookingwith.me";
 
-export async function sendSmsConfirmBookingSuccess(businessName, customerBooking)
+export function sendSmsConfirmBookingSuccess(businessName, customerBooking)
 {
     // https://help.twilio.com/articles/223183008-Formatting-International-Phone-Numbers
     let formattedPhoneNumber = "+1" + customerBooking.customer.phoneNumber;
@@ -20,13 +20,22 @@ export async function sendSmsConfirmBookingSuccess(businessName, customerBooking
     let formattedTime = dayjs(customerBooking.bookingTime, formatToTime).format(formatToTimeAm);
 
     // Build the SMS message
-    let message = `Your appointment at ${businessName} is set for ${formattedDate} at ${formattedTime}. Check this link for real-time updates on your servicing time: ${customerBookingURL}`;
+    let message = `Please click the link to confirm your appointment! Your appointment at ${businessName} is set for ${formattedDate} at ${formattedTime}: ${customerBookingURL}`;
 
-    return await sendSms(formattedPhoneNumber, message);
+    sendSms(formattedPhoneNumber, message)
+        .then(() => {
+            console.log('Sent SMS appointment confirmation.');
+        })
+        .catch(error => {
+            console.error('Error sending SMS appointment confirmation:', error);
+        });
 }
 
 export async function sendSmsBookingReminder(businessName, customerBooking)
 {
+    // Cancel the current scheduled sms if they have one
+    cancelScheduledReminderSms(customerBooking);
+
     // https://help.twilio.com/articles/223183008-Formatting-International-Phone-Numbers
     let formattedPhoneNumber = "+1" + customerBooking.customer.phoneNumber;
 
@@ -36,18 +45,14 @@ export async function sendSmsBookingReminder(businessName, customerBooking)
     // Calculate the number of minutes in the future to send the SMS
     let appointmentDateTime = dayjs(`${customerBooking.bookingDate} ${customerBooking.bookingTime}`, `${formatToDate} ${formatToTime}`);
     let currentDateTime = get(now);
+    let reminderDateTime = appointmentDateTime.subtract(1, 'day');
 
     // Build the SMS message
-    let futureMinutes = appointmentDateTime.diff(currentDateTime, 'minute');
+    let message = `Reminder: Your appointment at ${businessName} is set for tomorrow at ${formattedTime}. PLEASE USE THE BOOKING LINK for live updates on your servicing time. Looking forward to seeing you!`;
     let daysUntilAppointment = appointmentDateTime.startOf('day').diff(currentDateTime.startOf('day'), 'day');
-    let message = `Reminder: Your appointment at ${businessName} is set for tomorrow at ${formattedTime}. Please use the booking link for real-time updates on your servicing time. Looking forward to seeing you!`;
-    /*
-    if (daysUntilAppointment === 1)
-    {
-        futureMinutes = appointmentDateTime.subtract(1, 'hour').diff(currentDateTime, 'minute');
-        message = `Reminder: Your appointment at ${businessName} is in about an hour. Please arrive early for smoother service. Check your booking link for real-time updates. See you soon!`;
-    }
-    */
+    let futureMinutes = reminderDateTime.diff(currentDateTime, 'minute');
+
+    // Reminder the day before
     if (daysUntilAppointment < 2)
     {
         return {
@@ -56,10 +61,12 @@ export async function sendSmsBookingReminder(businessName, customerBooking)
         }
     }
 
+    //console.log(`daysUntilAppointment ${daysUntilAppointment}, futureMinutes ${futureMinutes}`)
+
     return await scheduleSendSms(formattedPhoneNumber, message, futureMinutes);
 }
 
-export async function sendSMSAskingForReview(businessName, customerBooking)
+export function sendSMSAskingForReview(businessName, customerBooking)
 {
     // https://help.twilio.com/articles/223183008-Formatting-International-Phone-Numbers
     let formattedPhoneNumber = "+1" + customerBooking.customer.phoneNumber;
@@ -70,10 +77,31 @@ export async function sendSMSAskingForReview(businessName, customerBooking)
     // Build the SMS message
     let message = `Thank you for visiting ${businessName}! How did we do today? Please let us know using this link: ${customerBookingURL}`;
 
-    return await scheduleSendSms(formattedPhoneNumber, message, 16);
+    // Ensure to only send review reminder one time
+    if(!customerBooking.smsReviewReminderSent)
+    {
+        scheduleSendSms(formattedPhoneNumber, message, 16)
+            .then(() => {
+                console.log('Review reminder sent.');
+            })
+            .catch(error => {
+                console.error('Error sending review reminder:', error);
+            });
+    }
 }
 
-export async function cancelScheduledReminderSms(customerBooking)
+export function cancelScheduledReminderSms(customerBooking)
 {
-    return await cancelScheduledSms(customerBooking.reminderSid);
+    // Cancel the current scheduled
+    if (customerBooking && customerBooking.smsAppointmentReminderSid)
+    {
+        cancelScheduledSms(customerBooking.smsAppointmentReminderSid)
+            .then(() => {
+                console.log('Scheduled reminder SMS successfully cancelled.');
+                customerBooking.smsAppointmentReminderSid = null;
+            })
+            .catch(error => {
+                console.error('Error cancelling scheduled reminder SMS:', error);
+            });
+    }
 }

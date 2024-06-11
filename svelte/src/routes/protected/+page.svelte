@@ -1,13 +1,13 @@
 <script>
-    import { userProfile } from "$lib/page/protected/stores/userProfile.js";
+    import { userProfile } from "$lib/page/stores/userProfile/userProfile.js";
     import { Spinner } from "flowbite-svelte";
     import Login from "$lib/page/protected/page_login/Login.svelte";
     import AdminPortal from "$lib/page/protected/business-portal/page_admin/AdminPortal.svelte";
     import BusinessPortalAdmin from "$lib/page/protected/business-portal/page_business_admin/BusinessPortalAdmin.svelte";
-    import {business} from "$lib/page/protected/stores/business.js";
+    import {business} from "$lib/page/stores/business/business.js";
     import BusinessPortalLobby from "$lib/page/protected/business-portal/page_lobby/BusinessPortalLobby.svelte";
     import BusinessPortalEmployee from "$lib/page/protected/business-portal/page_employee/BusinessPortalEmployee.svelte";
-    import {employeeSelectOptions} from "$lib/page/stores/EmployeeSelectOptions/employeeSelectOptions_store.js";
+    import {employeeSelectOptions} from "$lib/page/stores/employeeSelectOptions/employeeSelectOptions.js";
     import {
       employeeToSelectOption
     } from "$lib/components/CustomerBooking/CustomerIndividualBookingServiceSelect/components/ServiceOption/functions.js";
@@ -27,7 +27,7 @@
     // Convert the employee list to selectable options
     if ($business && $business.employeeList && Array.isArray($business.employeeList))
     {
-      employeeSelectOptions.set($business.employeeList.map(employeeToSelectOption));
+        employeeSelectOptions.set($business.employeeList.map(employeeToSelectOption));
     }
 
     loading = false;

@@ -1,31 +1,28 @@
 <script>
     import {onMount, setContext} from "svelte";
-    import {initializeCustomerBooking} from "$lib/api/api_server/customer-booking-portal/api.js";
-    import {now} from "$lib/page/stores/now/now_dayjs_store.js";
-    import {formatTimeAm, formatToDate, formatToTime} from "$lib/application/Formatter.js";
+    import {getCustomerBooking, initializeCustomerBooking} from "$lib/api/api_server/customer-booking-portal/api.js";
+    import {isToday, now, today} from "$lib/page/stores/now/now_dayjs_store.js";
+    import {formatTimeAm, formatToTime} from "$lib/application/Formatter.js";
     import Calendar from "@event-calendar/core";
     import ResourceTimeGrid from "@event-calendar/resource-time-grid";
-    import {getCustomerBooking} from "$lib/api/api_server/customer-booking-portal/api.js";
-    import dayjs from "dayjs";
     import {
         findServiceBookingFromCustomerBooking
     } from "$lib/api/initialize_functions/customer-booking-utility-functions.js";
     import {CustomerBookingState} from "$lib/api/initialize_functions/CustomerBooking.js";
-    import {business} from "$lib/page/protected/stores/business.js";
+    import {business} from "$lib/page/stores/business/business.js";
     import ServicingTicketClickModal from "$lib/components/Timetable/TimetableModal/ServicingTicketClickModal.svelte";
     import {
-        servicingTicketClickModal
+        servicingTicketClickModal,
+        servicingTicketClickModalOpen,
+        servicingTicketClickModalSetEmployeeTimetableList
     } from "$lib/components/Timetable/TimetableModal/stores/servicingTicketClickModal.js";
     import {
-        customerBookingClickModal
-    } from "$lib/page/protected/business-portal/page_lobby/page/Dashboard/components/components/CustomerBookingClickModal/stores/customerBookingClickModal.js";
-    import {findCustomerBookingById} from "$lib/page/protected/business-portal/page_lobby/stores/dashboard_store.js";
+        handleNewCustomerBookingWalkin
+    } from "$lib/components/Modal/CreateCustomerBooking/modalCreateCustomerBooking.js";
 
     // Date select
-    let todayDate = $now.format(formatToDate);
-    let prevSelectedDate = todayDate;
-    let selectedDate = todayDate;
-    let isToday = true;
+    let prevSelectedDate = today(); // To help trigger fetch schedule
+    let selectedDate = prevSelectedDate;
     let calendarInstance;
 
     let prevSelected = null;
@@ -33,6 +30,7 @@
     let prevEL = null;
     let prevInfoID = null;
     let conflictEmployeeEvents = {};
+    let assignedEmployeeEvents = {};
 
     let plugins = [ResourceTimeGrid];
 
@@ -42,7 +40,7 @@
             resourceTimeGridDay: {pointer: true},
         },
         allDaySlot: false,
-        nowIndicator: isToday,
+        nowIndicator: isToday(selectedDate),
         dayMaxEvents: true,
         slotDuration: "00:05:00",
         scrollTime: $now.format("HH:mm:ss"),
@@ -72,7 +70,7 @@
                 // dont stay on events that are not supposed to have them anymore
                 if (prevSelectedServiceID && prevSelectedServiceID !== currServiceID) {
                     resetIndividualHighlight(prevSelectedServiceID);
-                    prevEL.className = `ec-event ${conflictEmployeeEvents[prevInfoID] ? conflictEmployeeEvents[prevInfoID] : ""}`;
+                    prevEL.className = `ec-event ${assignedEmployeeEvents[info.event.id] ? assignedEmployeeEvents[info.event.id] : ""} ${conflictEmployeeEvents[prevInfoID] ? conflictEmployeeEvents[prevInfoID] : ""}`;
                 }
                 if (prevSelected && prevSelected !== bookingID) {
                     resetHighlight(prevSelected);
@@ -96,7 +94,7 @@
                     resetIndividualHighlight(prevSelectedServiceID);
 
                     if (prevEL)
-                        prevEL.className = `ec-event ${conflictEmployeeEvents[prevInfoID] ? conflictEmployeeEvents[prevInfoID] : ""}`;
+                        prevEL.className = `ec-event ${assignedEmployeeEvents[info.event.id] ? assignedEmployeeEvents[info.event.id] : ""} ${conflictEmployeeEvents[prevInfoID] ? conflictEmployeeEvents[prevInfoID] : ""}`;
                     prevEL = null;
                     prevSelectedServiceID = null;
                 }
@@ -112,7 +110,7 @@
 
                 let bookingID = info.event.extendedProps.servicingTicket.bookingID;
                 resetHighlight(bookingID);
-                info.el.className = `ec-event ${conflictEmployeeEvents[info.event.id] ? conflictEmployeeEvents[info.event.id] : ""}`;
+                info.el.className = `ec-event ${assignedEmployeeEvents[info.event.id] ? assignedEmployeeEvents[info.event.id] : ""} ${conflictEmployeeEvents[info.event.id] ? conflictEmployeeEvents[info.event.id] : ""}`;
             }
         },
         eventDidMount: function (info) {
@@ -127,6 +125,9 @@
                     conflicted = true;
                     conflictEmployeeEvents[info.event.id] = "border-2 border-red-600";
                     info.el.className = `ec-event border-2 border-red-600`;
+                } else if (bookedEmployee !== null && bookedEmployee.id === employeeID) {
+                    info.el.className = `ec-event border-2 border-purple-600`;
+                    assignedEmployeeEvents[info.event.id] = "border-2 border-purple-600";
                 }
 
                 info.el.innerHTML = buildInnerHTML(extendedProps.time, extendedProps.description);
@@ -147,14 +148,9 @@
     }
 
 
-    $: if (
-        prevSelectedDate &&
-        selectedDate &&
-        !dayjs(prevSelectedDate).isSame(selectedDate, "day")
-    ) {
+    $: if (prevSelectedDate !== selectedDate) {
         prevSelectedDate = selectedDate;
-        isToday = (selectedDate === todayDate);
-        options.nowIndicator = isToday;
+        options.nowIndicator = isToday(selectedDate);
         fetchSchedule();
     }
 
@@ -216,7 +212,7 @@
         const resourceElements = document.querySelectorAll(".ec-resource");
 
         resourceElements.forEach((element) => {
-            element.style.minWidth = "150px";
+            element.style.minWidth = "11rem";
         });
 
         const todayElements = document.querySelectorAll(".ec-day.ec-today");
@@ -225,8 +221,8 @@
             element.style.background = "rgba(0,0,0,0.1)";
         });
     }
-    async function openModalServicingTicket(eventInfo)
-    {
+
+    async function openModalServicingTicket(eventInfo) {
         // Get the customer booking and service booking associated with the servicing ticket
         let customerBooking = await getCustomerBooking(
             eventInfo.event.extendedProps.servicingTicket.bookingID
@@ -240,14 +236,7 @@
         //preselectEmployeeID = eventInfo.event.extendedProps.employeeTimetable.employee.id;
 
         // Open the servicing ticket modal
-        servicingTicketClickModal.update(modal => {
-            return {
-                ...modal,
-                open: true,
-                customerBooking: customerBooking,
-                serviceBooking: serviceBooking
-            };
-        });
+        servicingTicketClickModalOpen(customerBooking, serviceBooking);
     }
 
     let employeeEvents = [];
@@ -313,16 +302,17 @@
 
     export let getSchedule;
 
-    async function fetchSchedule()
-    {
+    async function fetchSchedule() {
         loading = true;
 
         try {
             // Get the current time based on if it is today
             let currentTimeString = "00:00";
-            if (isToday) {
+            if (isToday(selectedDate)) {
                 currentTimeString = $now.format(formatToTime);
             }
+
+            console.log("selectedDate", selectedDate)
 
             const employeeTimetableList = await getSchedule(
                 $business.businessInfo.businessID,
@@ -333,25 +323,21 @@
             console.log("employeeTimetableList", employeeTimetableList);
 
             // Set the new employee timetable list
-            servicingTicketClickModal.update(modal => {
-                return {
-                    ...modal,
-                    employeeTimetableList: employeeTimetableList
-                };
-            });
+            servicingTicketClickModalSetEmployeeTimetableList(employeeTimetableList);
 
-            // Find and reinitialize the customer booking for the modal
-            if ($servicingTicketClickModal.customerBooking)
-            {
-                const findID = $servicingTicketClickModal.customerBooking.id;
-                const foundCustomerBooking = findCustomerBookingById(findID);
-                if (foundCustomerBooking) {
-                    customerBookingClickModal.update(current => {
-                        return {
-                            ...current,
-                            customerBooking: foundCustomerBooking
-                        };
-                    });
+            // Fetch and reinitialize the customer booking for the modal
+            if ($servicingTicketClickModal.open && $servicingTicketClickModal.customerBooking) {
+                // Fetch the recent changes to the customer booking
+                const fetchCustomerBooking = await getCustomerBooking($servicingTicketClickModal.customerBooking.bookingID)
+
+                if (fetchCustomerBooking) {
+                    // Get the latest service booking from the customer booking
+                    let fetchServiceBooking = findServiceBookingFromCustomerBooking(
+                        fetchCustomerBooking,
+                        $servicingTicketClickModal.serviceBooking.serviceBookingID
+                    );
+
+                    servicingTicketClickModalOpen(fetchCustomerBooking, fetchServiceBooking);
                 } else {
                     console.log('Customer booking not found for customer booking click modal.');
                 }
@@ -362,7 +348,7 @@
             resources = employeeTimetableList.flatMap((employeeTable) => {
                 employeeWorkHourEvent.push({
                     resourceId: employeeTable.employee.id,
-                    color: employeeTable.employee.id === -1 || !employeeTable.employee.id? "red" : "#FFF9D0",
+                    color: employeeTable.employee.id === -1 || !employeeTable.employee.id ? "red" : "#FFF9D0",
                     start: `${$now.format("YYYY-MM-DD")} ${employeeTable.timePeriod.startTime}`,
                     end: `${$now.format("YYYY-MM-DD")} ${employeeTable.timePeriod.endTime}`,
                     display: "background",
@@ -416,7 +402,6 @@
     <div class="flex items-center justify-center p-1.5">
         <input
                 bind:value={selectedDate}
-                min={$now.format(formatToDate)}
                 type="date"
         />
         <button
@@ -425,6 +410,19 @@
                 on:click={fetchSchedule}
         >
             Refresh
+        </button>
+        <button class="text-blue-500 hover:text-blue-700 focus:outline-none" on:click={handleNewCustomerBookingWalkin}>
+            <svg
+                    class="w-10 h-10"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="1.5"
+                    viewBox="0 0 24 24"
+                    xmlns="http://www.w3.org/2000/svg"
+            >
+                <path d="M12 9v6m3-3H9m12 0a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" stroke-linecap="round"
+                      stroke-linejoin="round"/>
+            </svg>
         </button>
     </div>
 
@@ -463,7 +461,7 @@
 
 <div style="z-index: 1006;">
     <ServicingTicketClickModal
-            {isToday}
+            isToday={isToday(selectedDate)}
     />
 </div>
 

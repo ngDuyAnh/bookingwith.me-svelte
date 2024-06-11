@@ -1,5 +1,5 @@
 
-<div class="w-full min-h-screen bg-white">
+<div class="h-dvh w-screen bg-white">
     <main>
         <slot/>
     </main>

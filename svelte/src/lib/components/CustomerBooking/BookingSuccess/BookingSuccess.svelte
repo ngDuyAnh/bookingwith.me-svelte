@@ -7,6 +7,6 @@
         Successful!
     </h1>
     <h2>
-        Please use the SMS link on your appointment date for real-time updates.
+        Please use the SMS link on your appointment date for updates.
     </h2>
 </div>

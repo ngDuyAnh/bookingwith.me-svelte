@@ -13,23 +13,27 @@
     import {
         CustomerBookingState
     } from "$lib/api/initialize_functions/CustomerBooking.js";
-    import {cancelScheduledReminderSms, sendSmsConfirmBookingSuccess} from "$lib/api/api_twilio/api.js";
+    import {sendSmsConfirmBookingSuccess} from "$lib/api/api_twilio/api.js";
     import {rawPhoneNumber, formatPhoneNumber} from "$lib/application/FormatPhoneNumber.js";
     import {sendSmsBookingReminder} from "$lib/api/api_twilio/api.js";
+    import {
+        moveToLobby
+    } from "$lib/page/protected/business-portal/page_lobby/page/Dashboard/components/components/CustomerBookingClickModal/handle_customer_booking_state.js";
+    import {isToday} from "$lib/page/stores/now/now_dayjs_store.js";
 
-    export let customerNameAutoComplete = false;
-    export let requiredAgreeToReceiveSMS = true;
+    export let customerBookingInformationFormProps;
 
     export let businessInfo;
-    // export let businessName;
     export let customerBooking;
-
     export let submitCallback = undefined;
 
-    export let overrideFlag = false;
-    export let sendSMSFlag = false;
+    export let customerBookingInformationProps;
 
+    // Get the availability from the server
     let walkinAvailabilityFlag = false;
+
+    let preselectForWalkIn = isToday(customerBooking.bookingDate) ||
+        customerBooking.bookingState === CustomerBookingState.SERVICING;
 
     let currentTimeString = "00:00";
     let availableTimeOptionList = [];
@@ -76,7 +80,7 @@
                     availability => {
                         return {
                             value: availability.timePeriod.startTime,
-                            name: `${dayjs(availability.timePeriod.startTime, formatToTime).format(formatToTimeAM)} to ${dayjs(availability.timePeriod.endTime, formatToTime).format(formatToTimeAM)} (${availability.duration} minutes)`,
+                            name: `${dayjs(availability.timePeriod.startTime, formatToTime).format(formatToTimeAM)} to ${dayjs(availability.timePeriod.endTime, formatToTime).format(formatToTimeAM)} (~${availability.duration} minutes)`,
                             availability: availability
                         };
                     });
@@ -105,7 +109,7 @@
                     });
             }
 
-            // Currently the walk-in availability flag is not selected
+            // Currently the availability is not walk-in
             if (!walkinAvailabilityFlag)
             {
                 // Add the option to fetch walk-in availability
@@ -133,6 +137,27 @@
             console.log(error);
             availableTimeOptionList = [];
         }
+
+        // Customer booking already have a select booking time
+        // Preselect that time
+        // This could be from edit customer booking
+        // If the selected booking time no longer available, unselected it by setting it to null
+        if (customerBooking.bookingTime)
+        {
+            customerBooking.bookingTime =
+                availableTimeOptionList.find(option => option.value === customerBooking.bookingTime)?.value ?? null;
+        }
+        // Preselect booking time
+        // Select the first option
+        else if (preselectForWalkIn && availableTimeOptionList.length > 0)
+        {
+            customerBooking.bookingTime = availableTimeOptionList[0].value;
+        }
+        // Default and safeguard, no booking time selected
+        else
+        {
+            customerBooking.bookingTime = null;
+        }
     }
 
     // Show more availability is selected
@@ -141,7 +166,7 @@
     $: selectedAvailability = availableTimeOptionList.find(option => option.value === customerBooking.bookingTime)?.availability;
     $: if (customerBooking.bookingTime === undefined)
     {
-        // Reset
+        // Reset the selected booking time
         customerBooking.bookingTime = null;
 
         // Fetch walk-in availability
@@ -155,10 +180,25 @@
         // New date selected
         customerBooking.bookingDate = dateSelected;
 
-        // Reset
-        walkinAvailabilityFlag = false;
-        customerBooking.bookingTime = null;
+        // Reset the selected booking time and walk-in flag
         selectedAvailability = undefined;
+        walkinAvailabilityFlag = false;
+
+        // Search for walk-in if trying to book today
+        // Or booking state is servicing
+        preselectForWalkIn = isToday(customerBooking.bookingDate) ||
+            customerBooking.bookingState === CustomerBookingState.SERVICING;
+        if (preselectForWalkIn)
+        {
+            walkinAvailabilityFlag = true;
+        }
+        // Reset the booking time
+        else
+        {
+            customerBooking.bookingTime = null;
+        }
+
+        //console.log(`Date selected ${dateSelected} walk-in ${walkinAvailabilityFlag}`);
 
         // Get the new available time
         fetchAvailableTimeList();
@@ -172,19 +212,23 @@
     // Reactive statement to fetch times when the date changes
     $: if (dateSelected !== customerBooking.bookingDate)
     {
-        // Fetch availability
         getAvailableTimeOptionList();
     }
 
-    async function customerExists()
-    {
-        if (customerNameAutoComplete)
+    function customerExists() {
+        if (customerBookingInformationFormProps.customerNameAutoComplete)
         {
-            const customer = await getCustomer(customerBooking.customer.phoneNumber);
-            if (customer && customer.customerName)
-            {
-                customerBooking.customer.customerName = customer.customerName;
-            }
+            getCustomer(customerBooking.customer.phoneNumber)
+                .then(customer => {
+                    if (customer && customer.customerName) {
+                        customerBooking.customer.customerName = customer.customerName;
+
+                        console.log(`Autofilled customer name ${customer.customerName}`);
+                    }
+                })
+                .catch(error => {
+                    console.error('Failed to get customer:', error);
+                });
         }
     }
 
@@ -218,13 +262,14 @@
 
             // Initialize customer booking
             // Keep the current booking state if it is not in schedule state
+            // The backend will handle walk-in flag on creating the customer booking
             customerBooking.bookingState = (!customerBooking.bookingState || customerBooking.bookingState === CustomerBookingState.SCHEDULE)
                 ? CustomerBookingState.APPOINTMENT
                 : customerBooking.bookingState;
             customerBooking.walkIn = false;
 
             // Force submit if override is toggled
-            if (overrideFlag)
+            if (customerBookingInformationProps.overrideFlag)
             {
                 response = await forceSubmitBooking(
                     businessInfo.businessID,
@@ -255,30 +300,36 @@
                 success = true;
 
                 // Send SMS
-                if (sendSMSFlag) {
-                    try {
-                        await sendSmsConfirmBookingSuccess(businessInfo.businessName, response.customerBooking);
+                if (customerBookingInformationProps.sendSmsFlag)
+                {
+                    try
+                    {
+                        // Send SMS confirmation for the appointment
+                        sendSmsConfirmBookingSuccess(businessInfo.businessName, response.customerBooking);
 
-                        // Customer booking is reschedule
-                        // Cancel the current scheduled sms
-                        if (customerBooking.reminderSid)
-                        {
-                            const cancelScheduledSmsResponse = await cancelScheduledReminderSms(response.customerBooking);
-                            console.log("Cancel scheduled sms", cancelScheduledSmsResponse);
-                        }
+                        // Schedule SMS for reminder for the appointment
+                        sendSmsBookingReminder(businessInfo.businessName, response.customerBooking)
+                            .then((scheduledReminderResponse) => {
+                                console.log('Scheduled SMS appointment reminder.', scheduledReminderResponse);
 
-                        // Schedule sms for reminder for the appointment
-                        let scheduledReminderResponse = await sendSmsBookingReminder(businessInfo.businessName, response.customerBooking);
-                        console.log(`Schedule sms response`, scheduledReminderResponse);
-
-                        // Submit the sid to the customer booking
-                        response.customerBooking.reminderSid = scheduledReminderResponse.sid;
-                        await initializeCustomerBooking(response.customerBooking);
+                                // Submit the SID to the customer booking
+                                response.customerBooking.smsAppointmentReminderSid = scheduledReminderResponse.sid;
+                                initializeCustomerBooking(response.customerBooking);
+                            })
+                            .catch(error => {
+                                console.error('Error sending SMS appointment confirmation:', error);
+                            });
                     }
                     catch (error)
                     {
                         console.error("Failed to send SMS message.", error);
                     }
+                }
+
+                // Move the customer booking to lobby
+                if (customerBookingInformationProps.lobbyBookingStateFlag)
+                {
+                    moveToLobby($now, response.customerBooking, initializeCustomerBooking);
                 }
             }
         }
@@ -335,7 +386,7 @@
 
     <Label class="space-y-2">
         <span>Time:</span>
-        {#if overrideFlag}
+        {#if customerBookingInformationProps.overrideFlag}
             <Input
                     type="time"
                     bind:value={customerBooking.bookingTime}
@@ -364,7 +415,7 @@
         />
     </Label>
 
-    {#if requiredAgreeToReceiveSMS}
+    {#if customerBookingInformationFormProps.requiredAgreeToReceiveSms}
         <Label class="space-y-2">
             <input type="checkbox"
                    bind:checked={isConsentChecked}

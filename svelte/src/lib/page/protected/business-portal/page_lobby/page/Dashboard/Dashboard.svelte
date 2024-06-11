@@ -11,7 +11,7 @@
         from "$lib/page/protected/business-portal/page_lobby/page/Dashboard/components/Servicing/Servicing.svelte";
     import Completed
         from "$lib/page/protected/business-portal/page_lobby/page/Dashboard/components/Completed/Completed.svelte";
-    import {business} from "$lib/page/protected/stores/business.js";
+    import {business} from "$lib/page/stores/business/business.js";
     import {
         bookingStateList,
         findCustomerBookingById
@@ -26,6 +26,7 @@
     async function fetchCustomerBookingList()
     {
         loading = true;
+
         // Get the customer booking list
         const response = await getLobbyBookingList($business.businessInfo.businessID, $now.format(formatToDate));
         bookingStateList.set(response.bookingList);

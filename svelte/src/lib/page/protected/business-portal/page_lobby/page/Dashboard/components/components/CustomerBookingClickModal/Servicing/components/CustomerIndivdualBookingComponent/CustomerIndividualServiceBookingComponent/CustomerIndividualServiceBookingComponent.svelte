@@ -1,8 +1,6 @@
 <script>
     import dayjs from "dayjs";
-    import {
-        employeeSelectOptions
-    } from "$lib/page/stores/EmployeeSelectOptions/employeeSelectOptions_store.js";
+    import {employeeSelectOptions} from "$lib/page/stores/employeeSelectOptions/employeeSelectOptions.js";
     import {Button, Select} from "flowbite-svelte";
     import {now} from "$lib/page/stores/now/now_dayjs_store.js";
     import {formatToTime, formatToTimeAm} from "$lib/application/Formatter.js";
@@ -26,10 +24,8 @@
     // Retrieve customer booking list update function
     const submitCustomerBooking = getContext('submitCustomerBooking');
 
-    async function handleStartServicing() {
-        // If the customer is not in servicing queue, move them there
-        customerBooking.bookingState = CustomerBookingState.SERVICING;
-
+    async function handleStartServicing()
+    {
         // Create the servicing ticket
         let servicingTicket = {
             ...ServicingTicket(),
@@ -51,7 +47,7 @@
         console.log('Start servicing:', serviceBooking, selectedEmployeeID);
 
         // Service the customer booking
-        await moveToServicing($now, customerBooking, submitCustomerBooking);
+        moveToServicing($now, customerBooking, submitCustomerBooking);
 
         // Reset the selected employee after starting servicing
         selectedEmployeeID = null;
@@ -87,26 +83,13 @@
     }
 </script>
 
-<style>
-
-    :global(.butDisable){
-        border-radius: 0.5rem;
-        background: repeating-linear-gradient(
-                45deg,
-                #606dbc,
-                #606dbc 10px,
-                #465298 10px,
-                #465298 20px
-        );
-    }
-</style>
-
 <div>
     <!-- Display the service booking -->
     <p>{serviceBooking.service.serviceName} ({serviceBooking.employee?.employeeName || 'Any'})</p>
 
     <!-- Form to manage service booking -->
-    <div class="flex flex-row items-center space-x-4 p-1.5 {serviceBooking.completed? 'butDisable':''} ">
+    <div class="flex flex-row items-center space-x-4 p-1.5"
+         style="{serviceBooking.completed ? 'border-radius: 0.5rem; background: repeating-linear-gradient(45deg, #606dbc, #606dbc 10px, #465298 10px, #465298 20px)' : ''}">
         <!-- Form to add new servicing ticket -->
         <form class="flex flex-row flex-grow items-center space-x-4 {serviceBooking.completed? 'cursor-not-allowed':''}" on:submit|preventDefault>
             <Select

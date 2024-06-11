@@ -6,13 +6,9 @@
     } from "$lib/api/initialize_functions/Business.js";
     import {formatPhoneNumber} from "$lib/application/FormatPhoneNumber.js";
 
-    let businessInfo = {
-        business: {
-            ...BusinessInformation(),
-
-            "city": "Winnipeg",
-            "province": "Manitoba",
-            "country": "Canada"
+    let business = {
+        businessInfo: {
+            ...BusinessInformation()
         },
 
         businessEmail: "",
@@ -22,8 +18,8 @@
         contactPhoneNumber: "",
     };
 
-    let formattedBusinessPhoneNumber = formatPhoneNumber(businessInfo.business.businessPhoneNumber);
-    let formattedContactPhoneNumber = formatPhoneNumber(businessInfo.contactPhoneNumber);
+    let formattedBusinessPhoneNumber = formatPhoneNumber(business.businessInfo.businessPhoneNumber);
+    let formattedContactPhoneNumber = formatPhoneNumber(business.contactPhoneNumber);
 
     function handleBusinessPhoneNumberInput(event) {
         if (event.target instanceof HTMLInputElement)
@@ -33,9 +29,9 @@
             rawPhoneNumber = rawPhoneNumber.slice(0, 10); // Limit to 10 digits
 
             // Update the phone number
-            businessInfo.business.businessPhoneNumber = rawPhoneNumber;
+            business.businessInfo.businessPhoneNumber = rawPhoneNumber;
 
-            formattedBusinessPhoneNumber = formatPhoneNumber(businessInfo.business.businessPhoneNumber);
+            formattedBusinessPhoneNumber = formatPhoneNumber(business.businessInfo.businessPhoneNumber);
         }
     }
 
@@ -46,9 +42,9 @@
             rawPhoneNumber = rawPhoneNumber.slice(0, 10); // Limit to 10 digits
 
             // Update the phone number
-            businessInfo.contactPhoneNumber = rawPhoneNumber;
+            business.contactPhoneNumber = rawPhoneNumber;
 
-            formattedContactPhoneNumber = formatPhoneNumber(businessInfo.contactPhoneNumber);
+            formattedContactPhoneNumber = formatPhoneNumber(business.contactPhoneNumber);
         }
     }
 
@@ -72,7 +68,7 @@
 <form on:submit|preventDefault={handleSubmit}>
     <div class="form-group">
         <label for="businessName">Business Name:</label>
-        <input type="text" id="businessName" bind:value={businessInfo.business.businessName} class="input-field" required>
+        <input type="text" id="businessName" bind:value={business.businessInfo.businessName} class="input-field" required>
     </div>
 
     <div class="form-group">
@@ -86,20 +82,20 @@
 
     <div class="form-group">
         <label for="businessEmail">Business Email:</label>
-        <input type="email" id="businessEmail" bind:value={businessInfo.businessEmail} class="input-field" required>
+        <input type="email" id="businessEmail" bind:value={business.businessEmail} class="input-field" required>
     </div>
     <div class="form-group">
         <label for="lobbyEmail">Lobby Email:</label>
-        <input type="email" id="lobbyEmail" bind:value={businessInfo.lobbyEmail} class="input-field" required>
+        <input type="email" id="lobbyEmail" bind:value={business.lobbyEmail} class="input-field" required>
     </div>
     <div class="form-group">
         <label for="contactEmail">Contact Email:</label>
-        <input type="email" id="contactEmail" bind:value={businessInfo.contactEmail} class="input-field" required>
+        <input type="email" id="contactEmail" bind:value={business.contactEmail} class="input-field" required>
     </div>
 
     <div class="form-group">
         <label for="contactName">Contact Name:</label>
-        <input type="text" id="contactName" bind:value={businessInfo.contactName} class="input-field" required>
+        <input type="text" id="contactName" bind:value={business.contactName} class="input-field" required>
     </div>
 
     <div class="form-group">
@@ -110,58 +106,43 @@
     </div>
 
     <div class="form-group">
-        <label for="address">Address:</label>
-        <input type="text" id="address" bind:value={businessInfo.business.address} class="input-field" required>
-    </div>
-
-    <div class="form-group">
-        <label for="city">City:</label>
-        <input type="text" id="city" bind:value={businessInfo.business.city} class="input-field" required>
-    </div>
-
-    <div class="form-group">
-        <label for="province">Province:</label>
-        <input type="text" id="province" bind:value={businessInfo.business.province} class="input-field" required>
-    </div>
-
-    <div class="form-group">
-        <label for="country">Country:</label>
-        <input type="text" id="country" bind:value={businessInfo.business.country} class="input-field" required>
-    </div>
-
-    <div class="form-group">
-        <label for="postalCode">Postal Code:</label>
-        <input type="text" id="postalCode" bind:value={businessInfo.business.postalCode} class="input-field" required>
-    </div>
-
-    <div class="form-group">
         <label for="websiteUrl">Website URL:</label>
-        <input type="text" id="websiteUrl" bind:value={businessInfo.business.websiteUrl} class="input-field">
+        <input type="text" id="websiteUrl" bind:value={business.businessInfo.websiteUrl} class="input-field">
     </div>
 
     <div class="form-group">
         <label for="businessType">Business Type:</label>
-        <input type="text" id="businessType" bind:value={businessInfo.business.businessType} class="input-field" required>
+        <input type="text" id="businessType" bind:value={business.businessInfo.businessType} class="input-field" required>
     </div>
 
     <div class="form-group">
         <label for="socialMediaLink">Social Media Link:</label>
-        <input type="text" id="socialMediaLink" bind:value={businessInfo.business.socialMediaLink} class="input-field">
+        <input type="text" id="socialMediaLink" bind:value={business.businessInfo.socialMediaLink} class="input-field">
     </div>
 
     <div class="form-group">
         <label for="googleReviewLink">Google Review Link:</label>
-        <input type="text" id="googleReviewLink" bind:value={businessInfo.business.googleReviewLink} class="input-field" required>
+        <input type="text" id="googleReviewLink" bind:value={business.businessInfo.googleReviewLink} class="input-field" required>
+    </div>
+
+    <div class="form-group">
+        <label for="googleMapsLink">Google Maps Link:</label>
+        <input type="text" id="googleMapsLink" bind:value={business.businessInfo.googleMapsLink} class="input-field" required>
+    </div>
+
+    <div class="form-group">
+        <label for="googleEmbedMapLink">Google Embed Map Link:</label>
+        <input type="text" id="googleEmbedMapLink" bind:value={business.businessInfo.googleEmbedMapLink} class="input-field" required>
+    </div>
+
+    <div class="form-group">
+        <label for="googleMapsDirectionLink">Google Maps Direction Link:</label>
+        <input type="text" id="googleMapsDirectionLink" bind:value={business.businessInfo.googleMapsDirectionLink} class="input-field" required>
     </div>
 
     <div class="form-group">
         <label for="active">Active Flag:</label>
-        <input type="checkbox" id="active" bind:checked={businessInfo.business.active} class="input-field">
-    </div>
-
-    <div class="form-group">
-        <label for="active">Passive Management Flag:</label>
-        <input type="checkbox" id="active" bind:checked={businessInfo.business.passiveManagement} class="input-field">
+        <input type="checkbox" id="active" bind:checked={business.businessInfo.active} class="input-field">
     </div>
 
     <div class="form-group">

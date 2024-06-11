@@ -12,5 +12,5 @@ export async function login(email)
         throw new Error(`Failed to fetch valid access. Status: ${response.status}`);
     }
 
-    return await response.json();
+    return response.json();
 }

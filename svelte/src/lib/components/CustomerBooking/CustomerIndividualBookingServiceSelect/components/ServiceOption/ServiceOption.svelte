@@ -3,7 +3,7 @@
     import { onMount } from "svelte";
     import {formatCost} from "$lib/application/FormatCost.js";
     import { CustomerIndividualServiceBooking } from "$lib/api/initialize_functions/CustomerBooking.js";
-    import {selectedServiceIds} from "$lib/page/stores/ServiceSelectionOptions/service_options_store.js";
+    import {selectedServiceIds} from "$lib/page/stores/selectedServiceIds/selectedServiceIds.js";
     import {
         employeeToSelectOption
     } from "$lib/components/CustomerBooking/CustomerIndividualBookingServiceSelect/components/ServiceOption/functions.js";
@@ -128,7 +128,7 @@
         <Select items={employeeSelectOptions} bind:value={employeeIdSelected} on:change={()=>{if(isSelected)callFromSelect()}}/>
     </div>
 
-    <div class="mt-1">
+    <div class="disable-double-tap-zoom mt-1">
         <Button class="{isSelected ? 'bg-red-500 hover:bg-red-600 text-white' : 'bg-transparent hover:bg-green-100 text-green-500'} border-2 border-green-500 hover:border-green-600 text-sm font-medium rounded-lg px-4 py-2 transition ease-in-out duration-150"
                 on:click={()=>toggleServiceSelection()}>
             {isSelected ? 'Deselect' : 'Select'}
