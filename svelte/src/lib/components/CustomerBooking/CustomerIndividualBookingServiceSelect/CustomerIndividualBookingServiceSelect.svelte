@@ -110,8 +110,8 @@
     <!-- Customer individual service select -->
     <div class="mt-3">
         <Accordion>
-            {#each business.serviceGroupList as serviceGroup, index}
-                <AccordionItem open={index === 0} class="bg-gray-100">
+            {#each business.serviceGroupList as serviceGroup}
+                <AccordionItem class="bg-gray-100">
                     <div slot="header" class="flex items-center w-full">
                         <div class="flex flex-col sm:flex-row items-center justify-between w-full  text-center sm:text-left">
                             <span class="font-semibold mb-2 sm:mb-0 sm:mr-3">{serviceGroup.serviceGroupName}</span>
