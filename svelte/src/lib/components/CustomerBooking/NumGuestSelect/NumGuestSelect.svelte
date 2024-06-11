@@ -1,4 +1,6 @@
 <script>
+    import {Button} from "flowbite-svelte";
+
     export let businessInfo;
     export let gotoCustomerIndividualBookingServiceSelect;
     export let selectedNumGuests;
@@ -25,11 +27,11 @@
                 bind:value={selectedNumGuests}
                 required
         />
-        <button
+        <Button
                 type="submit"
                 class="mt-4 text-white bg-blue-500 hover:bg-blue-700 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 w-full dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">
             Submit
-        </button>
+        </Button>
     </form>
 
 </div>
