@@ -2,13 +2,12 @@
     import {bookingEstimate} from "$lib/page/customer-booking-portal/get/stores/bookingEstimate.js";
     import {isTomorrow, now} from "$lib/page/stores/now/now_dayjs_store.js";
     import report_icon from "$lib/images/report_icon/message-report.png";
-    import {formatPhoneNumber} from "$lib/application/FormatPhoneNumber.js";
     import {
         handleCustomerBookingPortalEditCustomerBooking
     } from "$lib/components/Modal/EditCustomerBooking/modalEditCustomerBooking.js";
-    import {Button, Tooltip} from "flowbite-svelte";
-
-    //$:console.log($bookingEstimate);
+    import {Button} from "flowbite-svelte";
+    import LiveIndicator
+        from "$lib/page/customer-booking-portal/get/page/components/LiveIndicator/LiveIndicator.svelte";
 </script>
 
 <div class="p-6">
@@ -24,56 +23,72 @@
                  class="w-8 h-8"/>
         </a>
     </div>
-
-
 </div>
 
-<div class="w-full h-full flex flex-col items-center justify-center p-6 rounded-lg space-y-4">
-    <div class="flex items-center justify-center">
-        <div class="w-full max-w-4xl">
-            <div class="relative text-xl rounded-t-lg font-bold flex bg-white text-blue-900 p-4 border-t-2 border-x-2">
-                <span class="whitespace-normal">
-                  Your appointment is
+<div class="p-2 h-full w-full flex flex-col items-center justify-center">
+    <!-- Appointment information box -->
+    <div class="bg-white max-w-4xl border-2 rounded-lg">
+        <!-- Appointment header -->
+        <div class="p-4 text-xl font-bold text-blue-900">
+            <div class="flex flex-col items-center sm:flex-row sm:items-center justify-center sm:justify-between w-full">
+                <span class="block sm:inline mb-2 sm:mb-0">
+                    Your appointment is
+
                     {#if isTomorrow($bookingEstimate.customerBooking.bookingDate)}
-                    <span class="underline">Tomorrow</span>
+                            <span class="underline">Tomorrow</span>
                     {:else}
-                    on <span class="underline">{$bookingEstimate.bookingDateFormatted}</span>
+                        on <span class="underline">{$bookingEstimate.bookingDateFormatted}</span>
                     {/if}
+
                     at <span class="underline">{$bookingEstimate.bookingTimeFormatted}</span>.
                 </span>
+                <LiveIndicator/>
             </div>
+        </div>
 
-            <div class="relative bg-white flex flex-col justify-between text-green-800 p-4 border-x-2 border-b-2 rounded-b-lg w-full">
-                <div class="flex flex-col justify-between w-full mt-auto">
-                    <span class="flex flex-wrap mt-1">
-                        Please visit this link on the day of your appointment for live updates!
-                    </span>
-                    <span class="flex flex-wrap mt-1">
-                        You can edit your appointment online any time
-                        <span class="ml-1 font-semibold">before the day of your appointment</span>.
-                    </span>
-                    <span class="flex flex-wrap mt-1">
-                        For further information, you can reach
-                        <span class="font-semibold mx-1">{$bookingEstimate.business.businessInfo.businessName}</span>
-                        at
-                        <span class="font-semibold ml-1">{formatPhoneNumber($bookingEstimate.business.businessInfo.businessPhoneNumber)}</span>.
-                    </span>
-                </div>
-            </div>
+        <!-- Appointment information -->
+        <div class="p-4 text-green-800 text-sm">
+            Please visit this link on the day of your appointment for live updates!
+        </div>
+
+        <div class="p-4 flex flex-col justify-between text-red-800">
+            <span class="flex flex-wrap">
+                You can edit your appointment online any time
+                <span class="ml-1 font-semibold">before the day of your appointment</span>.
+            </span>
         </div>
     </div>
 
-    <div>
-        <Button id="show-tooltip"
+    <!-- Action options -->
+    <div class="mt-4 flex flex-wrap justify-center">
+        <Button
+                class="mr-2"
                 on:click={() => handleCustomerBookingPortalEditCustomerBooking($bookingEstimate.customerBooking)}
-                color="light" outline> Edit My Booking
+                color="light" outline> Edit my appointment
             <svg class="ml-1 w-6 h-6 text-gray-800 dark:text-white" aria-hidden="true"
                  xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
                 <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                       d="m14.304 4.844 2.852 2.852M7 7H4a1 1 0 0 0-1 1v10a1 1 0 0 0 1 1h11a1 1 0 0 0 1-1v-4.5m2.409-9.91a2.017 2.017 0 0 1 0 2.853l-6.844 6.844L8 14l.713-3.565 6.844-6.844a2.015 2.015 0 0 1 2.852 0Z"/>
             </svg>
         </Button>
-        <Tooltip triggeredBy="#show-tooltip">Edit Booking</Tooltip>
+
+        <a
+                class="text-gray-900 bg-white border border-gray-300 focus:outline-none hover:bg-gray-100 focus:ring-4 focus:ring-gray-100 font-medium rounded-lg text-sm px-3 py-2.5 dark:bg-gray-800 dark:text-white dark:border-gray-600 dark:hover:bg-gray-700 dark:hover:border-gray-600 dark:focus:ring-gray-700"
+                href="tel:{$bookingEstimate.business.businessInfo.businessPhoneNumber}"
+                target="_blank"
+                type="button"
+        >
+            <svg
+                    aria-hidden="true"
+                    class="w-6 h-6 text-gray-800 dark:text-white"
+                    fill="currentColor"
+                    height="24"
+                    viewBox="0 0 24 24"
+                    width="24"
+                    xmlns="http://www.w3.org/2000/svg"
+            >
+                <path d="M7.978 4a2.553 2.553 0 0 0-1.926.877C4.233 6.7 3.699 8.751 4.153 10.814c.44 1.995 1.778 3.893 3.456 5.572 1.68 1.679 3.577 3.018 5.57 3.459 2.062.456 4.115-.073 5.94-1.885a2.556 2.556 0 0 0 .001-3.861l-1.21-1.21a2.689 2.689 0 0 0-3.802 0l-.617.618a.806.806 0 0 1-1.14 0l-1.854-1.855a.807.807 0 0 1 0-1.14l.618-.62a2.692 2.692 0 0 0 0-3.803l-1.21-1.211A2.555 2.555 0 0 0 7.978 4Z"/>
+            </svg>
+        </a>
     </div>
 </div>
-

@@ -117,7 +117,7 @@
     }
 </script>
 
-<div class="flex items-center justify-center h-screen bg-gray-100 rounded-lg space-y-4">
+<div class="p-2 h-full w-full flex items-center justify-center bg-gray-100 rounded-lg space-y-4">
     <div class="flex flex-col justify-center items-center p-4 bg-white shadow-lg rounded-lg w-full max-w-lg">
         {#if getReview}
             <div class="text-xl font-semibold mb-4">

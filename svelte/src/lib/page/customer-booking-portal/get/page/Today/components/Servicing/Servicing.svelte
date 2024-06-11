@@ -4,7 +4,7 @@
         from "$lib/page/customer-booking-portal/get/page/components/LiveIndicator/LiveIndicator.svelte";
 </script>
 
-<div class="h-full w-full flex flex-col items-center justify-center">
+<div class="p-2 h-full w-full flex flex-col items-center justify-center">
     <!-- Appointment information box -->
     <div class="bg-white max-w-4xl border-2 rounded-lg">
         <!-- Appointment header -->
