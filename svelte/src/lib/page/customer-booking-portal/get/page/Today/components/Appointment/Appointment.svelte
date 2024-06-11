@@ -46,7 +46,7 @@
             <span>Please arrive early to ensure smooth service.</span>
         </div>
 
-        <div class="p-4 flex justify-between text-green-800 space-x-2">
+        <div class="p-4 flex justify-between text-green-800 space-x-4">
             <div class="flex flex-col">
                 <span>Queue position</span>
                 <span class="animate-pulse text-sm font-semibold">{$bookingEstimate.queuePosition}</span>
