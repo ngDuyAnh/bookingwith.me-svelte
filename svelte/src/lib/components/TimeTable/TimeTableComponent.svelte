@@ -212,7 +212,7 @@
         const resourceElements = document.querySelectorAll(".ec-resource");
 
         resourceElements.forEach((element) => {
-            element.style.minWidth = "150px";
+            element.style.minWidth = "11rem";
         });
 
         const todayElements = document.querySelectorAll(".ec-day.ec-today");
