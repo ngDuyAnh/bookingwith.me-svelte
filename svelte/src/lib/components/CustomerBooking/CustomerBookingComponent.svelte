@@ -43,7 +43,8 @@
         pageIndex = 0;
     }
 
-    function gotoCustomerIndividualBookingServiceSelect(numGuest) {
+    function gotoCustomerIndividualBookingServiceSelect(numGuest)
+    {
         // Adjust the number of guests, individual booking
         let currentLength = customerBooking.customerIndividualBookingList.length;
         if (numGuest < currentLength) {
