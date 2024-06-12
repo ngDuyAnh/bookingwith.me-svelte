@@ -1,15 +1,17 @@
 <script>
-    import { userProfile } from "$lib/page/stores/userProfile/userProfile.js";
-    import { Spinner } from "flowbite-svelte";
+    import {userProfile} from "$lib/page/stores/userProfile/userProfile.js";
+    import {Spinner} from "flowbite-svelte";
     import Login from "$lib/page/protected/page_login/Login.svelte";
     import AdminPortal from "$lib/page/protected/business-portal/page_admin/AdminPortal.svelte";
-    import BusinessPortalAdmin from "$lib/page/protected/business-portal/page_business_admin/BusinessPortalAdmin.svelte";
+    import BusinessPortalAdmin
+        from "$lib/page/protected/business-portal/page_business_admin/BusinessPortalAdmin.svelte";
     import {business} from "$lib/page/stores/business/business.js";
     import BusinessPortalLobby from "$lib/page/protected/business-portal/page_lobby/BusinessPortalLobby.svelte";
-    import BusinessPortalEmployee from "$lib/page/protected/business-portal/page_employee/BusinessPortalEmployee.svelte";
+    import BusinessPortalEmployee
+        from "$lib/page/protected/business-portal/page_employee/BusinessPortalEmployee.svelte";
     import {employeeSelectOptions} from "$lib/page/stores/employeeSelectOptions/employeeSelectOptions.js";
     import {
-      employeeToSelectOption
+        employeeToSelectOption
     } from "$lib/components/CustomerBooking/CustomerIndividualBookingServiceSelect/components/ServiceOption/functions.js";
     import ModalEditCustomerBooking from "$lib/components/Modal/EditCustomerBooking/ModalEditCustomerBooking.svelte";
     import ModalCreateCustomerBooking
@@ -25,24 +27,23 @@
     business.set(data.business);
 
     // Convert the employee list to selectable options
-    if ($business && $business.employeeList && Array.isArray($business.employeeList))
-    {
+    if ($business && $business.employeeList && Array.isArray($business.employeeList)) {
         employeeSelectOptions.set($business.employeeList.map(employeeToSelectOption));
     }
 
     loading = false;
 
     //$: console.log("userProfile", $userProfile);
-    //$: console.log("business", $business);
+    $: console.log("business", $business);
 </script>
 
 <div class="min-h-screen w-full">
     {#if loading}
         <div class="flex justify-center items-center h-screen">
-            <Spinner />
+            <Spinner/>
         </div>
     {:else if !$userProfile.auth || !$userProfile.user}
-        <Login />
+        <Login/>
     {:else if $userProfile.user.role === "ADMIN"}
         <AdminPortal/>
     {:else if $userProfile.user.role === "BUSINESS_ADMIN"}

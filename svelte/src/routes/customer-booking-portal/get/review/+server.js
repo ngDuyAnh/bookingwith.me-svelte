@@ -1,26 +1,23 @@
 import OpenAI from 'openai';
-import { OPENAI_API_KEY, OPENAI_ASSISTANT_KEY } from '$env/static/private';
+import {OPENAI_API_KEY, OPENAI_ASSISTANT_KEY} from '$env/static/private';
 
-const openai = new OpenAI({ apiKey: OPENAI_API_KEY});
-let assistant = undefined;
+const openai = new OpenAI({apiKey: OPENAI_API_KEY});
 let thread = undefined;
-let createdAssistant = false;
 
-async function polishReview(reviewText)
-{
+async function polishReview(reviewText, threadId) {
     try {
-        await openai.beta.threads.messages.create(thread.id,
+        await openai.beta.threads.messages.create(threadId,
             {
                 role: "user",
                 content: `Polish the following review by making it positive, sanitizing it, while maintaining the tone of the original review, for Google Reviews:\n\n${reviewText}`,
             }
         );
 
-        const run = await openai.beta.threads.runs.createAndPoll(thread.id, {
+        const run = await openai.beta.threads.runs.createAndPoll(threadId, {
             assistant_id: OPENAI_ASSISTANT_KEY
         });
 
-        const messages = await openai.beta.threads.messages.list(thread.id, {
+        const messages = await openai.beta.threads.messages.list(threadId, {
             run_id: run.id,
         });
 
@@ -32,35 +29,32 @@ async function polishReview(reviewText)
     }
 }
 
-// async function createAssistant() {
-//     return openai.beta.assistants.create({
-//         name: "Booking with Me",
-//         instructions:
-//             "You are a helpful assistant that polishes and enhances user-provided reviews for Google Reviews. Keep reviews concise but not too short.",
-//         model: "gpt-3.5-turbo",
-//     });
-// }
 
-
-export async function POST({ request }) {
-    const { reviewText } = await request.json();
-    if (!createdAssistant && assistant === undefined) {
+export async function POST({request}) {
+    let threadId;
+    const {reviewText, threadID} = await request.json();
+    if (threadID === null) {
         try {
             // assistant = await createAssistant();
             thread = await openai.beta.threads.create();
-            createdAssistant = true;
+            threadId = thread.id;
+            console.log("Created thread is", threadId);
         } catch (error) {
-            createdAssistant = false;
-            assistant = undefined;
             console.log("Error creating assistant", error);
-            return new Response(JSON.stringify({ error: "Failed to establish polishing service. Please try again later." }), { status: 500 });
+            return new Response(JSON.stringify({error: "Failed to establish polishing service. Please try again later."}), {status: 500});
         }
+    } else {
+        threadId = threadID;
     }
+
     try {
-        const polishedReview = await polishReview(reviewText);
-        return new Response(JSON.stringify({ polishedReview }), { status: 200 });
+        console.log("Using thread", threadId);
+
+        const polishedReview = await polishReview(reviewText, threadId);
+
+        return new Response(JSON.stringify({polishedReview, threadId}), {status: 200});
     } catch (error) {
         console.log("Error polishing review:", error);
-        return new Response(JSON.stringify({ error: "Failed to polish review. Please try again later." }), { status: 500 });
+        return new Response(JSON.stringify({error: "Failed to polish review. Please try again later."}), {status: 500});
     }
 }
