@@ -72,6 +72,7 @@
     }
 
     let numPolishReview = 0;
+    let threadID = null;
 
     async function handlePolishReview() {
         polishUsed = true;
@@ -88,13 +89,16 @@
                 },
                 body: JSON.stringify({
                     businessName: $bookingEstimate.business.businessInfo.businessName,
-                    reviewText: review.reviewText
+                    reviewText: review.reviewText,
+                    threadID: threadID
                 })
             });
 
             const data = await response.json();
             if (response.ok) {
+                console.log("data is", data, data.threadId);
                 review.reviewText = removeQuotes(data.polishedReview);
+                threadID = data.threadId;
             } else {
                 throw new Error(data.error || "Unknown error occurred");
             }
@@ -117,7 +121,7 @@
     }
 </script>
 
-<div class="p-2 h-full w-full flex items-center justify-center bg-gray-100 rounded-lg space-y-4">
+<div class="flex items-center justify-center h-screen bg-gray-100 rounded-lg space-y-4">
     <div class="flex flex-col justify-center items-center p-4 bg-white shadow-lg rounded-lg w-full max-w-lg">
         {#if getReview}
             <div class="text-xl font-semibold mb-4">
