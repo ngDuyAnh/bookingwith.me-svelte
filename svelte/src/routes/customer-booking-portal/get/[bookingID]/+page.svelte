@@ -102,7 +102,7 @@
     // Automatic fetch
     setInterval(async () => fetchCustomerBookingEstimate(), 60000);
 
-    $: console.log("bookingEstimate", $bookingEstimate);
+    //$: console.log("bookingEstimate", $bookingEstimate);
 </script>
 
 <div class="h-dvh w-screen">

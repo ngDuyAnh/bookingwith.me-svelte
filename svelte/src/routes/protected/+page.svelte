@@ -34,7 +34,7 @@
     loading = false;
 
     //$: console.log("userProfile", $userProfile);
-    $: console.log("business", $business);
+    //$: console.log("business", $business);
 </script>
 
 <div class="min-h-screen w-full">

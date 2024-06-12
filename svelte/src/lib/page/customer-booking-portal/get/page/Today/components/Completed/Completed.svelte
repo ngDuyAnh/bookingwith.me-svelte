@@ -72,9 +72,10 @@
     }
 
     let numPolishReview = 0;
-    let threadID = null;
+    let threadID = undefined;
 
-    async function handlePolishReview() {
+    async function handlePolishReview()
+    {
         polishUsed = true;
         numPolishReview++;
 
@@ -82,7 +83,7 @@
         errorMessage = "";
 
         try {
-            const response = await fetch('/customer-booking-portal/get/review', {
+            const response = await fetch('/api/review', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'
@@ -95,22 +96,28 @@
             });
 
             const data = await response.json();
-            if (response.ok) {
-                console.log("data is", data, data.threadId);
+            if (response.ok)
+            {
                 review.reviewText = removeQuotes(data.polishedReview);
-                threadID = data.threadId;
-            } else {
+                threadID = data.threadID;
+            }
+            else
+            {
                 throw new Error(data.error || "Unknown error occurred");
             }
 
             // Save the review to the database
             await submitReviewToDatabase();
-        } catch (error) {
+        }
+        catch (error)
+        {
             console.error('Error polishing review:', error);
             errorMessage = error.message || "Failed to polish review. Please try again later.";
             errorToastTimer = 5;
             timeoutErrorToast();
-        } finally {
+        }
+        finally
+        {
             isLoading = false;
         }
 

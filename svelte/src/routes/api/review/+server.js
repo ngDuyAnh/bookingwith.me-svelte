@@ -2,7 +2,6 @@ import OpenAI from 'openai';
 import {OPENAI_API_KEY, OPENAI_ASSISTANT_KEY} from '$env/static/private';
 
 const openai = new OpenAI({apiKey: OPENAI_API_KEY});
-let thread = undefined;
 
 async function polishReview(reviewText, threadId) {
     try {
@@ -29,30 +28,30 @@ async function polishReview(reviewText, threadId) {
     }
 }
 
+export async function POST({request})
+{
+    let {reviewText, threadID} = await request.json();
 
-export async function POST({request}) {
-    let threadId;
-    const {reviewText, threadID} = await request.json();
-    if (threadID === null) {
+    // Create a new thread for polishing if not already created
+    if (!threadID) {
         try {
-            // assistant = await createAssistant();
-            thread = await openai.beta.threads.create();
-            threadId = thread.id;
-            console.log("Created thread is", threadId);
+            let thread = await openai.beta.threads.create();
+            threadID = thread.id;
+
+            //console.log("Created thread is", threadId);
         } catch (error) {
             console.log("Error creating assistant", error);
             return new Response(JSON.stringify({error: "Failed to establish polishing service. Please try again later."}), {status: 500});
         }
-    } else {
-        threadId = threadID;
     }
 
+    // Polish the review
     try {
-        console.log("Using thread", threadId);
+        //console.log("Using thread", threadID);
 
-        const polishedReview = await polishReview(reviewText, threadId);
+        const polishedReview = await polishReview(reviewText, threadID);
 
-        return new Response(JSON.stringify({polishedReview, threadId}), {status: 200});
+        return new Response(JSON.stringify({polishedReview, threadID}), {status: 200});
     } catch (error) {
         console.log("Error polishing review:", error);
         return new Response(JSON.stringify({error: "Failed to polish review. Please try again later."}), {status: 500});
