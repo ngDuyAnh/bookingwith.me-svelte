@@ -7,6 +7,7 @@
     import {
         employeeToSelectOption
     } from "$lib/components/CustomerBooking/CustomerIndividualBookingServiceSelect/components/ServiceOption/functions.js";
+    import {bookingEstimate} from "$lib/page/customer-booking-portal/get/stores/bookingEstimate.js";
 
     export let service;
     export let customerIndividualBooking;
@@ -120,7 +121,10 @@
 </script>
 
 <div class="mb-8">
-    <h3 class="font-bold">{service.serviceName} · ${formatCost(service.serviceCost)}+</h3>
+    <h3 class="font-bold">
+        {service.serviceName} · ${formatCost(service.serviceCost)}{service.showPlus ? '+' : ''}
+    </h3>
+
     <p>{service.description}</p>
 
     <div class="mt-1">

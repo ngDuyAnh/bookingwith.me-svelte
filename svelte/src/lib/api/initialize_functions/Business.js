@@ -46,6 +46,8 @@ export function Service()
         "serviceCost": "",
         "serviceTimeLength": null,
         "description": "",
+        "showPlus": false,
+
         "archive": false,
         "employeeList": [],
     };

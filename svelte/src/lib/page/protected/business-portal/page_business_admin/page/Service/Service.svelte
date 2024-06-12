@@ -1,6 +1,6 @@
 
 <script>
-    import { Accordion, AccordionItem, Button, Modal, Label, Input, MultiSelect } from 'flowbite-svelte';
+    import {Accordion, AccordionItem, Button, Modal, Label, Input, MultiSelect, Checkbox} from 'flowbite-svelte';
     import {initializeBusiness} from "$lib/api/api_server/business-portal/api.js";
     import {business} from "$lib/page/stores/business/business.js";
 
@@ -217,7 +217,9 @@
             {#each serviceGroup.serviceList as service}
                 <div class="mb-4">
                     <h3 class="font-bold">{service.serviceName}</h3>
-                    <p>Cost: ${service.serviceCost.toFixed(2)}</p>
+                    <p>
+                        Cost: ${service.serviceCost.toFixed(2)}{service.showPlus ? '+' : ''}
+                    </p>
                     <p>Duration: {service.serviceTimeLength} minutes</p>
                     <p>Description: {service.description}</p>
                     <p>Available with:
@@ -285,6 +287,12 @@
         <Label class="space-y-2">
             <span>Description</span>
             <Input bind:value={editingCloneService.description} required />
+        </Label>
+
+        <Label class="space-y-2">
+            <Checkbox bind:checked={editingCloneService.showPlus} required>
+                Show plus sign
+            </Checkbox>
         </Label>
 
         <Label class="space-y-2">
