@@ -4,7 +4,7 @@
     import {fly, slide} from "svelte/transition";
     import {CheckCircleSolid, CloseCircleSolid} from "flowbite-svelte-icons";
     import {Spinner, Toast} from "flowbite-svelte";
-    import {initializeCustomerBooking} from "$lib/api/api_server/customer-booking-portal/api.js";
+    import {initializeCustomerBooking} from "$lib/api/api_server/api_endpoints/customer-booking-portal/api.js";
 
     let getReview = !$bookingEstimate.customerBooking.customerBookingReview;
     let review = CustomerBookingReview();

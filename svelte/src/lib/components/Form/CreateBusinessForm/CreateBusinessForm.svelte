@@ -1,6 +1,6 @@
 <script>
     import {goto} from '$app/navigation';
-    import {createBusiness} from "$lib/api/api_server/business-portal/api.js";
+    import {createBusiness} from "$lib/api/api_server/api_endpoints/business-portal/api.js";
     import {
         BusinessInformation
     } from "$lib/api/initialize_functions/Business.js";

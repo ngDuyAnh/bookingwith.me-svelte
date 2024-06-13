@@ -1,7 +1,7 @@
 
 <script>
     import {Accordion, AccordionItem, Button, Modal, Label, Input, MultiSelect, Checkbox} from 'flowbite-svelte';
-    import {initializeBusiness} from "$lib/api/api_server/business-portal/api.js";
+    import {initializeBusiness} from "$lib/api/api_server/api_endpoints/business-portal/api.js";
     import {business} from "$lib/page/stores/business/business.js";
 
     let editingServiceGroup = {};

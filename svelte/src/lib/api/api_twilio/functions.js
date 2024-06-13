@@ -80,6 +80,8 @@ export function sendSMSAskingForReview(businessName, customerBooking)
     // Ensure to only send review reminder one time
     if(!customerBooking.smsReviewReminderSent)
     {
+        customerBooking.smsReviewReminderSent = true;
+
         scheduleSendSms(formattedPhoneNumber, message, 16)
             .then(() => {
                 console.log('Review reminder sent.');

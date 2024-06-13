@@ -22,9 +22,10 @@
     } from "$lib/api/initialize_functions/customer-booking-utility-functions.js";
     import {CustomerBookingState} from "$lib/api/initialize_functions/CustomerBooking.js";
     import {handleEditCustomerBooking} from "$lib/components/Modal/EditCustomerBooking/modalEditCustomerBooking.js";
-    import {sendSMSAskingForReview} from "$lib/api/api_twilio/api.js";
+    import {sendSMSAskingForReview} from "$lib/api/api_twilio/functions.js";
     import {business} from "$lib/page/stores/business/business.js";
-    import {checkAbleToSendReviewReminder} from "$lib/api/api_server/lobby-portal/api.js";
+    import {checkAbleToSendReviewReminder} from "$lib/api/api_server/api_endpoints/lobby-portal/api.js";
+    import {checkAbleToSendSmsReviewReminder} from "$lib/api/api_server/functions.js";
 
     export let isToday;
     export let nonModal = false;
@@ -47,17 +48,10 @@
             individualBooking = findIndividualBookingFromCustomerBooking(customerBooking, serviceBooking.individualID);
             indicateSendToCompleted = indicateToSendCustomerBookingToCompleted(customerBooking);
 
+            ableToSendSmsReviewReminder = false;
             checkAbleToSendReviewReminder(customerBooking)
                 .then(response => {
-                    const {allowToSendReviewReminderSMS, mostRecentDateReviewReminderSent} = response;
-
-                    // Check if the most recent send date is more than 3 months ago
-                    // The customer is new to the business
-                    const moreThan3Months = mostRecentDateReviewReminderSent
-                        ? dayjs().diff(dayjs(mostRecentDateReviewReminderSent, formatToDate), 'month') > 3
-                        : true;
-
-                    ableToSendSmsReviewReminder = allowToSendReviewReminderSMS && moreThan3Months;
+                    ableToSendSmsReviewReminder = checkAbleToSendSmsReviewReminder(response);
 
                     //console.log(`ableToSendSmsReviewReminder ${ableToSendSmsReviewReminder}, allowToSendReviewReminderSMS ${allowToSendReviewReminderSMS}, moreThan3Months ${moreThan3Months}`)
                 })
@@ -101,8 +95,6 @@
     async function handleReviewSend() {
         if (!customerBooking.smsReviewReminderSent) {
             sendSMSAskingForReview($business.businessInfo.businessName, customerBooking);
-
-            customerBooking.smsReviewReminderSent = true;
             submitCustomerBooking(customerBooking);
         }
     }

@@ -1,5 +1,5 @@
 import {error} from "@sveltejs/kit";
-import {getBusiness} from "$lib/api/api_server/business-portal/api.js";
+import {getBusiness} from "$lib/api/api_server/api_endpoints/business-portal/api.js";
 
 export async function load({ params }) {
     // Access the dynamic parameter from the URL

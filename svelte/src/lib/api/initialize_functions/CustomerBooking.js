@@ -11,7 +11,8 @@ export const CustomerBookingState = {
 
 export const CustomerBookingChannel = {
     LOBBY: 0,
-    ONLINE: 1
+    ONLINE: 1,
+    REVIEW: 2
 }
 
 export function CustomerBookingReview()

@@ -5,7 +5,7 @@
     import {
         getCustomerBookingEstimate,
         initializeCustomerBooking
-    } from "$lib/api/api_server/customer-booking-portal/api.js";
+    } from "$lib/api/api_server/api_endpoints/customer-booking-portal/api.js";
     import {formatToTime, formatToTimeAm} from "$lib/application/Formatter.js";
     import {Spinner} from "flowbite-svelte";
     import Today from "$lib/page/customer-booking-portal/get/page/Today/Today.svelte";

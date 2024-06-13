@@ -6,16 +6,16 @@
         availability,
         forceSubmitBooking, initializeCustomerBooking,
         submitBooking
-    } from "$lib/api/api_server/customer-booking-portal/api.js";
+    } from "$lib/api/api_server/api_endpoints/customer-booking-portal/api.js";
     import dayjs from "dayjs";
     import {onMount} from "svelte";
-    import {getCustomer} from "$lib/api/api_server/lobby-portal/api.js";
+    import {getCustomer} from "$lib/api/api_server/api_endpoints/lobby-portal/api.js";
     import {
         CustomerBookingState
     } from "$lib/api/initialize_functions/CustomerBooking.js";
-    import {sendSmsConfirmBookingSuccess} from "$lib/api/api_twilio/api.js";
+    import {sendSmsConfirmBookingSuccess} from "$lib/api/api_twilio/functions.js";
     import {rawPhoneNumber, formatPhoneNumber} from "$lib/application/FormatPhoneNumber.js";
-    import {sendSmsBookingReminder} from "$lib/api/api_twilio/api.js";
+    import {sendSmsBookingReminder} from "$lib/api/api_twilio/functions.js";
     import {
         moveToLobby
     } from "$lib/page/protected/business-portal/page_lobby/page/Dashboard/components/components/CustomerBookingClickModal/handle_customer_booking_state.js";
@@ -369,7 +369,6 @@
         <Input
                 id="customerName"
                 bind:value={customerBooking.customer.customerName}
-                required
         />
     </Label>
 

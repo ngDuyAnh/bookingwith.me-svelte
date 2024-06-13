@@ -66,3 +66,16 @@ export async function checkAbleToSendReviewReminder(customerBooking)
 
     return await response.json();
 }
+
+export async function checkAbleToSendReviewReminderPhoneNumber(businessID, phoneNumber)
+{
+    const FETCH_URL = `${API_URL}/able-to-send-sms-review-reminder-phone-number/${businessID}?phoneNumber=${phoneNumber}`;
+
+    const response = await fetch(`${FETCH_URL}`);
+
+    if (!response.ok) {
+        throw new Error(`Failed to fetch. Status: ${response.status}`);
+    }
+
+    return await response.json();
+}

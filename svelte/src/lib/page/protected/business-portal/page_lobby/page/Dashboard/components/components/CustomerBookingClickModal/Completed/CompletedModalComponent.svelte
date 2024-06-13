@@ -10,9 +10,10 @@
     import {now} from "$lib/page/stores/now/now_dayjs_store.js";
     import {getContext} from "svelte";
     import {Button, Tooltip} from "flowbite-svelte";
-    import {sendSMSAskingForReview} from "$lib/api/api_twilio/api.js";
+    import {sendSMSAskingForReview} from "$lib/api/api_twilio/functions.js";
     import {business} from "$lib/page/stores/business/business.js";
-    import {checkAbleToSendReviewReminder} from "$lib/api/api_server/lobby-portal/api.js";
+    import {checkAbleToSendReviewReminder} from "$lib/api/api_server/api_endpoints/lobby-portal/api.js";
+    import {checkAbleToSendSmsReviewReminder} from "$lib/api/api_server/functions.js";
 
     let customerBooking = undefined;
     let ableToSendSmsReviewReminder = false;
@@ -24,17 +25,10 @@
         // Check if sms review reminder can be sent
         if (customerBooking)
         {
+            ableToSendSmsReviewReminder = false;
             checkAbleToSendReviewReminder(customerBooking)
                 .then(response => {
-                    const { allowToSendReviewReminderSMS, mostRecentDateReviewReminderSent } = response;
-
-                    // Check if the most recent send date is more than 6 months ago
-                    // The customer is new to the business
-                    const moreThan6Months = mostRecentDateReviewReminderSent
-                        ? dayjs().diff(dayjs(mostRecentDateReviewReminderSent, formatToDate), 'month') > 6
-                        : true;
-
-                    ableToSendSmsReviewReminder = allowToSendReviewReminderSMS && moreThan6Months;
+                    ableToSendSmsReviewReminder = checkAbleToSendSmsReviewReminder(response);
 
                     //console.log(`customerBooking.smsReviewReminderSent ${customerBooking.smsReviewReminderSent} ableToSendSmsReviewReminder ${ableToSendSmsReviewReminder}, allowToSendReviewReminderSMS ${allowToSendReviewReminderSMS}, moreThan6Months ${moreThan6Months}`)
                 })
@@ -54,11 +48,9 @@
 
     async function handleReviewSend()
     {
-        if(!customerBooking.smsReviewReminderSent)
+        if(ableToSendSmsReviewReminder && !customerBooking.smsReviewReminderSent)
         {
             sendSMSAskingForReview($business.businessInfo.businessName, customerBooking);
-
-            customerBooking.smsReviewReminderSent = true;
             submitCustomerBooking(customerBooking);
         }
     }

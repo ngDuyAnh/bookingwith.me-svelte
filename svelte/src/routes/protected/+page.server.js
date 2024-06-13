@@ -1,8 +1,8 @@
 import {OAuth2Client} from "google-auth-library";
 import {ORIGIN, SECRET_CLIENT_ID, SECRET_CLIENT_SECRET} from "$env/static/private";
 import {error, redirect} from "@sveltejs/kit";
-import {login} from "$lib/api/api_server/user-portal/api.js";
-import {getBusiness} from "$lib/api/api_server/business-portal/api.js";
+import {login} from "$lib/api/api_server/api_endpoints/user-portal/api.js";
+import {getBusiness} from "$lib/api/api_server/api_endpoints/business-portal/api.js";
 
 export async function load({ cookies }) {
     const authCookie = await cookies.get('auth');
