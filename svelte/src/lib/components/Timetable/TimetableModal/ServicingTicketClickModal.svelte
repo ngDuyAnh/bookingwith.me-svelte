@@ -1,7 +1,7 @@
 <script>
     import {getContext, tick} from 'svelte';
     import dayjs from "dayjs";
-    import {formatToDate, formatToTime, formatToTimeAm} from "$lib/application/Formatter.js";
+    import {formatToTime, formatToTimeAm} from "$lib/application/Formatter.js";
     import {Button, Modal, Tooltip} from "flowbite-svelte";
     import CustomerIndividualServiceBookingComponent
         from "$lib/page/protected/business-portal/page_lobby/page/Dashboard/components/components/CustomerBookingClickModal/Servicing/components/CustomerIndivdualBookingComponent/CustomerIndividualServiceBookingComponent/CustomerIndividualServiceBookingComponent.svelte";
@@ -14,6 +14,7 @@
         indicateToSendCustomerBookingToCompleted
     } from "$lib/components/Timetable/TimetableModal/functions.js";
     import {
+        moveToServicing,
         moveToCompleted
     } from "$lib/page/protected/business-portal/page_lobby/page/Dashboard/components/components/CustomerBookingClickModal/handle_customer_booking_state.js";
     import {now} from "$lib/page/stores/now/now_dayjs_store.js";
@@ -62,6 +63,12 @@
     }
 
     const submitCustomerBooking = getContext('submitCustomerBooking');
+
+    async function handleServicingClick() {
+        console.log("Moving to servicing:", customerBooking);
+
+        await moveToServicing($now, customerBooking, submitCustomerBooking);
+    }
 
     async function handleCompletedClick() {
         console.log("Moving to completed:", customerBooking);
@@ -175,9 +182,9 @@
                         <div class="justify-start">
                             <Button id="show-tooltip" color="light" outline
                                     on:click={() => {
-                            servicingTicketClickModalToggleOpen();
-                            handleEditCustomerBooking($servicingTicketClickModal.customerBooking)
-                        }}
+                                        servicingTicketClickModalToggleOpen();
+                                        handleEditCustomerBooking($servicingTicketClickModal.customerBooking)
+                                    }}
                             >
                                 <svg class="w-6 h-6 text-gray-800 dark:text-white" aria-hidden="true"
                                      xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none"
@@ -190,18 +197,28 @@
                             <Tooltip triggeredBy="#show-tooltip">Edit Booking</Tooltip>
                         </div>
 
-                        <div class="ml-auto justify-end space-x-2">
+                        <div class="ml-auto justify-end content-center space-x-2">
                             <span class="text-gray-700 font-bold">Move to:</span>
+
+                            <!--Move the customer booking to SERVICING-->
+                            {#if $business.businessInfo.passiveManagement && customerBooking.bookingState < CustomerBookingState.SERVICING}
+                                <Button
+                                        class="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded"
+                                        on:click={handleServicingClick}>Servicing
+                                </Button>
+                            {/if}
+
+                            <!--Move the customer booking to COMPLETED-->
                             {#if indicateSendToCompleted}
-                                <button
+                                <Button
                                         class="animate-pulse bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded"
                                         on:click={handleCompletedClick}>Complete
-                                </button>
+                                </Button>
                             {:else}
-                                <button
+                                <Button
                                         class="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded"
                                         on:click={handleCompletedClick}>Complete
-                                </button>
+                                </Button>
                             {/if}
                         </div>
                     </div>

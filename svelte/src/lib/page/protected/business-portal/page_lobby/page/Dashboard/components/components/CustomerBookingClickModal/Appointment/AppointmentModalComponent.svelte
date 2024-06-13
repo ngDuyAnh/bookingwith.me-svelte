@@ -72,16 +72,16 @@
         </Button>
         <Tooltip triggeredBy="#show-tooltip">Edit Booking</Tooltip>
     </div>
-    <div class="ml-auto justify-end items-center space-x-2">
+    <div class="ml-auto justify-end content-center space-x-2">
         <span class="text-gray-700 font-bold">Move to:</span>
-        <button class="bg-orange-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
+        <Button class="bg-orange-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
                 on:click={handleLobbyClick}>Lobby
-        </button>
-        <button class="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded"
+        </Button>
+        <Button class="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded"
                 on:click={handleServicingClick}>Servicing
-        </button>
-        <button class="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded"
+        </Button>
+        <Button class="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded"
                 on:click={handleCompleteClick}>Complete
-        </button>
+        </Button>
     </div>
 </div>
