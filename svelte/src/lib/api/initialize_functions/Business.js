@@ -26,6 +26,7 @@ export function BusinessInformation()
         "googleMapsDirectionLink": "",
 
         "active": true,
+        "passiveManagement": false
     };
 }
 
