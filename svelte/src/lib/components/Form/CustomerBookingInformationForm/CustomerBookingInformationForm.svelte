@@ -138,20 +138,20 @@
             availableTimeOptionList = [];
         }
 
+        // Preselect booking time
+        // Select the first option
+        if (preselectForWalkIn && availableTimeOptionList.length > 0)
+        {
+            customerBooking.bookingTime = availableTimeOptionList[0].value;
+        }
         // Customer booking already have a select booking time
         // Preselect that time
         // This could be from edit customer booking
         // If the selected booking time no longer available, unselected it by setting it to null
-        if (customerBooking.bookingTime)
+        else if (customerBooking.bookingTime)
         {
             customerBooking.bookingTime =
                 availableTimeOptionList.find(option => option.value === customerBooking.bookingTime)?.value ?? null;
-        }
-        // Preselect booking time
-        // Select the first option
-        else if (preselectForWalkIn && availableTimeOptionList.length > 0)
-        {
-            customerBooking.bookingTime = availableTimeOptionList[0].value;
         }
         // Default and safeguard, no booking time selected
         else
