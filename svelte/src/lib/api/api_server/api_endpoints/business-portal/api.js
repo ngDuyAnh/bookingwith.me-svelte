@@ -84,3 +84,16 @@ export async function initializeEmployeeWorkSchedule(employeeWorkSchedule)
 
     return await response.json();
 }
+
+export async function getCustomerBookingList(businessID, startDate, endDate)
+{
+    const FETCH_URL = `${API_URL}/get-customer-booking-list?startDate=${startDate}&endDate=${endDate}`;
+
+    const response = await fetch(`${FETCH_URL}`);
+
+    if (!response.ok) {
+        throw new Error(`Failed to fetch. Status: ${response.status}`);
+    }
+
+    return await response.json();
+}
