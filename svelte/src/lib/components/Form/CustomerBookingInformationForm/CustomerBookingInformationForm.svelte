@@ -305,25 +305,38 @@
                     try
                     {
                         // Send SMS confirmation for the appointment
-                        sendSmsConfirmBookingSuccess(businessInfo.businessName, response.customerBooking);
+                        await sendSmsConfirmBookingSuccess(businessInfo.businessName, response.customerBooking);
+                        console.log('Sent SMS appointment confirmation.');
+                        customerBooking.smsConfirmationSent = true;
 
-                        // Schedule SMS for reminder for the appointment
-                        sendSmsBookingReminder(businessInfo.businessName, response.customerBooking)
-                            .then((scheduledReminderResponse) => {
-                                console.log('Scheduled SMS appointment reminder.', scheduledReminderResponse);
-
-                                // Submit the SID to the customer booking
-                                response.customerBooking.smsAppointmentReminderSid = scheduledReminderResponse.sid;
-                                initializeCustomerBooking(response.customerBooking);
+                        // Update the flag for appointment confirmation
+                        // customerBooking.smsConfirmationSent = true;
+                        initializeCustomerBooking(response.customerBooking)
+                            .then(() => {
+                                console.log('Save appointment confirmation.');
                             })
                             .catch(error => {
-                                console.error('Error sending SMS appointment confirmation:', error);
+                                console.error('Failed to save appointment confirmation:', error);
                             });
                     }
                     catch (error)
                     {
-                        console.error("Failed to send SMS message.", error);
+                        customerBooking.smsConfirmationSent = false;
+                        console.error('Error sending SMS appointment confirmation:', error);
                     }
+
+                    // Schedule SMS for reminder for the appointment
+                    sendSmsBookingReminder(businessInfo.businessName, response.customerBooking)
+                        .then((scheduledReminderResponse) => {
+                            console.log('Scheduled SMS appointment reminder.', scheduledReminderResponse);
+
+                            // Submit the SID to the customer booking
+                            response.customerBooking.smsAppointmentReminderSid = scheduledReminderResponse.sid;
+                            initializeCustomerBooking(response.customerBooking);
+                        })
+                        .catch(error => {
+                            console.error('Error sending SMS appointment confirmation:', error);
+                        });
                 }
 
                 // Move the customer booking to lobby

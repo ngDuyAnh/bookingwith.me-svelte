@@ -47,6 +47,8 @@ export function CustomerBooking(now)
         "servicingEndTime": null,
 
         "walkIn": false,
+
+        "smsConfirmationSent": false,
         "smsConfirmation": false,
         "deleted": false,
         "smsAppointmentReminderSid": null,

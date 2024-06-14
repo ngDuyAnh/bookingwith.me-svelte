@@ -9,7 +9,7 @@ import {now} from "$lib/page/stores/now/now_dayjs_store.js";
 
 const WEB_PAGE_URL = "https://app.bookingwith.me";
 
-export function sendSmsConfirmBookingSuccess(businessName, customerBooking)
+export async function sendSmsConfirmBookingSuccess(businessName, customerBooking)
 {
     // https://help.twilio.com/articles/223183008-Formatting-International-Phone-Numbers
     let formattedPhoneNumber = "+1" + customerBooking.customer.phoneNumber;
@@ -22,13 +22,8 @@ export function sendSmsConfirmBookingSuccess(businessName, customerBooking)
     // Build the SMS message
     let message = `Please click the link to confirm your appointment! Your appointment at ${businessName} is set for ${formattedDate} at ${formattedTime}: ${customerBookingURL}`;
 
-    sendSms(formattedPhoneNumber, message)
-        .then(() => {
-            console.log('Sent SMS appointment confirmation.');
-        })
-        .catch(error => {
-            console.error('Error sending SMS appointment confirmation:', error);
-        });
+    // Send the SMS
+    return await sendSms(formattedPhoneNumber, message);
 }
 
 export async function sendSmsBookingReminder(businessName, customerBooking)
