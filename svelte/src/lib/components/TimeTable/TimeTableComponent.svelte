@@ -1,6 +1,9 @@
 <script>
     import {onMount, setContext} from "svelte";
-    import {getCustomerBooking, initializeCustomerBooking} from "$lib/api/api_server/api_endpoints/customer-booking-portal/api.js";
+    import {
+        getCustomerBooking,
+        initializeCustomerBooking
+    } from "$lib/api/api_server/api_endpoints/customer-booking-portal/api.js";
     import {isToday, now, today} from "$lib/page/stores/now/now_dayjs_store.js";
     import {formatTimeAm, formatToTime} from "$lib/application/Formatter.js";
     import Calendar from "@event-calendar/core";
@@ -272,31 +275,73 @@
         return servicingTicketColor;
     }
 
+    export let limitShowEvents = true;
+
+    export function getDisplayBookingIDList(employeeTimetableList) {
+        const uniqueBookingIDs = new Set();
+
+        employeeTimetableList.forEach(employeeTable => {
+            if (limitShowEvents) {
+                // Filter to get only the COMPLETED bookings
+                const completedTickets = employeeTable.servicingTicketList.filter(ticket =>
+                    ticket.servicingTicketInfo.bookingState === CustomerBookingState.COMPLETED
+                );
+
+                // Get the last completed booking ID
+                if (completedTickets.length > 0) {
+                    const lastCompletedTicket = completedTickets[completedTickets.length - 1];
+                    uniqueBookingIDs.add(lastCompletedTicket.bookingID);
+                }
+
+                // Add all other non-completed booking IDs
+                employeeTable.servicingTicketList.forEach(ticket => {
+                    if (ticket.servicingTicketInfo.bookingState !== CustomerBookingState.COMPLETED) {
+                        uniqueBookingIDs.add(ticket.bookingID);
+                    }
+                });
+            } else {
+                // Get all booking IDs
+                employeeTable.servicingTicketList.forEach(servicingTicket => {
+                    uniqueBookingIDs.add(servicingTicket.bookingID);
+                });
+            }
+        });
+
+        return Array.from(uniqueBookingIDs);
+    }
+
     async function createEvents(employeeTimetableList) {
+        const displayBookingIDList = getDisplayBookingIDList(employeeTimetableList);
+
         return employeeTimetableList.flatMap((employeeTable) =>
-            employeeTable.servicingTicketList.map((servicingTicket) => {
-                // Servicing ticket colour
-                let servicingTicketColor = bookingStateColour(servicingTicket);
+            employeeTable.servicingTicketList
+                // Filter to only display the selected bookingID
+                .filter(servicingTicket => displayBookingIDList.includes(servicingTicket.bookingID))
+                // Create the events for the calendar
+                .map((servicingTicket) =>
+                {
+                    // Servicing ticket colour
+                    let servicingTicketColor = bookingStateColour(servicingTicket);
 
-                return {
-                    // Event variables
-                    start: `${$now.format("YYYY-MM-DD")} ${servicingTicket.timePeriod.startTime}`,
-                    end: `${$now.format("YYYY-MM-DD")} ${servicingTicket.timePeriod.endTime}`,
-                    resourceId: employeeTable.employee.id,
-                    title: ` `,
+                    return {
+                        // Event variables
+                        start: `${$now.format("YYYY-MM-DD")} ${servicingTicket.timePeriod.startTime}`,
+                        end: `${$now.format("YYYY-MM-DD")} ${servicingTicket.timePeriod.endTime}`,
+                        resourceId: employeeTable.employee.id,
+                        title: ` `,
 
-                    // Ticket state
-                    color: servicingTicketColor,
+                        // Ticket state
+                        color: servicingTicketColor,
 
-                    // Booking information
-                    extendedProps: {
-                        employeeTimetable: employeeTable,
-                        servicingTicket: servicingTicket,
-                        description: `${servicingTicket.servicingTicketInfo.service.serviceName}\n(${servicingTicket.servicingTicketInfo.customerName})`,
-                        time: `${formatTimeAm(servicingTicket.timePeriod.startTime)} - ${formatTimeAm(servicingTicket.timePeriod.endTime)}`
-                    },
-                };
-            })
+                        // Booking information
+                        extendedProps: {
+                            employeeTimetable: employeeTable,
+                            servicingTicket: servicingTicket,
+                            description: `${servicingTicket.servicingTicketInfo.service.serviceName}\n(${servicingTicket.servicingTicketInfo.customerName})`,
+                            time: `${formatTimeAm(servicingTicket.timePeriod.startTime)} - ${formatTimeAm(servicingTicket.timePeriod.endTime)}`
+                        },
+                    };
+                })
         );
     }
 
