@@ -292,6 +292,13 @@
                     const lastCompletedTicket = completedTickets[completedTickets.length - 1];
                     uniqueBookingIDs.add(lastCompletedTicket.bookingID);
                 }
+
+                // Add all other non-completed booking IDs
+                employeeTable.servicingTicketList.forEach(ticket => {
+                    if (ticket.servicingTicketInfo.bookingState !== CustomerBookingState.COMPLETED) {
+                        uniqueBookingIDs.add(ticket.bookingID);
+                    }
+                });
             } else {
                 // Get all booking IDs
                 employeeTable.servicingTicketList.forEach(servicingTicket => {
