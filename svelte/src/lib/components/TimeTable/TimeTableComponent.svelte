@@ -126,8 +126,8 @@
                     conflictEmployeeEvents[info.event.id] = "border-2 border-red-600";
                     info.el.className = `ec-event border-2 border-red-600`;
                 } else if (bookedEmployee !== null && bookedEmployee.id === employeeID) {
-                    info.el.className = `ec-event border-2 border-purple-600`;
-                    assignedEmployeeEvents[info.event.id] = "border-2 border-purple-600";
+                    info.el.className = `ec-event border-4 border-black`;
+                    assignedEmployeeEvents[info.event.id] = "border-4 border-black";
                 }
 
                 info.el.innerHTML = buildInnerHTML(extendedProps.time, extendedProps.description);
