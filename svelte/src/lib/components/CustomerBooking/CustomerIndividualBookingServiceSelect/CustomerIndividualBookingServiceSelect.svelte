@@ -13,6 +13,8 @@
 
     export let guestIndex = 0;
 
+    export let showAllEmployeeSelectOptions;
+
     let showAlert = false;
     let alertMsg = "";
 
@@ -126,6 +128,8 @@
                                     customerIndividualBooking={customerIndividualBookingList[guestIndex]}
                                     serviceGroup={serviceGroup.serviceList}
                                     multiselect={serviceGroup.multiselect}
+
+                                    {showAllEmployeeSelectOptions}
                             />
                         {/each}
                     {/key}

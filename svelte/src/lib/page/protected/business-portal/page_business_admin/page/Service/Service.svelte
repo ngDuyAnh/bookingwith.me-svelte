@@ -290,7 +290,7 @@
         </Label>
 
         <Label class="space-y-2">
-            <Checkbox bind:checked={editingCloneService.showPlus} required>
+            <Checkbox bind:checked={editingCloneService.showPlus}>
                 Show plus sign
             </Checkbox>
         </Label>

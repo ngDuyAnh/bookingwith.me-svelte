@@ -46,6 +46,8 @@
                 {business}
                 {customerBooking}
 
+                showAllEmployeeSelectOptions={$modalCreateCustomerBooking.showAllEmployeeSelectOptions}
+
                 customerBookingInformationFormProps={$modalCreateCustomerBooking.customerBookingInformationFormProps}
 
                 customerBookingInformationProps={$modalCreateCustomerBooking.customerBookingInformationProps}

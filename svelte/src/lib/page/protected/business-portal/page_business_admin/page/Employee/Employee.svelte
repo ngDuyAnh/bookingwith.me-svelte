@@ -1,5 +1,5 @@
 <script>
-    import { Button, Modal, Label, Input } from 'flowbite-svelte';
+    import {Button, Modal, Label, Input, Checkbox} from 'flowbite-svelte';
     import {
         getEmployeeWorkSchedule,
         initializeBusiness,
@@ -216,9 +216,16 @@
             <span>Employee Name</span>
             <Input bind:value={editingCloneEmployee.employeeName} required />
         </Label>
+
         <Label class="space-y-2">
             <span>Employee Email:</span>
             <Input bind:value={editingCloneEmployee.user.email} required />
+        </Label>
+
+        <Label class="space-y-2">
+            <Checkbox bind:checked={editingCloneEmployee.showOnBookingPage}>
+                Show on booking page
+            </Checkbox>
         </Label>
 
         <Button class="w-full" on:click={handleEditEmployee}>Update</Button>

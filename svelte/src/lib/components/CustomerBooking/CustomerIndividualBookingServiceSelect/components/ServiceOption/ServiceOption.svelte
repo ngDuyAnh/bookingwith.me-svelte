@@ -7,12 +7,14 @@
     import {
         employeeToSelectOption
     } from "$lib/components/CustomerBooking/CustomerIndividualBookingServiceSelect/components/ServiceOption/functions.js";
-    import {bookingEstimate} from "$lib/page/customer-booking-portal/get/stores/bookingEstimate.js";
+    import {business} from "$lib/page/stores/business/business.js";
 
     export let service;
     export let customerIndividualBooking;
     export let serviceGroup; // Receive the serviceGroup list
     export let multiselect; // Receive the multiselect flag
+
+    export let showAllEmployeeSelectOptions;
 
     let employeeSelectOptions = [];
     let isSelected = false;
@@ -33,16 +35,24 @@
     }
 
     onMount(() => {
+        // Default option to select any employee
         employeeSelectOptions = [
             {
                 value: -1,
                 name: "Any",
                 data: null
-            },
-            ...service.employeeList.map(employee => employeeToSelectOption(employee))
+            }
         ];
-        employeeIdSelected = -1;
 
+        // Add the employee options
+        service.employeeList.forEach(employee => {
+            if (showAllEmployeeSelectOptions || employee.showOnBookingPage) {
+                employeeSelectOptions.push(employeeToSelectOption(employee));
+            }
+        });
+
+        // Preselect the Any option
+        employeeIdSelected = -1;
         let selectedBooking = getServiceBookingInfo();
         initializeSelectedServiceBookingInfo(selectedBooking);
     });

@@ -4,8 +4,9 @@ export const modalEditCustomerBooking = writable({
     open: false,
     customerBooking: undefined,
 
+    showAllEmployeeSelectOptions: true,
+
     // Option header
-    showCustomerBookingInformationOptionHeader: true,
     customerBookingInformationProps: {
         showOverride: true,
         showSendSms: true,
@@ -29,8 +30,9 @@ export function handleEditCustomerBooking(customerBooking)
         open: true,
         customerBooking: JSON.parse(JSON.stringify(customerBooking)),
 
+        showAllEmployeeSelectOptions: true,
+
         // Option header
-        showCustomerBookingInformationOptionHeader: true,
         customerBookingInformationProps: {
             showOverride: true,
             showSendSms: true,
@@ -55,8 +57,9 @@ export function handleCustomerBookingPortalEditCustomerBooking(customerBooking)
         open: true,
         customerBooking: JSON.parse(JSON.stringify(customerBooking)),
 
+        showAllEmployeeSelectOptions: true,
+
         // Option header
-        showCustomerBookingInformationOptionHeader: false,
         customerBookingInformationProps: {
             showOverride: false,
             showSendSms: false,

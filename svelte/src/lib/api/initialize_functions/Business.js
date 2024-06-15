@@ -35,7 +35,9 @@ export function Employee() {
         "id": -1,
         "employeeName": "",
         "user": User(),
-        "archive": false,
+
+        "showOnBookingPage": true,
+        "archive": false
     };
 }
 

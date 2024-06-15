@@ -3,6 +3,8 @@ import { writable } from 'svelte/store';
 export const modalCreateCustomerBooking = writable({
     open: false,
 
+    showAllEmployeeSelectOptions: true,
+
     // Option header
     customerBookingInformationProps: {
         showOverride: true,
@@ -25,6 +27,8 @@ export function handleNewCustomerBooking()
 {
     modalCreateCustomerBooking.set({
         open: true,
+
+        showAllEmployeeSelectOptions: true,
 
         // Option header
         customerBookingInformationProps: {
@@ -49,6 +53,8 @@ export function handleNewCustomerBookingWalkin()
 {
     modalCreateCustomerBooking.set({
         open: true,
+
+        showAllEmployeeSelectOptions: true,
 
         // Option header
         customerBookingInformationProps: {
