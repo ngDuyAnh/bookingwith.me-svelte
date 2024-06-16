@@ -300,7 +300,7 @@
                         .then((scheduledReminderResponse) => {
                             console.log('Scheduled SMS appointment reminder.', scheduledReminderResponse);
 
-                            // Submit the SID to the customer booking
+                            // Record the SMS sid to the database
                             response.customerBooking.smsAppointmentReminderSid = scheduledReminderResponse.sid;
                             initializeCustomerBooking(response.customerBooking);
                         })
