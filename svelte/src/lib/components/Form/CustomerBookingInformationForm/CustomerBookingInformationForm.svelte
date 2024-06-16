@@ -37,33 +37,29 @@
 
     let currentTimeString = "00:00";
     let availableTimeOptionList = [];
-    async function fetchAvailableTimeList()
-    {
+
+    async function fetchAvailableTimeList() {
         // Empty
         availableTimeOptionList = [];
 
         const bookingDate = dayjs(customerBooking.bookingDate, formatToDate);
         currentTimeString = "00:00"; // Booking date is in the future
-        if (bookingDate.isSame($now, 'day'))
-        {
+        if (bookingDate.isSame($now, 'day')) {
             currentTimeString = $now.format(formatToTime)
         }
-        // Invalid, the date selected is before today
+            // Invalid, the date selected is before today
         // Set it to the end of the day for no availability
-        else if (bookingDate.isBefore($now, 'day'))
-        {
+        else if (bookingDate.isBefore($now, 'day')) {
             currentTimeString = "23:59";
         }
 
-        try
-        {
+        try {
             let response = {};
             const clonedCustomerBooking = {
                 ...customerBooking
             };
 
-            if (walkinAvailabilityFlag)
-            {
+            if (walkinAvailabilityFlag) {
                 clonedCustomerBooking.bookingState = CustomerBookingState.APPOINTMENT;
 
                 // Get the availabilities
@@ -84,9 +80,7 @@
                             availability: availability
                         };
                     });
-            }
-            else
-            {
+            } else {
                 clonedCustomerBooking.bookingState = CustomerBookingState.SCHEDULE;
 
                 // Get the availabilities
@@ -110,52 +104,44 @@
             }
 
             // Currently the availability is not walk-in
-            if (!walkinAvailabilityFlag)
-            {
+            if (!walkinAvailabilityFlag) {
                 // Add the option to fetch walk-in availability
-                if (availableTimeOptionList.length > 0)
-                {
+                if (availableTimeOptionList.length > 0) {
                     availableTimeOptionList.push({
                         value: undefined,
                         name: "Show more availability...",
                         availability: undefined
                     });
                 }
-                // No availability
+                    // No availability
                 // Search for walk-in availability
-                else if (availableTimeOptionList.length === 0)
-                {
+                else if (availableTimeOptionList.length === 0) {
                     walkinAvailabilityFlag = true;
                     await fetchAvailableTimeList();
                 }
             }
 
             //console.log("availableTimeOptionList", availableTimeOptionList)
-        }
-        catch (error)
-        {
+        } catch (error) {
             console.log(error);
             availableTimeOptionList = [];
         }
 
         // Preselect booking time
         // Select the first option
-        if (preselectForWalkIn && availableTimeOptionList.length > 0)
-        {
+        if (preselectForWalkIn && availableTimeOptionList.length > 0) {
             customerBooking.bookingTime = availableTimeOptionList[0].value;
         }
-        // Customer booking already have a select booking time
-        // Preselect that time
-        // This could be from edit customer booking
+            // Customer booking already have a select booking time
+            // Preselect that time
+            // This could be from edit customer booking
         // If the selected booking time no longer available, unselected it by setting it to null
-        else if (customerBooking.bookingTime)
-        {
+        else if (customerBooking.bookingTime) {
             customerBooking.bookingTime =
                 availableTimeOptionList.find(option => option.value === customerBooking.bookingTime)?.value ?? null;
         }
         // Default and safeguard, no booking time selected
-        else
-        {
+        else {
             customerBooking.bookingTime = null;
         }
     }
@@ -164,8 +150,7 @@
     // Fetch the walk-in availability
     let selectedAvailability = undefined;
     $: selectedAvailability = availableTimeOptionList.find(option => option.value === customerBooking.bookingTime)?.availability;
-    $: if (customerBooking.bookingTime === undefined)
-    {
+    $: if (customerBooking.bookingTime === undefined) {
         // Reset the selected booking time
         customerBooking.bookingTime = null;
 
@@ -175,8 +160,8 @@
     }
 
     let dateSelected = customerBooking.bookingDate;
-    function getAvailableTimeOptionList()
-    {
+
+    function getAvailableTimeOptionList() {
         // New date selected
         customerBooking.bookingDate = dateSelected;
 
@@ -188,13 +173,11 @@
         // Or booking state is servicing
         preselectForWalkIn = isToday(customerBooking.bookingDate) ||
             customerBooking.bookingState === CustomerBookingState.SERVICING;
-        if (preselectForWalkIn)
-        {
+        if (preselectForWalkIn) {
             walkinAvailabilityFlag = true;
         }
         // Reset the booking time
-        else
-        {
+        else {
             customerBooking.bookingTime = null;
         }
 
@@ -205,19 +188,17 @@
     }
 
     // Initial fetch for availability
-    onMount(async () =>{
+    onMount(async () => {
         getAvailableTimeOptionList();
     })
 
     // Reactive statement to fetch times when the date changes
-    $: if (dateSelected !== customerBooking.bookingDate)
-    {
+    $: if (dateSelected !== customerBooking.bookingDate) {
         getAvailableTimeOptionList();
     }
 
     function customerExists() {
-        if (customerBookingInformationFormProps.customerNameAutoComplete)
-        {
+        if (customerBookingInformationFormProps.customerNameAutoComplete) {
             getCustomer(customerBooking.customer.phoneNumber)
                 .then(customer => {
                     if (customer && customer.customerName) {
@@ -249,15 +230,13 @@
         }
     }
 
-    async function submit()
-    {
+    async function submit() {
         console.log("submit()", customerBooking);
 
         let success = false;
         let error = false;
 
-        try
-        {
+        try {
             let response = {};
 
             // Initialize customer booking
@@ -269,8 +248,7 @@
             customerBooking.walkIn = false;
 
             // Force submit if override is toggled
-            if (customerBookingInformationProps.overrideFlag)
-            {
+            if (customerBookingInformationProps.overrideFlag) {
                 response = await forceSubmitBooking(
                     businessInfo.businessID,
                     currentTimeString,
@@ -278,11 +256,9 @@
                 );
             }
             // Submit appointment
-            else
-            {
+            else {
                 // Asynchronous servicing
-                if (walkinAvailabilityFlag)
-                {
+                if (walkinAvailabilityFlag) {
                     customerBooking.walkIn = true;
                 }
 
@@ -295,35 +271,29 @@
             }
 
             // Success
-            if (response.submitted)
-            {
+            if (response.submitted) {
                 success = true;
 
                 // Send SMS
-                if (customerBookingInformationProps.sendSmsFlag)
-                {
-                    try
-                    {
-                        // Send SMS confirmation for the appointment
-                        await sendSmsConfirmBookingSuccess(businessInfo.businessName, response.customerBooking);
-                        console.log('Sent SMS appointment confirmation.');
-                        customerBooking.smsConfirmationSent = true;
+                if (customerBookingInformationProps.sendSmsFlag) {
+                    // Send SMS confirmation for the appointment
+                    sendSmsConfirmBookingSuccess(businessInfo.businessName, response.customerBooking)
+                        .then(() => {
+                            console.log('Sent SMS appointment confirmation.');
+                            response.customerBooking.smsConfirmationSent = true;
 
-                        // Update the flag for appointment confirmation
-                        // customerBooking.smsConfirmationSent = true;
-                        initializeCustomerBooking(response.customerBooking)
-                            .then(() => {
-                                console.log('Save appointment confirmation.');
-                            })
-                            .catch(error => {
-                                console.error('Failed to save appointment confirmation:', error);
-                            });
-                    }
-                    catch (error)
-                    {
-                        customerBooking.smsConfirmationSent = false;
-                        console.error('Error sending SMS appointment confirmation:', error);
-                    }
+                            // Save to the database
+                            initializeCustomerBooking(response.customerBooking)
+                                .then(() => {
+                                    console.log('Save appointment confirmation.');
+                                })
+                                .catch(error => {
+                                    console.error('Failed to save appointment confirmation:', error);
+                                });
+                        })
+                        .catch(error => {
+                            console.error('Failed to send appointment confirmation:', error);
+                        });
 
                     // Schedule SMS for reminder for the appointment
                     sendSmsBookingReminder(businessInfo.businessName, response.customerBooking)
@@ -340,21 +310,17 @@
                 }
 
                 // Move the customer booking to lobby
-                if (customerBookingInformationProps.lobbyBookingStateFlag)
-                {
+                if (customerBookingInformationProps.lobbyBookingStateFlag) {
                     moveToLobby($now, response.customerBooking, initializeCustomerBooking);
                 }
             }
-        }
-        catch (err)
-        {
+        } catch (err) {
             error = true;
             console.error("Error submitting booking:", err);
         }
 
         // Call the callback function for submit
-        if (submitCallback)
-        {
+        if (submitCallback) {
             submitCallback(success, error);
         }
     }
@@ -432,7 +398,7 @@
             <input type="checkbox"
                    bind:checked={isConsentChecked}
                    required
-                   id="smsConsentCheckbox" />
+                   id="smsConsentCheckbox"/>
             <span> I agree to receive SMS messages about my appointment.</span>
         </Label>
     {/if}
