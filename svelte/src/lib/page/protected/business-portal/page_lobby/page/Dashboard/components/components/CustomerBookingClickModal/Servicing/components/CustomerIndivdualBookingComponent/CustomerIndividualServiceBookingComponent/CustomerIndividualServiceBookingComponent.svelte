@@ -98,7 +98,6 @@
                         class="flex-1 disabled:cursor-not-allowed"
                         disabled={serviceBooking.completed}
                         required
-
                 />
                 <Button
                         type="submit"
