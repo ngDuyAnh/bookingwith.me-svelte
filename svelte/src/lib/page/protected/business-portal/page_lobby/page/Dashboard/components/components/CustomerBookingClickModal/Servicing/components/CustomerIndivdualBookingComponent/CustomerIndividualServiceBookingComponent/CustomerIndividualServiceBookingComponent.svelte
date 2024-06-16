@@ -7,7 +7,7 @@
     import {getContext} from "svelte";
     import {ServicingTicket} from "$lib/api/initialize_functions/CustomerBooking.js";
     import {moveToServicing} from "$lib/page/protected/business-portal/page_lobby/page/Dashboard/components/components/CustomerBookingClickModal/handle_customer_booking_state.js";
-    import {Employee} from "$lib/api/initialize_functions/Business.js";
+    import {BusinessScheduleManagement, Employee} from "$lib/api/initialize_functions/Business.js";
     import {business} from "$lib/page/stores/business/business.js";
 
     export let customerBooking;
@@ -87,7 +87,7 @@
     <p>{serviceBooking.service.serviceName} ({serviceBooking.employee?.employeeName || 'Any'})</p>
 
     <!-- Form to manage service booking -->
-    {#if !$business.businessInfo.passiveManagement}
+    {#if $business.businessInfo.scheduleManagement === BusinessScheduleManagement.ACTIVE}
         <div class="flex flex-row items-center space-x-4 p-1.5"
              style="{serviceBooking.completed ? 'border-radius: 0.5rem; background: repeating-linear-gradient(45deg, #606dbc, #606dbc 10px, #465298 10px, #465298 20px)' : ''}">
             <!-- Form to add new servicing ticket -->
@@ -118,20 +118,20 @@
                 {!serviceBooking.completed ? 'Mark service as done' : 'Mark service as not done'}
             </Button>
         </div>
-    {/if}
 
-    <!-- Existing servicing ticket -->
-    <!-- Only display ticket that is not completed -->
-    {#each serviceBooking.servicingTicketList.filter(ticket => !ticket.isCompleted) as ticket}
-        <div class="mt-4 p-4 border border-gray-500 rounded bg-gray-100">
-            <div class="p-2">
-                <p><strong>Employee:</strong> {ticket.employee.employeeName}</p>
-                <p><strong>Start
-                    Time:</strong> {dayjs(ticket.timePeriod.startTime, formatToTime).format(formatToTimeAm)}</p>
-                <Button on:click={() => handleEndServicing(ticket)} disabled={ticket.isCompleted}>
-                    End
-                </Button>
+        <!-- Existing servicing ticket -->
+        <!-- Only display ticket that is not completed -->
+        {#each serviceBooking.servicingTicketList.filter(ticket => !ticket.isCompleted) as ticket}
+            <div class="mt-4 p-4 border border-gray-500 rounded bg-gray-100">
+                <div class="p-2">
+                    <p><strong>Employee:</strong> {ticket.employee.employeeName}</p>
+                    <p><strong>Start
+                        Time:</strong> {dayjs(ticket.timePeriod.startTime, formatToTime).format(formatToTimeAm)}</p>
+                    <Button on:click={() => handleEndServicing(ticket)} disabled={ticket.isCompleted}>
+                        End
+                    </Button>
+                </div>
             </div>
-        </div>
-    {/each}
+        {/each}
+    {/if}
 </div>

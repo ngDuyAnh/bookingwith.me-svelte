@@ -14,20 +14,17 @@
         from "$lib/page/protected/business-portal/page_lobby/page/Dashboard/components/components/CustomerBookingClickModal/Servicing/ServicingModalComponent.svelte";
     import CompletedModalComponent
         from "$lib/page/protected/business-portal/page_lobby/page/Dashboard/components/components/CustomerBookingClickModal/Completed/CompletedModalComponent.svelte";
-
-    let customerBooking = undefined;
-    $: customerBooking = $customerBookingClickModal.customerBooking;
 </script>
 
 <div class="absolute top-0 left-0 right-0">
     <Modal bind:open={$customerBookingClickModal.open} size="md" outsideclose>
-        {#if customerBooking.bookingState === CustomerBookingState.APPOINTMENT}
+        {#if $customerBookingClickModal.customerBooking.bookingState === CustomerBookingState.APPOINTMENT}
             <AppointmentModalComponent/>
-        {:else if customerBooking.bookingState === CustomerBookingState.LOBBY}
+        {:else if $customerBookingClickModal.customerBooking.bookingState === CustomerBookingState.LOBBY}
             <LobbyModalComponent/>
-        {:else if customerBooking.bookingState === CustomerBookingState.SERVICING}
+        {:else if $customerBookingClickModal.customerBooking.bookingState === CustomerBookingState.SERVICING}
             <ServicingModalComponent/>
-        {:else if customerBooking.bookingState === CustomerBookingState.COMPLETED}
+        {:else if $customerBookingClickModal.customerBooking.bookingState === CustomerBookingState.COMPLETED}
             <CompletedModalComponent/>
         {/if}
     </Modal>
