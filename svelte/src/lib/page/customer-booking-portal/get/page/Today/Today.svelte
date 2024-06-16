@@ -6,14 +6,34 @@
     import Servicing from "$lib/page/customer-booking-portal/get/page/Today/components/Servicing/Servicing.svelte";
     import Completed from "$lib/page/customer-booking-portal/get/page/Today/components/Completed/Completed.svelte";
     import {bookingEstimate} from "$lib/page/customer-booking-portal/get/stores/bookingEstimate.js";
+    import {business} from "$lib/page/stores/business/business.js";
+    import {BusinessScheduleManagement} from "$lib/api/initialize_functions/Business.js";
+    import AppointmentNoneScheduleManagement
+        from "$lib/page/customer-booking-portal/get/page/Today/components/NoneScheduleManagement/AppointmentNoneScheduleManagement/AppointmentNoneScheduleManagement.svelte";
+    import LobbyNoneScheduleManagement
+        from "$lib/page/customer-booking-portal/get/page/Today/components/NoneScheduleManagement/LobbyNoneScheduleManagement/LobbyNoneScheduleManagement.svelte";
+    import ServicingNoneScheduleManagement
+        from "$lib/page/customer-booking-portal/get/page/Today/components/NoneScheduleManagement/ServicingNoneScheduleManagement/ServicingNoneScheduleManagement.svelte";
 </script>
 
 {#if $bookingEstimate.customerBooking.bookingState === CustomerBookingState.APPOINTMENT}
-    <Appointment/>
+    {#if $business.businessInfo.scheduleManagement === BusinessScheduleManagement.NONE}
+        <AppointmentNoneScheduleManagement/>
+    {:else}
+        <Appointment/>
+    {/if}
 {:else if $bookingEstimate.customerBooking.bookingState === CustomerBookingState.LOBBY}
-    <Lobby/>
+    {#if $business.businessInfo.scheduleManagement === BusinessScheduleManagement.NONE}
+        <LobbyNoneScheduleManagement/>
+    {:else}
+        <Lobby/>
+    {/if}
 {:else if $bookingEstimate.customerBooking.bookingState === CustomerBookingState.SERVICING}
-    <Servicing/>
+    {#if $business.businessInfo.scheduleManagement === BusinessScheduleManagement.NONE}
+        <ServicingNoneScheduleManagement/>
+    {:else}
+        <Servicing/>
+    {/if}
 {:else if $bookingEstimate.customerBooking.bookingState === CustomerBookingState.COMPLETED}
     <Completed/>
 {/if}
