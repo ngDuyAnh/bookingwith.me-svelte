@@ -1,5 +1,11 @@
 import {User} from "$lib/api/initialize_functions/User.js";
 
+export const BusinessScheduleManagement = {
+    NONE: 0,
+    PASSIVE: 1,
+    ACTIVE: 2
+}
+
 export function Business()
 {
     return {
@@ -26,7 +32,7 @@ export function BusinessInformation()
         "googleMapsDirectionLink": "",
 
         "active": true,
-        "passiveManagement": false
+        "scheduleManagement": BusinessScheduleManagement.NONE
     };
 }
 
