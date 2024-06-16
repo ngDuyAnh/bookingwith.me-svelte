@@ -27,6 +27,7 @@
     import {business} from "$lib/page/stores/business/business.js";
     import {checkAbleToSendReviewReminder} from "$lib/api/api_server/api_endpoints/lobby-portal/api.js";
     import {checkAbleToSendSmsReviewReminder} from "$lib/api/api_server/functions.js";
+    import {BusinessScheduleManagement} from "$lib/api/initialize_functions/Business.js";
 
     export let isToday;
     export let nonModal = false;
@@ -176,10 +177,17 @@
             </div>
 
             <!-- Footer only show if it is today -->
-            <div id="footer" slot="footer" class="w-full {isToday ? '':'hidden'}">
-                {#if customerBooking.bookingState !== CustomerBookingState.COMPLETED}
-                    <div class="flex w-full">
-                        <div class="justify-start">
+            <div id="footer" slot="footer" class="w-full
+                    {isToday ? '':'hidden'}">
+
+                <div class="flex w-full">
+                    <!--Left options-->
+                    <div class="justify-start">
+
+                        <!--Edit the booking-->
+                        {#if customerBooking.bookingState !== CustomerBookingState.COMPLETED}
+
+                            <!--Edit customer booking-->
                             <Button id="show-tooltip" color="light" outline
                                     on:click={() => {
                                         servicingTicketClickModalToggleOpen();
@@ -195,36 +203,9 @@
                                 </svg>
                             </Button>
                             <Tooltip triggeredBy="#show-tooltip">Edit Booking</Tooltip>
-                        </div>
 
-                        <div class="ml-auto justify-end content-center space-x-2">
-                            <span class="text-gray-700 font-bold">Move to:</span>
-
-                            <!--Move the customer booking to SERVICING-->
-                            {#if $business.businessInfo.passiveManagement && customerBooking.bookingState < CustomerBookingState.SERVICING}
-                                <Button
-                                        class="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded"
-                                        on:click={handleServicingClick}>Servicing
-                                </Button>
-                            {/if}
-
-                            <!--Move the customer booking to COMPLETED-->
-                            {#if indicateSendToCompleted}
-                                <Button
-                                        class="animate-pulse bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded"
-                                        on:click={handleCompletedClick}>Complete
-                                </Button>
-                            {:else}
-                                <Button
-                                        class="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded"
-                                        on:click={handleCompletedClick}>Complete
-                                </Button>
-                            {/if}
-                        </div>
-                    </div>
-                {:else}
-                    <div class="flex w-full">
-                        <div class="justify-start">
+                        {:else}
+                            <!--Customer booking state is COMPLETED, show the option to send review reminder-->
                             <Button disabled={!ableToSendSmsReviewReminder || customerBooking.smsReviewReminderSent}
                                     id="show-tooltip" on:click={() => handleReviewSend()} color="light" outline>
                                 <svg class="w-6 h-6 text-gray-800 dark:text-white" aria-hidden="true"
@@ -242,9 +223,59 @@
                             {:else}
                                 <Tooltip triggeredBy="#show-tooltip">Review reminder already sent</Tooltip>
                             {/if}
-                        </div>
+                        {/if}
                     </div>
-                {/if}
+
+                    <!--Right options-->
+                    <div class="ml-auto justify-end content-center space-x-2">
+
+                        <!--Only passive and management can move customer booking state-->
+                        {#if $business.businessInfo.scheduleManagement !== BusinessScheduleManagement.NONE}
+
+                            <!--Passive management-->
+                            {#if $business.businessInfo.scheduleManagement === BusinessScheduleManagement.PASSIVE}
+                                <span class="text-gray-700 font-bold">Move to:</span>
+
+                                <!--Customer booking state is APPOINTMENT OR LOBBY-->
+                                {#if customerBooking.bookingState < CustomerBookingState.SERVICING}
+                                    <Button
+                                            class="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded"
+                                            on:click={handleServicingClick}>Servicing
+                                    </Button>
+                                {/if}
+
+                                <!--Customer booking state is SERVICING-->
+                                {#if customerBooking.bookingState === CustomerBookingState.SERVICING}
+                                    <Button
+                                            class="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded"
+                                            on:click={handleCompletedClick}>Complete
+                                    </Button>
+                                {/if}
+                            {/if}
+
+                            <!--Active management-->
+                            {#if $business.businessInfo.scheduleManagement === BusinessScheduleManagement.ACTIVE}
+
+                                <!--Customer booking state is APPOINTMENT OR LOBBY-->
+                                {#if customerBooking.bookingState === CustomerBookingState.SERVICING}
+                                    <span class="text-gray-700 font-bold">Move to:</span>
+
+                                    <Button
+                                            class="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded"
+                                            on:click={handleCompletedClick}>Complete
+                                    </Button>
+                                {:else if customerBooking.bookingState === CustomerBookingState.COMPLETED}
+                                    <span class="text-gray-700 font-bold">Move to:</span>
+
+                                    <Button
+                                            class="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded"
+                                            on:click={handleServicingClick}>Servicing
+                                    </Button>
+                                {/if}
+                            {/if}
+                        {/if}
+                    </div>
+                </div>
             </div>
         </Modal>
     {/if}
