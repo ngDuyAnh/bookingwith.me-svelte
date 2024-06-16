@@ -41,9 +41,20 @@
     }
 
     async function handleReviewSend() {
-        if (ableToSendSmsReviewReminder && !$customerBookingClickModal.customerBooking.smsReviewReminderSent) {
-            sendSMSAskingForReview($business.businessInfo.businessName, $customerBookingClickModal.customerBooking);
-            submitCustomerBooking($customerBookingClickModal.customerBooking);
+        if (ableToSendSmsReviewReminder &&
+            !$customerBookingClickModal.customerBooking.smsReviewReminderSent)
+        {
+            sendSMSAskingForReview($business.businessInfo.businessName, $customerBookingClickModal.customerBooking)
+                .then(() => {
+                    console.log('Review reminder sent.');
+
+                    // Record appointment SMS to the database
+                    $customerBookingClickModal.customerBooking.smsReviewReminderSent = true;
+                    submitCustomerBooking($customerBookingClickModal.customerBooking);
+                })
+                .catch(error => {
+                    console.error('Error sending review reminder:', error);
+                });
         }
     }
 </script>
@@ -91,7 +102,7 @@
         <Button disabled={!ableToSendSmsReviewReminder || $customerBookingClickModal.customerBooking.smsReviewReminderSent}
                 color="light"
                 outline
-                on:click={() => handleReviewSend()}
+                on:click={handleReviewSend}
         >
             <svg class="w-6 h-6 text-gray-800 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg"
                  width="24" height="24" fill="currentColor" viewBox="0 0 24 24">
