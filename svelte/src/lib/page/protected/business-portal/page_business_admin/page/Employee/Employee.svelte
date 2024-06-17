@@ -223,7 +223,7 @@
         </Label>
 
         <Label class="space-y-2">
-            <Checkbox bind:checked={editingCloneEmployee.showOnBookingPage}>
+            <Checkbox bind:checked={editingCloneEmployee.showOnlineBookingPage}>
                 Show on booking page
             </Checkbox>
         </Label>

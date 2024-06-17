@@ -42,7 +42,7 @@ export function Employee() {
         "employeeName": "",
         "user": User(),
 
-        "showOnBookingPage": true,
+        "showOnlineBookingPage": true,
         "archive": false
     };
 }

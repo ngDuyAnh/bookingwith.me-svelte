@@ -46,7 +46,7 @@
 
         // Add the employee options
         service.employeeList.forEach(employee => {
-            if (showAllEmployeeSelectOptions || employee.showOnBookingPage) {
+            if (showAllEmployeeSelectOptions || employee.showOnlineBookingPage) {
                 employeeSelectOptions.push(employeeToSelectOption(employee));
             }
         });
