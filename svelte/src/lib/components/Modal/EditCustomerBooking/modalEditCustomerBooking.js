@@ -1,4 +1,6 @@
-import { writable } from 'svelte/store';
+import {get, writable} from 'svelte/store';
+import {business} from "$lib/page/stores/business/business.js";
+import {BusinessScheduleManagement} from "$lib/api/initialize_functions/Business.js";
 
 export const modalEditCustomerBooking = writable({
     open: false,
@@ -24,8 +26,12 @@ export const modalEditCustomerBooking = writable({
     }
 });
 
-export function handleEditCustomerBooking(customerBooking)
+export function handleLobbyPortalEditCustomerBooking(customerBooking)
 {
+    const currentBusiness = get(business);
+    const scheduleManagement = currentBusiness.businessInfo.scheduleManagement;
+    const overrideFlagState = scheduleManagement === BusinessScheduleManagement.NONE;
+
     modalEditCustomerBooking.set({
         open: true,
         customerBooking: JSON.parse(JSON.stringify(customerBooking)),
@@ -38,7 +44,7 @@ export function handleEditCustomerBooking(customerBooking)
             showSendSms: true,
             showLobbyBookingState: false,
 
-            overrideFlag: false,
+            overrideFlag: overrideFlagState,
             sendSMSFlag: false,
             lobbyBookingStateFlag: false
         },

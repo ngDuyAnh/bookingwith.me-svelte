@@ -9,7 +9,9 @@
     import {Button, Modal, Tooltip} from "flowbite-svelte";
     import {deleteCustomerBooking} from "$lib/api/api_server/api_endpoints/customer-booking-portal/api.js";
     import {business} from "$lib/page/stores/business/business.js";
-    import {handleEditCustomerBooking} from "$lib/components/Modal/EditCustomerBooking/modalEditCustomerBooking.js";
+    import {
+        handleLobbyPortalEditCustomerBooking
+    } from "$lib/components/Modal/EditCustomerBooking/modalEditCustomerBooking.js";
 
     let tomorrow  = $now.startOf('day').add(1, 'day');
     $: tomorrow = $now.startOf('day').add(1, 'day');
@@ -120,7 +122,7 @@
 
         <div class="mt-4 flex ">
             <div class="justify-start">
-                <Button id="show-tooltip" on:click={() => handleEditCustomerBooking(selectedCustomerBooking)} color="light" outline>
+                <Button id="show-tooltip" on:click={() => handleLobbyPortalEditCustomerBooking(selectedCustomerBooking)} color="light" outline>
                     <svg class="w-6 h-6 text-gray-800 dark:text-white" aria-hidden="true"
                          xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
                         <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"

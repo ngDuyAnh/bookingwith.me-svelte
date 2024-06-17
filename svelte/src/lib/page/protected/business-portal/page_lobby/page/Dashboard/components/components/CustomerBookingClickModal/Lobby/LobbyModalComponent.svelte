@@ -11,7 +11,7 @@
     } from "$lib/page/protected/business-portal/page_lobby/page/Dashboard/components/components/CustomerBookingClickModal/handle_customer_booking_state.js";
     import {now} from "$lib/page/stores/now/now_dayjs_store.js";
     import {getContext} from "svelte";
-    import {handleEditCustomerBooking} from "$lib/components/Modal/EditCustomerBooking/modalEditCustomerBooking.js";
+    import {handleLobbyPortalEditCustomerBooking} from "$lib/components/Modal/EditCustomerBooking/modalEditCustomerBooking.js";
 
     // Retrieve customer booking list update function
     const submitCustomerBooking = getContext('submitCustomerBooking');
@@ -59,7 +59,7 @@
 
     <!--Left options-->
     <div class="justify-start">
-        <Button id="show-tooltip" on:click={() => handleEditCustomerBooking($customerBookingClickModal.customerBooking)}
+        <Button id="show-tooltip" on:click={() => handleLobbyPortalEditCustomerBooking($customerBookingClickModal.customerBooking)}
                 color="light" outline>
             <svg class="w-6 h-6 text-gray-800 dark:text-white" aria-hidden="true"
                  xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">

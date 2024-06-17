@@ -22,7 +22,9 @@
         findIndividualBookingFromCustomerBooking
     } from "$lib/api/initialize_functions/customer-booking-utility-functions.js";
     import {CustomerBookingState} from "$lib/api/initialize_functions/CustomerBooking.js";
-    import {handleEditCustomerBooking} from "$lib/components/Modal/EditCustomerBooking/modalEditCustomerBooking.js";
+    import {
+        handleLobbyPortalEditCustomerBooking
+    } from "$lib/components/Modal/EditCustomerBooking/modalEditCustomerBooking.js";
     import {sendSMSAskingForReview} from "$lib/api/api_twilio/functions.js";
     import {business} from "$lib/page/stores/business/business.js";
     import {checkAbleToSendReviewReminder} from "$lib/api/api_server/api_endpoints/lobby-portal/api.js";
@@ -191,7 +193,7 @@
                             <Button id="show-tooltip" color="light" outline
                                     on:click={() => {
                                         servicingTicketClickModalToggleOpen();
-                                        handleEditCustomerBooking($servicingTicketClickModal.customerBooking)
+                                        handleLobbyPortalEditCustomerBooking($servicingTicketClickModal.customerBooking)
                                     }}
                             >
                                 <svg class="w-6 h-6 text-gray-800 dark:text-white" aria-hidden="true"

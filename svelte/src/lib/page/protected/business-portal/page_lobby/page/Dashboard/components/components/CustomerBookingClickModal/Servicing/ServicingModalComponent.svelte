@@ -12,9 +12,8 @@
     import {getContext} from "svelte";
     import CustomerIndividualBookingComponent
         from "$lib/page/protected/business-portal/page_lobby/page/Dashboard/components/components/CustomerBookingClickModal/Servicing/components/CustomerIndivdualBookingComponent/CustomerIndividualBookingComponent.svelte";
-    import {handleEditCustomerBooking} from "$lib/components/Modal/EditCustomerBooking/modalEditCustomerBooking.js";
+    import {handleLobbyPortalEditCustomerBooking} from "$lib/components/Modal/EditCustomerBooking/modalEditCustomerBooking.js";
     import {business} from "$lib/page/stores/business/business.js";
-    import {BusinessScheduleManagement} from "$lib/api/initialize_functions/Business.js";
     import {checkAbleToSendReviewReminder} from "$lib/api/api_server/api_endpoints/lobby-portal/api.js";
     import {checkAbleToSendSmsReviewReminder} from "$lib/api/api_server/functions.js";
     import {sendSMSAskingForReview} from "$lib/api/api_twilio/functions.js";
@@ -87,7 +86,7 @@
 
     <!--Left options-->
     <div class="justify-start">
-        <Button id="show-tooltip" on:click={() => handleEditCustomerBooking($customerBookingClickModal.customerBooking)}
+        <Button id="show-tooltip" on:click={() => handleLobbyPortalEditCustomerBooking($customerBookingClickModal.customerBooking)}
                 color="light" outline>
             <svg class="w-6 h-6 text-gray-800 dark:text-white" aria-hidden="true"
                  xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
