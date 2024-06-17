@@ -13,7 +13,7 @@
 
     export let guestIndex = 0;
 
-    export let showAllEmployeeSelectOptions;
+    export let customerIndividualBookingServiceSelectProps;
 
     let showAlert = false;
     let alertMsg = "";
@@ -113,27 +113,31 @@
     <div class="mt-3">
         <Accordion>
             {#each business.serviceGroupList as serviceGroup}
-                <AccordionItem class="bg-gray-100">
-                    <div slot="header" class="flex items-center w-full">
-                        <div class="flex flex-col sm:flex-row items-center justify-between w-full  text-center sm:text-left">
-                            <span class="font-semibold mb-2 sm:mb-0 sm:mr-3">{serviceGroup.serviceGroupName}</span>
-                            <span class="text-sm text-gray-500 flex-1">{serviceGroup.description}</span>
+                {#if customerIndividualBookingServiceSelectProps.showAllServiceGroup || serviceGroup.showOnlineBookingPage}
+                    <AccordionItem class="bg-gray-100">
+                        <div slot="header" class="flex items-center w-full">
+                            <div class="flex flex-col sm:flex-row items-center justify-between w-full  text-center sm:text-left">
+                                <span class="font-semibold mb-2 sm:mb-0 sm:mr-3">{serviceGroup.serviceGroupName}</span>
+                                <span class="text-sm text-gray-500 flex-1">{serviceGroup.description}</span>
+                            </div>
                         </div>
-                    </div>
 
-                    {#key guestIndex}
-                        {#each serviceGroup.serviceList as service}
-                            <ServiceOption
-                                    {service}
-                                    customerIndividualBooking={customerIndividualBookingList[guestIndex]}
-                                    serviceGroup={serviceGroup.serviceList}
-                                    multiselect={serviceGroup.multiselect}
+                        {#key guestIndex}
+                            {#each serviceGroup.serviceList as service}
+                                {#if customerIndividualBookingServiceSelectProps.showAllService || service.showOnlineBookingPage}
+                                    <ServiceOption
+                                            {service}
+                                            customerIndividualBooking={customerIndividualBookingList[guestIndex]}
+                                            serviceGroup={serviceGroup.serviceList}
+                                            multiselect={serviceGroup.multiselect}
 
-                                    {showAllEmployeeSelectOptions}
-                            />
-                        {/each}
-                    {/key}
-                </AccordionItem>
+                                            showAllEmployeeSelectOptions={customerIndividualBookingServiceSelectProps.showAllEmployeeSelectOptions}
+                                    />
+                                {/if}
+                            {/each}
+                        {/key}
+                    </AccordionItem>
+                {/if}
             {/each}
         </Accordion>
     </div>

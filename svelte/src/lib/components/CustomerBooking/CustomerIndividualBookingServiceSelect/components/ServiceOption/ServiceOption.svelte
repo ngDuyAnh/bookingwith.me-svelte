@@ -7,12 +7,11 @@
     import {
         employeeToSelectOption
     } from "$lib/components/CustomerBooking/CustomerIndividualBookingServiceSelect/components/ServiceOption/functions.js";
-    import {business} from "$lib/page/stores/business/business.js";
 
     export let service;
     export let customerIndividualBooking;
-    export let serviceGroup; // Receive the serviceGroup list
-    export let multiselect; // Receive the multiselect flag
+    export let serviceGroup;
+    export let multiselect;
 
     export let showAllEmployeeSelectOptions;
 

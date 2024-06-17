@@ -8,7 +8,11 @@
         from "$lib/components/CustomerBooking/CustomerBookingInformation/CustomerBookingInformation.svelte";
     import BookingSuccess from "$lib/components/CustomerBooking/BookingSuccess/BookingSuccess.svelte";
 
-    export let showAllEmployeeSelectOptions = false;
+    export let customerIndividualBookingServiceSelectProps = {
+        showAllServiceGroup: false,
+        showAllService: false,
+        showAllEmployeeSelectOptions: false
+    };
 
     export let customerBookingInformationProps = {
         showOverride: false,
@@ -87,7 +91,7 @@
 
                 bind:guestIndex={guestIndex}
 
-                {showAllEmployeeSelectOptions}
+                {customerIndividualBookingServiceSelectProps}
         />
     {:else if pageIndex === 2}
         <CustomerBookingInformation

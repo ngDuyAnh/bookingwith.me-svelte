@@ -5,6 +5,13 @@ export const modalCreateCustomerBooking = writable({
 
     showAllEmployeeSelectOptions: true,
 
+    // Customer individual booking select service
+    customerIndividualBookingServiceSelectProps: {
+        showAllServiceGroup: true,
+        showAllService: true,
+        showAllEmployeeSelectOptions: true
+    },
+
     // Option header
     customerBookingInformationProps: {
         showOverride: true,
@@ -28,7 +35,12 @@ export function handleNewCustomerBooking()
     modalCreateCustomerBooking.set({
         open: true,
 
-        showAllEmployeeSelectOptions: true,
+        // Customer individual booking select service
+        customerIndividualBookingServiceSelectProps: {
+            showAllServiceGroup: true,
+            showAllService: true,
+            showAllEmployeeSelectOptions: true
+        },
 
         // Option header
         customerBookingInformationProps: {
@@ -54,7 +66,12 @@ export function handleNewCustomerBookingWalkin()
     modalCreateCustomerBooking.set({
         open: true,
 
-        showAllEmployeeSelectOptions: true,
+        // Customer individual booking select service
+        customerIndividualBookingServiceSelectProps: {
+            showAllServiceGroup: true,
+            showAllService: true,
+            showAllEmployeeSelectOptions: true
+        },
 
         // Option header
         customerBookingInformationProps: {
