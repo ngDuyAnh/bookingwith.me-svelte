@@ -18,7 +18,7 @@
     import {sendSmsBookingReminder} from "$lib/api/api_twilio/functions.js";
     import {
         moveToLobby
-    } from "$lib/page/protected/business-portal/page_lobby/page/Dashboard/components/components/CustomerBookingClickModal/handle_customer_booking_state.js";
+    } from "$lib/components/CustomerBookingClickModal/handle_customer_booking_state.js";
     import {isToday} from "$lib/page/stores/now/now_dayjs_store.js";
 
     export let customerBookingInformationFormProps;

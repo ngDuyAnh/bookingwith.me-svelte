@@ -5,15 +5,15 @@
     } from "$lib/api/initialize_functions/CustomerBooking.js";
     import {
         customerBookingClickModal
-    } from "$lib/page/protected/business-portal/page_lobby/page/Dashboard/components/components/CustomerBookingClickModal/stores/customerBookingClickModal.js";
+    } from "$lib/components/CustomerBookingClickModal/stores/customerBookingClickModal.js";
     import AppointmentModalComponent
-        from "$lib/page/protected/business-portal/page_lobby/page/Dashboard/components/components/CustomerBookingClickModal/Appointment/AppointmentModalComponent.svelte";
+        from "$lib/components/CustomerBookingClickModal/Appointment/AppointmentModalComponent.svelte";
     import LobbyModalComponent
-        from "$lib/page/protected/business-portal/page_lobby/page/Dashboard/components/components/CustomerBookingClickModal/Lobby/LobbyModalComponent.svelte";
+        from "$lib/components/CustomerBookingClickModal/Lobby/LobbyModalComponent.svelte";
     import ServicingModalComponent
-        from "$lib/page/protected/business-portal/page_lobby/page/Dashboard/components/components/CustomerBookingClickModal/Servicing/ServicingModalComponent.svelte";
+        from "$lib/components/CustomerBookingClickModal/Servicing/ServicingModalComponent.svelte";
     import CompletedModalComponent
-        from "$lib/page/protected/business-portal/page_lobby/page/Dashboard/components/components/CustomerBookingClickModal/Completed/CompletedModalComponent.svelte";
+        from "$lib/components/CustomerBookingClickModal/Completed/CompletedModalComponent.svelte";
 </script>
 
 <div class="absolute top-0 left-0 right-0">

@@ -3,7 +3,7 @@
         from "$lib/page/protected/business-portal/page_lobby/page/Dashboard/components/components/CustomerBookingList/CustomerBookingListItem/CustomerBookingListItem.svelte";
     import {
         handleCustomerBookingClick
-    } from "$lib/page/protected/business-portal/page_lobby/page/Dashboard/components/components/CustomerBookingClickModal/stores/customerBookingClickModal.js";
+    } from "$lib/components/CustomerBookingClickModal/stores/customerBookingClickModal.js";
 
     export let customerBookingList;
 </script>

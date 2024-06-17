@@ -3,10 +3,10 @@
     import {formatToTime, formatToTimeAm} from "$lib/application/Formatter.js";
     import {
         customerBookingClickModal
-    } from "$lib/page/protected/business-portal/page_lobby/page/Dashboard/components/components/CustomerBookingClickModal/stores/customerBookingClickModal.js";
+    } from "$lib/components/CustomerBookingClickModal/stores/customerBookingClickModal.js";
     import {
         moveToServicing
-    } from "$lib/page/protected/business-portal/page_lobby/page/Dashboard/components/components/CustomerBookingClickModal/handle_customer_booking_state.js";
+    } from "$lib/components/CustomerBookingClickModal/handle_customer_booking_state.js";
     import {now} from "$lib/page/stores/now/now_dayjs_store.js";
     import {getContext} from "svelte";
     import {Button, Tooltip} from "flowbite-svelte";

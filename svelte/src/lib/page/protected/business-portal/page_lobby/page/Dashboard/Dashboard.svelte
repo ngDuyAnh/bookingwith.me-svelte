@@ -18,10 +18,10 @@
     } from "$lib/page/protected/business-portal/page_lobby/stores/dashboard_store.js";
     import {
         customerBookingClickModal
-    } from "$lib/page/protected/business-portal/page_lobby/page/Dashboard/components/components/CustomerBookingClickModal/stores/customerBookingClickModal.js";
+    } from "$lib/components/CustomerBookingClickModal/stores/customerBookingClickModal.js";
     import {Spinner} from "flowbite-svelte";
     import CustomerBookingClickModal
-        from "$lib/page/protected/business-portal/page_lobby/page/Dashboard/components/components/CustomerBookingClickModal/CustomerBookingClickModal.svelte";
+        from "$lib/components/CustomerBookingClickModal/CustomerBookingClickModal.svelte";
 
     async function fetchCustomerBookingList()
     {
