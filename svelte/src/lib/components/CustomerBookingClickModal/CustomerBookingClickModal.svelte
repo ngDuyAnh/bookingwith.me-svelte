@@ -16,7 +16,7 @@
         from "$lib/components/CustomerBookingClickModal/Completed/CompletedModalComponent.svelte";
 </script>
 
-<div class="absolute top-0 left-0 right-0">
+<div class="absolute top-0 left-0">
     <Modal bind:open={$customerBookingClickModal.open} size="md" outsideclose>
         {#if $customerBookingClickModal.customerBooking.bookingState === CustomerBookingState.APPOINTMENT}
             <AppointmentModalComponent/>

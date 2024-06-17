@@ -2,12 +2,10 @@ import {formatToTime} from "$lib/application/Formatter.js";
 import {CustomerBookingState} from "$lib/api/initialize_functions/CustomerBooking.js";
 import dayjs from "dayjs";
 
-export function moveToLobby(now, customerBooking, submitCustomerBooking)
-{
+export function moveToLobby(now, customerBooking, submitCustomerBooking) {
     customerBooking.bookingState = CustomerBookingState.LOBBY;
 
-    if (!customerBooking.checkinTime)
-    {
+    if (!customerBooking.checkinTime) {
         customerBooking.checkinTime = now.format(formatToTime);
     }
 
@@ -21,17 +19,14 @@ export function moveToLobby(now, customerBooking, submitCustomerBooking)
         });
 }
 
-export function moveToServicing(now, customerBooking, submitCustomerBooking)
-{
+export function moveToServicing(now, customerBooking, submitCustomerBooking) {
     customerBooking.bookingState = CustomerBookingState.SERVICING;
 
     // Initialize the checkin time if it is null
-    if (!customerBooking.checkinTime)
-    {
+    if (!customerBooking.checkinTime) {
         customerBooking.checkinTime = now.format(formatToTime);
     }
-    if (!customerBooking.servicingStartTime)
-    {
+    if (!customerBooking.servicingStartTime) {
         customerBooking.servicingStartTime = now.format(formatToTime);
     }
 
@@ -45,37 +40,32 @@ export function moveToServicing(now, customerBooking, submitCustomerBooking)
         });
 }
 
-export function moveToCompleted(now, customerBooking, submitCustomerBooking)
-{
-    if (confirm("Are you sure you want to mark this as complete?"))
-    {
-        customerBooking.bookingState = CustomerBookingState.COMPLETED;
-        customerBooking.servicingEndTime = now.format(formatToTime);
+export function moveToCompleted(now, customerBooking, submitCustomerBooking) {
+    customerBooking.bookingState = CustomerBookingState.COMPLETED;
+    customerBooking.servicingEndTime = now.format(formatToTime);
 
-        // Iterate over each individual booking
-        customerBooking.customerIndividualBookingList.forEach(individualBooking => {
-            // Iterate over each service booking in the individual booking
-            individualBooking.customerIndividualServiceBookingList.forEach(serviceBooking => {
-                // Mark service as completed
-                serviceBooking.completed = true;
+    // Iterate over each individual booking
+    customerBooking.customerIndividualBookingList.forEach(individualBooking => {
+        // Iterate over each service booking in the individual booking
+        individualBooking.customerIndividualServiceBookingList.forEach(serviceBooking => {
+            // Mark service as completed
+            serviceBooking.completed = true;
 
-                // Mark all tickets within the service as completed
-                serviceBooking.servicingTicketList.forEach(ticket => {
-                    if (!ticket.isCompleted)
-                    {
-                        ticket.timePeriod.endTime = dayjs().format(formatToTime); // Set end time to now
-                    }
-                });
+            // Mark all tickets within the service as completed
+            serviceBooking.servicingTicketList.forEach(ticket => {
+                if (!ticket.isCompleted) {
+                    ticket.timePeriod.endTime = dayjs().format(formatToTime); // Set end time to now
+                }
             });
         });
+    });
 
-        // Save the customer booking change
-        submitCustomerBooking(customerBooking)
-            .then(() => {
-                console.log("Moved customer booking to completed.");
-            })
-            .catch(error => {
-                console.error('Error moving customer booking to completed:', error);
-            });
-    }
+    // Save the customer booking change
+    submitCustomerBooking(customerBooking)
+        .then(() => {
+            console.log("Moved customer booking to completed.");
+        })
+        .catch(error => {
+            console.error('Error moving customer booking to completed:', error);
+        });
 }
