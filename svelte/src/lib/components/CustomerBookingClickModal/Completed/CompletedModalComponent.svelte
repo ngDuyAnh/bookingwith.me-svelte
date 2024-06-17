@@ -44,4 +44,7 @@
             {/each}
         </div>
     </div>
+
+    <!--Footer options-->
+    <Footer/>
 </div>
