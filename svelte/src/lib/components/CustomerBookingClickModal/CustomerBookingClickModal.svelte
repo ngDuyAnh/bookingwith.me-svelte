@@ -30,6 +30,6 @@
         {/if}
 
         <!--Footer options-->
-        <Footer/>
+        <Footer customerBooking={$customerBookingClickModal.customerBooking}/>
     </Modal>
 </div>
