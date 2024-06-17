@@ -2,9 +2,6 @@
     import {
         handleLobbyPortalEditCustomerBooking
     } from "$lib/components/Modal/EditCustomerBooking/modalEditCustomerBooking.js";
-    import {
-        customerBookingClickModal
-    } from "$lib/components/CustomerBookingClickModal/stores/customerBookingClickModal.js";
     import {business} from "$lib/page/stores/business/business.js";
     import {Button, Tooltip} from "flowbite-svelte";
     import {getContext} from "svelte";
@@ -19,16 +16,20 @@
     import {checkAbleToSendReviewReminder} from "$lib/api/api_server/api_endpoints/lobby-portal/api.js";
     import {checkAbleToSendSmsReviewReminder} from "$lib/api/api_server/functions.js";
 
+    export let customerBooking;
+
+    export let indicateSendToCompleted = false;
+
     let ableToSendSmsReviewReminder = false;
     $: {
         // Check if sms review reminder can be sent
-        if ($customerBookingClickModal.customerBooking) {
+        if (customerBooking) {
             ableToSendSmsReviewReminder = false;
-            checkAbleToSendReviewReminder($customerBookingClickModal.customerBooking)
+            checkAbleToSendReviewReminder(customerBooking)
                 .then(response => {
                     ableToSendSmsReviewReminder = checkAbleToSendSmsReviewReminder(response);
 
-                    //console.log(`$customerBookingClickModal.$customerBookingClickModal.customerBooking.smsReviewReminderSent ${$customerBookingClickModal.$customerBookingClickModal.customerBooking.smsReviewReminderSent} ableToSendSmsReviewReminder ${ableToSendSmsReviewReminder}, allowToSendReviewReminderSMS ${allowToSendReviewReminderSMS}, moreThan6Months ${moreThan6Months}`)
+                    //console.log(`customerBooking.smsReviewReminderSent ${customerBooking.smsReviewReminderSent} ableToSendSmsReviewReminder ${ableToSendSmsReviewReminder}, allowToSendReviewReminderSMS ${allowToSendReviewReminderSMS}, moreThan6Months ${moreThan6Months}`)
                 })
                 .catch(error => {
                     console.error('Failed at checkAbleToSendReviewReminder():', error);
@@ -40,14 +41,14 @@
     const submitCustomerBooking = getContext('submitCustomerBooking');
 
     async function handleSendSmsAppointment() {
-        if (!$customerBookingClickModal.customerBooking.smsAppointmentSent) {
-            sendSmsAppointment($business.businessInfo.businessName, $customerBookingClickModal.customerBooking)
+        if (!customerBooking.smsAppointmentSent) {
+            sendSmsAppointment($business.businessInfo.businessName, customerBooking)
                 .then(() => {
                     console.log('Sent SMS appointment ready soon reminder.');
 
                     // Record appointment SMS to the database
-                    $customerBookingClickModal.customerBooking.smsAppointmentSent = true;
-                    submitCustomerBooking($customerBookingClickModal.customerBooking);
+                    customerBooking.smsAppointmentSent = true;
+                    submitCustomerBooking(customerBooking);
                 })
                 .catch(error => {
                     console.error('Failed to send SMS appointment ready soon reminder:', error);
@@ -57,14 +58,14 @@
 
     async function handleReviewSend() {
         if (ableToSendSmsReviewReminder &&
-            !$customerBookingClickModal.customerBooking.smsReviewReminderSent) {
-            sendSMSAskingForReview($business.businessInfo.businessName, $customerBookingClickModal.customerBooking)
+            !customerBooking.smsReviewReminderSent) {
+            sendSMSAskingForReview($business.businessInfo.businessName, customerBooking)
                 .then(() => {
                     console.log('Review reminder sent.');
 
                     // Record appointment SMS to the database
-                    $customerBookingClickModal.customerBooking.smsReviewReminderSent = true;
-                    submitCustomerBooking($customerBookingClickModal.customerBooking);
+                    customerBooking.smsReviewReminderSent = true;
+                    submitCustomerBooking(customerBooking);
                 })
                 .catch(error => {
                     console.error('Error sending review reminder:', error);
@@ -73,26 +74,26 @@
     }
 
     async function handleLobbyClick() {
-        moveToLobby($now, $customerBookingClickModal.customerBooking, submitCustomerBooking);
+        moveToLobby($now, customerBooking, submitCustomerBooking);
     }
 
     async function handleServicingClick() {
-        $customerBookingClickModal.customerBooking.noShow = false;
-        moveToServicing($now, $customerBookingClickModal.customerBooking, submitCustomerBooking);
+        customerBooking.noShow = false;
+        moveToServicing($now, customerBooking, submitCustomerBooking);
     }
 
     function handleCompleteClick() {
         if (confirm("Are you sure you want to mark this as complete?"))
         {
-            moveToCompleted($now, $customerBookingClickModal.customerBooking, submitCustomerBooking);
+            moveToCompleted($now, customerBooking, submitCustomerBooking);
         }
     }
 
     async function handleNoShowClick() {
         if (confirm("Are you sure you want to mark this as no show?"))
         {
-            $customerBookingClickModal.customerBooking.noShow = true;
-            moveToCompleted($now, $customerBookingClickModal.customerBooking, submitCustomerBooking);
+            customerBooking.noShow = true;
+            moveToCompleted($now, customerBooking, submitCustomerBooking);
         }
     }
 </script>
@@ -102,11 +103,11 @@
     <!--Left options-->
     <div>
         <!--Edit booking-->
-        {#if $customerBookingClickModal.customerBooking.bookingState !== CustomerBookingState.COMPLETED}
+        {#if customerBooking.bookingState !== CustomerBookingState.COMPLETED}
             <Button
                     color="light"
                     outline
-                    on:click={() => handleLobbyPortalEditCustomerBooking($customerBookingClickModal.customerBooking)}
+                    on:click={() => handleLobbyPortalEditCustomerBooking(customerBooking)}
             >
                 <svg class="w-6 h-6 text-gray-800 dark:text-white" aria-hidden="true"
                      xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
@@ -118,7 +119,7 @@
 
         {:else}
             <!--Asking for review-->
-            <Button disabled={!ableToSendSmsReviewReminder || $customerBookingClickModal.customerBooking.smsReviewReminderSent}
+            <Button disabled={!ableToSendSmsReviewReminder || customerBooking.smsReviewReminderSent}
                     color="light"
                     outline
                     on:click={handleReviewSend}
@@ -132,7 +133,7 @@
                     <path d="M8.95 19.7c.7.8 1.7 1.3 2.8 1.3 1.6 0 2.9-1.1 3.3-2.5l-6.1 1.2Z"/>
                 </svg>
             </Button>
-            {#if ableToSendSmsReviewReminder && !$customerBookingClickModal.customerBooking.smsReviewReminderSent}
+            {#if ableToSendSmsReviewReminder && !customerBooking.smsReviewReminderSent}
                 <Tooltip>Send a review reminder to customer</Tooltip>
             {:else}
                 <Tooltip>Review reminder already sent</Tooltip>
@@ -140,8 +141,8 @@
         {/if}
 
         <!--Send SMS appointment reminder-->
-        {#if $customerBookingClickModal.customerBooking.bookingState === CustomerBookingState.APPOINTMENT}
-            <Button disabled={$customerBookingClickModal.customerBooking.smsAppointmentSent}
+        {#if customerBooking.bookingState === CustomerBookingState.APPOINTMENT}
+            <Button disabled={customerBooking.smsAppointmentSent}
                     id="show-tooltip"
                     color="light" outline
                     on:click={handleSendSmsAppointment}
@@ -152,7 +153,7 @@
                     <path d="M17.133 12.632v-1.8a5.406 5.406 0 0 0-4.154-5.262.955.955 0 0 0 .021-.106V3.1a1 1 0 0 0-2 0v2.364a.955.955 0 0 0 .021.106 5.406 5.406 0 0 0-4.154 5.262v1.8C6.867 15.018 5 15.614 5 16.807 5 17.4 5 18 5.538 18h12.924C19 18 19 17.4 19 16.807c0-1.193-1.867-1.789-1.867-4.175ZM6 6a1 1 0 0 1-.707-.293l-1-1a1 1 0 0 1 1.414-1.414l1 1A1 1 0 0 1 6 6Zm-2 4H3a1 1 0 0 1 0-2h1a1 1 0 1 1 0 2Zm14-4a1 1 0 0 1-.707-1.707l1-1a1 1 0 1 1 1.414 1.414l-1 1A1 1 0 0 1 18 6Zm3 4h-1a1 1 0 1 1 0-2h1a1 1 0 1 1 0 2ZM8.823 19a3.453 3.453 0 0 0 6.354 0H8.823Z"/>
                 </svg>
             </Button>
-            {#if !$customerBookingClickModal.customerBooking.smsAppointmentSent}
+            {#if !customerBooking.smsAppointmentSent}
                 <Tooltip>Send SMS ready soon</Tooltip>
             {:else}
                 <Tooltip>Reminder already sent</Tooltip>
@@ -164,31 +165,37 @@
     <div class="content-center space-x-2">
         <span class="text-gray-700 font-bold">Move to:</span>
 
-        {#if $customerBookingClickModal.customerBooking.bookingState < CustomerBookingState.LOBBY}
+        {#if customerBooking.bookingState < CustomerBookingState.LOBBY}
             <Button class="bg-orange-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
                     on:click={handleLobbyClick}>Lobby
             </Button>
         {/if}
 
-        {#if $customerBookingClickModal.customerBooking.bookingState !== CustomerBookingState.SERVICING}
+        {#if customerBooking.bookingState !== CustomerBookingState.SERVICING}
             <Button class="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded"
                     on:click={handleServicingClick}>Servicing
             </Button>
         {/if}
 
-        {#if $customerBookingClickModal.customerBooking.bookingState === CustomerBookingState.APPOINTMENT ||
-        $customerBookingClickModal.customerBooking.bookingState === CustomerBookingState.COMPLETED}
-            <Button disabled={$customerBookingClickModal.customerBooking.noShow}
+        {#if customerBooking.bookingState === CustomerBookingState.APPOINTMENT ||
+        customerBooking.bookingState === CustomerBookingState.COMPLETED}
+            <Button disabled={customerBooking.noShow}
                     class="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded"
                     on:click={handleNoShowClick}>No show
             </Button>
-            {#if $customerBookingClickModal.customerBooking.noShow}
+            {#if customerBooking.noShow}
                 <Tooltip>Move to servicing to undo</Tooltip>
             {/if}
         {:else}
-            <Button class="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded"
-                    on:click={handleCompleteClick}>Complete
-            </Button>
+            {#if indicateSendToCompleted}
+                <Button class="animate-pulse bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded"
+                        on:click={handleCompleteClick}>Complete
+                </Button>
+            {:else}
+                <Button class="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded"
+                        on:click={handleCompleteClick}>Complete
+                </Button>
+            {/if}
         {/if}
     </div>
 </div>
