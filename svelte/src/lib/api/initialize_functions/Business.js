@@ -56,6 +56,7 @@ export function Service()
         "serviceTimeLength": null,
         "description": "",
         "showPlus": false,
+        "showOnlineBookingPage": true,
 
         "archive": false,
         "employeeList": [],
@@ -65,11 +66,13 @@ export function Service()
 export function ServiceGroup()
 {
     return {
-        "id ": -1,
+        "id": -1,
         "serviceGroupName": "",
         "description": "",
         "multiselect": false,
+        "showOnlineBookingPage": true,
         "serviceList": [],
+
         "archive": false
     };
 }

@@ -32,7 +32,9 @@
 </script>
 
 <div class="absolute top-0 left-0 right-0 z-[2000]">
-    <Modal bind:open={$modalCreateCustomerBooking.open} bodyClass="p-4 md:p-5 space-y-0 flex-1 overflow-y-auto overscroll-contain" class="w-full max-w-3xl h-[80vh] border-8"
+    <Modal bind:open={$modalCreateCustomerBooking.open}
+           bodyClass="p-4 md:p-5 space-y-0 flex-1 overflow-y-auto overscroll-contain"
+           class="w-full max-w-3xl h-[80vh] border-8"
            classBackdrop="fixed inset-0 z-50 bg-gray-900 bg-opacity-90 dark:bg-opacity-80"
            size="md">
         <svelte:fragment slot="header">
