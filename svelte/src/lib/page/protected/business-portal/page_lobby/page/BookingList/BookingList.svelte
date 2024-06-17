@@ -112,7 +112,7 @@
                     <div class="mt-2 p-2 border rounded border-sky-500 bg-gray-50">
                         {#each individualBooking.customerIndividualServiceBookingList as serviceBooking}
                             <div class="mt-1 p-1">
-                                <p>{serviceBooking.service.serviceName} ({serviceBooking.employee?.employeeName || 'Any'})</p>
+                                <p>{serviceBooking.service.serviceName} ({serviceBooking.employee?.employeeName || 'Any employee'})</p>
                             </div>
                         {/each}
                     </div>

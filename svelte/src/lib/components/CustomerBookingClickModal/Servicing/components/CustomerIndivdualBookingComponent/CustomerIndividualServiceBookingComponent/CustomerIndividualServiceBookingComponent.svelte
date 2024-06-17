@@ -84,7 +84,7 @@
 
 <div>
     <!-- Display the service booking -->
-    <p>{serviceBooking.service.serviceName} ({serviceBooking.employee?.employeeName || 'Any'})</p>
+    <p>{serviceBooking.service.serviceName} ({serviceBooking.employee?.employeeName || 'Any employee'})</p>
 
     <!-- Form to manage service booking -->
     {#if $business.businessInfo.scheduleManagement === BusinessScheduleManagement.ACTIVE}
