@@ -90,6 +90,7 @@
                 },
                 body: JSON.stringify({
                     businessName: $bookingEstimate.business.businessInfo.businessName,
+                    businessType: $bookingEstimate.business.businessInfo.businessType,
                     reviewText: review.reviewText,
                     threadID: threadID
                 })
