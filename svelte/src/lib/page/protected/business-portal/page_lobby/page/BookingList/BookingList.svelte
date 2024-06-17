@@ -7,10 +7,9 @@
         from "$lib/page/protected/business-portal/page_lobby/page/Dashboard/components/components/CustomerBookingList/CustomerBookingListItem/CustomerBookingListItem.svelte";
     import dayjs from "dayjs";
     import {Button, Modal, Tooltip} from "flowbite-svelte";
-    import {deleteBooking} from "$lib/api/api_server/api_endpoints/customer-booking-portal/api.js";
+    import {deleteCustomerBooking} from "$lib/api/api_server/api_endpoints/customer-booking-portal/api.js";
     import {business} from "$lib/page/stores/business/business.js";
     import {handleEditCustomerBooking} from "$lib/components/Modal/EditCustomerBooking/modalEditCustomerBooking.js";
-    import {cancelScheduledReminderSms} from "$lib/api/api_twilio/functions.js";
 
     let tomorrow  = $now.startOf('day').add(1, 'day');
     $: tomorrow = $now.startOf('day').add(1, 'day');
@@ -64,11 +63,7 @@
     {
         if (confirm("Are you sure you want to cancel this appointment?"))
         {
-            // Remove the scheduled sms appointment reminder
-            cancelScheduledReminderSms(selectedCustomerBooking);
-
-            // Mark the customer booking as deleted in the database
-            deleteBooking($business.businessInfo.businessID, selectedCustomerBooking.id)
+            deleteCustomerBooking($business.businessInfo.businessID, selectedCustomerBooking)
                 .then(() => {
                     console.log("Deleted customer booking.");
 
