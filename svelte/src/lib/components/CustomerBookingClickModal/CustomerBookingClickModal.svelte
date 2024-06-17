@@ -14,6 +14,7 @@
         from "$lib/components/CustomerBookingClickModal/Servicing/ServicingModalComponent.svelte";
     import CompletedModalComponent
         from "$lib/components/CustomerBookingClickModal/Completed/CompletedModalComponent.svelte";
+    import Footer from "$lib/components/CustomerBookingClickModal/components/Footer/Footer.svelte";
 </script>
 
 <div class="absolute top-0 left-0">
@@ -27,5 +28,8 @@
         {:else if $customerBookingClickModal.customerBooking.bookingState === CustomerBookingState.COMPLETED}
             <CompletedModalComponent/>
         {/if}
+
+        <!--Footer options-->
+        <Footer customerBooking={$customerBookingClickModal.customerBooking}/>
     </Modal>
 </div>

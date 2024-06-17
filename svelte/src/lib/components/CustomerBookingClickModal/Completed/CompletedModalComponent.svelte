@@ -4,7 +4,6 @@
     import {
         customerBookingClickModal
     } from "$lib/components/CustomerBookingClickModal/stores/customerBookingClickModal.js";
-    import Footer from "$lib/components/CustomerBookingClickModal/components/Footer/Footer.svelte";
 </script>
 
 <div class="flex flex-col space-y-4">
