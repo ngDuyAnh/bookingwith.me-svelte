@@ -3,6 +3,9 @@
     import CustomerBookingComponent from "$lib/components/CustomerBooking/CustomerBookingComponent.svelte";
     import {modalEditCustomerBooking} from "$lib/components/Modal/EditCustomerBooking/modalEditCustomerBooking.js";
     import {CustomerBookingChannel} from "$lib/api/initialize_functions/CustomerBooking.js";
+    import {
+        modalCreateCustomerBooking
+    } from "$lib/components/Modal/CreateCustomerBooking/modalCreateCustomerBooking.js";
 
     export let business;
 
@@ -24,6 +27,8 @@
                 {business}
                 customerBooking={$modalEditCustomerBooking.customerBooking}
 
+                customerIndividualBookingServiceSelectProps={$modalCreateCustomerBooking.customerIndividualBookingServiceSelectProps}
+                
                 customerBookingInformationProps={$modalEditCustomerBooking.customerBookingInformationProps}
 
                 customerBookingInformationFormProps={$modalEditCustomerBooking.customerBookingInformationFormProps}
