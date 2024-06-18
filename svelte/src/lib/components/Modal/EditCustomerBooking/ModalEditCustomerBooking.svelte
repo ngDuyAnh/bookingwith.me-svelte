@@ -28,7 +28,7 @@
                 customerBooking={$modalEditCustomerBooking.customerBooking}
 
                 customerIndividualBookingServiceSelectProps={$modalCreateCustomerBooking.customerIndividualBookingServiceSelectProps}
-                
+
                 customerBookingInformationProps={$modalEditCustomerBooking.customerBookingInformationProps}
 
                 customerBookingInformationFormProps={$modalEditCustomerBooking.customerBookingInformationFormProps}

@@ -277,13 +277,30 @@
             if (response.submitted) {
                 success = true;
 
+                // Move the customer booking to lobby
+                if (customerBookingInformationProps.lobbyBookingStateFlag) {
+                    moveToLobby($now, response.customerBooking, initializeCustomerBooking);
+                }
+                
                 // Send SMS
                 if (customerBookingInformationProps.sendSmsFlag) {
                     // Send SMS confirmation for the appointment
                     sendSmsConfirmBookingSuccess(businessInfo.businessName, response.customerBooking)
-                        .then(() => {
+                        .then(async () => {
                             console.log('Sent SMS appointment confirmation.');
                             response.customerBooking.smsConfirmationSent = true;
+
+                            // Schedule SMS for reminder for the appointment
+                            await sendSmsBookingReminder(businessInfo.businessName, response.customerBooking)
+                                .then((scheduledReminderResponse) => {
+                                    console.log('Scheduled SMS appointment reminder.', scheduledReminderResponse);
+
+                                    // Record the SMS sid to the database
+                                    response.customerBooking.smsAppointmentReminderSid = scheduledReminderResponse.sid;
+                                })
+                                .catch(error => {
+                                    console.error('Error sending SMS appointment confirmation:', error);
+                                });
 
                             // Save to the database
                             initializeCustomerBooking(response.customerBooking)
@@ -297,24 +314,6 @@
                         .catch(error => {
                             console.error('Failed to send appointment confirmation:', error);
                         });
-
-                    // Schedule SMS for reminder for the appointment
-                    sendSmsBookingReminder(businessInfo.businessName, response.customerBooking)
-                        .then((scheduledReminderResponse) => {
-                            console.log('Scheduled SMS appointment reminder.', scheduledReminderResponse);
-
-                            // Record the SMS sid to the database
-                            response.customerBooking.smsAppointmentReminderSid = scheduledReminderResponse.sid;
-                            initializeCustomerBooking(response.customerBooking);
-                        })
-                        .catch(error => {
-                            console.error('Error sending SMS appointment confirmation:', error);
-                        });
-                }
-
-                // Move the customer booking to lobby
-                if (customerBookingInformationProps.lobbyBookingStateFlag) {
-                    moveToLobby($now, response.customerBooking, initializeCustomerBooking);
                 }
             }
         } catch (err) {
