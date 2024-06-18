@@ -8,7 +8,7 @@
         servicingTicketClickModal
     } from "$lib/components/TimeTable/TimetableModal/stores/servicingTicketClickModal.js";
 
-    let tabs = ["My Timetable", "Upcoming Service", "Setting"];
+    let tabs = ["Upcoming Service", "My Timetable", "Setting"];
     let selectedIndex = 0;
 
     $: if (selectedIndex !== 1) {
@@ -25,9 +25,9 @@
     />
 
     {#if selectedIndex === 0}
-        <MyTimetable/>
-    {:else if selectedIndex === 1}
         <UpcomingService/>
+    {:else if selectedIndex === 1}
+        <MyTimetable/>
     {:else if selectedIndex === 2}
         <Setting/>
     {/if}
