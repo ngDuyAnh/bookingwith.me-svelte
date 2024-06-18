@@ -17,6 +17,7 @@
     import {rawPhoneNumber, formatPhoneNumber} from "$lib/application/FormatPhoneNumber.js";
     import {sendSmsBookingReminder} from "$lib/api/api_twilio/functions.js";
     import {
+        moveToAppointment,
         moveToLobby
     } from "$lib/components/CustomerBookingClickModal/handle_customer_booking_state.js";
     import {isToday} from "$lib/page/stores/now/now_dayjs_store.js";
@@ -281,7 +282,10 @@
                 if (customerBookingInformationProps.lobbyBookingStateFlag) {
                     moveToLobby($now, response.customerBooking, initializeCustomerBooking);
                 }
-                
+                else if (customerBookingInformationProps.appointmentBookingStateFlag) {
+                    moveToAppointment($now, response.customerBooking, initializeCustomerBooking);
+                }
+
                 // Send SMS
                 if (customerBookingInformationProps.sendSmsFlag) {
                     // Send SMS confirmation for the appointment

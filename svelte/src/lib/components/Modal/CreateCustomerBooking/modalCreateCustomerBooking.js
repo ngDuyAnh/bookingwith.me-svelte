@@ -16,10 +16,12 @@ export const modalCreateCustomerBooking = writable({
     customerBookingInformationProps: {
         showOverride: true,
         showSendSms: true,
+        showAppointmentBookingState: false,
         showLobbyBookingState: false,
 
         overrideFlag: false,
         sendSmsFlag: true,
+        appointmentBookingStateFlag: false,
         lobbyBookingStateFlag: false
     },
 
@@ -46,10 +48,12 @@ export function handleNewCustomerBooking()
         customerBookingInformationProps: {
             showOverride: true,
             showSendSms: true,
+            showAppointmentBookingState: false,
             showLobbyBookingState: false,
 
             overrideFlag: false,
             sendSmsFlag: true,
+            appointmentBookingStateFlag: false,
             lobbyBookingStateFlag: false
         },
 
@@ -77,11 +81,13 @@ export function handleNewCustomerBookingWalkin()
         customerBookingInformationProps: {
             showOverride: true,
             showSendSms: true,
+            showAppointmentBookingState: false,
             showLobbyBookingState: true,
 
             overrideFlag: false,
             sendSmsFlag: false,
-            lobbyBookingStateFlag: true,
+            appointmentBookingStateFlag: false,
+            lobbyBookingStateFlag: true
         },
 
         // Customer information form

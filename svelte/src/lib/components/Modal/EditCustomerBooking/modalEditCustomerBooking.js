@@ -17,10 +17,12 @@ export const modalEditCustomerBooking = writable({
     customerBookingInformationProps: {
         showOverride: true,
         showSendSms: true,
+        showAppointmentBookingState: true,
         showLobbyBookingState: false,
 
         overrideFlag: false,
         sendSMSFlag: false,
+        appointmentBookingStateFlag: false,
         lobbyBookingStateFlag: false
     },
 
@@ -52,10 +54,12 @@ export function handleLobbyPortalEditCustomerBooking(customerBooking)
         customerBookingInformationProps: {
             showOverride: true,
             showSendSms: true,
+            showAppointmentBookingState: true,
             showLobbyBookingState: false,
 
             overrideFlag: overrideFlagState,
             sendSMSFlag: false,
+            appointmentBookingStateFlag: false,
             lobbyBookingStateFlag: false
         },
 
@@ -84,10 +88,12 @@ export function handleCustomerBookingPortalEditCustomerBooking(customerBooking)
         customerBookingInformationProps: {
             showOverride: false,
             showSendSms: false,
+            showAppointmentBookingState: false,
             showLobbyBookingState: false,
 
             overrideFlag: false,
             sendSMSFlag: false,
+            appointmentBookingStateFlag: false,
             lobbyBookingStateFlag: false
         },
 

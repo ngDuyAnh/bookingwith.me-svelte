@@ -57,12 +57,21 @@
             </div>
         {/if}
 
+        {#if customerBookingInformationProps.showAppointmentBookingState}
+            <div id="show-lobby-tooltip" class="flex items-center">
+                <Toggle bind:checked={customerBookingInformationProps.appointmentBookingStateFlag} class="toggle">
+                    Appointment
+                </Toggle>
+                <Tooltip triggeredBy="#show-lobby-tooltip">Move booking to appointment</Tooltip>
+            </div>
+        {/if}
+
         {#if customerBookingInformationProps.showLobbyBookingState}
             <div id="show-lobby-tooltip" class="flex items-center">
                 <Toggle bind:checked={customerBookingInformationProps.lobbyBookingStateFlag} class="toggle">
                     Lobby
                 </Toggle>
-                <Tooltip triggeredBy="#show-lobby-tooltip">Move appointment to lobby</Tooltip>
+                <Tooltip triggeredBy="#show-lobby-tooltip">Move booking to lobby</Tooltip>
             </div>
         {/if}
     </div>

@@ -2,6 +2,24 @@ import {formatToTime} from "$lib/application/Formatter.js";
 import {CustomerBookingState} from "$lib/api/initialize_functions/CustomerBooking.js";
 import dayjs from "dayjs";
 
+export function moveToAppointment(now, customerBooking, submitCustomerBooking) {
+    customerBooking.bookingState = CustomerBookingState.APPOINTMENT;
+
+    // Reset the booking stats
+    customerBooking.checkinTime = null;
+    customerBooking.servicingStartTime = null;
+    customerBooking.servicingEndTime = null;
+
+    // Save the customer booking change
+    submitCustomerBooking(customerBooking)
+        .then(() => {
+            console.log("Moved customer booking to appointment.");
+        })
+        .catch(error => {
+            console.error('Error moving customer booking to appointment:', error);
+        });
+}
+
 export function moveToLobby(now, customerBooking, submitCustomerBooking) {
     customerBooking.bookingState = CustomerBookingState.LOBBY;
 
