@@ -135,9 +135,9 @@
             if (preselectForWalkIn && availableTimeOptionList.length > 0) {
                 customerBooking.bookingTime = availableTimeOptionList[0].value;
             }
-                // Customer booking already have a select booking time
-                // Preselect that time
-                // This could be from edit customer booking
+            // Customer booking already have a select booking time
+            // Preselect that time
+            // This could be from edit customer booking
             // If the selected booking time no longer available, unselected it by setting it to null
             else if (customerBooking.bookingTime) {
                 customerBooking.bookingTime =
@@ -179,10 +179,6 @@
             customerBooking.bookingState === CustomerBookingState.SERVICING;
         if (preselectForWalkIn) {
             walkinAvailabilityFlag = true;
-        }
-        // Reset the booking time
-        else {
-            customerBooking.bookingTime = null;
         }
 
         //console.log(`Date selected ${dateSelected} walk-in ${walkinAvailabilityFlag}`);
@@ -278,12 +274,15 @@
             if (response.submitted) {
                 success = true;
 
-                // Move the customer booking to lobby
-                if (customerBookingInformationProps.lobbyBookingStateFlag) {
-                    moveToLobby($now, response.customerBooking, initializeCustomerBooking);
-                }
-                else if (customerBookingInformationProps.appointmentBookingStateFlag) {
-                    moveToAppointment($now, response.customerBooking, initializeCustomerBooking);
+                // Move the customer booking state
+                if (isToday(customerBooking.bookingDate))
+                {
+                    if (customerBookingInformationProps.lobbyBookingStateFlag) {
+                        moveToLobby($now, response.customerBooking, initializeCustomerBooking);
+                    }
+                    else if (customerBookingInformationProps.appointmentBookingStateFlag) {
+                        moveToAppointment($now, response.customerBooking, initializeCustomerBooking);
+                    }
                 }
 
                 // Send SMS

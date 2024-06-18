@@ -4,6 +4,7 @@
         from "$lib/components/Form/CustomerBookingInformationForm/CustomerBookingInformationForm.svelte";
     import {formatPhoneNumber} from "$lib/application/FormatPhoneNumber.js";
     import {ArrowLeftOutline} from 'flowbite-svelte-icons';
+    import {isToday} from "$lib/page/stores/now/now_dayjs_store.js";
 
     export let customerBookingInformationProps;
 
@@ -43,46 +44,47 @@
 
     <div class="mt-4 flex flex-wrap justify-center items-center w-full space-x-4">
         {#if customerBookingInformationProps.showOverride}
-            <div id="show-override-tooltip" class="flex items-center">
-                <Toggle bind:checked={customerBookingInformationProps.overrideFlag} class="toggle">Override
+            <div class="flex items-center">
+                <Toggle bind:checked={customerBookingInformationProps.overrideFlag}>Override
                 </Toggle>
-                <Tooltip triggeredBy="#show-override-tooltip">Override booking time</Tooltip>
+                <Tooltip>Override booking time</Tooltip>
             </div>
         {/if}
 
         {#if customerBookingInformationProps.showSendSms}
-            <div id="show-sms-tooltip" class="flex items-center">
+            <div class="flex items-center">
                 <Toggle bind:checked={customerBookingInformationProps.sendSmsFlag} class="toggle">SMS</Toggle>
-                <Tooltip triggeredBy="#show-sms-tooltip">Notify customer through SMS</Tooltip>
+                <Tooltip>Notify customer through SMS</Tooltip>
             </div>
         {/if}
 
         {#if customerBookingInformationProps.showAppointmentBookingState}
-            <div id="show-lobby-tooltip" class="flex items-center">
-                <Toggle bind:checked={customerBookingInformationProps.appointmentBookingStateFlag} class="toggle">
+            <div class="flex items-center {isToday(customerBooking.bookingDate) ? '' : 'hidden'}">
+                <Toggle
+                        bind:checked={customerBookingInformationProps.appointmentBookingStateFlag}>
                     Appointment
                 </Toggle>
-                <Tooltip triggeredBy="#show-lobby-tooltip">Move booking to appointment</Tooltip>
+                <Tooltip>Move booking to appointment</Tooltip>
             </div>
         {/if}
 
         {#if customerBookingInformationProps.showLobbyBookingState}
-            <div id="show-lobby-tooltip" class="flex items-center">
-                <Toggle bind:checked={customerBookingInformationProps.lobbyBookingStateFlag} class="toggle">
+            <div class="flex items-center {isToday(customerBooking.bookingDate) ? '' : 'hidden'}">
+                <Toggle
+                        bind:checked={customerBookingInformationProps.lobbyBookingStateFlag}>
                     Lobby
                 </Toggle>
-                <Tooltip triggeredBy="#show-lobby-tooltip">Move booking to lobby</Tooltip>
+                <Tooltip>Move booking to lobby</Tooltip>
             </div>
         {/if}
     </div>
-
 
     <!-- Customer booking information -->
     <div class="w-full max-w-md p-8">
         <CustomerBookingInformationForm
                 businessInfo={business.businessInfo}
 
-                customerBooking={customerBooking}
+                bind:customerBooking={customerBooking}
 
                 {customerBookingInformationFormProps}
                 {customerBookingInformationProps}
