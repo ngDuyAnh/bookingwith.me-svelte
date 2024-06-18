@@ -30,3 +30,8 @@ export function isTomorrow(date)
     const todayDate = get(now);
     return dayjs(date, formatToDate).isSame(todayDate.add(1, 'day'), 'day');
 }
+
+export function isPast(date) {
+    const nowValue = get(now);
+    return dayjs(date, formatToDate).isBefore(nowValue, 'day');
+}

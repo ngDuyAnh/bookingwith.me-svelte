@@ -4,7 +4,7 @@
         getCustomerBooking,
         initializeCustomerBooking
     } from "$lib/api/api_server/api_endpoints/customer-booking-portal/api.js";
-    import {isToday, now, today} from "$lib/page/stores/now/now_dayjs_store.js";
+    import {isToday, now, today, isPast} from "$lib/page/stores/now/now_dayjs_store.js";
     import {formatTimeAm, formatToTime} from "$lib/application/Formatter.js";
     import Calendar from "@event-calendar/core";
     import ResourceTimeGrid from "@event-calendar/resource-time-grid";
@@ -347,6 +347,7 @@
 
     export let getSchedule;
 
+    export let restrictedPast = true;
     async function fetchSchedule() {
         loading = true;
 
@@ -356,14 +357,23 @@
             if (isToday(selectedDate)) {
                 currentTimeString = $now.format(formatToTime);
             }
+            else if (isPast(selectedDate))
+            {
+                currentTimeString = "23:59";
+            }
 
             console.log("selectedDate", selectedDate)
 
-            const employeeTimetableList = await getSchedule(
-                $business.businessInfo.businessID,
-                selectedDate,
-                currentTimeString
-            );
+            let employeeTimetableList = [];
+            if (!restrictedPast ||
+                (restrictedPast && !isPast(selectedDate)))
+            {
+                employeeTimetableList = await getSchedule(
+                    $business.businessInfo.businessID,
+                    selectedDate,
+                    currentTimeString
+                );
+            }
 
             console.log("employeeTimetableList", employeeTimetableList);
 
