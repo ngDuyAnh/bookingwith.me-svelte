@@ -15,8 +15,13 @@ export const CustomerBookingChannel = {
     REVIEW: 2
 }
 
-export function CustomerBookingReview()
-{
+export const CustomerBookingCost = {
+    LOBBY: 4,
+    ONLINE: 8,
+    SMS: 2
+}
+
+export function CustomerBookingReview() {
     return {
         "id": -1,
         "bookingID": "",
@@ -25,8 +30,7 @@ export function CustomerBookingReview()
     };
 }
 
-export function CustomerBooking(now)
-{
+export function CustomerBooking(now) {
     return {
         "id": -1,
         "bookingID": "",
@@ -62,8 +66,7 @@ export function CustomerBooking(now)
     };
 }
 
-export function CustomerIndividualBooking()
-{
+export function CustomerIndividualBooking() {
     return {
         "bookingID": "",
         "individualID": -1,
@@ -71,8 +74,7 @@ export function CustomerIndividualBooking()
     };
 }
 
-export function CustomerIndividualServiceBooking()
-{
+export function CustomerIndividualServiceBooking() {
     return {
         "bookingID": "",
         "individualID": -1,
@@ -84,8 +86,7 @@ export function CustomerIndividualServiceBooking()
     };
 }
 
-export function ServicingTicketInfo()
-{
+export function ServicingTicketInfo() {
     return {
         "customerName": "",
         "bookingTime": null,
@@ -95,8 +96,7 @@ export function ServicingTicketInfo()
     };
 }
 
-export function ServicingTicket()
-{
+export function ServicingTicket() {
     return {
         "bookingID": "",
         "individualID": -1,

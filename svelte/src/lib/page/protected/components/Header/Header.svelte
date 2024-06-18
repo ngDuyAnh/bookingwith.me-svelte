@@ -1,11 +1,22 @@
 <script>
     import LogoButton from "$lib/components/assets/Logo/LogoButton.svelte";
     //import {sineIn} from "svelte/easing";
-    import {CloseButton, Drawer, Sidebar, SidebarGroup, SidebarItem, SidebarWrapper} from "flowbite-svelte";
+    import {
+        CloseButton,
+        Drawer,
+        Dropdown, DropdownDivider,
+        DropdownItem,
+        Sidebar, SidebarDropdownItem, SidebarDropdownWrapper,
+        SidebarGroup,
+        SidebarItem,
+        SidebarWrapper
+    } from "flowbite-svelte";
     import {
         ArrowRightAltOutline,
         CalendarMonthOutline,
         CalendarMonthSolid,
+        ChevronDownOutline,
+        ChevronRightOutline,
         ClockSolid,
         FlagSolid,
         GridPlusOutline,
@@ -13,14 +24,22 @@
         ListOutline,
         StoreSolid,
         UserSettingsOutline,
-        UsersGroupSolid
+        UsersGroupSolid,
+        ReceiptOutline
     } from "flowbite-svelte-icons";
 
     export let tabs;
     export let selectedIndex;
+    export let dropdown = false;
+    export let dropdownOptions;
+    export let selectedDropDownIndex;
 
     function selectTab(index) {
         selectedIndex = index;
+    }
+
+    function selectDropDownOption(index) {
+        selectedDropDownIndex = index;
     }
 
     // Mapping of tab names to icons
@@ -35,7 +54,8 @@
         "service": StoreSolid,
         "all timetables": CalendarMonthSolid,
         "report": FlagSolid,
-        "upcoming service": ArrowRightAltOutline
+        "upcoming service": ArrowRightAltOutline,
+        "billing": ReceiptOutline
     };
 
     let navigateButtonHidden = true;
@@ -44,6 +64,9 @@
         duration: 200,
         //easing: sineIn
     };
+
+    let activeClass = 'text-green-700 dark:text-green-300 hover:text-green-900 dark:hover:text-green-500';
+
 </script>
 
 <header class="z-[60]">
@@ -52,17 +75,33 @@
     </div>
 
     <div class="hidden lg:block">
-        <nav>
-            <svg aria-hidden="true" viewBox="0 0 2 3">
-                <path d="M0,0 L1,2 C1.5,3 1.5,3 2,3 L2,0 Z"/>
+        <nav class="">
+            <svg  aria-hidden="true" viewBox="0 0 2 3">
+                    <path d="M0,0 L1,2 C1.5,3 1.5,3 2,3 L2,0 Z"/>
             </svg>
-
-            <ul>
+            <ul class="px-3">
                 {#each tabs as tab, index}
                     <li aria-current={index === selectedIndex ? 'page' : 'not-current-page'}>
-                        <button class="tab-button" on:click={() => selectTab(index)}>
-                            {tab}
-                        </button>
+                        {#if dropdown && Object.keys(dropdownOptions).includes(tab)}
+                            <span class="tab-button">{tab}
+                                <ChevronDownOutline
+                                        class="w-6 h-6 text-black dark:text-white"/></span>
+                            <Dropdown class="p-3 drop rounded-lg">
+
+                                {#each dropdownOptions[tab] as option, ind}
+                                    <DropdownItem
+                                            class="whitespace-nowrap tab-button"
+                                            on:click={() => {selectTab(index); selectDropDownOption(ind)}}
+                                    >{option}</DropdownItem>
+                                {/each}
+                                <DropdownDivider/>
+                            </Dropdown>
+                        {:else}
+                            <button class="tab-button" on:click={() => selectTab(index)}>
+                                {tab}
+                            </button>
+                        {/if}
+
                     </li>
                 {/each}
             </ul>
@@ -96,20 +135,51 @@
         </div>
         <Sidebar>
             <SidebarWrapper divClass="overflow-y-auto py-4 px-3 rounded dark:bg-gray-800">
-                <SidebarGroup>
+                <SidebarGroup class="items-start">
                     {#each tabs as tab, index}
-                        <SidebarItem label={tab} on:click={() => {
+                        {#if dropdown && Object.keys(dropdownOptions).includes(tab)}
+                            <SidebarDropdownWrapper label={tab}>
+                                <svelte:fragment slot="icon">
+                                    {#if tabIcons[tab.toLowerCase()]}
+                                        <svelte:component this={tabIcons[tab.toLowerCase()]}
+                                                          class="w-6 h-6 text-gray-500 transition duration-75 dark:text-gray-400 group-hover:text-gray-900 dark:group-hover:text-white"/>
+                                    {/if}
+                                </svelte:fragment>
+
+                                {#each dropdownOptions[tab] as option, ind}
+                                    <SidebarDropdownItem
+                                            label={option}
+                                            on:click={() => {selectTab(index); selectDropDownOption(ind)}}
+                                    >
+                                    </SidebarDropdownItem>
+
+<!--                                    <SidebarItem label={option} on:click={() => {selectTab(index); selectDropDownOption(ind)}}-->
+<!--                                    >-->
+<!--                                        <svelte:fragment slot="icon">-->
+<!--                                            {#if tabIcons[option.toLowerCase()]}-->
+<!--                                                <svelte:component this={tabIcons[option.toLowerCase()]}-->
+<!--                                                                  class="w-6 h-6 text-gray-500 transition duration-75 dark:text-gray-400 group-hover:text-gray-900 dark:group-hover:text-white"/>-->
+<!--                                            {/if}-->
+<!--                                        </svelte:fragment>-->
+<!--                                    </SidebarItem>-->
+                                {/each}
+                            </SidebarDropdownWrapper>
+                        {:else}
+                            <SidebarItem label={tab} on:click={() => {
                         selectTab(index);
                         navigateButtonHidden = true;
                     }}
-                        >
-                            <svelte:fragment slot="icon">
-                                {#if tabIcons[tab.toLowerCase()]}
-                                    <svelte:component this={tabIcons[tab.toLowerCase()]}
-                                                      class="w-6 h-6 text-gray-500 transition duration-75 dark:text-gray-400 group-hover:text-gray-900 dark:group-hover:text-white"/>
-                                {/if}
-                            </svelte:fragment>
-                        </SidebarItem>
+                            >
+                                <svelte:fragment slot="icon">
+                                    {#if tabIcons[tab.toLowerCase()]}
+                                        <svelte:component this={tabIcons[tab.toLowerCase()]}
+                                                          class="w-6 h-6 text-gray-500 transition duration-75 dark:text-gray-400 group-hover:text-gray-900 dark:group-hover:text-white"/>
+                                    {/if}
+                                </svelte:fragment>
+                            </SidebarItem>
+                        {/if}
+
+
                     {/each}
 
                 </SidebarGroup>
@@ -131,7 +201,7 @@
     nav {
         display: flex;
         justify-content: center;
-        --background: rgba(192, 192, 192, 0.7);
+        --background: rgba(119, 110, 110, 0.7);
     }
 
     svg {
@@ -160,6 +230,16 @@
     li {
         position: relative;
         height: 100%;
+        padding: 3px;
+        border-width: 3px;
+        border-radius: 1rem;
+        border-color:transparent;
+    }
+
+    li:hover {
+        /*background-color: rgba(var(--background-rgb), 0.5);;*/
+        /*background: white;*/
+        background-color: rgba(calc(var(--background-r)*0.1),calc(var(--background-g)*0.1),calc(var(--background-b)*0.1), 1);
     }
 
     li[aria-current='page']::before {
@@ -198,5 +278,13 @@
 
     .tab-button:hover {
         color: var(--color-theme-1);
+    }
+
+    :global(.tab-button:hover) {
+        color: var(--color-theme-1);
+    }
+
+    :global(.drop){
+        background-color: var(--background);
     }
 </style>

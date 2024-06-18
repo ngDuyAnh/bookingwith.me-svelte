@@ -23,8 +23,7 @@
     import CustomerBookingClickModal
         from "$lib/page/protected/business-portal/page_lobby/page/Dashboard/components/components/CustomerBookingClickModal/CustomerBookingClickModal.svelte";
 
-    async function fetchCustomerBookingList()
-    {
+    async function fetchCustomerBookingList() {
         loading = true;
 
         // Get the customer booking list
@@ -32,8 +31,7 @@
         bookingStateList.set(response.bookingList);
 
         // Find and reinitialize the customer booking for the modal
-        if ($customerBookingClickModal.customerBooking)
-        {
+        if ($customerBookingClickModal.customerBooking) {
             const findID = $customerBookingClickModal.customerBooking.id;
             const foundCustomerBooking = findCustomerBookingById(findID);
             if (foundCustomerBooking) {
@@ -48,7 +46,6 @@
             }
         }
         loading = false;
-
         console.log("bookingStateList", $bookingStateList)
     }
 
@@ -65,8 +62,7 @@
     // Automatic fetch for the latest customer booking list
     //setInterval(async () => fetchCustomerBookingList(), 10000);
 
-    async function submitCustomerBooking(customerBooking)
-    {
+    async function submitCustomerBooking(customerBooking) {
         // Submit the change to the server
         await initializeCustomerBooking(customerBooking);
 
@@ -79,7 +75,7 @@
 
 {#if loading}
     <div class="flex justify-center items-center h-screen">
-        <Spinner />
+        <Spinner/>
     </div>
 {:else}
     <div class="flex flex-row w-screen h-screen justify-between 2xl:items-center 2xl:justify-center space-x-4 overflow-x-auto p-4">

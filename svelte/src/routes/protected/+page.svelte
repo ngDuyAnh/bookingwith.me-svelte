@@ -37,7 +37,7 @@
     //$: console.log("business", $business);
 </script>
 
-<div class="min-h-screen w-full">
+<div class="min-h-screen w-full bg-[#F6F5F2]">
     {#if loading}
         <div class="flex justify-center items-center h-screen">
             <Spinner/>
