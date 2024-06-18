@@ -98,7 +98,5 @@ export function cancelScheduledReminderSms(customerBooking) {
     // Cancel the current scheduled
     if (customerBooking && customerBooking.smsAppointmentReminderSid) {
         return cancelScheduledSms(customerBooking.smsAppointmentReminderSid)
-    } else {
-        throw new Error('There is no scheduled reminder SMS to cancel.');
     }
 }
