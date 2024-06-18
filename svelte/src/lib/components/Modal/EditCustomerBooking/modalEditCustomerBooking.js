@@ -6,7 +6,12 @@ export const modalEditCustomerBooking = writable({
     open: false,
     customerBooking: undefined,
 
-    showAllEmployeeSelectOptions: true,
+    // Customer individual booking select service
+    customerIndividualBookingServiceSelectProps: {
+        showAllServiceGroup: true,
+        showAllService: true,
+        showAllEmployeeSelectOptions: true
+    },
 
     // Option header
     customerBookingInformationProps: {
@@ -36,7 +41,12 @@ export function handleLobbyPortalEditCustomerBooking(customerBooking)
         open: true,
         customerBooking: JSON.parse(JSON.stringify(customerBooking)),
 
-        showAllEmployeeSelectOptions: true,
+        // Customer individual booking select service
+        customerIndividualBookingServiceSelectProps: {
+            showAllServiceGroup: true,
+            showAllService: true,
+            showAllEmployeeSelectOptions: true
+        },
 
         // Option header
         customerBookingInformationProps: {
@@ -63,7 +73,12 @@ export function handleCustomerBookingPortalEditCustomerBooking(customerBooking)
         open: true,
         customerBooking: JSON.parse(JSON.stringify(customerBooking)),
 
-        showAllEmployeeSelectOptions: true,
+        // Customer individual booking select service
+        customerIndividualBookingServiceSelectProps: {
+            showAllServiceGroup: false,
+            showAllService: false,
+            showAllEmployeeSelectOptions: false
+        },
 
         // Option header
         customerBookingInformationProps: {
