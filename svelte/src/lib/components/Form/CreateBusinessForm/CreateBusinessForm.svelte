@@ -1,10 +1,11 @@
 <script>
     import {goto} from '$app/navigation';
-    import {createBusiness} from "$lib/api/api_server/business-portal/api.js";
+    import {createBusiness} from "$lib/api/api_server/api_endpoints/business-portal/api.js";
     import {
-        BusinessInformation
+        BusinessInformation, BusinessScheduleManagement
     } from "$lib/api/initialize_functions/Business.js";
     import {formatPhoneNumber} from "$lib/application/FormatPhoneNumber.js";
+    import {Select} from "flowbite-svelte";
 
     let business = {
         businessInfo: {
@@ -47,6 +48,16 @@
             formattedContactPhoneNumber = formatPhoneNumber(business.contactPhoneNumber);
         }
     }
+
+
+    function formatOptionName(key) {
+        return key.charAt(0) + key.slice(1).toLowerCase();
+    }
+
+    let scheduleManagementOptions = Object.entries(BusinessScheduleManagement)
+        .filter(([key, value]) => typeof value === 'number') // Ensure only valid options are included
+        .map(([key, value]) => ({ value, name: formatOptionName(key) }));
+
 
     async function handleSubmit() {
         try {
@@ -143,6 +154,11 @@
     <div class="form-group">
         <label for="active">Active Flag:</label>
         <input type="checkbox" id="active" bind:checked={business.businessInfo.active} class="input-field">
+    </div>
+
+    <div class="form-group">
+        <label for="scheduleManagement">Schedule Management Flag:</label>
+        <Select items={scheduleManagementOptions} bind:value={business.businessInfo.scheduleManagement} required/>
     </div>
 
     <div class="form-group">

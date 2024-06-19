@@ -33,7 +33,7 @@ export const GET = async ({url, cookies})=>{
             secure: true
         });
     }
-    catch(err)
+    catch (err)
     {
         throw redirect(303,'/oauth/error');
     }

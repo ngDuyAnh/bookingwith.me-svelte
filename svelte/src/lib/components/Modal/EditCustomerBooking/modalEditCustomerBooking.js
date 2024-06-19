@@ -1,18 +1,28 @@
-import { writable } from 'svelte/store';
+import {get, writable} from 'svelte/store';
+import {business} from "$lib/page/stores/business/business.js";
+import {BusinessScheduleManagement} from "$lib/api/initialize_functions/Business.js";
 
 export const modalEditCustomerBooking = writable({
     open: false,
     customerBooking: undefined,
 
+    // Customer individual booking select service
+    customerIndividualBookingServiceSelectProps: {
+        showAllServiceGroup: true,
+        showAllService: true,
+        showAllEmployeeSelectOptions: true
+    },
+
     // Option header
-    showCustomerBookingInformationOptionHeader: true,
     customerBookingInformationProps: {
         showOverride: true,
         showSendSms: true,
+        showAppointmentBookingState: true,
         showLobbyBookingState: false,
 
         overrideFlag: false,
         sendSMSFlag: false,
+        appointmentBookingStateFlag: false,
         lobbyBookingStateFlag: false
     },
 
@@ -23,21 +33,33 @@ export const modalEditCustomerBooking = writable({
     }
 });
 
-export function handleEditCustomerBooking(customerBooking)
+export function handleLobbyPortalEditCustomerBooking(customerBooking)
 {
+    const currentBusiness = get(business);
+    const scheduleManagement = currentBusiness.businessInfo.scheduleManagement;
+    const overrideFlagState = scheduleManagement === BusinessScheduleManagement.NONE;
+
     modalEditCustomerBooking.set({
         open: true,
         customerBooking: JSON.parse(JSON.stringify(customerBooking)),
 
+        // Customer individual booking select service
+        customerIndividualBookingServiceSelectProps: {
+            showAllServiceGroup: true,
+            showAllService: true,
+            showAllEmployeeSelectOptions: true
+        },
+
         // Option header
-        showCustomerBookingInformationOptionHeader: true,
         customerBookingInformationProps: {
             showOverride: true,
             showSendSms: true,
+            showAppointmentBookingState: true,
             showLobbyBookingState: false,
 
-            overrideFlag: false,
+            overrideFlag: overrideFlagState,
             sendSMSFlag: false,
+            appointmentBookingStateFlag: false,
             lobbyBookingStateFlag: false
         },
 
@@ -55,15 +77,23 @@ export function handleCustomerBookingPortalEditCustomerBooking(customerBooking)
         open: true,
         customerBooking: JSON.parse(JSON.stringify(customerBooking)),
 
+        // Customer individual booking select service
+        customerIndividualBookingServiceSelectProps: {
+            showAllServiceGroup: false,
+            showAllService: false,
+            showAllEmployeeSelectOptions: false
+        },
+
         // Option header
-        showCustomerBookingInformationOptionHeader: false,
         customerBookingInformationProps: {
             showOverride: false,
             showSendSms: false,
+            showAppointmentBookingState: false,
             showLobbyBookingState: false,
 
             overrideFlag: false,
             sendSMSFlag: false,
+            appointmentBookingStateFlag: false,
             lobbyBookingStateFlag: false
         },
 

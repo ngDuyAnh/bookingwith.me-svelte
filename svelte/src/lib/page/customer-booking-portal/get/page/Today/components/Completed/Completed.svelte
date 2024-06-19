@@ -4,7 +4,7 @@
     import {fly, slide} from "svelte/transition";
     import {CheckCircleSolid, CloseCircleSolid} from "flowbite-svelte-icons";
     import {Spinner, Toast} from "flowbite-svelte";
-    import {initializeCustomerBooking} from "$lib/api/api_server/customer-booking-portal/api.js";
+    import {initializeCustomerBooking} from "$lib/api/api_server/api_endpoints/customer-booking-portal/api.js";
 
     let getReview = !$bookingEstimate.customerBooking.customerBookingReview;
     let review = CustomerBookingReview();
@@ -72,8 +72,10 @@
     }
 
     let numPolishReview = 0;
+    let threadID = undefined;
 
-    async function handlePolishReview() {
+    async function handlePolishReview()
+    {
         polishUsed = true;
         numPolishReview++;
 
@@ -81,32 +83,42 @@
         errorMessage = "";
 
         try {
-            const response = await fetch('/customer-booking-portal/get/review', {
+            const response = await fetch('/api/review', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'
                 },
                 body: JSON.stringify({
                     businessName: $bookingEstimate.business.businessInfo.businessName,
-                    reviewText: review.reviewText
+                    businessType: $bookingEstimate.business.businessInfo.businessType,
+                    reviewText: review.reviewText,
+                    threadID: threadID
                 })
             });
 
             const data = await response.json();
-            if (response.ok) {
+            if (response.ok)
+            {
                 review.reviewText = removeQuotes(data.polishedReview);
-            } else {
+                threadID = data.threadID;
+            }
+            else
+            {
                 throw new Error(data.error || "Unknown error occurred");
             }
 
             // Save the review to the database
             await submitReviewToDatabase();
-        } catch (error) {
+        }
+        catch (error)
+        {
             console.error('Error polishing review:', error);
             errorMessage = error.message || "Failed to polish review. Please try again later.";
             errorToastTimer = 5;
             timeoutErrorToast();
-        } finally {
+        }
+        finally
+        {
             isLoading = false;
         }
 
@@ -117,7 +129,7 @@
     }
 </script>
 
-<div class="p-2 h-full w-full flex items-center justify-center bg-gray-100 rounded-lg space-y-4">
+<div class="flex items-center justify-center h-screen bg-gray-100 rounded-lg space-y-4">
     <div class="flex flex-col justify-center items-center p-4 bg-white shadow-lg rounded-lg w-full max-w-lg">
         {#if getReview}
             <div class="text-xl font-semibold mb-4">

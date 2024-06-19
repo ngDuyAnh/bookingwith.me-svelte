@@ -5,7 +5,7 @@
     import {
         getCustomerBookingEstimate,
         initializeCustomerBooking
-    } from "$lib/api/api_server/customer-booking-portal/api.js";
+    } from "$lib/api/api_server/api_endpoints/customer-booking-portal/api.js";
     import {formatToTime, formatToTimeAm} from "$lib/application/Formatter.js";
     import {Spinner} from "flowbite-svelte";
     import Today from "$lib/page/customer-booking-portal/get/page/Today/Today.svelte";
@@ -20,6 +20,7 @@
     import ModalEditCustomerBooking from "$lib/components/Modal/EditCustomerBooking/ModalEditCustomerBooking.svelte";
     import {CustomerBookingState} from "$lib/api/initialize_functions/CustomerBooking.js";
     import Past from "$lib/page/customer-booking-portal/get/page/Past/Past.svelte";
+    import NoShow from "$lib/page/customer-booking-portal/get/page/NoShow/NoShow.svelte";
 
     export let data;
 
@@ -102,7 +103,7 @@
     // Automatic fetch
     setInterval(async () => fetchCustomerBookingEstimate(), 60000);
 
-    $: console.log("bookingEstimate", $bookingEstimate);
+    //$: console.log("bookingEstimate", $bookingEstimate);
 </script>
 
 <div class="h-dvh w-screen">
@@ -114,6 +115,8 @@
         <div class="flex flex-col text-gray-900 h-full w-full">
             {#if $bookingEstimate.customerBooking.deleted}
                 <Deleted/>
+            {:else if $bookingEstimate.customerBooking.noShow}
+                <NoShow/>
             {:else if relativeDate > 0}
                 <Future/>
             {:else if relativeDate === 0 ||

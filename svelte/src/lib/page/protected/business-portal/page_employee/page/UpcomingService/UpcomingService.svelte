@@ -7,7 +7,7 @@
         servicingTicketClickModalOpen,
         servicingTicketClickModalSetEmployeeTimetableList
     } from "$lib/components/TimeTable/TimetableModal/stores/servicingTicketClickModal.js";
-    import {getCustomerBooking} from "$lib/api/api_server/customer-booking-portal/api.js";
+    import {getCustomerBooking} from "$lib/api/api_server/api_endpoints/customer-booking-portal/api.js";
     import {
         findServiceBookingFromCustomerBooking
     } from "$lib/api/initialize_functions/customer-booking-utility-functions.js";

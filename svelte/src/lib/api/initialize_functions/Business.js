@@ -1,5 +1,11 @@
 import {User} from "$lib/api/initialize_functions/User.js";
 
+export const BusinessScheduleManagement = {
+    NONE: 0,
+    PASSIVE: 1,
+    ACTIVE: 2
+}
+
 export function Business()
 {
     return {
@@ -26,6 +32,7 @@ export function BusinessInformation()
         "googleMapsDirectionLink": "",
 
         "active": true,
+        "scheduleManagement": BusinessScheduleManagement.NONE
     };
 }
 
@@ -34,7 +41,9 @@ export function Employee() {
         "id": -1,
         "employeeName": "",
         "user": User(),
-        "archive": false,
+
+        "showOnlineBookingPage": true,
+        "archive": false
     };
 }
 
@@ -46,6 +55,9 @@ export function Service()
         "serviceCost": "",
         "serviceTimeLength": null,
         "description": "",
+        "showPlus": false,
+        "showOnlineBookingPage": true,
+
         "archive": false,
         "employeeList": [],
     };
@@ -54,11 +66,13 @@ export function Service()
 export function ServiceGroup()
 {
     return {
-        "id ": -1,
+        "id": -1,
         "serviceGroupName": "",
         "description": "",
         "multiselect": false,
+        "showOnlineBookingPage": true,
         "serviceList": [],
+
         "archive": false
     };
 }

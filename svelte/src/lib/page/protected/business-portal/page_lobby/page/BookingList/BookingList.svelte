@@ -1,16 +1,17 @@
 <script>
     import { onMount } from 'svelte';
     import {now} from "$lib/page/stores/now/now_dayjs_store.js";
-    import {getAppointmentBookingList} from "$lib/api/api_server/lobby-portal/api.js";
+    import {getAppointmentBookingList} from "$lib/api/api_server/api_endpoints/lobby-portal/api.js";
     import {formatToDate, formatToTime, formatToTimeAM} from "$lib/application/Formatter.js";
     import CustomerBookingListItem
         from "$lib/page/protected/business-portal/page_lobby/page/Dashboard/components/components/CustomerBookingList/CustomerBookingListItem/CustomerBookingListItem.svelte";
     import dayjs from "dayjs";
     import {Button, Modal, Tooltip} from "flowbite-svelte";
-    import {deleteBooking} from "$lib/api/api_server/customer-booking-portal/api.js";
+    import {deleteCustomerBooking} from "$lib/api/api_server/api_endpoints/customer-booking-portal/api.js";
     import {business} from "$lib/page/stores/business/business.js";
-    import {handleEditCustomerBooking} from "$lib/components/Modal/EditCustomerBooking/modalEditCustomerBooking.js";
-    import {cancelScheduledReminderSms} from "$lib/api/api_twilio/api.js";
+    import {
+        handleLobbyPortalEditCustomerBooking
+    } from "$lib/components/Modal/EditCustomerBooking/modalEditCustomerBooking.js";
 
     let tomorrow  = $now.startOf('day').add(1, 'day');
     $: tomorrow = $now.startOf('day').add(1, 'day');
@@ -64,11 +65,7 @@
     {
         if (confirm("Are you sure you want to cancel this appointment?"))
         {
-            // Remove the scheduled sms appointment reminder
-            cancelScheduledReminderSms(selectedCustomerBooking);
-
-            // Mark the customer booking as deleted in the database
-            deleteBooking($business.businessInfo.businessID, selectedCustomerBooking.id)
+            deleteCustomerBooking($business.businessInfo.businessID, selectedCustomerBooking)
                 .then(() => {
                     console.log("Deleted customer booking.");
 
@@ -115,7 +112,7 @@
                     <div class="mt-2 p-2 border rounded border-sky-500 bg-gray-50">
                         {#each individualBooking.customerIndividualServiceBookingList as serviceBooking}
                             <div class="mt-1 p-1">
-                                <p>{serviceBooking.service.serviceName} ({serviceBooking.employee?.employeeName || 'Any'})</p>
+                                <p>{serviceBooking.service.serviceName} ({serviceBooking.employee?.employeeName || 'Any employee'})</p>
                             </div>
                         {/each}
                     </div>
@@ -125,7 +122,7 @@
 
         <div class="mt-4 flex ">
             <div class="justify-start">
-                <Button id="show-tooltip" on:click={() => handleEditCustomerBooking(selectedCustomerBooking)} color="light" outline>
+                <Button id="show-tooltip" on:click={() => handleLobbyPortalEditCustomerBooking(selectedCustomerBooking)} color="light" outline>
                     <svg class="w-6 h-6 text-gray-800 dark:text-white" aria-hidden="true"
                          xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
                         <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"

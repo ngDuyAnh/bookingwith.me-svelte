@@ -1,7 +1,7 @@
 <script>
     import {onMount, setContext} from "svelte";
-    import {getLobbyBookingList} from "$lib/api/api_server/lobby-portal/api.js";
-    import {initializeCustomerBooking} from "$lib/api/api_server/customer-booking-portal/api.js";
+    import {getLobbyBookingList} from "$lib/api/api_server/api_endpoints/lobby-portal/api.js";
+    import {initializeCustomerBooking} from "$lib/api/api_server/api_endpoints/customer-booking-portal/api.js";
     import {formatToDate} from "$lib/application/Formatter.js";
     import {now} from "$lib/page/stores/now/now_dayjs_store.js";
     import Appointment
@@ -18,10 +18,10 @@
     } from "$lib/page/protected/business-portal/page_lobby/stores/dashboard_store.js";
     import {
         customerBookingClickModal
-    } from "$lib/page/protected/business-portal/page_lobby/page/Dashboard/components/components/CustomerBookingClickModal/stores/customerBookingClickModal.js";
+    } from "$lib/components/CustomerBookingClickModal/stores/customerBookingClickModal.js";
     import {Spinner} from "flowbite-svelte";
     import CustomerBookingClickModal
-        from "$lib/page/protected/business-portal/page_lobby/page/Dashboard/components/components/CustomerBookingClickModal/CustomerBookingClickModal.svelte";
+        from "$lib/components/CustomerBookingClickModal/CustomerBookingClickModal.svelte";
 
     async function fetchCustomerBookingList()
     {

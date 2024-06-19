@@ -1,10 +1,10 @@
 <script>
-    import { Button, Modal, Label, Input } from 'flowbite-svelte';
+    import {Button, Modal, Label, Input, Checkbox} from 'flowbite-svelte';
     import {
         getEmployeeWorkSchedule,
         initializeBusiness,
         initializeEmployeeWorkSchedule
-    } from "$lib/api/api_server/business-portal/api.js";
+    } from "$lib/api/api_server/api_endpoints/business-portal/api.js";
     import {business} from "$lib/page/stores/business/business.js";
     import {Employee} from "$lib/api/initialize_functions/Business.js";
     import {User} from "$lib/api/initialize_functions/User.js";
@@ -216,9 +216,16 @@
             <span>Employee Name</span>
             <Input bind:value={editingCloneEmployee.employeeName} required />
         </Label>
+
         <Label class="space-y-2">
             <span>Employee Email:</span>
             <Input bind:value={editingCloneEmployee.user.email} required />
+        </Label>
+
+        <Label class="space-y-2">
+            <Checkbox bind:checked={editingCloneEmployee.showOnlineBookingPage}>
+                Show on booking page
+            </Checkbox>
         </Label>
 
         <Button class="w-full" on:click={handleEditEmployee}>Update</Button>

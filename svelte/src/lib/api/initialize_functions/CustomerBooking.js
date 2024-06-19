@@ -11,7 +11,8 @@ export const CustomerBookingState = {
 
 export const CustomerBookingChannel = {
     LOBBY: 0,
-    ONLINE: 1
+    ONLINE: 1,
+    REVIEW: 2
 }
 
 export function CustomerBookingReview()
@@ -46,8 +47,12 @@ export function CustomerBooking(now)
         "servicingEndTime": null,
 
         "walkIn": false,
-        "smsConfirmation": false,
+        "noShow": false,
         "deleted": false,
+
+        "smsConfirmationSent": false,
+        "smsConfirmation": false,
+        "smsAppointmentSent": false,
         "smsAppointmentReminderSid": null,
         "smsReviewReminderSent": false,
 

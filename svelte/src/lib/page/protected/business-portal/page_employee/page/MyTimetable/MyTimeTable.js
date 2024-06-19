@@ -1,4 +1,4 @@
-import {getSchedule} from "$lib/api/api_server/lobby-portal/api.js";
+import {getSchedule} from "$lib/api/api_server/api_endpoints/lobby-portal/api.js";
 import {userProfile} from "$lib/page/stores/userProfile/userProfile.js";
 
 export async function getEmployeeSchedule(businessID, selectedDate, currentTimeString) {

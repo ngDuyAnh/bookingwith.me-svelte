@@ -1,5 +1,5 @@
 <script>
-    import {getSchedule} from "$lib/api/api_server/lobby-portal/api.js";
+    import {getSchedule} from "$lib/api/api_server/api_endpoints/lobby-portal/api.js";
     import TimeTableComponent from "$lib/components/Timetable/TimeTableComponent.svelte";
 
     async function getAllEmployeeSchedule(businessID, selectedDate, currentTimeString)

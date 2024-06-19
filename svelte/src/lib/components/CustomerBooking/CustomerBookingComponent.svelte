@@ -8,6 +8,12 @@
         from "$lib/components/CustomerBooking/CustomerBookingInformation/CustomerBookingInformation.svelte";
     import BookingSuccess from "$lib/components/CustomerBooking/BookingSuccess/BookingSuccess.svelte";
 
+    export let customerIndividualBookingServiceSelectProps = {
+        showAllServiceGroup: false,
+        showAllService: false,
+        showAllEmployeeSelectOptions: false
+    };
+
     export let customerBookingInformationProps = {
         showOverride: false,
         showSendSms: false,
@@ -43,7 +49,8 @@
         pageIndex = 0;
     }
 
-    function gotoCustomerIndividualBookingServiceSelect(numGuest) {
+    function gotoCustomerIndividualBookingServiceSelect(numGuest)
+    {
         // Adjust the number of guests, individual booking
         let currentLength = customerBooking.customerIndividualBookingList.length;
         if (numGuest < currentLength) {
@@ -83,6 +90,8 @@
                 customerIndividualBookingList={customerBooking.customerIndividualBookingList}
 
                 bind:guestIndex={guestIndex}
+
+                {customerIndividualBookingServiceSelectProps}
         />
     {:else if pageIndex === 2}
         <CustomerBookingInformation

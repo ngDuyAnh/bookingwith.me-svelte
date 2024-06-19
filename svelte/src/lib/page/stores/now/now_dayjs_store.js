@@ -19,14 +19,19 @@ export function today()
     return nowValue.format(formatToDate);
 }
 
-export function isToday(date)
+export function isToday(dateString)
 {
     const todayDate = get(now).format(formatToDate);
-    return date === todayDate;
+    return dateString === todayDate;
 }
 
-export function isTomorrow(date)
+export function isTomorrow(dateString)
 {
     const todayDate = get(now);
-    return dayjs(date, formatToDate).isSame(todayDate.add(1, 'day'), 'day');
+    return dayjs(dateString, formatToDate).isSame(todayDate.add(1, 'day'), 'day');
+}
+
+export function isPast(dateString) {
+    const nowValue = get(now);
+    return dayjs(dateString, formatToDate).isBefore(nowValue, 'day');
 }
