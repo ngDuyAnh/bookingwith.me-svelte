@@ -11,7 +11,7 @@
     let tabs = ["Upcoming Service", "My Timetable", "Setting"];
     let selectedIndex = 0;
 
-    $: if (selectedIndex !== 1) {
+    $: if (selectedIndex !== 0) {
         servicingTicketClickModal.update(current => {
             return {...current, open: false};
         });
