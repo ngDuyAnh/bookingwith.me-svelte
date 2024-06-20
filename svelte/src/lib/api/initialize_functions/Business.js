@@ -20,6 +20,8 @@ export function BusinessInformation()
     return {
         "id":-1,
         "businessID": null,
+        "stripeID": null,
+
         "businessName": "",
         "businessPhoneNumber": "",
         "websiteUrl": "",
