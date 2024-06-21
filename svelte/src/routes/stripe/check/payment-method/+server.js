@@ -7,27 +7,35 @@ export async function POST({ request }) {
     try {
         const { customerId } = await request.json();
 
-        // Check if the customer has any active subscriptions
-        const subscriptions = await stripe.subscriptions.list({
+        // Check if the customer has any payment methods
+        const paymentMethods = await stripe.paymentMethods.list({
             customer: customerId,
-            status: 'active',
+            type: 'card',
         });
 
-        if (subscriptions.data.length > 0) {
-            // Customer has an active subscription
-            return new Response(JSON.stringify({ subscribed: true }), {
+        if (paymentMethods.data.length > 0) {
+
+            console.log("paymentMethods",paymentMethods);
+
+            // Customer has an existing payment method
+            return new Response(JSON.stringify({
+                hasPaymentMethod: true,
+                paymentMethod: paymentMethods.data[0]
+            }), {
                 status: 200,
                 headers: { 'Content-Type': 'application/json' },
             });
         } else {
-            // Customer does not have an active subscription
-            return new Response(JSON.stringify({ subscribed: false }), {
+            // Customer does not have a payment method
+            return new Response(JSON.stringify({ hasPaymentMethod: false }), {
                 status: 200,
                 headers: { 'Content-Type': 'application/json' },
             });
         }
+
+
     } catch (error) {
-        console.error("Error checking subscription:", error);
+        console.error("Error checking payment method:", error);
         return new Response(JSON.stringify({ error: error.message }), {
             status: 500,
             headers: { 'Content-Type': 'application/json' },

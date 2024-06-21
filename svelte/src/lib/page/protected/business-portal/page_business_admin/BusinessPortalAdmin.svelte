@@ -5,22 +5,34 @@
     import Employee from "$lib/page/protected/business-portal/page_business_admin/page/Employee/Employee.svelte";
     import Service from "$lib/page/protected/business-portal/page_business_admin/page/Service/Service.svelte";
     import Setting from "$lib/components/Setting/Setting.svelte";
+    import NavBar from "$lib/page/protected/components/NavBar/NavBar.svelte";
 
     let tabs = ["Dashboard", "Report", "Employee", "Service", "Setting"];
+
     let dropdownOptions = {
-        "Dashboard":["Booking Service Cost","Billing"]
+        "Dashboard": {
+            "Service":["Usage Information", "Billing"],
+        },
     }
     let selectedDropDownIndex=0;
     let selectedIndex = 0;
 </script>
 
-<Header
+<NavBar
         bind:selectedIndex={selectedIndex}
         bind:tabs={tabs}
         dropdown={true}
         dropdownOptions={dropdownOptions}
         bind:selectedDropDownIndex={selectedDropDownIndex}
 />
+
+<!--<Header-->
+<!--        bind:selectedIndex={selectedIndex}-->
+<!--        bind:tabs={tabs}-->
+<!--        dropdown={true}-->
+<!--        dropdownOptions={dropdownOptions}-->
+<!--        bind:selectedDropDownIndex={selectedDropDownIndex}-->
+<!--/>-->
 
 <div class="m-1">
     {#if selectedIndex === 0}

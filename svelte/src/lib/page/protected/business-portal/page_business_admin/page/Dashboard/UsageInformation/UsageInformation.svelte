@@ -160,11 +160,11 @@
 </script>
 
 <div class="p-2 flex flex-col justify-center items-center ">
-    <h1 class="text-2xl font-semibold text-center text-gray-800 mb-2">Booking Service Cost</h1>
+    <h1 class="text-2xl font-semibold text-center text-gray-800 mb-2">Service Usage</h1>
 
     <div class="p-8 flex flex-col justify-center items-center w-fit border-blue-200 rounded-lg border-2 ">
         <div class="flex sm:flex-row flex-col justify-center items-center">
-            <span class="text-center mx-1">Select the date to retrieve cost information: </span>
+            <span class="text-center mx-1">Select the date to retrieve usage information: </span>
             <Button>Date Select: {selectedOption}<ChevronDownOutline class="w-6 h-6 ms-2 text-white dark:text-white" /></Button>
             <Dropdown class="w-48 p-3 space-y-1">
                 <li class="rounded p-2 hover:bg-gray-100 dark:hover:bg-gray-600">

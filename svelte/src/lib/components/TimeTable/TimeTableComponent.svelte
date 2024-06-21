@@ -293,14 +293,14 @@
                     uniqueBookingIDs.add(lastCompletedTicket.bookingID);
                 }
 
-                // Add all other non-completed booking IDs
+                // Add get-by-month other non-completed booking IDs
                 employeeTable.servicingTicketList.forEach(ticket => {
                     if (ticket.servicingTicketInfo.bookingState !== CustomerBookingState.COMPLETED) {
                         uniqueBookingIDs.add(ticket.bookingID);
                     }
                 });
             } else {
-                // Get all booking IDs
+                // Get get-by-month booking IDs
                 employeeTable.servicingTicketList.forEach(servicingTicket => {
                     uniqueBookingIDs.add(servicingTicket.bookingID);
                 });

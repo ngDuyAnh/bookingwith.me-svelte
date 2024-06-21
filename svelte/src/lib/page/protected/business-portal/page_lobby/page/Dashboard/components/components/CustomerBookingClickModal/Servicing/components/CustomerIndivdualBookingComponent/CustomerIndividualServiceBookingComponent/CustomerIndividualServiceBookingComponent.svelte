@@ -66,7 +66,7 @@
         // Set the service booking completed toggle
         serviceBooking.completed = !serviceBooking.completed;
 
-        // End all ongoing servicing ticket associated to the service booking
+        // End get-by-month ongoing servicing ticket associated to the service booking
         if (serviceBooking.completed) {
             serviceBooking.servicingTicketList.forEach(ticket => {
                 if (!ticket.isCompleted) {

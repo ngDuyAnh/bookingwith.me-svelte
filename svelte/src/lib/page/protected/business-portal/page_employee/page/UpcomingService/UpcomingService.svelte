@@ -118,8 +118,8 @@
             const validTicket = servicingTickets.find(ticket => {
                 const ticketStartTime = dayjs(ticket.timePeriod.startTime, "HH:mm");
                 return !ticket.isCompleted &&
-                    !ticket.isOngoing &&
-                    ticketStartTime.isAfter(currentTime);
+                    !ticket.isOngoing && (ticketStartTime.isSame(currentTime) ||
+                    ticketStartTime.isAfter(currentTime));
             });
 
             if (validTicket) {

@@ -11,13 +11,11 @@
 
     let subscribed=false;
 
-    const customerId = {
-        ROBA1: "cus_QIMtNH2bgSMOVs",
-        ROBA2: "cus_QIfcLYle5X567a"
-    };
 
-    export let subscriptionStep;
-    export let paymentMethodId;
+    export let customerId;
+    export let hasSubscribed;
+
+    let paymentMethodId = null;
 
 
     async function setupStripe() {
@@ -26,7 +24,7 @@
         const response = await fetch('/stripe/payment-element/setup-intent', {
             method: 'POST',
             headers: {'Content-Type': 'application/json'},
-            body: JSON.stringify({customerId: customerId.ROBA1}),
+            body: JSON.stringify({customerId: customerId}),
         });
 
         const result = await response.json();
@@ -41,14 +39,14 @@
                     'content-type': 'application/json'
                 },
                 body: JSON.stringify({
-                    customerId: customerId.ROBA1,
+                    customerId: customerId,
                     paymentMethodId: paymentMethodId
                 })
             })
             const {subscriptionId} = await response.json();
             console.log("subscriptionId", subscriptionId);
 
-            subscriptionStep=2;
+            hasSubscribed=true;
 
         } catch (error) {
             console.log("error", error);

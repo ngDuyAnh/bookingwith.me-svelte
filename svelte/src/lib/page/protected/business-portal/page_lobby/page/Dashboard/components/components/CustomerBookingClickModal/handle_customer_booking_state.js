@@ -59,7 +59,7 @@ export function moveToCompleted(now, customerBooking, submitCustomerBooking)
                 // Mark service as completed
                 serviceBooking.completed = true;
 
-                // Mark all tickets within the service as completed
+                // Mark get-by-month tickets within the service as completed
                 serviceBooking.servicingTicketList.forEach(ticket => {
                     if (!ticket.isCompleted)
                     {
