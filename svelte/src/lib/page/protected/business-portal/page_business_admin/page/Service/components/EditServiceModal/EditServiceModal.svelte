@@ -7,7 +7,7 @@
     } from "$lib/components/CustomerBooking/CustomerIndividualBookingServiceSelect/components/ServiceOption/functions.js";
 
     export let open = false;
-    export let editingServiceGroup;
+    // export let editingServiceGroup;
     export let editingService;
 
     // Create the employee option for selection
