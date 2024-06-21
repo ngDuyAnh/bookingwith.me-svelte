@@ -17,6 +17,8 @@
     } from "$lib/api/initialize_functions/customer-booking-utility-functions.js";
     import {CustomerBookingState} from "$lib/api/initialize_functions/CustomerBooking.js";
     import Footer from "$lib/components/CustomerBookingClickModal/components/Footer/Footer.svelte";
+    import {BusinessScheduleManagement} from "$lib/api/initialize_functions/Business.js";
+    import {business} from "$lib/page/stores/business/business.js";
 
     export let isToday;
     export let nonModal = false;
@@ -35,7 +37,14 @@
         // Get the individual booking from customer booking and service booking
         if (customerBooking && serviceBooking) {
             individualBooking = findIndividualBookingFromCustomerBooking(customerBooking, serviceBooking.individualID);
+        }
+
+        // Indicate to send to completed
+        if ($business.businessInfo.scheduleManagement === BusinessScheduleManagement.ACTIVE) {
             indicateSendToCompleted = indicateToSendCustomerBookingToCompleted(customerBooking);
+        }
+        else {
+            indicateSendToCompleted = false;
         }
     }
 
