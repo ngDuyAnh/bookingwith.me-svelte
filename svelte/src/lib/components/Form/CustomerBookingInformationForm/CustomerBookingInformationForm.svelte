@@ -75,9 +75,15 @@
                 // Initialize the available time
                 availableTimeOptionList = response.availabilityList.map(
                     availability => {
+                        const startTimeFormatted = dayjs(availability.timePeriod.startTime, formatToTime).format(formatToTimeAM);
+                        const endTimeFormatted = dayjs(availability.timePeriod.endTime, formatToTime).format(formatToTimeAM);
+                        const durationDisplay = availability.walkIn
+                            ? `(~${availability.duration} minutes)`
+                            : `(${availability.duration} minutes)`;
+
                         return {
                             value: availability.timePeriod.startTime,
-                            name: `${dayjs(availability.timePeriod.startTime, formatToTime).format(formatToTimeAM)} to ${dayjs(availability.timePeriod.endTime, formatToTime).format(formatToTimeAM)} (~${availability.duration} minutes)`,
+                            name: `${startTimeFormatted} to ${endTimeFormatted} ${durationDisplay}`,
                             availability: availability
                         };
                     });
