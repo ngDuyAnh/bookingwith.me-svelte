@@ -1,7 +1,7 @@
 <script>
     import {now} from "$lib/page/stores/now/now_dayjs_store.js";
     import {formatToTime} from "$lib/application/Formatter.js";
-    import {Button, Input, Label, Tooltip} from "flowbite-svelte";
+    import {Button, Input, Label} from "flowbite-svelte";
     import {CustomerBooking, CustomerBookingState, CustomerBookingChannel} from "$lib/api/initialize_functions/CustomerBooking.js";
     import {
         forceSubmitBooking,
@@ -9,12 +9,12 @@
     } from "$lib/api/api_server/api_endpoints/customer-booking-portal/api.js";
     import {formatPhoneNumber, rawPhoneNumber} from "$lib/application/FormatPhoneNumber.js";
     import {
-        checkAbleToSendReviewReminderPhoneNumber,
-        getCustomer
+        checkAbleToSendReviewReminderPhoneNumber
     } from "$lib/api/api_server/api_endpoints/lobby-portal/api.js";
     import {checkAbleToSendSmsReviewReminder} from "$lib/api/api_server/functions.js";
     import {business} from "$lib/page/stores/business/business.js";
     import {sendSMSAskingForReview} from "$lib/api/api_twilio/functions.js";
+    import {Customer} from "$lib/api/initialize_functions/CustomerBooking.js";
 
     let completedPhoneNumber = false;
     let phoneNumber = "";
@@ -55,8 +55,10 @@
     async function send() {
         try
         {
+            // Create the customer instance
+            let customer = Customer(phoneNumber)
+
             // Create the filler customer booking
-            let customer = await getCustomer(phoneNumber);
             let customerBooking = {
                 ...CustomerBooking($now),
                 bookingChannel: CustomerBookingChannel.REVIEW,

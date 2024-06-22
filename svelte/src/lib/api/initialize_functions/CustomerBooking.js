@@ -25,6 +25,14 @@ export function CustomerBookingReview()
     };
 }
 
+export function Customer(phoneNumber)
+{
+    return {
+        "phoneNumber": phoneNumber,
+        "customerName": ""
+    };
+}
+
 export function CustomerBooking(now)
 {
     return {
