@@ -1,6 +1,6 @@
 <script>
     import {onMount, setContext} from "svelte";
-    import {getLobbyBookingList} from "$lib/api/api_server/api_endpoints/lobby-portal/api.js";
+    import {getCustomerBookingQueueList} from "$lib/api/api_server/api_endpoints/lobby-portal/api.js";
     import {initializeCustomerBooking} from "$lib/api/api_server/api_endpoints/customer-booking-portal/api.js";
     import {formatToDate} from "$lib/application/Formatter.js";
     import {now} from "$lib/page/stores/now/now_dayjs_store.js";
@@ -28,8 +28,8 @@
         loading = true;
 
         // Get the customer booking list
-        const response = await getLobbyBookingList($business.businessInfo.businessID, $now.format(formatToDate));
-        bookingStateList.set(response.bookingList);
+        const response = await getCustomerBookingQueueList($business.businessInfo.businessID, $now.format(formatToDate));
+        bookingStateList.set(response.customerBookingQueueList);
 
         // Find and reinitialize the customer booking for the modal
         if ($customerBookingClickModal.customerBooking)
