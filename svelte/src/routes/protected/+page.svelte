@@ -16,6 +16,8 @@
     import ModalEditCustomerBooking from "$lib/components/Modal/EditCustomerBooking/ModalEditCustomerBooking.svelte";
     import ModalCreateCustomerBooking
         from "$lib/components/Modal/CreateCustomerBooking/ModalCreateCustomerBooking.svelte";
+    import {listenSseFrom} from "$lib/api/api_server/api_endpoints/sse/api.js";
+    import {onMount} from "svelte";
 
     export let data;
     let loading = true;
@@ -31,7 +33,71 @@
         employeeSelectOptions.set($business.employeeList.map(employeeToSelectOption));
     }
 
-    loading = false;
+    let eventSource = undefined;
+    let reconnectionTimeout;
+
+    async function connectSSE() {
+        try {
+            if (eventSource)
+            {
+                eventSource.close();
+                eventSource = undefined;
+            }
+
+            console.log("Connecting SSE...");
+            eventSource = new EventSource(listenSseFrom($business.businessInfo.businessID));
+
+            // Log all received messages
+            eventSource.onmessage = function(event) {
+                console.log('Message received:', event.data);
+            };
+
+            eventSource.addEventListener('BUSINESS_UPDATE', (event) => {
+                console.log('BUSINESS_UPDATE event received:', event);
+
+                business.set(JSON.parse(event.data));
+
+                /*getBusiness($business.businessInfo.businessID)
+                    .then(updatedBusiness => {
+                        business.set(updatedBusiness);
+                    })
+                    .catch(error => {
+                        console.error("Error fetching business data:", error);
+                    });*/
+            });
+
+            eventSource.addEventListener('TEST', (event) => {
+                console.log("Test event triggered:", event.data);
+            });
+
+            eventSource.onerror = function (error) {
+                eventSource.close();
+                eventSource = undefined;
+                console.error("SSE disconnected. Trying to reconnect.", error);
+
+                clearTimeout(reconnectionTimeout);
+                reconnectionTimeout = setTimeout(connectSSE, 1000);
+            };
+        } catch (error) {
+            console.error("Error initializing SSE:", error);
+            clearTimeout(reconnectionTimeout); // Clear any existing timeout
+            reconnectionTimeout = setTimeout(connectSSE, 1000); // Attempt reconnection
+        }
+    }
+
+    onMount(() => {
+        connectSSE();
+
+        loading = false;
+
+        return async () => {
+            if (eventSource) {
+                eventSource.close();
+                eventSource = undefined;
+            }
+            clearTimeout(reconnectionTimeout); // Clear timeout on component destroy
+        };
+    });
 
     //$: console.log("userProfile", $userProfile);
     //$: console.log("business", $business);
