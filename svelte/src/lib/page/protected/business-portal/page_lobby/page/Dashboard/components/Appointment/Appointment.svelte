@@ -1,8 +1,9 @@
 <script>
     import CustomerBookingList
         from "$lib/page/protected/business-portal/page_lobby/page/Dashboard/components/components/CustomerBookingList/CustomerBookingList.svelte";
-    import {bookingStateList} from "$lib/page/protected/business-portal/page_lobby/stores/dashboard_store.js";
     import {handleNewCustomerBooking} from "$lib/components/Modal/CreateCustomerBooking/modalCreateCustomerBooking.js";
+
+    export let bookingStateList;
 </script>
 
 <div class="min-w-[348.4px] h-full bg-gray-100 rounded shadow p-4 overflow-y-auto border border-sky-200">
@@ -11,7 +12,7 @@
         <h2 class="text-lg font-bold">{"Appointment"}</h2>
 
         <div class="flex items-center space-x-4">
-            <span class="text-sm">{$bookingStateList[0].length}</span>
+            <span class="text-sm">{bookingStateList[0].length}</span>
 
             <button on:click={handleNewCustomerBooking} class="text-blue-500 hover:text-blue-700 focus:outline-none">
                 <svg
@@ -29,6 +30,6 @@
     </div>
 
     <CustomerBookingList
-            customerBookingList={$bookingStateList[0]}
+            customerBookingList={bookingStateList[0]}
     />
 </div>
