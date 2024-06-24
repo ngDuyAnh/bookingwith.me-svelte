@@ -5,26 +5,27 @@
     import {
         servicingTicketClickModal,
         servicingTicketClickModalOpen,
-        servicingTicketClickModalSetEmployeeTimetableList
+        servicingTicketClickModalSetEmployeeTimetableList,
+        servicingTicketClickModalToggleOpen
     } from "$lib/components/TimeTable/TimetableModal/stores/servicingTicketClickModal.js";
     import {getCustomerBooking} from "$lib/api/api_server/api_endpoints/customer-booking-portal/api.js";
     import {
         findServiceBookingFromCustomerBooking
     } from "$lib/api/initialize_functions/customer-booking-utility-functions.js";
-    import {onMount} from "svelte";
+    import {onDestroy, onMount} from "svelte";
     import {
         getEmployeeSchedule
     } from "$lib/page/protected/business-portal/page_employee/page/MyTimetable/MyTimeTable.js";
-    import {Spinner} from "flowbite-svelte";
-    import dayjs from "dayjs";
+    import {Button, Spinner} from "flowbite-svelte";
     import ServicingTicketClickModal from "$lib/components/TimeTable/TimetableModal/ServicingTicketClickModal.svelte";
-    import {InfoCircleSolid} from "flowbite-svelte-icons";
+    import {ArrowLeftOutline, ArrowRightOutline, InfoCircleSolid} from "flowbite-svelte-icons";
 
     let loading = false;
     let employeeTimetableList = undefined;
     let foundService = false;
 
     async function fetchSchedule() {
+        currentIndex = 0;
         loading = true;
 
         try {
@@ -61,38 +62,8 @@
                     console.log('Customer booking not found for customer booking click modal.');
                 }
             }
-
-            // // Generate the events for display
-            // employeeWorkHourEvent = [];
-            // resources = employeeTimetableList.flatMap((employeeTable) => {
-            //     employeeWorkHourEvent.push({
-            //         resourceId: employeeTable.employee.id,
-            //         color: employeeTable.employee.id === -1 || !employeeTable.employee.id ? "red" : "#FFF9D0",
-            //         start: `${$now.format("YYYY-MM-DD")} ${employeeTable.timePeriod.startTime}`,
-            //         end: `${$now.format("YYYY-MM-DD")} ${employeeTable.timePeriod.endTime}`,
-            //         display: "background",
-            //     });
-            //     return {
-            //         id: employeeTable.employee.id,
-            //         title: `${employeeTable.employee.employeeName}`,
-            //     };
-            // });
-            //
-            // employeeEvents = await createEvents(employeeTimetableList);
-            //
-            // options.resources = resources;
-            // options.events = employeeWorkHourEvent.concat(employeeEvents);
-            //
-            // if (options.events.length === 0) {
-            //     setTimeout(function () {
-            //         findECBody();
-            //     }, 50);
-            // }
         } catch (error) {
             console.error("Failed to  fetch tasks", error);
-            // employeeEvents = [];
-            // resources = [];
-            // employeeWorkHourEvent = [];
         }
 
         console.log("????", employeeTimetableList[0].servicingTicketList)
@@ -109,26 +80,70 @@
         }
     });
 
-    async function checkAndOpenModalForServicingTickets(employeeTimetableList) {
-        const currentTime = $now;  // Get the current time from the store
+    onDestroy(() => {
+        servicingTicketClickModalToggleOpen();
+    });
 
+    let validActiveTickets = [];
+    let validUpcomingTicket;
+    let currentIndex = 0;
+    let currentTicket;
+    let option = 0;
+
+    async function checkAndOpenModalForServicingTickets(employeeTimetableList) {
         if (employeeTimetableList.length > 0 && employeeTimetableList[0].servicingTicketList.length > 0) {
             const servicingTickets = employeeTimetableList[0].servicingTicketList;
 
-            const validTicket = servicingTickets.find(ticket => {
-                const ticketStartTime = dayjs(ticket.timePeriod.startTime, "HH:mm");
-                return !ticket.isCompleted &&
-                    !ticket.isOngoing && (ticketStartTime.isSame(currentTime) ||
-                    ticketStartTime.isAfter(currentTime));
-            });
-
-            if (validTicket) {
-                foundService = true;
-                await openModalServicingTicket(validTicket);
-            } else {
-                console.log("No valid servicing ticket found.");
+            validActiveTickets = servicingTickets.filter(ticket => !ticket.isCompleted && ticket.isOngoing);
+            let upcomingTicket = servicingTickets.find(ticket => !ticket.isCompleted && !ticket.isOngoing);
+            validUpcomingTicket = [];
+            if (upcomingTicket) {
+                validUpcomingTicket = [upcomingTicket];
             }
+
+            await updateCurrentTicket();
         }
+    }
+
+    let loadingTicket = false;
+
+    async function updateCurrentTicket() {
+        loadingTicket = true;
+        const tickets = option === 0 ? validActiveTickets : validUpcomingTicket;
+        currentTicket = tickets[currentIndex] || null;
+        if (currentTicket) {
+            await openModalServicingTicket(currentTicket).finally(() => {
+                loadingTicket = false;
+            });
+        }
+    }
+
+    async function nextTicket() {
+        const tickets = option === 0 ? validActiveTickets : validUpcomingTicket;
+        if (currentIndex < tickets.length - 1) {
+            currentIndex++;
+            await updateCurrentTicket();
+        }
+    }
+
+    async function previousTicket() {
+        if (currentIndex > 0) {
+            currentIndex--;
+            await updateCurrentTicket();
+        }
+    }
+
+    $: if (option === 0 || option === 1) {
+
+        currentIndex = 0;
+        (async () => {
+            await updateCurrentTicket();
+        })();
+
+        // console.log("validActiveTickets.length",validActiveTickets.length);
+        // console.log("validUpcomingTickets.length",validUpcomingTickets.length);
+        //
+        // console.log(currentIndex >= ((option === 0 ? validActiveTickets.length : validUpcomingTickets.length) - 1));
     }
 
     async function openModalServicingTicket(servicingTicket) {
@@ -148,6 +163,7 @@
         servicingTicketClickModalOpen(customerBooking, serviceBooking);
     }
 
+
 </script>
 
 {#if loading}
@@ -155,21 +171,57 @@
         <Spinner/>
     </div>
 {:else}
-
-    {#if foundService}
-        <div class="flex flex-col justify-center items-center w-full h-full">
-            <ServicingTicketClickModal
-                    isToday={true}
-                    nonModal={true}
-            />
+    <div class="flex flex-col items-center space-y-1 mt-2 h-full">
+        <div class="flex flex-row justify-center space-x-1 z-[2]">
+            <Button color="{option==0? 'blue':'alternative'}" on:click={()=>option=0}>Currently Servicing</Button>
+            <Button color="{option==1? 'blue':'alternative'}" on:click={()=>option=1}>Upcoming</Button>
+            <Button color="alternative" on:click={fetchSchedule}>
+                Refresh
+            </Button>
         </div>
-    {:else}
-        <div class="flex flex-col justify-center items-center w-full h-full text-base md:text-xl p-4">
-            <div class="flex flex-row justify-center items-center space-x-2">
-                <InfoCircleSolid class="w-5 h-5 ripple" slot="icon"/>
-                <span>No Upcoming Service Found For Today</span>
-            </div>
-        </div>
+        <div class="flex flex-col justify-center items-center h-full w-fit ">
+            {#if option == 0 || option == 1}
 
-    {/if}
+                {#if currentTicket}
+                    {#key currentTicket}
+                        <div class="animate-fade-in flex flex-col basis-3/4 relative h-fit justify-center items-center overflow-x-auto rounded-lg  my-2 border-2">
+                            <ServicingTicketClickModal isToday={true}
+                                                       nonModal={true}/>
+                        </div>
+                    {/key}
+
+                    <div class="basis-1/4 z-[2]">
+                        <div class="flex space-x-3 rtl:space-x-reverse">
+                            {#if option == 0}
+                                <Button pill={true} class="flex items-center"
+                                        disabled={currentIndex === 0 || loadingTicket} on:click={previousTicket}>
+                                    <ArrowLeftOutline size="md"/>
+
+                                </Button>
+                                <Button pill={true} class="flex items-center"
+                                        disabled={loadingTicket || currentIndex >= ((option === 0 ? validActiveTickets.length : validUpcomingTicket.length) - 1)}
+                                        on:click={nextTicket}>
+
+                                    <ArrowRightOutline size="md"/>
+                                </Button>
+                            {/if}
+                        </div>
+                    </div>
+
+                {:else}
+                    <div class="flex flex-col justify-center items-center w-full !h-full text-base md:text-xl p-4">
+                        <div class="flex flex-row justify-center items-center space-x-2">
+                            <InfoCircleSolid class="w-5 h-5 ripple" slot="icon"/>
+                            {#if option == 0}
+                                <span>You have not started any services yet.</span>
+
+                            {:else if option == 1}
+                                <span>No Upcoming Service Found For Today</span>
+                            {/if}
+                        </div>
+                    </div>
+                {/if}
+            {/if}
+        </div>
+    </div>
 {/if}

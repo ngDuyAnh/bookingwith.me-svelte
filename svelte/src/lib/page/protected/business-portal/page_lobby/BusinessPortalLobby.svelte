@@ -5,15 +5,16 @@
     import BookingList from "$lib/page/protected/business-portal/page_lobby/page/BookingList/BookingList.svelte";
     import Setting from "$lib/components/Setting/Setting.svelte";
     import SendReview from "$lib/page/protected/business-portal/page_lobby/page/SendReview/SendReview.svelte";
+    import NavBar from "$lib/page/protected/components/NavBar/NavBar.svelte";
 
     let tabs = ['Dashboard', 'Timetable', "List", "Send review", "Setting"];
     let selectedIndex = 0;
 </script>
 
 <div class="flex flex-col h-screen overflow-hidden z-[1006]">
-    <Header
-            {tabs}
+    <NavBar
             bind:selectedIndex={selectedIndex}
+            bind:tabs={tabs}
     />
 
     {#if selectedIndex === 0}

@@ -9,6 +9,7 @@ const config = {
         extend: {
             animation: {
                 'pop-open': 'pop-open 0.75s',
+                'fade-in': 'fade-in 0.75s',
             },
             keyframes: {
                 'pop-open': {
@@ -16,6 +17,10 @@ const config = {
                     '40%': {transform: 'scale(0.75) '},
                     '60%': {transform: 'scale(1.1)'},
                     '100%': {transform: 'scale(1)'},
+                },
+                'fade-in':{
+                    '0%': { opacity: 0 },
+                '100%': { opacity: 1 },
                 }
             },
             colors: {
