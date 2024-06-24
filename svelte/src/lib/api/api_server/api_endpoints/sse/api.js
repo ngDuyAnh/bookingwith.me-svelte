@@ -1,14 +1,38 @@
 import {API_BASE_URL} from "$lib/api/api_server/API-URL.js";
 
-const API_URL = `${API_BASE_URL}/sse`;
+export const ServerEvent = {
+    EVENT_REQUEST: "EVENT_REQUEST",
 
-export const SseEvent = {
     BUSINESS_UPDATE: "BUSINESS_UPDATE",
     EMPLOYEE_WORK_SCHEDULE_UPDATE: "EMPLOYEE_WORK_SCHEDULE_UPDATE",
     CUSTOMER_BOOKING_UPDATE: "CUSTOMER_BOOKING_UPDATE",
+
     TEST: "TEST"
 };
 
-export function listenSseFrom(businessID) {
-    return API_URL + '/stream-sse/' + businessID;
+export function listenSocketFrom(businessID) {
+    return API_BASE_URL + '/ws/' + businessID;
+}
+
+export function eventConfirmation(socket, requestId, confirmed) {
+    if (socket && socket.readyState === WebSocket.OPEN)
+    {
+        const confirmationMessage = JSON.stringify({
+            type: "EVENT_CONFIRMATION",
+            requestId: requestId,
+            confirmed: confirmed
+        });
+
+        socket.send(confirmationMessage);
+    } else {
+        console.error("WebSocket is not connected.");
+    }
+}
+
+export function handleUnknownEvent(event) {
+    console.error("Handle unknown event:", event);
+}
+
+export function handleTestEvent(event) {
+    console.log(`Handle ${ServerEvent.TEST}`, event)
 }
