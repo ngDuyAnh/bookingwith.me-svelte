@@ -1,7 +1,7 @@
 <script>
     import CustomerBookingList
         from "$lib/page/protected/business-portal/page_lobby/page/Dashboard/components/components/CustomerBookingList/CustomerBookingList.svelte";
-    import {bookingStateList} from "$lib/page/protected/business-portal/page_lobby/stores/dashboard_store.js";
+    import {customerBookingQueueList} from "$lib/page/protected/business-portal/page_lobby/stores/dashboard_store.js";
     import {getContext} from "svelte";
     import {
         handleNewCustomerBookingWalkin
@@ -16,7 +16,7 @@
         <h2 class="text-lg font-bold">{"Lobby"}</h2>
 
         <div class="flex items-center space-x-4">
-            <span class="text-sm">{$bookingStateList[1].length}</span>
+            <span class="text-sm">{$customerBookingQueueList[1].length}</span>
 
             <button on:click={handleNewCustomerBookingWalkin} class="text-blue-500 hover:text-blue-700 focus:outline-none">
                 <svg
@@ -50,6 +50,6 @@
     </div>
 
     <CustomerBookingList
-            customerBookingList={$bookingStateList[1]}
+            customerBookingList={$customerBookingQueueList[1]}
     />
 </div>

@@ -30,7 +30,7 @@ export async function getAppointmentBookingList(businessID, dateString)
 
 export async function getCustomerBookingQueueList(businessID, dateString)
 {
-    const FETCH_URL = `${API_URL}/get-lobby-booking-list/${businessID}?date=${dateString}`;
+    const FETCH_URL = `${API_URL}/get-customer-booking-queue-list/${businessID}?date=${dateString}`;
 
     const response = await fetch(`${FETCH_URL}`);
 
