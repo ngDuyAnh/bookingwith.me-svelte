@@ -2,11 +2,20 @@
     import LogoButton from "$lib/components/assets/Logo/LogoButton.svelte";
     //import {sineIn} from "svelte/easing";
     import {
+        Avatar,
         CloseButton,
         Drawer,
-        Dropdown, DropdownDivider,
+        Dropdown,
+        DropdownDivider,
+        DropdownHeader,
         DropdownItem,
-        Sidebar, SidebarDropdownItem, SidebarDropdownWrapper,
+        Navbar,
+        NavBrand,
+        NavLi,
+        NavUl,
+        Sidebar,
+        SidebarDropdownItem,
+        SidebarDropdownWrapper,
         SidebarGroup,
         SidebarItem,
         SidebarWrapper
@@ -15,20 +24,18 @@
         ArrowRightAltOutline,
         CalendarMonthOutline,
         CalendarMonthSolid,
+        CaretDownSolid,
         ChevronDownOutline,
         ClockSolid,
         FlagSolid,
         GridPlusOutline,
         GridSolid,
         ListOutline,
+        ReceiptOutline,
         StoreSolid,
         UserSettingsOutline,
-        UsersGroupSolid,
-        ReceiptOutline,
-        CaretDownSolid
+        UsersGroupSolid
     } from "flowbite-svelte-icons";
-
-    import { Navbar, NavBrand, NavLi, NavUl, Avatar, DropdownHeader } from 'flowbite-svelte';
     import {userProfile} from "$lib/page/stores/userProfile/userProfile.js";
 
 
@@ -38,7 +45,8 @@
     export let dropdownOptions;
     export let selectedDropDownIndex;
 
-    $: console.log("userProfile",$userProfile);
+    $: console.log("userProfile", $userProfile);
+
     function selectTab(index) {
         selectedIndex = index;
     }
@@ -73,6 +81,7 @@
     function handleLogout() {
         document.getElementById('logout-form').submit();
     }
+
     let activeClass = 'text-white bg-green-700 md:bg-transparent md:text-green-700 md:dark:text-white dark:bg-green-600 md:dark:bg-transparent';
     let nonActiveClass = 'text-gray-700 hover:bg-gray-100 md:hover:bg-transparent md:border-0 md:hover:text-green-700 dark:text-gray-400 md:dark:hover:text-white dark:hover:bg-gray-700 dark:hover:text-white md:dark:hover:bg-transparent';
 
@@ -90,7 +99,7 @@
                 </div>
             </NavBrand>
             <div class="flex justify-end items-center md:order-2">
-                <Avatar id="avatar-menu" src={$userProfile.auth.picture} />
+                <Avatar id="avatar-menu" src={$userProfile.auth.picture}/>
             </div>
             <Dropdown placement="bottom-end" triggeredBy="#avatar-menu" class="w-fit">
                 <DropdownHeader>
@@ -98,53 +107,55 @@
                     <span class="block truncate text-sm font-semibold">{$userProfile.user.email}</span>
                 </DropdownHeader>
                 <DropdownItem href="/report">Report</DropdownItem>
-                <DropdownDivider />
+                <DropdownDivider/>
                 <DropdownItem on:click={handleLogout}>Sign out</DropdownItem>
             </Dropdown>
 
 
             <NavUl {activeClass} {nonActiveClass}>
-            {#each tabs as tab, index}
-                <NavLi>
-                    {#if dropdown && Object.keys(dropdownOptions).includes(tab)}
+                {#each tabs as tab, index}
+                    <NavLi>
+                        {#if dropdown && Object.keys(dropdownOptions).includes(tab)}
                             <span class="tab-button {index===selectedIndex ? 'text-red-800' : 'text-black'} pt-2 relative">
                                 {#if index === selectedIndex}
-                                    <CaretDownSolid size="xs" class="absolute top-0 left-1/2 transform -translate-x-1/2"/>
+                                    <CaretDownSolid size="xs"
+                                                    class="absolute top-0 left-1/2 transform -translate-x-1/2"/>
                                 {/if}
                                 {tab}
                                 <ChevronDownOutline
                                         class="w-6 h-6 text-black dark:text-white"/></span>
-                        <Dropdown classContainer="bg-blue-200" class="p-3 drop rounded-lg">
+                            <Dropdown classContainer="bg-blue-200" class="p-3 drop rounded-lg">
 
-                            {#each Object.keys(dropdownOptions[tab]) as category, ind}
+                                {#each Object.keys(dropdownOptions[tab]) as category, ind}
 
-                                <div class="category">
-                                    <strong>{category}</strong>
-                                    {#each dropdownOptions[tab][category] as option, i}
-                                        <DropdownItem
-                                                class="whitespace-nowrap tab-button"
-                                                on:click={() => {selectTab(index); selectDropDownOption(i);}}
-                                        >
-                                            {option}
-                                        </DropdownItem>
-                                    {/each}
-                                </div>
-                            {/each}
-                            <DropdownDivider/>
-                        </Dropdown>
-                    {:else}
-                        <button class="tab-button {index===selectedIndex ? 'text-red-800' : 'text-black'} pt-2 relative" on:click={() => selectTab(index)}>
-                            <div class="flex flex-col items-center">
+                                    <div class="category">
+                                        <strong>{category}</strong>
+                                        {#each dropdownOptions[tab][category] as option, i}
+                                            <DropdownItem
+                                                    class="whitespace-nowrap tab-button"
+                                                    on:click={() => {selectTab(index); selectDropDownOption(i);}}
+                                            >
+                                                {option}
+                                            </DropdownItem>
+                                        {/each}
+                                    </div>
+                                {/each}
+                                <DropdownDivider/>
+                            </Dropdown>
+                        {:else}
+                            <button class="tab-button {index===selectedIndex ? 'text-red-800' : 'text-black'} pt-2 relative flex flex-col items-center"
+                                    on:click={() => selectTab(index)}>
+
                                 {#if index === selectedIndex}
-                                    <CaretDownSolid size="xs" class="absolute top-0 left-1/2 transform -translate-x-1/2"/>
+                                    <CaretDownSolid size="xs"
+                                                    class="absolute top-0 left-1/2 transform -translate-x-1/2"/>
                                 {/if}
                                 {tab}
-                            </div>
-                        </button>
-                    {/if}
+                            </button>
+                        {/if}
 
-                </NavLi>
-            {/each}
+                    </NavLi>
+                {/each}
             </NavUl>
         </Navbar>
     </div>
@@ -220,15 +231,16 @@
                 <SidebarGroup border>
                     <SidebarDropdownWrapper label={$userProfile.auth.name}>
                         <svelte:fragment slot="icon">
-                            <Avatar id="avatar-menu" src="https://lh3.googleusercontent.com/a/ACg8ocJFx8mxt8DHyqdk8kbTOse7cdcgvEnFG1hlS7WNyO8NQVy82A=s96-c" />
+                            <Avatar id="avatar-menu"
+                                    src="https://lh3.googleusercontent.com/a/ACg8ocJFx8mxt8DHyqdk8kbTOse7cdcgvEnFG1hlS7WNyO8NQVy82A=s96-c"/>
                         </svelte:fragment>
                         <span class="block truncate text-sm font-semibold">{$userProfile.user.email}</span>
                         <SidebarDropdownItem href="/report" class="text-red-600"
-                                label={"Report"}
+                                             label={"Report"}
                         />
                         <SidebarDropdownItem on:click={handleLogout} label={"Sign out"}/>
                     </SidebarDropdownWrapper>
-                </SidebarGroup >
+                </SidebarGroup>
             </SidebarWrapper>
         </Sidebar>
     </Drawer>
@@ -270,7 +282,7 @@
         color: var(--color-theme-1);
     }
 
-    :global(.drop){
+    :global(.drop) {
         background-color: var(--background);
     }
 </style>

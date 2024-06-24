@@ -1,5 +1,4 @@
 <script>
-    import Header from "$lib/page/protected/components/Header/Header.svelte";
     import Dashboard from "$lib/page/protected/business-portal/page_lobby/page/Dashboard/Dashboard.svelte";
     import Timetable from "$lib/page/protected/business-portal/page_lobby/page/Timetable/Timetable.svelte";
     import BookingList from "$lib/page/protected/business-portal/page_lobby/page/BookingList/BookingList.svelte";

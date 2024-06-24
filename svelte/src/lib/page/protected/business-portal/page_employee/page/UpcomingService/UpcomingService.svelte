@@ -22,7 +22,6 @@
 
     let loading = false;
     let employeeTimetableList = undefined;
-    let foundService = false;
 
     async function fetchSchedule() {
         currentIndex = 0;
