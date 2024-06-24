@@ -1,8 +1,9 @@
 import {formatToTime} from "$lib/application/Formatter.js";
 import {CustomerBookingState} from "$lib/api/initialize_functions/CustomerBooking.js";
 import dayjs from "dayjs";
+import {initializeCustomerBooking} from "$lib/api/api_server/api_endpoints/customer-booking-portal/api.js";
 
-export function moveToAppointment(now, customerBooking, submitCustomerBooking) {
+export function moveToAppointment(now, customerBooking) {
     customerBooking.bookingState = CustomerBookingState.APPOINTMENT;
 
     // Reset the booking stats
@@ -11,7 +12,7 @@ export function moveToAppointment(now, customerBooking, submitCustomerBooking) {
     customerBooking.servicingEndTime = null;
 
     // Save the customer booking change
-    submitCustomerBooking(customerBooking)
+    initializeCustomerBooking(customerBooking)
         .then(() => {
             console.log("Moved customer booking to appointment.");
         })
@@ -20,7 +21,7 @@ export function moveToAppointment(now, customerBooking, submitCustomerBooking) {
         });
 }
 
-export function moveToLobby(now, customerBooking, submitCustomerBooking) {
+export function moveToLobby(now, customerBooking) {
     customerBooking.bookingState = CustomerBookingState.LOBBY;
 
     if (!customerBooking.checkinTime) {
@@ -28,7 +29,7 @@ export function moveToLobby(now, customerBooking, submitCustomerBooking) {
     }
 
     // Save the customer booking change
-    submitCustomerBooking(customerBooking)
+    initializeCustomerBooking(customerBooking)
         .then(() => {
             console.log("Moved customer booking to lobby.");
         })
@@ -37,7 +38,7 @@ export function moveToLobby(now, customerBooking, submitCustomerBooking) {
         });
 }
 
-export function moveToServicing(now, customerBooking, submitCustomerBooking) {
+export function moveToServicing(now, customerBooking) {
     customerBooking.bookingState = CustomerBookingState.SERVICING;
 
     // Initialize the checkin time if it is null
@@ -49,7 +50,7 @@ export function moveToServicing(now, customerBooking, submitCustomerBooking) {
     }
 
     // Save the customer booking change
-    submitCustomerBooking(customerBooking)
+    initializeCustomerBooking(customerBooking)
         .then(() => {
             console.log("Moved customer booking to servicing.");
         })
@@ -58,7 +59,7 @@ export function moveToServicing(now, customerBooking, submitCustomerBooking) {
         });
 }
 
-export function moveToCompleted(now, customerBooking, submitCustomerBooking) {
+export function moveToCompleted(now, customerBooking) {
     customerBooking.bookingState = CustomerBookingState.COMPLETED;
     customerBooking.servicingEndTime = now.format(formatToTime);
 
@@ -79,7 +80,7 @@ export function moveToCompleted(now, customerBooking, submitCustomerBooking) {
     });
 
     // Save the customer booking change
-    submitCustomerBooking(customerBooking)
+    initializeCustomerBooking(customerBooking)
         .then(() => {
             console.log("Moved customer booking to completed.");
         })

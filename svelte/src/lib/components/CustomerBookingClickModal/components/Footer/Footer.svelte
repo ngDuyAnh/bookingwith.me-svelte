@@ -4,7 +4,6 @@
     } from "$lib/components/Modal/EditCustomerBooking/modalEditCustomerBooking.js";
     import {business} from "$lib/page/stores/business/business.js";
     import {Button, Tooltip} from "flowbite-svelte";
-    import {getContext} from "svelte";
     import {sendSmsAppointment, sendSMSAskingForReview} from "$lib/api/api_twilio/functions.js";
     import {
         moveToCompleted,
@@ -15,6 +14,7 @@
     import {CustomerBookingState} from "$lib/api/initialize_functions/CustomerBooking.js";
     import {checkAbleToSendReviewReminder} from "$lib/api/api_server/api_endpoints/lobby-portal/api.js";
     import {checkAbleToSendSmsReviewReminder} from "$lib/api/api_server/functions.js";
+    import {initializeCustomerBooking} from "$lib/api/api_server/api_endpoints/customer-booking-portal/api.js";
 
     export let customerBooking;
 
@@ -37,9 +37,6 @@
         }
     }
 
-    // Retrieve customer booking list update function
-    const submitCustomerBooking = getContext('submitCustomerBooking');
-
     async function handleSendSmsAppointment() {
         if (!customerBooking.smsAppointmentSent) {
             sendSmsAppointment($business.businessInfo.businessName, customerBooking)
@@ -48,7 +45,7 @@
 
                     // Record appointment SMS to the database
                     customerBooking.smsAppointmentSent = true;
-                    submitCustomerBooking(customerBooking);
+                    initializeCustomerBooking(customerBooking);
                 })
                 .catch(error => {
                     console.error('Failed to send SMS appointment ready soon reminder:', error);
@@ -65,7 +62,7 @@
 
                     // Record appointment SMS to the database
                     customerBooking.smsReviewReminderSent = true;
-                    submitCustomerBooking(customerBooking);
+                    initializeCustomerBooking(customerBooking);
                 })
                 .catch(error => {
                     console.error('Error sending review reminder:', error);
@@ -74,18 +71,18 @@
     }
 
     async function handleLobbyClick() {
-        moveToLobby($now, customerBooking, submitCustomerBooking);
+        moveToLobby($now, customerBooking);
     }
 
     async function handleServicingClick() {
         customerBooking.noShow = false;
-        moveToServicing($now, customerBooking, submitCustomerBooking);
+        moveToServicing($now, customerBooking);
     }
 
     function handleCompleteClick() {
         if (confirm("Are you sure you want to mark this as complete?"))
         {
-            moveToCompleted($now, customerBooking, submitCustomerBooking);
+            moveToCompleted($now, customerBooking);
         }
     }
 
@@ -93,7 +90,7 @@
         if (confirm("Are you sure you want to mark this as no show?"))
         {
             customerBooking.noShow = true;
-            moveToCompleted($now, customerBooking, submitCustomerBooking);
+            moveToCompleted($now, customerBooking);
         }
     }
 </script>
