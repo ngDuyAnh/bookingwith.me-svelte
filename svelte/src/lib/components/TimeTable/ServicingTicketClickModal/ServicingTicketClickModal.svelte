@@ -7,11 +7,11 @@
         from "$lib/components/CustomerBookingClickModal/Servicing/components/CustomerIndivdualBookingComponent/CustomerIndividualServiceBookingComponent/CustomerIndividualServiceBookingComponent.svelte";
     import {
         servicingTicketClickModal
-    } from "$lib/components/Timetable/TimetableModal/stores/servicingTicketClickModal.js";
+    } from "$lib/components/TimeTable/ServicingTicketClickModal/stores/servicingTicketClickModal.js";
     import {
         findPreselectEmployeeID,
         indicateToSendCustomerBookingToCompleted
-    } from "$lib/components/Timetable/TimetableModal/functions.js";
+    } from "$lib/components/TimeTable/ServicingTicketClickModal/functions.js";
     import {
         findIndividualBookingFromCustomerBooking
     } from "$lib/api/initialize_functions/customer-booking-utility-functions.js";

@@ -92,7 +92,7 @@
 
     const eventHandlers = {
         [ServerEvent.TEST]: handleTestEvent,
-        [ServerEvent.BUSINESS_UPDATE]: handleBusinessUpdate
+        [ServerEvent.UPDATE_BUSINESS]: handleBusinessUpdate
     };
 
     let reconnectionTimeout;

@@ -205,7 +205,7 @@
 
     function customerExists() {
         if (customerBookingInformationFormProps.customerNameAutoComplete) {
-            getCustomer(businessInfo.businessID, customerBooking.customer)
+            getCustomer(businessInfo.businessID, customerBooking.customer.phoneNumber)
                 .then(customer => {
                     if (customer && customer.customerName) {
                         customerBooking.customer.customerName = customer.customerName;

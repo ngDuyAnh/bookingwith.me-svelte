@@ -2,13 +2,14 @@ import {API_BASE_URL} from "$lib/api/api_server/API-URL.js";
 import {business} from "$lib/page/stores/business/business.js";
 
 export const ServerEvent = {
+    TEST: "TEST",
+
     EVENT_REQUEST: "EVENT_REQUEST",
 
-    BUSINESS_UPDATE: "BUSINESS_UPDATE",
-    EMPLOYEE_WORK_SCHEDULE_UPDATE: "EMPLOYEE_WORK_SCHEDULE_UPDATE",
-    CUSTOMER_BOOKING_UPDATE: "CUSTOMER_BOOKING_UPDATE",
-
-    TEST: "TEST"
+    UPDATE_BUSINESS: "UPDATE_BUSINESS",
+    UPDATE_EMPLOYEE_WORK_SCHEDULE: "UPDATE_EMPLOYEE_WORK_SCHEDULE",
+    UPDATE_CUSTOMER_BOOKING: "UPDATE_CUSTOMER_BOOKING",
+    UPDATE_SCHEDULE: "UPDATE_SCHEDULE",
 };
 
 export function listenSocketFrom(businessID) {
@@ -39,6 +40,6 @@ export function handleTestEvent(event) {
 }
 
 export function handleBusinessUpdate(event) {
-    console.log(`Handle ${ServerEvent.BUSINESS_UPDATE}`, event)
+    console.log(`Handle ${ServerEvent.UPDATE_BUSINESS}`, event)
     business.set(event.data);
 }

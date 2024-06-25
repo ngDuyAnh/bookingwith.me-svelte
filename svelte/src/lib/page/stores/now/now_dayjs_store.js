@@ -1,13 +1,25 @@
 import {get, writable} from 'svelte/store';
 import dayjs from 'dayjs';
-import {formatToDate} from "$lib/application/Formatter.js";
+import {formatToDate, formatToTime} from "$lib/application/Formatter.js";
 
 export const now = writable(dayjs());
 
-// Update the `now` store
-setInterval(() => {
+function updateNow() {
     now.set(dayjs());
-}, 30000);
+}
+
+function getTimeUntilNextMinute() {
+    const nowValue = dayjs();
+    const nextMinute = nowValue.add(1, 'minute').startOf('minute');
+    return nextMinute.diff(nowValue);
+}
+
+// Update the `now` store
+setTimeout(() => {
+    updateNow();
+    // Set interval to update `now` every minute
+    setInterval(updateNow, 60000);
+}, getTimeUntilNextMinute());
 
 // For testing purposes to set the now time to a fixed time
 //export const now = writable(dayjs('2024-05-08T17:30'));
@@ -16,6 +28,12 @@ export function today()
 {
     const nowValue = get(now);
     return nowValue.format(formatToDate);
+}
+
+export function nowTime()
+{
+    const nowValue = get(now);
+    return nowValue.format(formatToTime);
 }
 
 export function isToday(dateString)

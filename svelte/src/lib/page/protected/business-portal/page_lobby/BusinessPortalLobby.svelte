@@ -6,17 +6,10 @@
     import Setting from "$lib/components/Setting/Setting.svelte";
     import SendReview from "$lib/page/protected/business-portal/page_lobby/page/SendReview/SendReview.svelte";
     import {business} from "$lib/page/stores/business/business.js";
-     import {Spinner} from "flowbite-svelte";
-    import {getCustomerBookingQueueList} from "$lib/api/api_server/api_endpoints/lobby-portal/api.js";
-    import {now} from "$lib/page/stores/now/now_dayjs_store.js";
-    import {formatToDate} from "$lib/application/Formatter.js";
+    import {Spinner} from "flowbite-svelte";
     import {
-        customerBookingQueueList,
-        findCustomerBookingById
+        fetchCustomerBookingQueueList
     } from "$lib/page/protected/business-portal/page_lobby/stores/dashboard_store.js";
-    import {
-        customerBookingClickModal
-    } from "$lib/components/CustomerBookingClickModal/stores/customerBookingClickModal.js";
     import {
         eventConfirmation, handleTestEvent,
         handleUnknownEvent,
@@ -26,13 +19,16 @@
     import {onMount} from "svelte";
     import {isToday} from "$lib/page/stores/now/now_dayjs_store.js";
     import {handleBusinessUpdate} from "$lib/api/api_server/api_endpoints/sse/api.js";
-
-    let loading = true;
+    import {
+        fetchTimetable,
+        timetableComponent
+    } from "$lib/components/TimeTable/stores/timetableComponent.js";
 
     let tabs = ["Dashboard", "Timetable", "List", "Send review", "Setting"];
     let selectedIndex = 0;
 
     let socket = undefined;
+
     async function connectWebSocket() {
         try {
             if (socket) {
@@ -43,11 +39,11 @@
             socket = new WebSocket(listenSocketFrom($business.businessInfo.businessID));
 
             socket.onopen = function () {
-                console.log("Socket connected.");
+                //console.log("Socket connected.");
             };
 
             socket.onclose = function () {
-                console.log("Disconnected from WebSocket. Trying to reconnect.");
+                //console.log("Disconnected from WebSocket. Trying to reconnect.");
                 if (socket) {
                     socket.close();
                     socket = undefined;
@@ -56,8 +52,12 @@
                 reconnectWebSocket();
             };
 
-            socket.onerror = function (error) {
+            socket.onerror = function () {
+                /*
+                socket.onerror = function (error) {
                 console.error("Socket error. Trying to reconnect.", error);
+                */
+
                 if (socket) {
                     socket.close();
                     socket = undefined;
@@ -68,7 +68,7 @@
 
             // Log all received messages
             socket.onmessage = function (event) {
-                console.log('Socket received:', event);
+                //console.log('Socket received:', event);
 
                 const eventData = JSON.parse(event.data);
 
@@ -76,22 +76,17 @@
 
                 // EVENT_REQUEST
                 // eventData = { type, event, requestId }
-                if (eventData.type === ServerEvent.EVENT_REQUEST)
-                {
+                if (eventData.type === ServerEvent.EVENT_REQUEST) {
                     // Can handle the event
                     // Send back a confirmation to get the event
-                    if (eventHandlers[eventData.event])
-                    {
+                    if (eventHandlers[eventData.event]) {
                         eventConfirmation(socket, eventData.requestId, true);
-                    }
-                    else
-                    {
+                    } else {
                         eventConfirmation(socket, eventData.requestId, false);
                     }
                 }
                 // Handle event
-                else
-                {
+                else {
                     const handler = eventHandlers[eventData.type] || handleUnknownEvent;
                     handler(eventData);
                 }
@@ -104,15 +99,16 @@
 
     const eventHandlers = {
         [ServerEvent.TEST]: handleTestEvent,
-        [ServerEvent.BUSINESS_UPDATE]: handleBusinessUpdate,
-        [ServerEvent.CUSTOMER_BOOKING_UPDATE]: handleCustomerBookingUpdate,
-        [ServerEvent.EMPLOYEE_WORK_SCHEDULE_UPDATE]: handleCustomerBookingUpdate,
+        [ServerEvent.UPDATE_BUSINESS]: handleBusinessUpdate,
+        [ServerEvent.UPDATE_EMPLOYEE_WORK_SCHEDULE]: handleEmployeeWorKScheduleUpdate,
+        [ServerEvent.UPDATE_CUSTOMER_BOOKING]: handleCustomerBookingUpdate,
     };
 
     let reconnectionTimeout;
+
     function reconnectWebSocket() {
         clearTimeout(reconnectionTimeout);
-        reconnectionTimeout = setTimeout(connectWebSocket, 1000); // Add a 1-second delay before reconnecting
+        reconnectionTimeout = setTimeout(connectWebSocket, 200);
     }
 
     onMount(async () => {
@@ -120,67 +116,43 @@
 
         await fetchCustomerBookingQueueList();
 
-        loading = false;
-
         return () => {
             socket.close();
         };
     });
 
-    async function handleCustomerBookingUpdate(event)
-    {
-        console.log(`Handle ${ServerEvent.CUSTOMER_BOOKING_UPDATE}`, event)
-        if (isToday(event.data.bookingDate))
-        {
-            await fetchCustomerBookingQueueList();
-        }
+    async function handleEmployeeWorKScheduleUpdate(eventData) {
+        console.log(`Handle ${eventData.type}`, eventData)
+        await fetchTimetable($timetableComponent.date);
     }
 
-    async function fetchCustomerBookingQueueList()
-    {
-        // Get the customer booking list
-        const response = await getCustomerBookingQueueList($business.businessInfo.businessID, $now.format(formatToDate));
-        customerBookingQueueList.set(response.customerBookingQueueList);
+    async function handleCustomerBookingUpdate(eventData) {
+        console.log(`Handle ${eventData.type}`, eventData)
 
-        // Find and reinitialize the customer booking for the modal
-        if ($customerBookingClickModal.customerBooking)
-        {
-            const findID = $customerBookingClickModal.customerBooking.id;
-            const foundCustomerBooking = findCustomerBookingById(findID);
-            if (foundCustomerBooking) {
-                customerBookingClickModal.update(current => {
-                    return {
-                        ...current,
-                        customerBooking: foundCustomerBooking
-                    };
-                });
-            } else {
-                console.log('Customer booking not found for customer booking click modal.');
-            }
+        // Dashboard
+        if (isToday(eventData.data.bookingDate)) {
+            await fetchCustomerBookingQueueList();
         }
 
-        //console.log("bookingStateList", $bookingStateList)
+        // Timetable
+        if ($timetableComponent.date === eventData.data.bookingDate) {
+            await fetchTimetable($timetableComponent.date);
+        }
     }
 </script>
 
-{#if loading}
-    <div class="flex justify-center items-center h-screen">
-        <Spinner/>
-    </div>
-{:else}
-    <div class="flex flex-col h-screen overflow-hidden z-[1006]">
-        <Header {tabs} bind:selectedIndex/>
+<div class="flex flex-col h-screen overflow-hidden z-[1006]">
+    <Header {tabs} bind:selectedIndex/>
 
-        {#if selectedIndex === 0}
-            <Dashboard/>
-        {:else if selectedIndex === 1}
-            <Timetable/>
-        {:else if selectedIndex === 2}
-            <BookingList/>
-        {:else if selectedIndex === 3}
-            <SendReview/>
-        {:else if selectedIndex === 4}
-            <Setting/>
-        {/if}
-    </div>
-{/if}
+    {#if selectedIndex === 0}
+        <Dashboard/>
+    {:else if selectedIndex === 1}
+        <Timetable/>
+    {:else if selectedIndex === 2}
+        <BookingList/>
+    {:else if selectedIndex === 3}
+        <SendReview/>
+    {:else if selectedIndex === 4}
+        <Setting/>
+    {/if}
+</div>
