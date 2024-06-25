@@ -1,4 +1,5 @@
 import {API_BASE_URL} from "$lib/api/api_server/API-URL.js";
+import {business} from "$lib/page/stores/business/business.js";
 
 export const ServerEvent = {
     EVENT_REQUEST: "EVENT_REQUEST",
@@ -35,4 +36,9 @@ export function handleUnknownEvent(event) {
 
 export function handleTestEvent(event) {
     console.log(`Handle ${ServerEvent.TEST}`, event)
+}
+
+export function handleBusinessUpdate(event) {
+    console.log(`Handle ${ServerEvent.BUSINESS_UPDATE}`, event)
+    business.set(event.data);
 }

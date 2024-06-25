@@ -1,7 +1,6 @@
 import {get, writable} from 'svelte/store';
 import dayjs from 'dayjs';
 import {formatToDate} from "$lib/application/Formatter.js";
-import {bookingEstimate} from "$lib/page/customer-booking-portal/get/stores/bookingEstimate.js";
 
 export const now = writable(dayjs());
 
