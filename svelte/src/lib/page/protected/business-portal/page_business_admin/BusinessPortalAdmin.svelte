@@ -11,7 +11,7 @@
         handleUnknownEvent,
         listenSocketFrom,
         ServerEvent
-    } from "$lib/api/api_server/api_endpoints/sse/api.js";
+    } from "$lib/api/api_server/api_endpoints/ws/api.js";
     import {business} from "$lib/page/stores/business/business.js";
     import {onMount} from "svelte";
 

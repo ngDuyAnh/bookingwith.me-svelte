@@ -14,6 +14,10 @@
         handleNewCustomerBookingWalkin
     } from "$lib/components/Modal/CreateCustomerBooking/modalCreateCustomerBooking.js";
     import {fetchTimetable, timetableComponent} from "$lib/components/TimeTable/stores/timetableComponent.js";
+    import {onMount} from "svelte";
+    import {
+        fetchCustomerBookingQueueList
+    } from "$lib/page/protected/business-portal/page_lobby/stores/dashboard_store.js";
 
     // Date select
     let selectedDate = today();
@@ -243,6 +247,10 @@
 
     // $: console.log(`Now time ${$now.format(formatToTime)}`);
     // $: console.log("$timetableComponent", $timetableComponent);
+
+    onMount(async () => {
+        await fetchTimetable(selectedDate);
+    })
 
     // Date select change
     // Or current time change if it is today

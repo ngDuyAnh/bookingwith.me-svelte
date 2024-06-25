@@ -30,6 +30,12 @@ export function today()
     return nowValue.format(formatToDate);
 }
 
+export function tomorrow()
+{
+    const nowValue = get(now);
+    return nowValue.startOf('day').add(1, 'day').format(formatToDate);
+}
+
 export function nowTime()
 {
     const nowValue = get(now);

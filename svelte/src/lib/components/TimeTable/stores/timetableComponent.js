@@ -1,19 +1,13 @@
 import {get, writable} from "svelte/store";
-import {isPast, isToday, now} from "$lib/page/stores/now/now_dayjs_store.js";
+import {isPast, isToday, now, nowTime, today} from "$lib/page/stores/now/now_dayjs_store.js";
 import {formatToTime} from "$lib/application/Formatter.js";
 import {business} from "$lib/page/stores/business/business.js";
 import {getSchedule} from "$lib/api/api_server/api_endpoints/lobby-portal/api.js";
 
 export const timetableComponent = writable({
-    date: undefined,
-    currentTime: undefined,
-    employeeTimetableList: undefined
-});
-
-export const employeeEvent = writable({
-    date: undefined,
-    currentTime: undefined,
-    employeeTimetableList: undefined
+    date: today(),
+    currentTime: nowTime(),
+    employeeTimetableList: []
 });
 
 export async function fetchTimetable(dateString) {

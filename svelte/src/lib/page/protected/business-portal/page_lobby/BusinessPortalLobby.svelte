@@ -15,17 +15,23 @@
         handleUnknownEvent,
         listenSocketFrom,
         ServerEvent
-    } from "$lib/api/api_server/api_endpoints/sse/api.js";
+    } from "$lib/api/api_server/api_endpoints/ws/api.js";
     import {onMount} from "svelte";
     import {isToday} from "$lib/page/stores/now/now_dayjs_store.js";
-    import {handleBusinessUpdate} from "$lib/api/api_server/api_endpoints/sse/api.js";
+    import {handleBusinessUpdate} from "$lib/api/api_server/api_endpoints/ws/api.js";
     import {
         fetchTimetable,
         timetableComponent
     } from "$lib/components/TimeTable/stores/timetableComponent.js";
+    import {
+        bookingList,
+        fetchAppointmentCustomerBookingList
+    } from "$lib/page/protected/business-portal/page_lobby/page/BookingList/stores/bookingList.js";
 
     let tabs = ["Dashboard", "Timetable", "List", "Send review", "Setting"];
     let selectedIndex = 0;
+
+    let loading = true;
 
     let socket = undefined;
 
@@ -116,6 +122,8 @@
 
         await fetchCustomerBookingQueueList();
 
+        loading = false;
+
         return () => {
             socket.close();
         };
@@ -131,6 +139,7 @@
 
         // Dashboard
         if (isToday(eventData.data.bookingDate)) {
+            // Dashboard
             await fetchCustomerBookingQueueList();
         }
 
@@ -138,21 +147,33 @@
         if ($timetableComponent.date === eventData.data.bookingDate) {
             await fetchTimetable($timetableComponent.date);
         }
+
+        // Booking list
+        if ($bookingList.date === eventData.data.bookingDate) {
+            console.log("$bookingList", $bookingList)
+            fetchAppointmentCustomerBookingList($business.businessInfo.businessID, $bookingList.date);
+        }
     }
 </script>
 
-<div class="flex flex-col h-screen overflow-hidden z-[1006]">
-    <Header {tabs} bind:selectedIndex/>
+{#if loading}
+    <div class="flex justify-center items-center h-screen">
+        <Spinner/>
+    </div>
+{:else}
+    <div class="flex flex-col h-screen overflow-hidden z-[1006]">
+        <Header {tabs} bind:selectedIndex/>
 
-    {#if selectedIndex === 0}
-        <Dashboard/>
-    {:else if selectedIndex === 1}
-        <Timetable/>
-    {:else if selectedIndex === 2}
-        <BookingList/>
-    {:else if selectedIndex === 3}
-        <SendReview/>
-    {:else if selectedIndex === 4}
-        <Setting/>
-    {/if}
-</div>
+        {#if selectedIndex === 0}
+            <Dashboard/>
+        {:else if selectedIndex === 1}
+            <Timetable/>
+        {:else if selectedIndex === 2}
+            <BookingList/>
+        {:else if selectedIndex === 3}
+            <SendReview/>
+        {:else if selectedIndex === 4}
+            <Setting/>
+        {/if}
+    </div>
+{/if}
