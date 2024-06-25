@@ -5,12 +5,10 @@
     import BookingList from "$lib/page/protected/business-portal/page_lobby/page/BookingList/BookingList.svelte";
     import Setting from "$lib/components/Setting/Setting.svelte";
     import SendReview from "$lib/page/protected/business-portal/page_lobby/page/SendReview/SendReview.svelte";
-    import {listenSseFrom, SseEvent} from "$lib/api/api_server/api_endpoints/sse/api.js";
     import {business} from "$lib/page/stores/business/business.js";
-    import {onMount} from "svelte";
-    import {Spinner} from "flowbite-svelte";
+     import {Spinner} from "flowbite-svelte";
     import {getCustomerBookingQueueList} from "$lib/api/api_server/api_endpoints/lobby-portal/api.js";
-    import {isToday, now} from "$lib/page/stores/now/now_dayjs_store.js";
+    import {now} from "$lib/page/stores/now/now_dayjs_store.js";
     import {formatToDate} from "$lib/application/Formatter.js";
     import {
         customerBookingQueueList,
@@ -19,88 +17,124 @@
     import {
         customerBookingClickModal
     } from "$lib/components/CustomerBookingClickModal/stores/customerBookingClickModal.js";
+    import {
+        eventConfirmation, handleTestEvent,
+        handleUnknownEvent,
+        listenSocketFrom,
+        ServerEvent
+    } from "$lib/api/api_server/api_endpoints/sse/api.js";
+    import {onMount} from "svelte";
+    import {isToday} from "$lib/page/stores/now/now_dayjs_store.js";
+    import {handleBusinessUpdate} from "$lib/api/api_server/api_endpoints/sse/api.js";
 
     let loading = true;
 
     let tabs = ["Dashboard", "Timetable", "List", "Send review", "Setting"];
     let selectedIndex = 0;
 
-    let eventSource = undefined;
-    let reconnectionTimeout;
-
-    async function connectSSE() {
+    let socket = undefined;
+    async function connectWebSocket() {
         try {
-            if (eventSource)
-            {
-                eventSource.close();
-                eventSource = undefined;
+            if (socket) {
+                socket.close();
+                socket = undefined;
             }
 
-            console.log("Connecting SSE...");
-            eventSource = new EventSource(listenSseFrom($business.businessInfo.businessID));
+            socket = new WebSocket(listenSocketFrom($business.businessInfo.businessID));
 
-            // Log all received messages
-            eventSource.onmessage = function(event) {
-                console.log('Message received:', event.data);
+            socket.onopen = function () {
+                console.log("Socket connected.");
             };
 
-            eventSource.addEventListener(SseEvent.TEST, (event) => {
-                console.log("Test event triggered:", event.data);
-            });
-
-            eventSource.addEventListener(SseEvent.BUSINESS_UPDATE, (event) => {
-                console.log('BUSINESS_UPDATE event received:', event);
-                business.set(JSON.parse(event.data));
-            });
-
-            eventSource.addEventListener(SseEvent.EMPLOYEE_WORK_SCHEDULE_UPDATE, async (event) => {
-                console.log('EMPLOYEE_WORK_SCHEDULE_UPDATE event received:', event);
-            });
-
-            eventSource.addEventListener(SseEvent.CUSTOMER_BOOKING_UPDATE, async (event) => {
-                console.log('CUSTOMER_BOOKING_UPDATE event received:', event);
-
-                // Get the updated customer booking
-                const updatedCustomerBooking = JSON.parse(event.data);
-
-                // Re-fetch
-                if (isToday(updatedCustomerBooking.bookingDate))
-                {
-                    await fetchCustomerBookingQueueList();
+            socket.onclose = function () {
+                console.log("Disconnected from WebSocket. Trying to reconnect.");
+                if (socket) {
+                    socket.close();
+                    socket = undefined;
                 }
-            });
 
-            eventSource.onerror = function (error) {
-                eventSource.close();
-                eventSource = undefined;
-                console.error("SSE disconnected. Trying to reconnect.", error);
+                reconnectWebSocket();
+            };
 
-                clearTimeout(reconnectionTimeout);
-                reconnectionTimeout = setTimeout(connectSSE, 1000);
+            socket.onerror = function (error) {
+                console.error("Socket error. Trying to reconnect.", error);
+                if (socket) {
+                    socket.close();
+                    socket = undefined;
+                }
+
+                reconnectWebSocket();
+            };
+
+            // Log all received messages
+            socket.onmessage = function (event) {
+                console.log('Socket received:', event);
+
+                const eventData = JSON.parse(event.data);
+
+                //console.log("eventData", eventData);
+
+                // EVENT_REQUEST
+                // eventData = { type, event, requestId }
+                if (eventData.type === ServerEvent.EVENT_REQUEST)
+                {
+                    // Can handle the event
+                    // Send back a confirmation to get the event
+                    if (eventHandlers[eventData.event])
+                    {
+                        eventConfirmation(socket, eventData.requestId, true);
+                    }
+                    else
+                    {
+                        eventConfirmation(socket, eventData.requestId, false);
+                    }
+                }
+                // Handle event
+                else
+                {
+                    const handler = eventHandlers[eventData.type] || handleUnknownEvent;
+                    handler(eventData);
+                }
             };
         } catch (error) {
             console.error("Error initializing SSE:", error);
-            clearTimeout(reconnectionTimeout); // Clear any existing timeout
-            reconnectionTimeout = setTimeout(connectSSE, 1000); // Attempt reconnection
+            reconnectWebSocket();
         }
     }
 
+    const eventHandlers = {
+        [ServerEvent.TEST]: handleTestEvent,
+        [ServerEvent.BUSINESS_UPDATE]: handleBusinessUpdate,
+        [ServerEvent.CUSTOMER_BOOKING_UPDATE]: handleCustomerBookingUpdate,
+        [ServerEvent.EMPLOYEE_WORK_SCHEDULE_UPDATE]: handleCustomerBookingUpdate,
+    };
+
+    let reconnectionTimeout;
+    function reconnectWebSocket() {
+        clearTimeout(reconnectionTimeout);
+        reconnectionTimeout = setTimeout(connectWebSocket, 1000); // Add a 1-second delay before reconnecting
+    }
+
     onMount(async () => {
-        connectSSE()
-            .then(() => console.log("Connected SSE."));
+        await connectWebSocket();
 
         await fetchCustomerBookingQueueList();
 
         loading = false;
 
-        return async () => {
-            if (eventSource) {
-                eventSource.close();
-                eventSource = undefined;
-            }
-            clearTimeout(reconnectionTimeout); // Clear timeout on component destroy
+        return () => {
+            socket.close();
         };
     });
+
+    async function handleCustomerBookingUpdate(event)
+    {
+        console.log(`Handle ${ServerEvent.CUSTOMER_BOOKING_UPDATE}`, event)
+        if (isToday(event.data.bookingDate))
+        {
+            await fetchCustomerBookingQueueList();
+        }
+    }
 
     async function fetchCustomerBookingQueueList()
     {
