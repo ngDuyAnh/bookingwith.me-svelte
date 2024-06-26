@@ -9,13 +9,13 @@
     import BusinessPortalLobby from "$lib/page/protected/business-portal/page_lobby/BusinessPortalLobby.svelte";
     import BusinessPortalEmployee
         from "$lib/page/protected/business-portal/page_employee/BusinessPortalEmployee.svelte";
-    import {employeeSelectOptions} from "$lib/page/stores/employeeSelectOptions/employeeSelectOptions.js";
-    import {
-        employeeToSelectOption
-    } from "$lib/components/CustomerBooking/CustomerIndividualBookingServiceSelect/components/ServiceOption/functions.js";
     import ModalEditCustomerBooking from "$lib/components/Modal/EditCustomerBooking/ModalEditCustomerBooking.svelte";
     import ModalCreateCustomerBooking
         from "$lib/components/Modal/CreateCustomerBooking/ModalCreateCustomerBooking.svelte";
+    import {
+        employeeToSelectOption
+    } from "$lib/components/CustomerBooking/CustomerIndividualBookingServiceSelect/components/ServiceOption/functions.js";
+    import {employeeSelectOptions} from "$lib/page/stores/employeeSelectOptions/employeeSelectOptions.js";
 
     export let data;
     let loading = true;

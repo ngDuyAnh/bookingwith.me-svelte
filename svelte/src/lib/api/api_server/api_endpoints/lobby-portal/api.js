@@ -2,9 +2,9 @@ import {API_BASE_URL} from "$lib/api/api_server/API-URL.js";
 
 const API_URL = `${API_BASE_URL}/lobby-portal`;
 
-export async function getCustomer(phoneNumber)
+export async function getCustomer(businessID, phoneNumber)
 {
-    const FETCH_URL = `${API_URL}/get-customer/${phoneNumber}`;
+    const FETCH_URL = `${API_URL}/get-customer/${businessID}?phoneNumber=${phoneNumber}`;
 
     const response = await fetch(`${FETCH_URL}`);
 
@@ -30,7 +30,7 @@ export async function getAppointmentBookingList(businessID, dateString)
 
 export async function getCustomerBookingQueueList(businessID, dateString)
 {
-    const FETCH_URL = `${API_URL}/get-lobby-booking-list/${businessID}?date=${dateString}`;
+    const FETCH_URL = `${API_URL}/get-customer-booking-queue-list/${businessID}?date=${dateString}`;
 
     const response = await fetch(`${FETCH_URL}`);
 

@@ -26,7 +26,7 @@
         {
             employee.user = User();
         }
-        console.log("EMPLOYEE",employee);
+        console.log("Editing employee",employee);
 
         editingEmployee = employee;
         editingCloneEmployee = {...employee};
@@ -75,7 +75,7 @@
 
     async function handleEditEmployee()
     {
-        console.log('Updating employee with new details:', editingEmployee);
+        console.log('Updating employee:', editingEmployee);
 
         // Deep clone
         Object.assign(editingEmployee, editingCloneEmployee);

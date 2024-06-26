@@ -1,81 +1,179 @@
 <script>
-  import Header from "$lib/page/protected/components/Header/Header.svelte";
-  import Dashboard from "$lib/page/protected/business-portal/page_lobby/page/Dashboard/Dashboard.svelte";
-  import Timetable from "$lib/page/protected/business-portal/page_lobby/page/Timetable/Timetable.svelte";
-  import BookingList from "$lib/page/protected/business-portal/page_lobby/page/BookingList/BookingList.svelte";
-  import Setting from "$lib/components/Setting/Setting.svelte";
-  import SendReview from "$lib/page/protected/business-portal/page_lobby/page/SendReview/SendReview.svelte";
-  // import { customerBookings, updateBookings} from "$lib/page/stores/testHook/booking.js";
-  import { io } from "socket.io-client";
-  import { onDestroy, onMount } from "svelte";
-  import { business } from "../../../stores/business/business.js";
+    import Header from "$lib/page/protected/components/Header/Header.svelte";
+    import Dashboard from "$lib/page/protected/business-portal/page_lobby/page/Dashboard/Dashboard.svelte";
+    import Timetable from "$lib/page/protected/business-portal/page_lobby/page/Timetable/Timetable.svelte";
+    import BookingList from "$lib/page/protected/business-portal/page_lobby/page/BookingList/BookingList.svelte";
+    import Setting from "$lib/components/Setting/Setting.svelte";
+    import SendReview from "$lib/page/protected/business-portal/page_lobby/page/SendReview/SendReview.svelte";
+    import {business} from "$lib/page/stores/business/business.js";
+    import {Spinner} from "flowbite-svelte";
+    import {
+        fetchCustomerBookingQueueList
+    } from "$lib/page/protected/business-portal/page_lobby/stores/dashboard_store.js";
+    import {
+        eventConfirmation, handleTestEvent,
+        handleUnknownEvent,
+        listenSocketFrom,
+        ServerEvent
+    } from "$lib/api/api_server/api_endpoints/ws/api.js";
+    import {onMount} from "svelte";
+    import {isToday} from "$lib/page/stores/now/now_dayjs_store.js";
+    import {handleBusinessUpdate} from "$lib/api/api_server/api_endpoints/ws/api.js";
+    import {
+        fetchTimetable,
+        timetableComponent
+    } from "$lib/components/TimeTable/stores/timetableComponent.js";
+    import {
+        bookingList,
+        fetchAppointmentCustomerBookingList
+    } from "$lib/page/protected/business-portal/page_lobby/page/BookingList/stores/bookingList.js";
 
-  let tabs = ["Dashboard", "Timetable", "List", "Send review", "Setting"];
-  let selectedIndex = 0;
+    let tabs = ["Dashboard", "Timetable", "List", "Send review", "Setting"];
+    let selectedIndex = 0;
 
-  let eventSource;
+    let loading = true;
 
-  function connectSSE() {
-    if (eventSource) {
-      eventSource.close(); // Ensure the old connection is closed before creating a new one
+    let socket = undefined;
+
+    async function connectWebSocket() {
+        try {
+            if (socket) {
+                socket.close();
+                socket = undefined;
+            }
+
+            socket = new WebSocket(listenSocketFrom($business.businessInfo.businessID));
+
+            socket.onopen = function () {
+                //console.log("Socket connected.");
+            };
+
+            socket.onclose = function () {
+                //console.log("Disconnected from WebSocket. Trying to reconnect.");
+                if (socket) {
+                    socket.close();
+                    socket = undefined;
+                }
+
+                reconnectWebSocket();
+            };
+
+            socket.onerror = function () {
+                /*
+                socket.onerror = function (error) {
+                console.error("Socket error. Trying to reconnect.", error);
+                */
+
+                if (socket) {
+                    socket.close();
+                    socket = undefined;
+                }
+
+                reconnectWebSocket();
+            };
+
+            // Log all received messages
+            socket.onmessage = function (event) {
+                //console.log('Socket received:', event);
+
+                const eventData = JSON.parse(event.data);
+
+                //console.log("eventData", eventData);
+
+                // EVENT_REQUEST
+                // eventData = { type, event, requestId }
+                if (eventData.type === ServerEvent.EVENT_REQUEST) {
+                    // Can handle the event
+                    // Send back a confirmation to get the event
+                    if (eventHandlers[eventData.event]) {
+                        eventConfirmation(socket, eventData.requestId, true);
+                    } else {
+                        eventConfirmation(socket, eventData.requestId, false);
+                    }
+                }
+                // Handle event
+                else {
+                    const handler = eventHandlers[eventData.type] || handleUnknownEvent;
+                    handler(eventData);
+                }
+            };
+        } catch (error) {
+            console.error("Error initializing SSE:", error);
+            reconnectWebSocket();
+        }
     }
 
-    const businessId = $business.businessInfo.businessID; // Make sure this reactive variable is accessed correctly
-    eventSource = new EventSource(
-      `https://api-debug.bookingwith.me/sse/stream-sse/${businessId}`
-    );
-
-    eventSource.addEventListener("business", function (event) {
-      const updatedBusiness = JSON.parse(event.data);
-      business.set(updatedBusiness);
-      console.log("Business updated:", updatedBusiness);
-    });
-
-    eventSource.onerror = function (error) {
-      console.error("Error. Trying to reconnect.");
-      eventSource.close();
-      setTimeout(connectSSE, 1000); // Reconnect logic
+    const eventHandlers = {
+        [ServerEvent.TEST]: handleTestEvent,
+        [ServerEvent.UPDATE_BUSINESS]: handleBusinessUpdate,
+        [ServerEvent.UPDATE_EMPLOYEE_WORK_SCHEDULE]: handleEmployeeWorKScheduleUpdate,
+        [ServerEvent.UPDATE_CUSTOMER_BOOKING]: handleCustomerBookingUpdate,
     };
-  }
 
-  onMount(() => {
-    connectSSE();
+    let reconnectionTimeout;
 
-    window.addEventListener("beforeunload", () => {
-      if (eventSource) {
-        eventSource.close();
-      }
-    });
-  });
-
-  onDestroy(() => {
-    if (eventSource) {
-      eventSource.close(); // Close the connection when the component is destroyed
+    function reconnectWebSocket() {
+        clearTimeout(reconnectionTimeout);
+        reconnectionTimeout = setTimeout(connectWebSocket, 200);
     }
-  });
 
-  // HMR specific cleanup to prevent memory leaks and multiple connections
-  if (import.meta.hot) {
-    import.meta.hot.dispose(() => {
-      if (eventSource) {
-        eventSource.close();
-      }
+    onMount(async () => {
+        await connectWebSocket();
+
+        await fetchCustomerBookingQueueList();
+
+        loading = false;
+
+        return () => {
+            socket.close();
+        };
     });
-  }
+
+    async function handleEmployeeWorKScheduleUpdate(eventData) {
+        console.log(`Handle ${eventData.type}`, eventData)
+        await fetchTimetable($timetableComponent.date);
+    }
+
+    async function handleCustomerBookingUpdate(eventData) {
+        console.log(`Handle ${eventData.type}`, eventData)
+
+        // Dashboard
+        if (isToday(eventData.data.bookingDate)) {
+            // Dashboard
+            await fetchCustomerBookingQueueList();
+        }
+
+        // Timetable
+        if ($timetableComponent.date === eventData.data.bookingDate) {
+            await fetchTimetable($timetableComponent.date);
+        }
+
+        // Booking list
+        if ($bookingList.date === eventData.data.bookingDate) {
+            console.log("$bookingList", $bookingList)
+            fetchAppointmentCustomerBookingList($business.businessInfo.businessID, $bookingList.date);
+        }
+    }
 </script>
 
-<div class="flex flex-col h-screen overflow-hidden z-[1006]">
-  <Header {tabs} bind:selectedIndex />
+{#if loading}
+    <div class="flex justify-center items-center h-screen">
+        <Spinner/>
+    </div>
+{:else}
+    <div class="flex flex-col h-screen overflow-hidden z-[1006]">
+        <Header {tabs} bind:selectedIndex/>
 
-  {#if selectedIndex === 0}
-    <Dashboard />
-  {:else if selectedIndex === 1}
-    <Timetable />
-  {:else if selectedIndex === 2}
-    <BookingList />
-  {:else if selectedIndex === 3}
-    <SendReview />
-  {:else if selectedIndex === 4}
-    <Setting />
-  {/if}
-</div>
+        {#if selectedIndex === 0}
+            <Dashboard/>
+        {:else if selectedIndex === 1}
+            <Timetable/>
+        {:else if selectedIndex === 2}
+            <BookingList/>
+        {:else if selectedIndex === 3}
+            <SendReview/>
+        {:else if selectedIndex === 4}
+            <Setting/>
+        {/if}
+    </div>
+{/if}

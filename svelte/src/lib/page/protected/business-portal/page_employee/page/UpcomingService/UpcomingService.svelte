@@ -6,7 +6,7 @@
         servicingTicketClickModal,
         servicingTicketClickModalOpen,
         servicingTicketClickModalSetEmployeeTimetableList
-    } from "$lib/components/TimeTable/TimetableModal/stores/servicingTicketClickModal.js";
+    } from "$lib/components/TimeTable/ServicingTicketClickModal/stores/servicingTicketClickModal.js";
     import {getCustomerBooking} from "$lib/api/api_server/api_endpoints/customer-booking-portal/api.js";
     import {
         findServiceBookingFromCustomerBooking
@@ -17,7 +17,7 @@
     } from "$lib/page/protected/business-portal/page_employee/page/MyTimetable/MyTimeTable.js";
     import {Spinner} from "flowbite-svelte";
     import dayjs from "dayjs";
-    import ServicingTicketClickModal from "$lib/components/TimeTable/TimetableModal/ServicingTicketClickModal.svelte";
+    import ServicingTicketClickModal from "$lib/components/TimeTable/ServicingTicketClickModal/ServicingTicketClickModal.svelte";
     import {InfoCircleSolid} from "flowbite-svelte-icons";
 
     let loading = false;

@@ -212,7 +212,7 @@
 
     function customerExists() {
         if (customerBookingInformationFormProps.customerNameAutoComplete) {
-            getCustomer(businessInfo.businessID, customerBooking.customer)
+            getCustomer(businessInfo.businessID, customerBooking.customer.phoneNumber)
                 .then(customer => {
                     if (customer && customer.customerName) {
                         customerBooking.customer.customerName = customer.customerName;
@@ -291,10 +291,10 @@
                 if (isToday(customerBooking.bookingDate))
                 {
                     if (customerBookingInformationProps.lobbyBookingStateFlag) {
-                        moveToLobby($now, response.customerBooking, initializeCustomerBooking);
+                        moveToLobby($now, response.customerBooking);
                     }
                     else if (customerBookingInformationProps.appointmentBookingStateFlag) {
-                        moveToAppointment($now, response.customerBooking, initializeCustomerBooking);
+                        moveToAppointment($now, response.customerBooking);
                     }
                 }
 
