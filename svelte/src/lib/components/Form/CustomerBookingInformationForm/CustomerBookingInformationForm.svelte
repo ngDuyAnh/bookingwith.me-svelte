@@ -166,12 +166,15 @@
 
         // Fetch walk-in availability
         walkinAvailabilityFlag = true;
-        fetchAvailableTimeList();
+
+        (async () => {
+            await fetchAvailableTimeList().finally(styleOptions);
+        })();
     }
 
     let dateSelected = customerBooking.bookingDate;
 
-    function getAvailableTimeOptionList() {
+    async function getAvailableTimeOptionList() {
         // New date selected
         customerBooking.bookingDate = dateSelected;
 
@@ -190,17 +193,21 @@
         //console.log(`Date selected ${dateSelected} walk-in ${walkinAvailabilityFlag}`);
 
         // Get the new available time
-        fetchAvailableTimeList();
+        await fetchAvailableTimeList();
     }
 
     // Initial fetch for availability
     onMount(async () => {
-        getAvailableTimeOptionList();
+        await getAvailableTimeOptionList().finally(()=>{
+            styleOptions();
+        });
     })
 
     // Reactive statement to fetch times when the date changes
     $: if (dateSelected !== customerBooking.bookingDate) {
-        getAvailableTimeOptionList();
+        (async () => {
+            await getAvailableTimeOptionList().finally(styleOptions);
+        })();
     }
 
     function customerExists() {
@@ -337,6 +344,18 @@
     }
 
     let isConsentChecked = false;
+
+    function styleOptions() {
+        console.log("styling");
+        const selectElement = document.getElementById('available-Time');
+        if (selectElement) {
+            selectElement.querySelectorAll('option').forEach(option => {
+                if (option.textContent.includes('~')) {
+                    option.style.backgroundColor = '#ff9494'; // Light red background
+                }
+            });
+        }
+    }
 </script>
 
 <form on:submit|preventDefault={submit} class="space-y-4">
@@ -385,7 +404,7 @@
             />
         {:else}
             <Select
-                    id="time"
+                    id="available-Time"
                     placeholder="Select a time"
                     items={availableTimeOptionList}
                     bind:value={customerBooking.bookingTime}
