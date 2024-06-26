@@ -86,7 +86,15 @@
                     // Can handle the event
                     // Send back a confirmation to get the event
                     if (eventHandlers[eventData.event]) {
-                        eventConfirmation(socket, eventData.requestId, true);
+                        let confirm = true;
+                        if (eventData.date)
+                        {
+                            confirm = isToday(eventData.date) ||
+                                $timetableComponent.date === eventData.date ||
+                                $bookingList.date === eventData.date;
+                        }
+
+                        eventConfirmation(socket, eventData.requestId, confirm);
                     } else {
                         eventConfirmation(socket, eventData.requestId, false);
                     }
@@ -135,22 +143,22 @@
     }
 
     async function handleCustomerBookingUpdate(eventData) {
+        const customerBooking = eventData.data;
+
         console.log(`Handle ${eventData.type}`, eventData)
 
         // Dashboard
-        if (isToday(eventData.data.bookingDate)) {
-            // Dashboard
+        if (isToday(customerBooking.bookingDate)) {
             await fetchCustomerBookingQueueList();
         }
 
         // Timetable
-        if ($timetableComponent.date === eventData.data.bookingDate) {
+        if ($timetableComponent.date === customerBooking.bookingDate) {
             await fetchTimetable($timetableComponent.date);
         }
 
         // Booking list
-        if ($bookingList.date === eventData.data.bookingDate) {
-            console.log("$bookingList", $bookingList)
+        if ($bookingList.date === customerBooking.bookingDate) {
             fetchAppointmentCustomerBookingList($business.businessInfo.businessID, $bookingList.date);
         }
     }

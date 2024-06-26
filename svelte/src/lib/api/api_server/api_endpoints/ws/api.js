@@ -5,6 +5,7 @@ export const ServerEvent = {
     TEST: "TEST",
 
     EVENT_REQUEST: "EVENT_REQUEST",
+    EVENT_CONFIRMATION: "EVENT_CONFIRMATION",
 
     UPDATE_BUSINESS: "UPDATE_BUSINESS",
     UPDATE_EMPLOYEE_WORK_SCHEDULE: "UPDATE_EMPLOYEE_WORK_SCHEDULE",
@@ -20,7 +21,7 @@ export function eventConfirmation(socket, requestId, confirmed) {
     if (socket && socket.readyState === WebSocket.OPEN)
     {
         const confirmationMessage = JSON.stringify({
-            type: "EVENT_CONFIRMATION",
+            type: ServerEvent.EVENT_CONFIRMATION,
             requestId: requestId,
             confirmed: confirmed
         });

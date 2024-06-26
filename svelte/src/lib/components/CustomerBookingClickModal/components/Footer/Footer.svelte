@@ -10,11 +10,13 @@
         moveToLobby,
         moveToServicing
     } from "$lib/components/CustomerBookingClickModal/handle_customer_booking_state.js";
-    import {now} from "$lib/page/stores/now/now_dayjs_store.js";
     import {CustomerBookingState} from "$lib/api/initialize_functions/CustomerBooking.js";
     import {checkAbleToSendReviewReminder} from "$lib/api/api_server/api_endpoints/lobby-portal/api.js";
     import {checkAbleToSendSmsReviewReminder} from "$lib/api/api_server/functions.js";
-    import {initializeCustomerBooking} from "$lib/api/api_server/api_endpoints/customer-booking-portal/api.js";
+    import {
+        initializeCustomerBooking,
+        initializeCustomerBookingAndBroadcast
+    } from "$lib/api/api_server/api_endpoints/customer-booking-portal/api.js";
 
     export let customerBooking;
 
@@ -71,18 +73,18 @@
     }
 
     async function handleLobbyClick() {
-        moveToLobby($now, customerBooking);
+        moveToLobby(customerBooking);
     }
 
     async function handleServicingClick() {
         customerBooking.noShow = false;
-        moveToServicing($now, customerBooking);
+        moveToServicing(customerBooking);
     }
 
     function handleCompleteClick() {
         if (confirm("Are you sure you want to mark this as complete?"))
         {
-            moveToCompleted($now, customerBooking);
+            moveToCompleted(customerBooking);
         }
     }
 
@@ -90,7 +92,7 @@
         if (confirm("Are you sure you want to mark this as no show?"))
         {
             customerBooking.noShow = true;
-            moveToCompleted($now, customerBooking);
+            moveToCompleted(customerBooking);
         }
     }
 </script>

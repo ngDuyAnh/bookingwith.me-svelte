@@ -284,10 +284,10 @@
                 if (isToday(customerBooking.bookingDate))
                 {
                     if (customerBookingInformationProps.lobbyBookingStateFlag) {
-                        moveToLobby($now, response.customerBooking);
+                        moveToLobby(response.customerBooking);
                     }
                     else if (customerBookingInformationProps.appointmentBookingStateFlag) {
-                        moveToAppointment($now, response.customerBooking);
+                        moveToAppointment(response.customerBooking);
                     }
                 }
 

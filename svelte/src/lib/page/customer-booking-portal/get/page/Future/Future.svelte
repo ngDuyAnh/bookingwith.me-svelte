@@ -1,5 +1,5 @@
 <script>
-    import {bookingEstimate} from "$lib/page/customer-booking-portal/get/stores/bookingEstimate.js";
+    import {customerBookingEstimate} from "$lib/page/customer-booking-portal/get/stores/customerBookingEstimate.js";
     import {isTomorrow, now} from "$lib/page/stores/now/now_dayjs_store.js";
     import report_icon from "$lib/images/report_icon/message-report.png";
     import {
@@ -34,13 +34,13 @@
                 <span class="block sm:inline mb-2 sm:mb-0">
                     Your appointment is
 
-                    {#if isTomorrow($bookingEstimate.customerBooking.bookingDate)}
+                    {#if isTomorrow($customerBookingEstimate.customerBooking.bookingDate)}
                             <span class="underline">Tomorrow</span>
                     {:else}
-                        on <span class="underline">{$bookingEstimate.bookingDateFormatted}</span>
+                        on <span class="underline">{$customerBookingEstimate.bookingDateFormatted}</span>
                     {/if}
 
-                    at <span class="underline">{$bookingEstimate.bookingTimeFormatted}</span>.
+                    at <span class="underline">{$customerBookingEstimate.bookingTimeFormatted}</span>.
                 </span>
                 <LiveIndicator/>
             </div>
@@ -63,7 +63,7 @@
     <div class="mt-4 flex flex-wrap justify-center">
         <Button
                 class="mr-2"
-                on:click={() => handleCustomerBookingPortalEditCustomerBooking($bookingEstimate.customerBooking)}
+                on:click={() => handleCustomerBookingPortalEditCustomerBooking($customerBookingEstimate.customerBooking)}
                 color="light" outline> Edit my appointment
             <svg class="ml-1 w-6 h-6 text-gray-800 dark:text-white" aria-hidden="true"
                  xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
@@ -74,7 +74,7 @@
 
         <a
                 class="text-gray-900 bg-white border border-gray-300 focus:outline-none hover:bg-gray-100 focus:ring-4 focus:ring-gray-100 font-medium rounded-lg text-sm px-3 py-2.5 dark:bg-gray-800 dark:text-white dark:border-gray-600 dark:hover:bg-gray-700 dark:hover:border-gray-600 dark:focus:ring-gray-700"
-                href="tel:{$bookingEstimate.business.businessInfo.businessPhoneNumber}"
+                href="tel:{$customerBookingEstimate.business.businessInfo.businessPhoneNumber}"
                 target="_blank"
                 type="button"
         >

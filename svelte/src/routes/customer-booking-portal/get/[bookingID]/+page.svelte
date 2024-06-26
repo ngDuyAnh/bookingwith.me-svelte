@@ -10,19 +10,55 @@
     import {Spinner} from "flowbite-svelte";
     import Today from "$lib/page/customer-booking-portal/get/page/Today/Today.svelte";
     import Future from "$lib/page/customer-booking-portal/get/page/Future/Future.svelte";
-    import {bookingEstimate} from "$lib/page/customer-booking-portal/get/stores/bookingEstimate.js";
+    import {customerBookingEstimate} from "$lib/page/customer-booking-portal/get/stores/customerBookingEstimate.js";
     import Deleted from "$lib/page/customer-booking-portal/get/page/Deleted/Deleted.svelte";
     import {business} from "$lib/page/stores/business/business.js";
-    import {
-        employeeToSelectOption
-    } from "$lib/components/CustomerBooking/CustomerIndividualBookingServiceSelect/components/ServiceOption/functions.js";
-    import {employeeSelectOptions} from "$lib/page/stores/employeeSelectOptions/employeeSelectOptions.js";
     import ModalEditCustomerBooking from "$lib/components/Modal/EditCustomerBooking/ModalEditCustomerBooking.svelte";
     import {CustomerBookingState} from "$lib/api/initialize_functions/CustomerBooking.js";
     import Past from "$lib/page/customer-booking-portal/get/page/Past/Past.svelte";
     import NoShow from "$lib/page/customer-booking-portal/get/page/NoShow/NoShow.svelte";
+    import {getCustomerBooking} from "$lib/api/api_server/api_endpoints/customer-booking-portal/api.js";
+    import {customerBooking} from "$lib/page/customer-booking-portal/get/stores/customerBookingEstimate.js";
+    import {getBusinessFromCustomerBooking} from "$lib/api/api_server/api_endpoints/customer-booking-portal/api.js";
 
     export let data;
+    let loading = true;
+
+    onMount(() =>{
+        // Get the customer booking
+        getCustomerBooking(data.bookingID)
+            .then((response) => {
+                customerBooking.set(response);
+            })
+
+        // Get the business
+        getBusinessFromCustomerBooking(data.bookingID)
+            .then((response) => {
+                business.set(response);
+            })
+
+        // Record the SMS confirmation
+        if (!$customerBookingEstimate.customerBooking.smsConfirmation)
+        {
+            $customerBookingEstimate.customerBooking.smsConfirmation = true;
+
+            initializeCustomerBooking($customerBookingEstimate.customerBooking)
+                .then(customerBooking => {
+                    // Update the booking estimate store with the new data
+                    customerBookingEstimate.update(current => ({
+                        ...current,
+                        customerBooking: customerBooking
+                    }));
+                    console.log('SMS confirmation initialized and saved to database.');
+                })
+                .catch(error => {
+                    console.error('Error initializing SMS confirmation:', error);
+                });
+        }
+
+        loading = false;
+    })
+
 
     let relativeDate = 0;
     async function fetchCustomerBookingEstimate() {
@@ -49,7 +85,7 @@
             let estimateServicingEndTime = dayjs(servicingTimePeriod.endTime, formatToTime).format(formatToTimeAm);
 
             // Set the information to the store
-            bookingEstimate.set({
+            customerBookingEstimate.set({
                 ...response,
                 relativeDate,
                 bookingDateFormatted,
@@ -66,43 +102,6 @@
 
     setContext('fetchCustomerBookingEstimate', fetchCustomerBookingEstimate);
 
-    let loading = true;
-
-    onMount(async () => {
-        await fetchCustomerBookingEstimate();
-
-        // Convert the employee list to selectable options
-        business.set($bookingEstimate.business);
-        if ($business && $business.employeeList && Array.isArray($business.employeeList))
-        {
-            employeeSelectOptions.set($business.employeeList.map(employeeToSelectOption));
-        }
-
-        // SMS confirmation
-        if (!$bookingEstimate.customerBooking.smsConfirmation)
-        {
-            $bookingEstimate.customerBooking.smsConfirmation = true;
-
-            initializeCustomerBooking($bookingEstimate.customerBooking)
-                .then(customerBooking => {
-                    // Update the booking estimate store with the new data
-                    bookingEstimate.update(current => ({
-                        ...current,
-                        customerBooking: customerBooking
-                    }));
-                    console.log('SMS confirmation initialized and saved to database.');
-                })
-                .catch(error => {
-                    console.error('Error initializing SMS confirmation:', error);
-                });
-        }
-
-        loading = false;
-    });
-
-    // Automatic fetch
-    setInterval(async () => fetchCustomerBookingEstimate(), 60000);
-
     //$: console.log("bookingEstimate", $bookingEstimate);
 </script>
 
@@ -113,14 +112,14 @@
         </div>
     {:else}
         <div class="flex flex-col text-gray-900 h-full w-full">
-            {#if $bookingEstimate.customerBooking.deleted}
+            {#if $customerBookingEstimate.customerBooking.deleted}
                 <Deleted/>
-            {:else if $bookingEstimate.customerBooking.noShow}
+            {:else if $customerBookingEstimate.customerBooking.noShow}
                 <NoShow/>
             {:else if relativeDate > 0}
                 <Future/>
             {:else if relativeDate === 0 ||
-                    $bookingEstimate.customerBooking.bookingState === CustomerBookingState.COMPLETED}
+                    $customerBookingEstimate.customerBooking.bookingState === CustomerBookingState.COMPLETED}
                 <Today/>
             {:else}
                 <Past/>
@@ -129,7 +128,7 @@
 
         <!-- Modal for edit customer booking -->
         <ModalEditCustomerBooking
-                business={$bookingEstimate.business}
+                business={$customerBookingEstimate.business}
         />
     {/if}
 </div>

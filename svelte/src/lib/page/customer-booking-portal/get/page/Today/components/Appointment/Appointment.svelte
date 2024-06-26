@@ -1,10 +1,8 @@
 <script>
-    import {bookingEstimate} from "$lib/page/customer-booking-portal/get/stores/bookingEstimate.js";
+    import {customerBookingEstimate} from "$lib/page/customer-booking-portal/get/stores/customerBookingEstimate.js";
     import {
         moveToLobby
     } from "$lib/components/CustomerBookingClickModal/handle_customer_booking_state.js";
-    import {now} from "$lib/page/stores/now/now_dayjs_store.js";
-    import {initializeCustomerBooking} from "$lib/api/api_server/api_endpoints/customer-booking-portal/api.js";
     import {Button, Modal} from "flowbite-svelte";
     import {ExclamationCircleOutline} from "flowbite-svelte-icons";
     import LiveIndicator
@@ -13,14 +11,10 @@
     let openArrivalModal = false;
 
     async function notifyArrival() {
-        moveToLobby(
-            $now,
-            $bookingEstimate.customerBooking,
-            initializeCustomerBooking
-        );
+        moveToLobby($customerBookingEstimate.customerBooking);
 
         // Force react
-        bookingEstimate.set($bookingEstimate);
+        customerBookingEstimate.set($customerBookingEstimate);
 
         // Send an alert to let the customer know that they have been moved to lobby
         alert(
@@ -49,14 +43,14 @@
         <div class="p-4 flex justify-between text-green-800 space-x-4">
             <div class="flex flex-col">
                 <span>Queue position</span>
-                <span class="animate-pulse text-sm font-semibold">{$bookingEstimate.queuePosition}</span>
+                <span class="animate-pulse text-sm font-semibold">{$customerBookingEstimate.queuePosition}</span>
             </div>
             <div class="flex flex-col items-end">
                 <span>Servicing time</span>
                 <div>
-                    <span class="animate-pulse text-sm font-semibold">{$bookingEstimate.estimateServicingStartTime}</span>
+                    <span class="animate-pulse text-sm font-semibold">{$customerBookingEstimate.estimateServicingStartTime}</span>
                     <span class="text-sm">to</span>
-                    <span class="animate-pulse text-sm font-semibold">{$bookingEstimate.estimateServicingEndTime}</span>
+                    <span class="animate-pulse text-sm font-semibold">{$customerBookingEstimate.estimateServicingEndTime}</span>
                 </div>
             </div>
         </div>
@@ -75,7 +69,7 @@
 
         <a
                 class="mr-2 text-gray-900 bg-white border border-gray-300 focus:outline-none hover:bg-gray-100 focus:ring-4 focus:ring-gray-100 font-medium rounded-lg text-sm px-3 py-2.5 dark:bg-gray-800 dark:text-white dark:border-gray-600 dark:hover:bg-gray-700 dark:hover:border-gray-600 dark:focus:ring-gray-700"
-                href={$bookingEstimate.business.businessInfo.googleMapsDirectionLink}
+                href={$customerBookingEstimate.business.businessInfo.googleMapsDirectionLink}
                 target="_blank"
                 type="button"
         >
@@ -98,7 +92,7 @@
 
         <a
                 class="text-gray-900 bg-white border border-gray-300 focus:outline-none hover:bg-gray-100 focus:ring-4 focus:ring-gray-100 font-medium rounded-lg text-sm px-3 py-2.5 dark:bg-gray-800 dark:text-white dark:border-gray-600 dark:hover:bg-gray-700 dark:hover:border-gray-600 dark:focus:ring-gray-700"
-                href="tel:{$bookingEstimate.business.businessInfo.businessPhoneNumber}"
+                href="tel:{$customerBookingEstimate.business.businessInfo.businessPhoneNumber}"
                 target="_blank"
                 type="button"
         >
