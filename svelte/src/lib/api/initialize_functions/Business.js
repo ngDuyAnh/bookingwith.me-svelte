@@ -1,4 +1,4 @@
-import {User} from "$lib/api/initialize_functions/User.js";
+import { User } from "$lib/api/initialize_functions/User.js";
 
 export const BusinessScheduleManagement = {
     NONE: 0,
@@ -6,19 +6,17 @@ export const BusinessScheduleManagement = {
     ACTIVE: 2
 }
 
-export function Business()
-{
+export function Business() {
     return {
         "businessInfo": BusinessInformation(),
-        "serviceGroupList":[],
-        "employeeList":[],
+        "serviceGroupList": [],
+        "employeeList": [],
     }
 }
 
-export function BusinessInformation()
-{
+export function BusinessInformation() {
     return {
-        "id":-1,
+        "id": -1,
         "businessID": null,
         "stripeID": null,
 
@@ -36,14 +34,13 @@ export function BusinessInformation()
         "active": true,
         "scheduleManagement": BusinessScheduleManagement.NONE,
 
-        "stripeLastReportedDate":null
+        "stripeLastReportedDate": null
     };
 }
 
-export function TestBusinessInformation()
-{
+export function TestBusinessInformation() {
     return {
-        "id":-1,
+        "id": -1,
         "businessID": null,
         "stripeID": null,
 
@@ -69,13 +66,12 @@ export function Employee() {
         "employeeName": "",
         "user": User(),
 
-        "showOnBookingPage": true,
+        "showOnlineBookingPage": true,
         "archive": false
     };
 }
 
-export function Service()
-{
+export function Service() {
     return {
         "id": -1,
         "serviceName": "",
@@ -83,20 +79,22 @@ export function Service()
         "serviceTimeLength": null,
         "description": "",
         "showPlus": false,
+        "showOnlineBookingPage": true,
 
         "archive": false,
         "employeeList": [],
     };
 }
 
-export function ServiceGroup()
-{
+export function ServiceGroup() {
     return {
-        "id ": -1,
+        "id": -1,
         "serviceGroupName": "",
         "description": "",
         "multiselect": false,
+        "showOnlineBookingPage": true,
         "serviceList": [],
+
         "archive": false
     };
 }

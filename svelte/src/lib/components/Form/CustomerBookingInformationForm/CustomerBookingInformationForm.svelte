@@ -17,8 +17,9 @@
     import {rawPhoneNumber, formatPhoneNumber} from "$lib/application/FormatPhoneNumber.js";
     import {sendSmsBookingReminder} from "$lib/api/api_twilio/functions.js";
     import {
+        moveToAppointment,
         moveToLobby
-    } from "$lib/page/protected/business-portal/page_lobby/page/Dashboard/components/components/CustomerBookingClickModal/handle_customer_booking_state.js";
+    } from "$lib/components/CustomerBookingClickModal/handle_customer_booking_state.js";
     import {isToday} from "$lib/page/stores/now/now_dayjs_store.js";
 
     export let customerBookingInformationFormProps;
@@ -74,9 +75,15 @@
                 // Initialize the available time
                 availableTimeOptionList = response.availabilityList.map(
                     availability => {
+                        const startTimeFormatted = dayjs(availability.timePeriod.startTime, formatToTime).format(formatToTimeAM);
+                        const endTimeFormatted = dayjs(availability.timePeriod.endTime, formatToTime).format(formatToTimeAM);
+                        const durationDisplay = availability.walkIn
+                            ? `(~${availability.duration} minutes)`
+                            : `(${availability.duration} minutes)`;
+
                         return {
                             value: availability.timePeriod.startTime,
-                            name: `${dayjs(availability.timePeriod.startTime, formatToTime).format(formatToTimeAM)} to ${dayjs(availability.timePeriod.endTime, formatToTime).format(formatToTimeAM)} (~${availability.duration} minutes)`,
+                            name: `${startTimeFormatted} to ${endTimeFormatted} ${durationDisplay}`,
                             availability: availability
                         };
                     });
@@ -134,9 +141,9 @@
             if (preselectForWalkIn && availableTimeOptionList.length > 0) {
                 customerBooking.bookingTime = availableTimeOptionList[0].value;
             }
-                // Customer booking already have a select booking time
-                // Preselect that time
-                // This could be from edit customer booking
+            // Customer booking already have a select booking time
+            // Preselect that time
+            // This could be from edit customer booking
             // If the selected booking time no longer available, unselected it by setting it to null
             else if (customerBooking.bookingTime) {
                 customerBooking.bookingTime =
@@ -152,19 +159,26 @@
     // Show more availability is selected
     // Fetch the walk-in availability
     let selectedAvailability = undefined;
-    $: selectedAvailability = availableTimeOptionList.find(option => option.value === customerBooking.bookingTime)?.availability;
+    $: {
+        console.log("selectedAvailability", selectedAvailability)
+
+        selectedAvailability = availableTimeOptionList.find(option => option.value === customerBooking.bookingTime)?.availability;
+    }
     $: if (customerBooking.bookingTime === undefined) {
         // Reset the selected booking time
         customerBooking.bookingTime = null;
 
         // Fetch walk-in availability
         walkinAvailabilityFlag = true;
-        fetchAvailableTimeList();
+
+        (async () => {
+            await fetchAvailableTimeList().finally(styleOptions);
+        })();
     }
 
     let dateSelected = customerBooking.bookingDate;
 
-    function getAvailableTimeOptionList() {
+    async function getAvailableTimeOptionList() {
         // New date selected
         customerBooking.bookingDate = dateSelected;
 
@@ -179,30 +193,30 @@
         if (preselectForWalkIn) {
             walkinAvailabilityFlag = true;
         }
-        // Reset the booking time
-        else {
-            customerBooking.bookingTime = null;
-        }
 
         //console.log(`Date selected ${dateSelected} walk-in ${walkinAvailabilityFlag}`);
 
         // Get the new available time
-        fetchAvailableTimeList();
+        await fetchAvailableTimeList();
     }
 
     // Initial fetch for availability
     onMount(async () => {
-        getAvailableTimeOptionList();
+        await getAvailableTimeOptionList().finally(()=>{
+            styleOptions();
+        });
     })
 
     // Reactive statement to fetch times when the date changes
     $: if (dateSelected !== customerBooking.bookingDate) {
-        getAvailableTimeOptionList();
+        (async () => {
+            await getAvailableTimeOptionList().finally(styleOptions);
+        })();
     }
 
     function customerExists() {
         if (customerBookingInformationFormProps.customerNameAutoComplete) {
-            getCustomer(customerBooking.customer.phoneNumber)
+            getCustomer(businessInfo.businessID, customerBooking.customer.phoneNumber)
                 .then(customer => {
                     if (customer && customer.customerName) {
                         customerBooking.customer.customerName = customer.customerName;
@@ -277,13 +291,36 @@
             if (response.submitted) {
                 success = true;
 
+                // Move the customer booking state
+                if (isToday(customerBooking.bookingDate))
+                {
+                    if (customerBookingInformationProps.lobbyBookingStateFlag) {
+                        moveToLobby(response.customerBooking);
+                    }
+                    else if (customerBookingInformationProps.appointmentBookingStateFlag) {
+                        moveToAppointment(response.customerBooking);
+                    }
+                }
+
                 // Send SMS
                 if (customerBookingInformationProps.sendSmsFlag) {
                     // Send SMS confirmation for the appointment
                     sendSmsConfirmBookingSuccess(businessInfo.businessName, response.customerBooking)
-                        .then(() => {
+                        .then(async () => {
                             console.log('Sent SMS appointment confirmation.');
                             response.customerBooking.smsConfirmationSent = true;
+
+                            // Schedule SMS for reminder for the appointment
+                            await sendSmsBookingReminder(businessInfo.businessName, response.customerBooking)
+                                .then((scheduledReminderResponse) => {
+                                    console.log('Scheduled SMS appointment reminder.', scheduledReminderResponse);
+
+                                    // Record the SMS sid to the database
+                                    response.customerBooking.smsAppointmentReminderSid = scheduledReminderResponse.sid;
+                                })
+                                .catch(error => {
+                                    console.error('Error sending SMS appointment confirmation:', error);
+                                });
 
                             // Save to the database
                             initializeCustomerBooking(response.customerBooking)
@@ -297,24 +334,6 @@
                         .catch(error => {
                             console.error('Failed to send appointment confirmation:', error);
                         });
-
-                    // Schedule SMS for reminder for the appointment
-                    sendSmsBookingReminder(businessInfo.businessName, response.customerBooking)
-                        .then((scheduledReminderResponse) => {
-                            console.log('Scheduled SMS appointment reminder.', scheduledReminderResponse);
-
-                            // Record the SMS sid to the database
-                            response.customerBooking.smsAppointmentReminderSid = scheduledReminderResponse.sid;
-                            initializeCustomerBooking(response.customerBooking);
-                        })
-                        .catch(error => {
-                            console.error('Error sending SMS appointment confirmation:', error);
-                        });
-                }
-
-                // Move the customer booking to lobby
-                if (customerBookingInformationProps.lobbyBookingStateFlag) {
-                    moveToLobby($now, response.customerBooking, initializeCustomerBooking);
                 }
             }
         } catch (err) {
@@ -329,6 +348,18 @@
     }
 
     let isConsentChecked = false;
+
+    function styleOptions() {
+        //console.log("styling");
+        const selectElement = document.getElementById('available-Time');
+        if (selectElement) {
+            selectElement.querySelectorAll('option').forEach(option => {
+                if (option.textContent.includes('~')) {
+                    option.style.backgroundColor = '#ff9494'; // Light red background
+                }
+            });
+        }
+    }
 </script>
 
 <form on:submit|preventDefault={submit} class="space-y-4">
@@ -377,7 +408,8 @@
             />
         {:else}
             <Select
-                    id="time"
+                    id="available-Time"
+                    class={selectedAvailability?.walkIn ? 'bg-red-100' : ''}
                     placeholder="Select a time"
                     items={availableTimeOptionList}
                     bind:value={customerBooking.bookingTime}

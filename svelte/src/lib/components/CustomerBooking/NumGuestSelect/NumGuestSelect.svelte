@@ -11,8 +11,10 @@
         Welcome to {businessInfo.businessName}
     </h1>
     <form
-            class="select-none max-w-sm mx-auto bg-white p-6 rounded-lg shadow-lg dark:bg-gray-800"
-            on:submit|preventDefault={gotoCustomerIndividualBookingServiceSelect(selectedNumGuests)}
+            class="select-none max-w-sm mx-auto bg-white p-6 rounded-lg"
+            on:submit={() => {
+                gotoCustomerIndividualBookingServiceSelect(selectedNumGuests)
+            }}
     >
         <span>
             Please select the number of guests:

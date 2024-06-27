@@ -6,16 +6,23 @@ export const modalEditCustomerBooking = writable({
     open: false,
     customerBooking: undefined,
 
-    showAllEmployeeSelectOptions: true,
+    // Customer individual booking select service
+    customerIndividualBookingServiceSelectProps: {
+        showAllServiceGroup: true,
+        showAllService: true,
+        showAllEmployeeSelectOptions: true
+    },
 
     // Option header
     customerBookingInformationProps: {
         showOverride: true,
         showSendSms: true,
+        showAppointmentBookingState: true,
         showLobbyBookingState: false,
 
         overrideFlag: false,
         sendSMSFlag: false,
+        appointmentBookingStateFlag: false,
         lobbyBookingStateFlag: false
     },
 
@@ -36,16 +43,23 @@ export function handleLobbyPortalEditCustomerBooking(customerBooking)
         open: true,
         customerBooking: JSON.parse(JSON.stringify(customerBooking)),
 
-        showAllEmployeeSelectOptions: true,
+        // Customer individual booking select service
+        customerIndividualBookingServiceSelectProps: {
+            showAllServiceGroup: true,
+            showAllService: true,
+            showAllEmployeeSelectOptions: true
+        },
 
         // Option header
         customerBookingInformationProps: {
             showOverride: true,
             showSendSms: true,
+            showAppointmentBookingState: true,
             showLobbyBookingState: false,
 
             overrideFlag: overrideFlagState,
             sendSMSFlag: false,
+            appointmentBookingStateFlag: false,
             lobbyBookingStateFlag: false
         },
 
@@ -63,16 +77,23 @@ export function handleCustomerBookingPortalEditCustomerBooking(customerBooking)
         open: true,
         customerBooking: JSON.parse(JSON.stringify(customerBooking)),
 
-        showAllEmployeeSelectOptions: true,
+        // Customer individual booking select service
+        customerIndividualBookingServiceSelectProps: {
+            showAllServiceGroup: false,
+            showAllService: false,
+            showAllEmployeeSelectOptions: false
+        },
 
         // Option header
         customerBookingInformationProps: {
             showOverride: false,
             showSendSms: false,
+            showAppointmentBookingState: false,
             showLobbyBookingState: false,
 
             overrideFlag: false,
             sendSMSFlag: false,
+            appointmentBookingStateFlag: false,
             lobbyBookingStateFlag: false
         },
 

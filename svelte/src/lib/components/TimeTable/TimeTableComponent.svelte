@@ -1,31 +1,24 @@
 <script>
-    import {onMount, setContext} from "svelte";
-    import {
-        getCustomerBooking,
-        initializeCustomerBooking
-    } from "$lib/api/api_server/api_endpoints/customer-booking-portal/api.js";
-    import {isToday, now, today} from "$lib/page/stores/now/now_dayjs_store.js";
+    import {isToday, now, today, isPast} from "$lib/page/stores/now/now_dayjs_store.js";
     import {formatTimeAm, formatToTime} from "$lib/application/Formatter.js";
     import Calendar from "@event-calendar/core";
     import ResourceTimeGrid from "@event-calendar/resource-time-grid";
-    import {
-        findServiceBookingFromCustomerBooking
-    } from "$lib/api/initialize_functions/customer-booking-utility-functions.js";
     import {CustomerBookingState} from "$lib/api/initialize_functions/CustomerBooking.js";
-    import {business} from "$lib/page/stores/business/business.js";
-    import ServicingTicketClickModal from "$lib/components/Timetable/TimetableModal/ServicingTicketClickModal.svelte";
+    import ServicingTicketClickModal
+        from "$lib/components/TimeTable/ServicingTicketClickModal/ServicingTicketClickModal.svelte";
     import {
-        servicingTicketClickModal,
-        servicingTicketClickModalOpen,
-        servicingTicketClickModalSetEmployeeTimetableList
-    } from "$lib/components/Timetable/TimetableModal/stores/servicingTicketClickModal.js";
+        handleTimetableUpdateForServicingTicketClickModal,
+        servicingTicketClickModalOpenWithServicingTicketEventInfo
+    } from "$lib/components/TimeTable/ServicingTicketClickModal/stores/servicingTicketClickModal.js";
     import {
         handleNewCustomerBookingWalkin
     } from "$lib/components/Modal/CreateCustomerBooking/modalCreateCustomerBooking.js";
+    import {fetchTimetable, timetableComponent} from "$lib/components/TimeTable/stores/timetableComponent.js";
+    import {onMount} from "svelte";
 
     // Date select
-    let prevSelectedDate = today(); // To help trigger fetch schedule
-    let selectedDate = prevSelectedDate;
+    let selectedDate = today();
+
     let calendarInstance;
 
     let prevSelected = null;
@@ -55,7 +48,7 @@
         resources: [],
         events: [],
         eventClick: function (info) {
-            openModalServicingTicket(info);
+            servicingTicketClickModalOpenWithServicingTicketEventInfo(info);
         },
         eventAllUpdated: function () {
             findECBody();
@@ -150,13 +143,6 @@
         return `<div class="flex flex-col">${timeDiv}${descriptionDiv}</div>`
     }
 
-
-    $: if (prevSelectedDate !== selectedDate) {
-        prevSelectedDate = selectedDate;
-        options.nowIndicator = isToday(selectedDate);
-        fetchSchedule();
-    }
-
     function highlightRelatedEvents(bookingID) {
         const allEvents = calendarInstance.getEvents();
         allEvents.forEach((event) => {
@@ -225,28 +211,6 @@
         });
     }
 
-    async function openModalServicingTicket(eventInfo) {
-        // Get the customer booking and service booking associated with the servicing ticket
-        let customerBooking = await getCustomerBooking(
-            eventInfo.event.extendedProps.servicingTicket.bookingID
-        );
-        let serviceBooking = findServiceBookingFromCustomerBooking(
-            customerBooking,
-            eventInfo.event.extendedProps.servicingTicket.serviceBookingID
-        );
-
-        // Pre-select the employee with the employee timetable that it is currently with
-        //preselectEmployeeID = eventInfo.event.extendedProps.employeeTimetable.employee.id;
-
-        // Open the servicing ticket modal
-        servicingTicketClickModalOpen(customerBooking, serviceBooking);
-    }
-
-    let employeeEvents = [];
-    let employeeWorkHourEvent = [];
-    let resources = [];
-    let loading = true;
-
     function bookingStateColour(servicingTicket) {
         let servicingTicketColor = "#3399ff"; // Light blue, appointment state
         // Lobby
@@ -276,6 +240,80 @@
     }
 
     export let limitShowEvents = true;
+    export let restrictedPast = true;
+
+    // $: console.log(`Now time ${$now.format(formatToTime)}`);
+    // $: console.log("$timetableComponent", $timetableComponent);
+
+    onMount(async () => {
+        await fetchTimetable(selectedDate);
+    })
+
+    // Date select change
+    // Or current time change if it is today
+    $: if ($timetableComponent.date !== selectedDate ||
+        (isToday($timetableComponent.date) && $timetableComponent.currentTime !== $now.format(formatToTime)))
+    {
+        // Now indicator for today
+        options.nowIndicator = isToday(selectedDate);
+
+        // Fetch the timetable
+        if (!restrictedPast ||
+            (restrictedPast && !isPast(selectedDate))) {
+            fetchTimetable(selectedDate);
+        } else {
+            timetableComponent.set({
+                date: selectedDate,
+                currentTime: "23:59",
+                employeeTimetableList: []
+            });
+        }
+    }
+
+    // Timetable update generate events for calendar
+    $: {
+        if ($timetableComponent.employeeTimetableList) {
+            updateCalendarEvents($timetableComponent.employeeTimetableList);
+        }
+    }
+
+    let employeeEvents = [];
+    let employeeWorkHourEvent = [];
+    let resources = [];
+
+    async function updateCalendarEvents(employeeTimetableList) {
+        handleTimetableUpdateForServicingTicketClickModal(employeeTimetableList)
+            .then(() => {
+                //console.log("handleTimetableUpdateForServicingTicketClickModal() completed.");
+            });
+
+        // Generate the events for display
+        employeeWorkHourEvent = [];
+        resources = employeeTimetableList.flatMap((employeeTable) => {
+            employeeWorkHourEvent.push({
+                resourceId: employeeTable.employee.id,
+                color: employeeTable.employee.id === -1 || !employeeTable.employee.id ? "red" : "#FFF9D0",
+                start: `${$now.format("YYYY-MM-DD")} ${employeeTable.timePeriod.startTime}`,
+                end: `${$now.format("YYYY-MM-DD")} ${employeeTable.timePeriod.endTime}`,
+                display: "background",
+            });
+            return {
+                id: employeeTable.employee.id,
+                title: `${employeeTable.employee.employeeName}`,
+            };
+        });
+
+        employeeEvents = await createEvents(employeeTimetableList);
+
+        options.resources = resources;
+        options.events = employeeWorkHourEvent.concat(employeeEvents);
+
+        if (options.events.length === 0) {
+            setTimeout(function () {
+                findECBody();
+            }, 50);
+        }
+    }
 
     export function getDisplayBookingIDList(employeeTimetableList) {
         const uniqueBookingIDs = new Set();
@@ -318,8 +356,7 @@
                 // Filter to only display the selected bookingID
                 .filter(servicingTicket => displayBookingIDList.includes(servicingTicket.bookingID))
                 // Create the events for the calendar
-                .map((servicingTicket) =>
-                {
+                .map((servicingTicket) => {
                     // Servicing ticket colour
                     let servicingTicketColor = bookingStateColour(servicingTicket);
 
@@ -344,103 +381,6 @@
                 })
         );
     }
-
-    export let getSchedule;
-
-    async function fetchSchedule() {
-        loading = true;
-
-        try {
-            // Get the current time based on if it is today
-            let currentTimeString = "00:00";
-            if (isToday(selectedDate)) {
-                currentTimeString = $now.format(formatToTime);
-            }
-
-            console.log("selectedDate", selectedDate)
-
-            const employeeTimetableList = await getSchedule(
-                $business.businessInfo.businessID,
-                selectedDate,
-                currentTimeString
-            );
-
-            console.log("employeeTimetableList", employeeTimetableList);
-
-            // Set the new employee timetable list
-            servicingTicketClickModalSetEmployeeTimetableList(employeeTimetableList);
-
-            // Fetch and reinitialize the customer booking for the modal
-            if ($servicingTicketClickModal.open && $servicingTicketClickModal.customerBooking) {
-                // Fetch the recent changes to the customer booking
-                const fetchCustomerBooking = await getCustomerBooking($servicingTicketClickModal.customerBooking.bookingID)
-
-                if (fetchCustomerBooking) {
-                    // Get the latest service booking from the customer booking
-                    let fetchServiceBooking = findServiceBookingFromCustomerBooking(
-                        fetchCustomerBooking,
-                        $servicingTicketClickModal.serviceBooking.serviceBookingID
-                    );
-
-                    servicingTicketClickModalOpen(fetchCustomerBooking, fetchServiceBooking);
-                } else {
-                    console.log('Customer booking not found for customer booking click modal.');
-                }
-            }
-
-            // Generate the events for display
-            employeeWorkHourEvent = [];
-            resources = employeeTimetableList.flatMap((employeeTable) => {
-                employeeWorkHourEvent.push({
-                    resourceId: employeeTable.employee.id,
-                    color: employeeTable.employee.id === -1 || !employeeTable.employee.id ? "red" : "#FFF9D0",
-                    start: `${$now.format("YYYY-MM-DD")} ${employeeTable.timePeriod.startTime}`,
-                    end: `${$now.format("YYYY-MM-DD")} ${employeeTable.timePeriod.endTime}`,
-                    display: "background",
-                });
-                return {
-                    id: employeeTable.employee.id,
-                    title: `${employeeTable.employee.employeeName}`,
-                };
-            });
-
-            employeeEvents = await createEvents(employeeTimetableList);
-
-            options.resources = resources;
-            options.events = employeeWorkHourEvent.concat(employeeEvents);
-
-            if (options.events.length === 0) {
-                setTimeout(function () {
-                    findECBody();
-                }, 50);
-            }
-        } catch (error) {
-            console.error("Failed to  fetch tasks", error);
-            employeeEvents = [];
-            resources = [];
-            employeeWorkHourEvent = [];
-        }
-
-        loading = false;
-    }
-
-    onMount(async () => {
-        try {
-            await fetchSchedule();
-        } catch (err) {
-            console.error("Failed to fetch schedule", err);
-        }
-    });
-
-    async function submitCustomerBooking(customerBooking) {
-        // Submit the change to the server
-        await initializeCustomerBooking(customerBooking);
-
-        // Update the schedule
-        await fetchSchedule();
-    }
-
-    setContext("submitCustomerBooking", submitCustomerBooking);
 </script>
 
 <div class="flex flex-col items-center justify-center p-1.5">
@@ -449,13 +389,6 @@
                 bind:value={selectedDate}
                 type="date"
         />
-        <button
-                class="ml-4 bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
-                disabled={loading}
-                on:click={fetchSchedule}
-        >
-            Refresh
-        </button>
         <button class="text-blue-500 hover:text-blue-700 focus:outline-none" on:click={handleNewCustomerBookingWalkin}>
             <svg
                     class="w-10 h-10"
@@ -494,15 +427,13 @@
     </div>
 </div>
 
-{#if !loading}
-    <div
-            class="flex flex-col items-center justify-center w-4/5 h-4/5 mx-auto overflow-x-auto"
-    >
-        <div class="flex h-full m-auto">
-            <Calendar bind:this={calendarInstance} {plugins} {options}/>
-        </div>
+<div
+        class="flex flex-col items-center justify-center w-4/5 h-4/5 mx-auto overflow-x-auto"
+>
+    <div class="flex h-full m-auto">
+        <Calendar bind:this={calendarInstance} {plugins} {options}/>
     </div>
-{/if}
+</div>
 
 <div style="z-index: 1006;">
     <ServicingTicketClickModal

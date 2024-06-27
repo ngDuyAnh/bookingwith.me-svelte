@@ -1,14 +1,17 @@
 <script>
     import NumGuestSelect from "$lib/components/CustomerBooking/NumGuestSelect/NumGuestSelect.svelte";
     import {CustomerBooking, CustomerIndividualBooking} from "$lib/api/initialize_functions/CustomerBooking.js";
-    import {now} from "$lib/page/stores/now/now_dayjs_store.js";
     import CustomerIndividualBookingServiceSelect
         from "$lib/components/CustomerBooking/CustomerIndividualBookingServiceSelect/CustomerIndividualBookingServiceSelect.svelte";
     import CustomerBookingInformation
         from "$lib/components/CustomerBooking/CustomerBookingInformation/CustomerBookingInformation.svelte";
     import BookingSuccess from "$lib/components/CustomerBooking/BookingSuccess/BookingSuccess.svelte";
 
-    export let showAllEmployeeSelectOptions = false;
+    export let customerIndividualBookingServiceSelectProps = {
+        showAllServiceGroup: false,
+        showAllService: false,
+        showAllEmployeeSelectOptions: false
+    };
 
     export let customerBookingInformationProps = {
         showOverride: false,
@@ -28,7 +31,7 @@
     export let business;
 
     export let customerBooking = {
-        ...CustomerBooking($now),
+        ...CustomerBooking(),
         customerIndividualBookingList: [CustomerIndividualBooking()]
     };
 
@@ -87,7 +90,7 @@
 
                 bind:guestIndex={guestIndex}
 
-                {showAllEmployeeSelectOptions}
+                {customerIndividualBookingServiceSelectProps}
         />
     {:else if pageIndex === 2}
         <CustomerBookingInformation
