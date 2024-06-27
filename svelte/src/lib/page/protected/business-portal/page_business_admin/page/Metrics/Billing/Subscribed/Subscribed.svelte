@@ -38,7 +38,7 @@
     let openInvoice=false;
 
     async function getInvoices() {
-        const response = await fetch('/stripe/check/invoices/get-by-month', {
+        const response = await fetch('/api/stripe/check/invoices/get-by-month', {
             method: 'POST',
             headers: {'Content-Type': 'application/json'},
             body: JSON.stringify({customerId, startOfMonth: startDateSelected, endOfMonth: endDateSelected}),
@@ -62,7 +62,7 @@
 
 
     async function reportUsage() {
-        const response = await fetch('/stripe/reportUsage', {
+        const response = await fetch('/api/stripe/reportUsage', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
@@ -89,7 +89,7 @@
     }
 
     async function getUpcomingInvoice(customerId) {
-        const response = await fetch('/stripe/check/invoices/upcoming', {
+        const response = await fetch('/api/stripe/check/invoices/upcoming', {
             method: 'POST',
             headers: {'Content-Type': 'application/json'},
             body: JSON.stringify({customerId}),
@@ -163,28 +163,6 @@
             />
 
         </div>
-
-        <!--        <div class="flex flex-col items-center space-y-2">-->
-        <!--            {#if error}-->
-        <!--                <p class="error">{error.message} Please try again.</p>-->
-        <!--            {/if}-->
-
-        <!--            <div class="flex flex-row items-center space-x-2">-->
-        <!--                <Button on:click={()=>{usage.lobby++;}}>-->
-        <!--                    +Lobby-->
-        <!--                </Button>-->
-        <!--                <Button on:click={()=>{usage.online++;}}>-->
-        <!--                    +Online-->
-        <!--                </Button>-->
-        <!--                <Button on:click={()=>{usage.sms++;}}>-->
-        <!--                    +SMS-->
-        <!--                </Button>-->
-        <!--            </div>-->
-
-<!--        <Button on:click={reportUsage}>-->
-<!--            Report Usage-->
-<!--        </Button>-->
-        <!--        </div>-->
     {/if}
 </div>
 
@@ -209,8 +187,7 @@
             <Card class="my-1">
                 <p class="font-normal text-gray-700 dark:text-gray-400">
                     <strong>Amount:</strong> {invoice.amount_due / 100} {invoice.currency.toUpperCase()}</p>
-                <p class="font-normal text-gray-700 dark:text-gray-400">
-                    <strong>Status:</strong> {invoice.status}
+                <p class="font-normal text-gray-700 dark:text-gray-400"><strong>Status:</strong> {invoice.status}
                 </p>
                 <p class="font-normal text-gray-700 dark:text-gray-400">
                     <strong>Created:</strong> {new Date(invoice.created * 1000).toLocaleDateString()}</p>

@@ -34,7 +34,7 @@
     }
 
     async function setupStripe() {
-        const response = await fetch('/stripe/payment-element/setup-intent', {
+        const response = await fetch('/api/stripe/payment-element/setup-intent', {
             method: 'POST',
             headers: {'Content-Type': 'application/json'},
             body: JSON.stringify({customerId: customerId}),
@@ -65,21 +65,21 @@
             }
 
             // Detach the old payment method
-            await fetch('/stripe/remove/payment-method', {
+            await fetch('/api/stripe/remove/payment-method', {
                 method: 'POST',
                 headers: {'Content-Type': 'application/json'},
                 body: JSON.stringify({paymentMethodId: paymentMethod.id}),
             });
 
             // Attach the new payment method
-            await fetch('/stripe/payment-element/payment-method', {
+            await fetch('/api/stripe/payment-element/payment-method', {
                 method: 'POST',
                 headers: {'Content-Type': 'application/json'},
                 body: JSON.stringify({customerId, paymentMethodId: setupIntent.payment_method}),
             });
 
             // Fetch and update the new payment method details
-            const response = await fetch('/stripe/check/payment-method', {
+            const response = await fetch('/api/stripe/check/payment-method', {
                 method: 'POST',
                 headers: {'Content-Type': 'application/json'},
                 body: JSON.stringify({customerId}),

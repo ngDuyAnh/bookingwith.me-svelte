@@ -1,26 +1,21 @@
 <script>
     import Intent
-        from "$lib/page/protected/business-portal/page_business_admin/page/Dashboard/Billing/Intent/Intent.svelte";
+        from "$lib/page/protected/business-portal/page_business_admin/page/Metrics/Billing/Intent/Intent.svelte";
     import Subscribed
-        from "$lib/page/protected/business-portal/page_business_admin/page/Dashboard/Billing/Subscribed/Subscribed.svelte";
+        from "$lib/page/protected/business-portal/page_business_admin/page/Metrics/Billing/Subscribed/Subscribed.svelte";
     import ShowPlan
-        from "$lib/page/protected/business-portal/page_business_admin/page/Dashboard/Billing/ShowPlan/ShowPlan.svelte";
+        from "$lib/page/protected/business-portal/page_business_admin/page/Metrics/Billing/ShowPlan/ShowPlan.svelte";
     import {userProfile} from "$lib/page/stores/userProfile/userProfile.js";
     import {onMount} from "svelte";
     import {Spinner} from "flowbite-svelte";
     import Card from "$lib/components/Stripe/PaymentCard/PaymentCard.svelte";
     import PastInvoice from "$lib/components/Stripe/PastInvoice/PastInvoice.svelte";
     import Subscription
-        from "$lib/page/protected/business-portal/page_business_admin/page/Dashboard/Billing/Subscription/Subscription.svelte";
-
-
-    // let usage = {lobby: 0, online: 0, sms: 0};
-    // const customerId = {
-    //     ROBA1: "cus_QIMtNH2bgSMOVs",
-    //     ROBA2: "cus_QIfcLYle5X567a"
-    // }
+        from "$lib/page/protected/business-portal/page_business_admin/page/Metrics/Billing/Subscription/Subscription.svelte";
+    import {businessInfo} from "$lib/page/customer-booking-portal/create/stores/customer_booking_portal_create_store.js";
 
     $:console.log("userProfile userProfile", $userProfile);
+    $:console.log("businessInfo businessInfo", $businessInfo);
 
     let hasStripeAccount = false;
     let hasSubscribed = false;
@@ -30,7 +25,7 @@
 
     async function subscribed() {
 
-        const response = await fetch('/stripe/check/subscription', {
+        const response = await fetch('/api/stripe/check/subscription', {
             method: 'POST',
             headers: {'Content-Type': 'application/json'},
             body: JSON.stringify({customerId: customerId}),
@@ -44,7 +39,7 @@
     let paymentMethod = null;
 
     async function checkPaymentMethod() {
-        const response = await fetch('/stripe/check/payment-method', {
+        const response = await fetch('/api/stripe/check/payment-method', {
             method: 'POST',
             headers: {'Content-Type': 'application/json'},
             body: JSON.stringify({customerId}),

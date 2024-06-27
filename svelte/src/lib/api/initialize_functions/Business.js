@@ -20,6 +20,8 @@ export function BusinessInformation()
     return {
         "id":-1,
         "businessID": null,
+        "stripeID": null,
+
         "businessName": "",
         "businessPhoneNumber": "",
         "websiteUrl": "",
@@ -32,7 +34,32 @@ export function BusinessInformation()
         "googleMapsDirectionLink": "",
 
         "active": true,
-        "scheduleManagement": BusinessScheduleManagement.NONE
+        "scheduleManagement": BusinessScheduleManagement.NONE,
+
+        "stripeLastReportedDate":null
+    };
+}
+
+export function TestBusinessInformation()
+{
+    return {
+        "id":-1,
+        "businessID": null,
+        "stripeID": null,
+
+        "businessName": "test",
+        "businessPhoneNumber": "1111111111",
+        "websiteUrl": "qwewe",
+        "businessType": "qwe",
+        "socialMediaLink": "qweqwe",
+
+        "googleReviewLink": "ewew",
+        "googleMapsLink": "wewe",
+        "googleEmbedMapLink": "weew",
+        "googleMapsDirectionLink": "wewe",
+
+        "active": true,
+        "scheduleManagement": BusinessScheduleManagement.NONE,
     };
 }
 

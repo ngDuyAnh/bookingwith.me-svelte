@@ -21,7 +21,7 @@
     async function setupStripe() {
         stripe = await loadStripe(PUBLIC_STRIPE_KEY);
 
-        const response = await fetch('/stripe/payment-element/setup-intent', {
+        const response = await fetch('/api/stripe/payment-element/setup-intent', {
             method: 'POST',
             headers: {'Content-Type': 'application/json'},
             body: JSON.stringify({customerId: customerId}),
@@ -33,7 +33,7 @@
 
     async function createSubscription() {
         try {
-            const response = await fetch('/stripe/payment-element/create-subscription', {
+            const response = await fetch('/api/stripe/payment-element/create-subscription', {
                 method: 'POST',
                 headers: {
                     'content-type': 'application/json'

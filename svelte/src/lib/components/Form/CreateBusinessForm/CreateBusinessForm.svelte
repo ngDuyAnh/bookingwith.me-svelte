@@ -2,7 +2,7 @@
     import {goto} from '$app/navigation';
     import {createBusiness} from "$lib/api/api_server/api_endpoints/business-portal/api.js";
     import {
-        BusinessInformation, BusinessScheduleManagement
+        BusinessInformation, BusinessScheduleManagement, TestBusinessInformation
     } from "$lib/api/initialize_functions/Business.js";
     import {formatPhoneNumber} from "$lib/application/FormatPhoneNumber.js";
     import {Select} from "flowbite-svelte";
@@ -18,6 +18,18 @@
         contactName: "",
         contactPhoneNumber: "",
     };
+
+    // let business = {
+    //     businessInfo: {
+    //         ...TestBusinessInformation()
+    //     },
+    //
+    //     businessEmail: "testBus@gamil.com",
+    //     lobbyEmail: "testLob@gamil.com",
+    //     contactEmail: "testBus@gamil.com",
+    //     contactName: "123423",
+    //     contactPhoneNumber: "2222222222",
+    // };
 
     let formattedBusinessPhoneNumber = formatPhoneNumber(business.businessInfo.businessPhoneNumber);
     let formattedContactPhoneNumber = formatPhoneNumber(business.contactPhoneNumber);
@@ -58,17 +70,26 @@
         .filter(([key, value]) => typeof value === 'number') // Ensure only valid options are included
         .map(([key, value]) => ({ value, name: formatOptionName(key) }));
 
+    async function createStripeCustomer(businessEmail,businessName) {
+
+        const response = await fetch('/api/stripe/create-single/customer', {
+            method: 'POST',
+            headers: {'Content-Type': 'application/json'},
+            body: JSON.stringify({email:businessEmail, name:businessName}),
+        });
+
+        const result = await response.json();
+        return result;
+    }
 
     async function handleSubmit() {
         try {
-            const businessResult = await createBusiness(businessInfo);
 
-            // Redirect to the information page with the new created business
-            let businessInfo = businessResult.business.businessID;
+            const {customerId} = await createStripeCustomer(business.businessEmail,business.businessInfo.businessName)
 
-            console.log(businessInfo.businessID);
+            business.businessInfo.stripeID = customerId;
 
-            await goto(`/admin/business/get/${businessInfo.businessID}`);
+            await createBusiness(business);
         } catch (error) {
             console.log(error)
             alert('Failed to create the business!');

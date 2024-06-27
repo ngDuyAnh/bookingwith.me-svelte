@@ -32,6 +32,18 @@ export async function getBusiness(id) {
     return await response.json();
 }
 
+export async function getBusinessIDList() {
+    const FETCH_URL = `${API_URL}/get-business-id-list`;
+
+    const response = await fetch(`${FETCH_URL}`);
+
+    if (!response.ok) {
+        throw new Error(`Failed to fetch. Status: ${response.status}`);
+    }
+
+    return await response.json();
+}
+
 export async function initializeBusiness(business) {
     const FETCH_URL = `${API_URL}/initialize-business`;
 

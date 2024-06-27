@@ -1,6 +1,20 @@
 <script>
     import {onMount} from 'svelte'
-    import {Button, Card, Input, Label, Modal} from "flowbite-svelte";
+    import {
+        Avatar,
+        Button,
+        Card,
+        Input,
+        Label,
+        Modal,
+        Spinner,
+        Table,
+        TableBody,
+        TableBodyCell,
+        TableBodyRow,
+        TableHead,
+        TableHeadCell
+    } from "flowbite-svelte";
     import {now} from "$lib/page/stores/now/now_dayjs_store.js";
     import {formatToYearMonth} from "$lib/application/Formatter.js";
     import dayjs from "dayjs";
@@ -17,15 +31,27 @@
     let openInvoice = false;
 
     async function getInvoices() {
-        const response = await fetch('/stripe/check/invoices/get-by-month', {
+        const response = await fetch('/api/stripe/check/invoices/get-by-month', {
             method: 'POST',
             headers: {'Content-Type': 'application/json'},
             body: JSON.stringify({customerId, startOfMonth: startDateSelected, endOfMonth: endDateSelected}),
         });
 
         const result = await response.json();
+        invoices =[];
         if (result.invoices) {
-            invoices = result.invoices;
+            result.invoices.forEach(invoice => {
+                if (invoice.status === 'paid') {
+                    if(invoice.amount_paid !== 0)
+                    {
+                        invoices.push(invoice);
+                    }
+                } else if (invoice.status !== 'paid')  {
+                    invoices.push(invoice);
+                }
+
+            });
+    // console.log("invoices are", invoices);
         } else if (result.error) {
             console.error(result.error);
         }
@@ -50,6 +76,7 @@
 
         await getInvoices();
     }
+
     $:console.log("invoices", invoices);
 
 </script>
@@ -60,7 +87,8 @@
     </Button>
 </Card>
 
-<Modal title="Past Invoices" bind:open={openInvoice} classBackdrop="absolute top-0 left-0">
+<div class="absolute top-0 left-0">
+<Modal title="Past Invoices" bind:open={openInvoice} outsideclose>
     <Label class="p-4 flex justify-between text-green-800 space-x-5">
         <div class="flex flex-row space-x-1">
             <Input
@@ -75,21 +103,50 @@
             </Button>
         </div>
     </Label>
+    {#if submitInvoice}
+        <div class="flex w-full justify-center">
+            <Spinner/>
+        </div>
+    {:else}
 
-    {#each invoices as invoice}
-        {#if invoice.amount_due !== 0}
-            <Card class="my-1">
-                <p class="font-normal text-gray-700 dark:text-gray-400">
-                    <strong>Amount:</strong> {invoice.amount_due / 100} {invoice.currency.toUpperCase()}</p>
-                <p class="font-normal text-gray-700 dark:text-gray-400">
-                    <strong>Status:</strong> {invoice.status}
-                </p>
-                <p class="font-normal text-gray-700 dark:text-gray-400">
-                    <strong>Created:</strong> {new Date(invoice.created * 1000).toLocaleDateString()}</p>
 
-                <a href={invoice.hosted_invoice_url} target="_blank">View</a>
-            </Card>
-        {/if}
-    {/each}
+        <Table>
+            <TableHead
+                    class="text-xs text-gray-700 uppercase bg-gray-100 dark:bg-gray-700 dark:text-gray-400">
+                <TableHeadCell class="px-1 flex flex-row items-center">
+                    <Avatar size="xs"/>
+                    Amount $CAD
+                </TableHeadCell>
+                <TableHeadCell class="px-1">Status</TableHeadCell>
+                <TableHeadCell class="px-1">Created</TableHeadCell>
+                <TableHeadCell class="px-1">Full Invoice</TableHeadCell>
+            </TableHead>
+            <TableBody>
+                {#each invoices as invoice}
+                    <!--{#if invoice.amount_due !== 0}-->
+                        <TableBodyRow>
+                            <TableBodyCell class="px-1"><p class="font-normal text-gray-700 dark:text-gray-400">
+                                ${invoice.amount_due / 100} {invoice.currency.toUpperCase()}</p></TableBodyCell>
+
+                            <TableBodyCell class="px-1"><p class="font-normal text-gray-700 dark:text-gray-400">
+                                {invoice.status}</p></TableBodyCell>
+
+                            <TableBodyCell class="px-1"><p class="font-normal text-gray-700 dark:text-gray-400">
+                                {new Date(invoice.created * 1000).toLocaleDateString()}</p></TableBodyCell>
+
+                            <TableBodyCell class="px-1"><a href={invoice.hosted_invoice_url} target="_blank">
+                                View</a></TableBodyCell>
+                        </TableBodyRow>
+                    <!--{/if}-->
+                {/each}
+            </TableBody>
+        </Table>
+    {/if}
+    <svelte:fragment slot="footer">
+        {#key invoices}
+        Total # of Invoices: {invoices.length}
+        {/key}
+    </svelte:fragment>
 
 </Modal>
+</div>

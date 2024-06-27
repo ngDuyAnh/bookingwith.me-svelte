@@ -56,54 +56,8 @@ export async function POST({request}) {
 
                 console.log("meterEvent is ",meterEvent);
 
-                // const usageRec = await stripe.subscriptionItems.createUsageRecord(
-                //     item.id,
-                //     {
-                //         quantity: quantity,
-                //         timestamp: Math.floor(Date.now() / 1000),
-                //         action: 'set',
-                //     }
-                // );
-
-                // console.log("usageRec is ", usageRec);
             }
         }
-
-        // subscriptionItems.data.forEach(async (item) => {
-        //     let quantity = 0;
-        //     switch (item.price.id) {
-        //         case 'price_lobby':
-        //             quantity = usage.lobby;
-        //             break;
-        //         case 'price_online':
-        //             quantity = usage.online;
-        //             break;
-        //         case 'price_sms':
-        //             quantity = usage.sms;
-        //             break;
-        //     }
-        //
-        //     if (quantity > 0) {
-        //         await stripe.subscriptionItems.createUsageRecord(
-        //             item.id,
-        //             {
-        //                 quantity: quantity,
-        //                 timestamp: Math.floor(Date.now() / 1000),
-        //                 action: 'set', // or 'increment' based on your need
-        //             }
-        //         );
-        //     }
-        // });
-        //
-        // const subscription = await stripe.subscriptionItems.createUsageRecord('my_subscription_item_id', {
-        //     quantity: 100,
-        //     timestamp: 'now',
-        //     action: 'set',
-        // });
-        //
-        // console.log("subscription ",subscription);
-        // console.log("subscription ID ",subscription.id);
-        // console.log("subscriptionItems ",subscriptionItems);
 
         return new Response(JSON.stringify({subscriptionItems}), {
             headers: {'Content-Type': 'application/json'}

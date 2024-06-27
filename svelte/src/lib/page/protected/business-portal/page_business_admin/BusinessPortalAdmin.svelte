@@ -1,15 +1,15 @@
 <script>
     import Dashboard from "$lib/page/protected/business-portal/page_business_admin/page/Dashboard/Dashboard.svelte";
-    import Report from "$lib/page/protected/business-portal/page_business_admin/page/Report/Report.svelte";
+    import Metrics from "$lib/page/protected/business-portal/page_business_admin/page/Metrics/Metrics.svelte";
     import Employee from "$lib/page/protected/business-portal/page_business_admin/page/Employee/Employee.svelte";
     import Service from "$lib/page/protected/business-portal/page_business_admin/page/Service/Service.svelte";
     import Setting from "$lib/components/Setting/Setting.svelte";
     import NavBar from "$lib/page/protected/components/NavBar/NavBar.svelte";
 
-    let tabs = ["Dashboard", "Report", "Employee", "Service", "Setting"];
+    let tabs = ["Dashboard", "Metrics", "Employee", "Service"];
 
     let dropdownOptions = {
-        "Dashboard": {
+        "Metrics": {
             "Service":["Usage Information", "Billing"],
         },
     }
@@ -29,14 +29,17 @@
     {#if selectedIndex === 0}
         <Dashboard
                 bind:selectedDropDownIndex={selectedDropDownIndex}
+                bind:selectedIndex={selectedIndex}
+                {tabs}
+                {dropdownOptions}
         />
     {:else if selectedIndex === 1}
-        <Report/>
+        <Metrics
+                bind:selectedDropDownIndex={selectedDropDownIndex}
+        />
     {:else if selectedIndex === 2}
         <Employee/>
     {:else if selectedIndex === 3}
         <Service/>
-    {:else if selectedIndex === 4}
-        <Setting/>
     {/if}
 </div>

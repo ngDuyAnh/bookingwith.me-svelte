@@ -14,7 +14,7 @@ export async function POST({ request }) {
         while (hasMore) {
             const params = {
                 customer: customerId,
-                limit: 10,
+                limit: 100,
                 created: {
                     gte: startOfMonth,
                     lte: endOfMonth,
@@ -33,7 +33,6 @@ export async function POST({ request }) {
                 startingAfter = response.data[response.data.length - 1].id;
             }
 
-            hasMore=false;
         }
 
         return new Response(JSON.stringify({ invoices }), {

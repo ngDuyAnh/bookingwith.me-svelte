@@ -34,9 +34,11 @@
         ReceiptOutline,
         StoreSolid,
         UserSettingsOutline,
-        UsersGroupSolid
+        UsersGroupSolid,
+        ChartMixedOutline
     } from "flowbite-svelte-icons";
     import {userProfile} from "$lib/page/stores/userProfile/userProfile.js";
+    import {onMount} from "svelte";
 
 
     export let tabs;
@@ -45,7 +47,17 @@
     export let dropdownOptions;
     export let selectedDropDownIndex;
 
-    $: console.log("userProfile", $userProfile);
+
+    let dropdownStates = {};
+
+    onMount(()=>{
+
+        if(dropdownOptions) {
+            Object.keys(dropdownOptions).forEach(tab => {
+                dropdownStates[tab] = false; // Set each tab to false initially
+            });
+        }
+    })
 
     function selectTab(index) {
         selectedIndex = index;
@@ -53,6 +65,14 @@
 
     function selectDropDownOption(index) {
         selectedDropDownIndex = index;
+    }
+
+    function openDropDown(tab){
+        dropdownStates[tab]=true;
+    }
+
+    function closeDropDown(tab){
+        dropdownStates[tab]=false;
     }
 
     // Mapping of tab names to icons
@@ -67,6 +87,7 @@
         "service": StoreSolid,
         "all timetables": CalendarMonthSolid,
         "report": FlagSolid,
+        "metrics": ChartMixedOutline,
         "service spotlight": ArrowRightAltOutline,
         "billing": ReceiptOutline
     };
@@ -81,9 +102,6 @@
     function handleLogout() {
         document.getElementById('logout-form').submit();
     }
-
-    let activeClass = 'text-white bg-green-700 md:bg-transparent md:text-green-700 md:dark:text-white dark:bg-green-600 md:dark:bg-transparent';
-    let nonActiveClass = 'text-gray-700 hover:bg-gray-100 md:hover:bg-transparent md:border-0 md:hover:text-green-700 dark:text-gray-400 md:dark:hover:text-white dark:hover:bg-gray-700 dark:hover:text-white md:dark:hover:bg-transparent';
 
 </script>
 <form id="logout-form" class="hidden" method="post" action="?/logout">
@@ -112,28 +130,29 @@
             </Dropdown>
 
 
-            <NavUl {activeClass} {nonActiveClass}>
+            <NavUl>
                 {#each tabs as tab, index}
                     <NavLi>
                         {#if dropdown && Object.keys(dropdownOptions).includes(tab)}
-                            <span class="tab-button {index===selectedIndex ? 'text-red-800' : 'text-black'} pt-2 relative">
+                            <span class="tab-button {index===selectedIndex ? 'text-red-800' : 'text-black'} pt-2 relative flex flex-row items-center">
                                 {#if index === selectedIndex}
                                     <CaretDownSolid size="xs"
                                                     class="absolute top-0 left-1/2 transform -translate-x-1/2"/>
                                 {/if}
                                 {tab}
                                 <ChevronDownOutline
-                                        class="w-6 h-6 text-black dark:text-white"/></span>
-                            <Dropdown classContainer="bg-blue-200" class="p-3 drop rounded-lg">
+                                        class="text-black dark:text-white"/>
+                            </span>
+                            <Dropdown classContainer="bg-blue-200" class="p-3 drop rounded-lg" on:click={openDropDown(tab)} bind:open={dropdownStates[tab]}>
 
-                                {#each Object.keys(dropdownOptions[tab]) as category, ind}
+                                {#each Object.keys(dropdownOptions[tab]) as category}
 
                                     <div class="category">
                                         <strong>{category}</strong>
                                         {#each dropdownOptions[tab][category] as option, i}
                                             <DropdownItem
                                                     class="whitespace-nowrap tab-button"
-                                                    on:click={() => {selectTab(index); selectDropDownOption(i);}}
+                                                    on:click={() => {selectTab(index); selectDropDownOption(i); closeDropDown(tab);}}
                                             >
                                                 {option}
                                             </DropdownItem>
@@ -163,8 +182,8 @@
     <div class="lg:hidden corner flex items-end justify-end">
 
         <button aria-label="Show navigation"
-                class="z-[1000] lg:hidden flex items-center justify-center w-10 h-10 rounded focus:outline-none focus:ring-2 focus:ring-opacity-50"
-                on:click={() => {navigateButtonHidden = false; console.log("???")}}>
+                class="z-[100] lg:hidden flex items-center justify-center w-10 h-10 rounded focus:outline-none focus:ring-2 focus:ring-opacity-50"
+                on:click={() => {navigateButtonHidden = false;}}>
             <svg aria-hidden="true" class="z-[1000] w-6 h-6 text-gray-800 dark:text-white" fill="none"
                  height="24" viewBox="0 0 24 24" width="24" xmlns="http://www.w3.org/2000/svg">
                 <path d="M5 7h14M5 12h14M5 17h14" stroke="currentColor" stroke-linecap="round" stroke-width="2"/>
@@ -174,7 +193,7 @@
 </header>
 
 <div class="z-[2000]">
-    <Drawer bind:hidden={navigateButtonHidden} id="sidebar2" {transitionParams} transitionType="fly">
+    <Drawer class="z-[2000]"bind:hidden={navigateButtonHidden} id="sidebar2" {transitionParams} transitionType="fly">
         <div class="flex items-center">
             <LogoButton/>
 
@@ -202,7 +221,7 @@
                                         {#each dropdownOptions[tab][category] as option, i}
                                             <SidebarDropdownItem
                                                     label={option}
-                                                    on:click={() => {selectTab(index); selectDropDownOption(i);}}
+                                                    on:click={() => {selectTab(index); selectDropDownOption(i); navigateButtonHidden=true;}}
                                             >
                                             </SidebarDropdownItem>
                                         {/each}

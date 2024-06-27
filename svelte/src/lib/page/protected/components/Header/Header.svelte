@@ -85,7 +85,6 @@
                                 <ChevronDownOutline
                                         class="w-6 h-6 text-black dark:text-white"/></span>
                             <Dropdown class="p-3 drop rounded-lg">
-                                {console.log("dropdownOptions",dropdownOptions)}
                                 {#each Object.entries(dropdownOptions[tab]) as option, ind}
                                     <DropdownItem
                                             class="whitespace-nowrap tab-button"

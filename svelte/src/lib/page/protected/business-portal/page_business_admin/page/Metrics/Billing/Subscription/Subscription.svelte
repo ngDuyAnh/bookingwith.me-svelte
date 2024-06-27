@@ -14,7 +14,7 @@
     async function createSubscription() {
         create=true;
         try {
-            const response = await fetch('/stripe/payment-element/create-subscription', {
+            const response = await fetch('/api/stripe/payment-element/create-subscription', {
                 method: 'POST',
                 headers: {
                     'content-type': 'application/json'
