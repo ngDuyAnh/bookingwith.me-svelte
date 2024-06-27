@@ -1,31 +1,32 @@
 <script>
     import {
-        servicingTicketClickModal
-    } from "$lib/components/TimeTable/TimetableModal/stores/servicingTicketClickModal.js";
+        servicingTicketClickModal} from "$lib/components/TimeTable/ServicingTicketClickModal/stores/servicingTicketClickModal.js";
     import dayjs from "dayjs";
     import {formatToTime, formatToTimeAm} from "$lib/application/Formatter.js";
     import {CustomerBookingState} from "$lib/api/initialize_functions/CustomerBooking.js";
-    import {findPreselectEmployeeID} from "$lib/components/TimeTable/TimetableModal/functions.js";
+    import {findPreselectEmployeeID} from "$lib/components/TimeTable/ServicingTicketClickModal/functions.js";
     import CustomerIndividualServiceBookingComponent
-        from "$lib/page/protected/business-portal/page_lobby/page/Dashboard/components/components/CustomerBookingClickModal/Servicing/components/CustomerIndivdualBookingComponent/CustomerIndividualServiceBookingComponent/CustomerIndividualServiceBookingComponent.svelte";
-
+        from "$lib/components/CustomerBookingClickModal/Servicing/components/CustomerIndivdualBookingComponent/CustomerIndividualServiceBookingComponent/CustomerIndividualServiceBookingComponent.svelte";
     export let customerBooking;
     export let individualBooking;
     export let serviceBooking;
     export let isToday;
 </script>
 
-<p><strong>Customer name:</strong> {customerBooking.customer.customerName}</p>
-<p><strong>Booking time:</strong> {dayjs(customerBooking.bookingTime, formatToTime).format(formatToTimeAm)}
-</p>
-<p><strong>Number of guest(s):</strong>{customerBooking.customerIndividualBookingList.length}</p>
-{#if customerBooking.message.length !== 0}
-    <p class="break-words">
-        <strong>Message:</strong> {customerBooking.message}
+<div>
+    <p><strong>Customer name:</strong> {customerBooking.customer.customerName}</p>
+    <p><strong>Booking
+        time:</strong> {dayjs(customerBooking.bookingTime, formatToTime).format(formatToTimeAm)}
     </p>
-{/if}
+    <p><strong>Number of guest(s):</strong>{customerBooking.customerIndividualBookingList.length}</p>
+    {#if customerBooking.message.length !== 0}
+        <p class="break-words">
+            <strong>Message:</strong> {customerBooking.message}
+        </p>
+    {/if}
+</div>
 
-<div class="mt-1">
+<div>
     <div class="font-bold">Selected service:</div>
 
     {#if isToday && customerBooking.bookingState !== CustomerBookingState.COMPLETED}

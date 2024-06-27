@@ -1,10 +1,10 @@
 <script>
 
-    import {getLobbyBookingList, getSchedule} from "$lib/api/api_server/api_endpoints/lobby-portal/api.js";
+    import {getCustomerBookingQueueList, getSchedule} from "$lib/api/api_server/api_endpoints/lobby-portal/api.js";
     import {business} from "$lib/page/stores/business/business.js";
     import {now} from "$lib/page/stores/now/now_dayjs_store.js";
     import {formatToDate, formatToTime} from "$lib/application/Formatter.js";
-    import {bookingStateList} from "$lib/page/protected/business-portal/page_lobby/stores/dashboard_store.js";
+    import {customerBookingQueueList} from "$lib/page/protected/business-portal/page_lobby/stores/dashboard_store.js";
     import {onMount} from "svelte";
     import {
         Avatar,
@@ -97,15 +97,23 @@
     let totalCompletedEarnings = 0;
     let totalUncompletedEarnings = 0;
 
+    $: console.log("reactive $customerBookingQueueList",$customerBookingQueueList);
+    $: {
+        if($customerBookingQueueList)
+        {
+            (async ()=> await updateDashBoardData())
+        }
+    }
+
     async function fetchCustomerBookingList() {
 
         // Get the customer booking list
-        const response = await getLobbyBookingList($business.businessInfo.businessID, $now.format(formatToDate));
-        bookingStateList.set(response.bookingList);
+        const response = await getCustomerBookingQueueList($business.businessInfo.businessID, $now.format(formatToDate));
+        customerBookingQueueList.set(response.customerBookingQueueList);
 
-        console.log("bookingStateList", $bookingStateList)
-        totalCompletedEarnings = calculateCompletedServiceCostEarnings($bookingStateList[3]);
-        totalUncompletedEarnings = calculateUnCompletedServiceCostEarnings($bookingStateList);
+        console.log("customerBookingQueueList", $customerBookingQueueList);
+        totalCompletedEarnings = calculateCompletedServiceCostEarnings($customerBookingQueueList[3]);
+        totalUncompletedEarnings = calculateUnCompletedServiceCostEarnings($customerBookingQueueList);
         console.log("Total Service Cost for Completed Bookings: ", totalCompletedEarnings);
         console.log("Total Service Cost for UnCompleted Bookings: ", totalUncompletedEarnings);
 
@@ -144,25 +152,31 @@
     onMount(async () => {
         loading = true;
         try {
-            await fetchCustomerBookingList().finally(() => {
-                todaysProgress["toDo"] = $bookingStateList[0].length + $bookingStateList[1].length;
-                todaysProgress["inProgress"] = $bookingStateList[2].length;
-                todaysProgress["Done"] = $bookingStateList[3].length;
-                totalBookings = todaysProgress["toDo"] + todaysProgress["inProgress"] + todaysProgress["Done"];
-                options.series[2] = ((todaysProgress["toDo"] / totalBookings) * 100).toFixed(2);
-                options.series[1] = ((todaysProgress["inProgress"] / totalBookings) * 100).toFixed(2);
-                options.series[0] = ((todaysProgress["Done"] / totalBookings) * 100).toFixed(2);
+            console.log("$customerBookingQueueList", $customerBookingQueueList);
+            await fetchCustomerBookingList().finally(async () => {
+                await updateDashBoardData();
             });
-
-            await fetchSchedule();
-
-            countOfWorkingEmployees = countEmployeesWorkingNow();
         } catch (error) {
             console.error(error);
         } finally {
             loading = false;
         }
     });
+
+    async function updateDashBoardData()
+    {
+        todaysProgress["toDo"] = $customerBookingQueueList[0].length + $customerBookingQueueList[1].length;
+        todaysProgress["inProgress"] = $customerBookingQueueList[2].length;
+        todaysProgress["Done"] = $customerBookingQueueList[3].length;
+        totalBookings = todaysProgress["toDo"] + todaysProgress["inProgress"] + todaysProgress["Done"];
+        options.series[2] = ((todaysProgress["toDo"] / totalBookings) * 100).toFixed(2);
+        options.series[1] = ((todaysProgress["inProgress"] / totalBookings) * 100).toFixed(2);
+        options.series[0] = ((todaysProgress["Done"] / totalBookings) * 100).toFixed(2);
+
+        await fetchSchedule();
+
+        countOfWorkingEmployees = countEmployeesWorkingNow();
+    }
 
     function selectUsageInformation() {
         selectedDropDownIndex = dropdownOptions["Metrics"]["Service"].indexOf("Usage Information");
@@ -233,29 +247,29 @@
                         <div class="flex items-center mb-1">
                             <h5 class="text-xl font-bold leading-none text-gray-900 dark:text-white me-1">Today's
                                 Progress</h5>
-<!--                            <InfoCircleSolid id="donut1"-->
-<!--                                             class="w-3.5 h-3.5 text-gray-500 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white cursor-pointer ms-1"/>-->
-<!--                            <Popover triggeredBy="#donut1"-->
-<!--                                     class="text-sm text-gray-500 bg-white border border-gray-200 rounded-lg shadow-sm w-72 dark:bg-gray-800 dark:border-gray-600 dark:text-gray-400 z-10">-->
-<!--                                <div class="p-3 space-y-2">-->
-<!--                                    <h3 class="font-semibold text-gray-900 dark:text-white">Activity growth - -->
-<!--                                        Incremental</h3>-->
-<!--                                    <p>Report helps navigate cumulative growth of community activities. Ideally, the-->
-<!--                                        chart-->
-<!--                                        should have a growing trend, as stagnating chart signifies a significant-->
-<!--                                        decrease of-->
-<!--                                        community activity.</p>-->
-<!--                                    <h3 class="font-semibold text-gray-900 dark:text-white">Calculation</h3>-->
-<!--                                    <p>For each date bucket, the all-time volume of activities is calculated. This means-->
-<!--                                        that-->
-<!--                                        activities in period n contain all activities up to period n, plus the-->
-<!--                                        activities-->
-<!--                                        generated by your community in period.</p>-->
-<!--                                    <A href="/">Read more-->
-<!--                                        <ChevronRightOutline class="w-2 h-2 ms-1.5"/>-->
-<!--                                    </A>-->
-<!--                                </div>-->
-<!--                            </Popover>-->
+                            <!--                            <InfoCircleSolid id="donut1"-->
+                            <!--                                             class="w-3.5 h-3.5 text-gray-500 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white cursor-pointer ms-1"/>-->
+                            <!--                            <Popover triggeredBy="#donut1"-->
+                            <!--                                     class="text-sm text-gray-500 bg-white border border-gray-200 rounded-lg shadow-sm w-72 dark:bg-gray-800 dark:border-gray-600 dark:text-gray-400 z-10">-->
+                            <!--                                <div class="p-3 space-y-2">-->
+                            <!--                                    <h3 class="font-semibold text-gray-900 dark:text-white">Activity growth - -->
+                            <!--                                        Incremental</h3>-->
+                            <!--                                    <p>Report helps navigate cumulative growth of community activities. Ideally, the-->
+                            <!--                                        chart-->
+                            <!--                                        should have a growing trend, as stagnating chart signifies a significant-->
+                            <!--                                        decrease of-->
+                            <!--                                        community activity.</p>-->
+                            <!--                                    <h3 class="font-semibold text-gray-900 dark:text-white">Calculation</h3>-->
+                            <!--                                    <p>For each date bucket, the all-time volume of activities is calculated. This means-->
+                            <!--                                        that-->
+                            <!--                                        activities in period n contain all activities up to period n, plus the-->
+                            <!--                                        activities-->
+                            <!--                                        generated by your community in period.</p>-->
+                            <!--                                    <A href="/">Read more-->
+                            <!--                                        <ChevronRightOutline class="w-2 h-2 ms-1.5"/>-->
+                            <!--                                    </A>-->
+                            <!--                                </div>-->
+                            <!--                            </Popover>-->
                         </div>
                     </div>
                 </div>

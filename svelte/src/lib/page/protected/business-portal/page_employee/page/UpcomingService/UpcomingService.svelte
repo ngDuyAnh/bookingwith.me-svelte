@@ -5,7 +5,7 @@
   import {
     servicingTicketClickModal,
     servicingTicketClickModalOpen,
-    servicingTicketClickModalSetEmployeeTimetableList,
+    servicingTicketClickModalSetEmployeeTimetableList, servicingTicketClickModalToggleOpen,
   } from "$lib/components/TimeTable/ServicingTicketClickModal/stores/servicingTicketClickModal.js";
   import { getCustomerBooking } from "$lib/api/api_server/api_endpoints/customer-booking-portal/api.js";
   import { findServiceBookingFromCustomerBooking } from "$lib/api/initialize_functions/customer-booking-utility-functions.js";
@@ -93,7 +93,7 @@
   });
 
   let validActiveTickets = [];
-  let validUpcomingTicket;
+  let validUpcomingTicket = [];
   let currentIndex = 0;
   let currentTicket;
   let option = 0;
@@ -125,6 +125,7 @@
   async function updateCurrentTicket() {
     loadingTicket = true;
     const tickets = option === 0 ? validActiveTickets : validUpcomingTicket;
+    console.log("tickets",tickets);
     currentTicket = tickets[currentIndex] || null;
     if (currentTicket) {
       await openModalServicingTicket(currentTicket).finally(() => {

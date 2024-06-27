@@ -15,6 +15,15 @@
   } from "$lib/api/api_server/api_endpoints/ws/api.js";
   import { business } from "$lib/page/stores/business/business.js";
   import { onMount } from "svelte";
+  import {isToday} from "$lib/page/stores/now/now_dayjs_store.js";
+  import {
+    fetchCustomerBookingQueueList
+  } from "$lib/page/protected/business-portal/page_lobby/stores/dashboard_store.js";
+  import {fetchTimetable, timetableComponent} from "$lib/components/TimeTable/stores/timetableComponent.js";
+  import {
+    bookingList,
+    fetchAppointmentCustomerBookingList
+  } from "$lib/page/protected/business-portal/page_lobby/page/BookingList/stores/bookingList.js";
 
   let tabs = ["Dashboard", "Metrics", "Employee", "Service"];
 
@@ -98,6 +107,7 @@
   const eventHandlers = {
     [ServerEvent.TEST]: handleTestEvent,
     [ServerEvent.UPDATE_BUSINESS]: handleBusinessUpdate,
+    [ServerEvent.UPDATE_CUSTOMER_BOOKING]: handleCustomerBookingUpdate,
   };
 
   let reconnectionTimeout;
@@ -115,6 +125,18 @@
       socket.close();
     };
   });
+
+  async function handleCustomerBookingUpdate(eventData) {
+    const customerBooking = eventData.data;
+
+    console.log(`Handle ${eventData.type}`, eventData);
+
+    // Dashboard
+    if (isToday(customerBooking.bookingDate)) {
+      await fetchCustomerBookingQueueList();
+    }
+
+  }
 </script>
 
 {#if loading}

@@ -13,33 +13,36 @@
     import {CustomerBookingState} from "$lib/api/initialize_functions/CustomerBooking.js";
     import {checkAbleToSendReviewReminder} from "$lib/api/api_server/api_endpoints/lobby-portal/api.js";
     import {checkAbleToSendSmsReviewReminder} from "$lib/api/api_server/functions.js";
-    import {
-        initializeCustomerBooking,
-        initializeCustomerBookingAndBroadcast
-    } from "$lib/api/api_server/api_endpoints/customer-booking-portal/api.js";
+    import {initializeCustomerBooking} from "$lib/api/api_server/api_endpoints/customer-booking-portal/api.js";
 
     export let customerBooking;
 
     export let indicateSendToCompleted = false;
 
     let ableToSendSmsReviewReminder = false;
+    let sendingAppointmentReminder = false;
+    let sendingReviewReminder = false;
+
     $: {
         // Check if sms review reminder can be sent
         if (customerBooking) {
+
             ableToSendSmsReviewReminder = false;
             checkAbleToSendReviewReminder(customerBooking)
                 .then(response => {
                     ableToSendSmsReviewReminder = checkAbleToSendSmsReviewReminder(response);
-
                     //console.log(`customerBooking.smsReviewReminderSent ${customerBooking.smsReviewReminderSent} ableToSendSmsReviewReminder ${ableToSendSmsReviewReminder}, allowToSendReviewReminderSMS ${allowToSendReviewReminderSMS}, moreThan6Months ${moreThan6Months}`)
                 })
                 .catch(error => {
+                    sendingReviewReminder=false;
                     console.error('Failed at checkAbleToSendReviewReminder():', error);
                 });
         }
     }
 
+
     async function handleSendSmsAppointment() {
+        sendingAppointmentReminder = true;
         if (!customerBooking.smsAppointmentSent) {
             sendSmsAppointment($business.businessInfo.businessName, customerBooking)
                 .then(() => {
@@ -52,12 +55,15 @@
                 .catch(error => {
                     console.error('Failed to send SMS appointment ready soon reminder:', error);
                 });
+            sendingAppointmentReminder = false;
         }
     }
 
     async function handleReviewSend() {
         if (ableToSendSmsReviewReminder &&
             !customerBooking.smsReviewReminderSent) {
+            sendingReviewReminder=true;
+
             sendSMSAskingForReview($business.businessInfo.businessName, customerBooking)
                 .then(() => {
                     console.log('Review reminder sent.');
@@ -67,8 +73,11 @@
                     initializeCustomerBooking(customerBooking);
                 })
                 .catch(error => {
+                    sendingReviewReminder=false;
                     console.error('Error sending review reminder:', error);
                 });
+
+
         }
     }
 
@@ -82,15 +91,13 @@
     }
 
     function handleCompleteClick() {
-        if (confirm("Are you sure you want to mark this as complete?"))
-        {
+        if (confirm("Are you sure you want to mark this as complete?")) {
             moveToCompleted(customerBooking);
         }
     }
 
     async function handleNoShowClick() {
-        if (confirm("Are you sure you want to mark this as no show?"))
-        {
+        if (confirm("Are you sure you want to mark this as no show?")) {
             customerBooking.noShow = true;
             moveToCompleted(customerBooking);
         }
@@ -118,7 +125,7 @@
 
         {:else}
             <!--Asking for review-->
-            <Button disabled={!ableToSendSmsReviewReminder || customerBooking.smsReviewReminderSent}
+            <Button disabled={sendingReviewReminder|| !ableToSendSmsReviewReminder || customerBooking.smsReviewReminderSent || customerBooking.noShow}
                     color="light"
                     outline
                     on:click={handleReviewSend}
@@ -141,7 +148,7 @@
 
         <!--Send SMS appointment reminder-->
         {#if customerBooking.bookingState === CustomerBookingState.APPOINTMENT}
-            <Button disabled={customerBooking.smsAppointmentSent}
+            <Button disabled={customerBooking.smsAppointmentSent || sendingAppointmentReminder}
                     id="show-tooltip"
                     color="light" outline
                     on:click={handleSendSmsAppointment}
