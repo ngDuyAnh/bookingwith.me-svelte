@@ -159,7 +159,11 @@
     // Show more availability is selected
     // Fetch the walk-in availability
     let selectedAvailability = undefined;
-    $: selectedAvailability = availableTimeOptionList.find(option => option.value === customerBooking.bookingTime)?.availability;
+    $: {
+        console.log("selectedAvailability", selectedAvailability)
+
+        selectedAvailability = availableTimeOptionList.find(option => option.value === customerBooking.bookingTime)?.availability;
+    }
     $: if (customerBooking.bookingTime === undefined) {
         // Reset the selected booking time
         customerBooking.bookingTime = null;
@@ -346,7 +350,7 @@
     let isConsentChecked = false;
 
     function styleOptions() {
-        console.log("styling");
+        //console.log("styling");
         const selectElement = document.getElementById('available-Time');
         if (selectElement) {
             selectElement.querySelectorAll('option').forEach(option => {
@@ -405,6 +409,7 @@
         {:else}
             <Select
                     id="available-Time"
+                    class={selectedAvailability?.walkIn ? 'bg-red-100' : ''}
                     placeholder="Select a time"
                     items={availableTimeOptionList}
                     bind:value={customerBooking.bookingTime}
