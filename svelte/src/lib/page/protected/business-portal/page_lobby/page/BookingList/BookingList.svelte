@@ -41,6 +41,8 @@
     {
         fetchBookingsForDate();
     }
+
+    $: console.log("$bookingList.customerBookingList", $bookingList.customerBookingList);
 </script>
 
 <input type="date" bind:value={selectedDate} min={tomorrow.format(formatToDate)}/>

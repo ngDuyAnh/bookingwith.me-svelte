@@ -1,7 +1,7 @@
 <script>
     import dayjs from 'dayjs';
     import {onMount} from "svelte";
-    import {isToday, now} from "$lib/page/stores/now/now_dayjs_store.js";
+    import {now} from "$lib/page/stores/now/now_dayjs_store.js";
     import {
         initializeCustomerBooking
     } from "$lib/api/api_server/api_endpoints/customer-booking-portal/api.js";
@@ -27,14 +27,6 @@
     import {
         fetchCustomerBookingEstimate
     } from "$lib/page/customer-booking-portal/get/stores/customerBookingEstimate.js";
-    import {
-        fetchCustomerBookingQueueList
-    } from "$lib/page/protected/business-portal/page_lobby/stores/dashboard_store.js";
-    import {fetchTimetable, timetableComponent} from "$lib/components/TimeTable/stores/timetableComponent.js";
-    import {
-        bookingList,
-        fetchAppointmentCustomerBookingList
-    } from "$lib/page/protected/business-portal/page_lobby/page/BookingList/stores/bookingList.js";
 
     export let data;
     let loading = true;
