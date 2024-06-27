@@ -60,7 +60,6 @@
 
     onMount(async () => {
         await submitInvoiceDate();
-        loading = false;
     })
 
 
