@@ -1,6 +1,5 @@
 import {get, writable} from "svelte/store";
-import {isPast, isToday, now, nowTime, today} from "$lib/page/stores/now/now_dayjs_store.js";
-import {formatToTime} from "$lib/application/Formatter.js";
+import {isPast, isToday, nowTime, today} from "$lib/page/stores/now/now_dayjs_store.js";
 import {business} from "$lib/page/stores/business/business.js";
 import {getSchedule} from "$lib/api/api_server/api_endpoints/lobby-portal/api.js";
 
@@ -13,13 +12,12 @@ export const timetableComponent = writable({
 export async function fetchTimetable(dateString) {
     //console.log("selectedDate", dateString)
 
-    const nowValue = get(now);
     const businessValue = get(business);
 
     // Get the current time based on if it is today
     let currentTimeString = "00:00";
     if (isToday(dateString)) {
-        currentTimeString = nowValue.format(formatToTime);
+        currentTimeString = nowTime();
     }
     else if (isPast(dateString))
     {

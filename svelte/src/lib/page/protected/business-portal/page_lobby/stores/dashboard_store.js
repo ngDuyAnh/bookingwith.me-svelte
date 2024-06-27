@@ -35,8 +35,6 @@ export async function fetchCustomerBookingQueueList()
             console.log('Customer booking not found for customer booking click modal.');
         }
     }
-
-    //console.log("bookingStateList", $bookingStateList)
 }
 
 function findCustomerBookingById(id)

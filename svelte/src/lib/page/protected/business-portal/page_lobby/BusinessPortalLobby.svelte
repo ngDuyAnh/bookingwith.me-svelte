@@ -125,10 +125,10 @@
         reconnectionTimeout = setTimeout(connectWebSocket, 200);
     }
 
-    onMount(async () => {
-        await connectWebSocket();
+    onMount(() => {
+        connectWebSocket();
 
-        await fetchCustomerBookingQueueList();
+        fetchCustomerBookingQueueList();
 
         loading = false;
 

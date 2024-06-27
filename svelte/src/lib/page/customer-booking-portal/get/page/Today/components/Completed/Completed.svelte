@@ -5,26 +5,21 @@
     import {CheckCircleSolid, CloseCircleSolid} from "flowbite-svelte-icons";
     import {Spinner, Toast} from "flowbite-svelte";
     import {initializeCustomerBooking} from "$lib/api/api_server/api_endpoints/customer-booking-portal/api.js";
+    import {customerBooking} from "$lib/page/customer-booking-portal/get/stores/customerBookingEstimate.js";
 
-    let getReview = !$customerBookingEstimate.customerBooking.customerBookingReview;
+    let getReview = !$customerBooking.customerBookingReview;
     let review = CustomerBookingReview();
     let polishUsed = false;
 
     async function submitReviewToDatabase() {
-        let customerBooking = {
-            ...$customerBookingEstimate.customerBooking,
-            customerBookingReview: review
-        };
-
         // Submit the changes to the backend
-        customerBooking = await initializeCustomerBooking(customerBooking);
-
-        customerBookingEstimate.update(estimate => {
-            return {
-                ...estimate,
-                customerBooking: customerBooking
-            };
+        let updatedCustomerBooking = await initializeCustomerBooking({
+            ...$customerBooking,
+            smsConfirmation: true
         });
+
+        // Set the store
+        customerBooking.set(updatedCustomerBooking);
     }
 
     function handleGoogleReviewClick() {

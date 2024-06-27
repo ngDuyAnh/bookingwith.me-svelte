@@ -1,6 +1,5 @@
 <script>
     import {Modal} from "flowbite-svelte";
-    import {now} from "$lib/page/stores/now/now_dayjs_store.js";
     import CustomerBookingComponent from "$lib/components/CustomerBooking/CustomerBookingComponent.svelte";
     import {
         CustomerBooking,
@@ -13,7 +12,7 @@
 
     export let business;
     export let customerBooking = {
-        ...CustomerBooking($now),
+        ...CustomerBooking(),
         customerIndividualBookingList: [CustomerIndividualBooking()]
     };
 
@@ -23,7 +22,7 @@
         wasOpen = true;
 
         customerBooking = {
-            ...CustomerBooking($now),
+            ...CustomerBooking(),
             customerIndividualBookingList: [CustomerIndividualBooking()]
         };
     } else if (!$modalCreateCustomerBooking.open) {

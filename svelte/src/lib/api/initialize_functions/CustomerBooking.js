@@ -1,5 +1,5 @@
-import {formatToDate} from "$lib/application/Formatter.js";
 import {TimePeriod} from "$lib/api/initialize_functions/TimePeriod.js";
+import {today} from "$lib/page/stores/now/now_dayjs_store.js";
 
 export const CustomerBookingState = {
     APPOINTMENT: 0,
@@ -33,7 +33,7 @@ export function Customer(phoneNumber)
     };
 }
 
-export function CustomerBooking(now)
+export function CustomerBooking()
 {
     return {
         "id": -1,
@@ -46,7 +46,7 @@ export function CustomerBooking(now)
         "bookingState": CustomerBookingState.SCHEDULE,
         "bookingChannel": -1,
 
-        "bookingDate": now.format(formatToDate),
+        "bookingDate": today(),
         "bookingTime": null,
         "message": "",
 

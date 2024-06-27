@@ -1,6 +1,4 @@
 <script>
-    import {now} from "$lib/page/stores/now/now_dayjs_store.js";
-    import {formatToTime} from "$lib/application/Formatter.js";
     import {Button, Input, Label} from "flowbite-svelte";
     import {CustomerBooking, CustomerBookingState, CustomerBookingChannel} from "$lib/api/initialize_functions/CustomerBooking.js";
     import {
@@ -15,6 +13,7 @@
     import {business} from "$lib/page/stores/business/business.js";
     import {sendSMSAskingForReview} from "$lib/api/api_twilio/functions.js";
     import {Customer} from "$lib/api/initialize_functions/CustomerBooking.js";
+    import {nowTime} from "$lib/page/stores/now/now_dayjs_store.js";
 
     let completedPhoneNumber = false;
     let phoneNumber = "";
@@ -60,12 +59,12 @@
 
             // Create the filler customer booking
             let customerBooking = {
-                ...CustomerBooking($now),
+                ...CustomerBooking(),
                 bookingChannel: CustomerBookingChannel.REVIEW,
                 bookingState: CustomerBookingState.COMPLETED,
 
                 customer: customer,
-                bookingTime: $now.format(formatToTime)
+                bookingTime: nowTime()
             };
 
             // Submit the filler customer booking to be used to send review reminder

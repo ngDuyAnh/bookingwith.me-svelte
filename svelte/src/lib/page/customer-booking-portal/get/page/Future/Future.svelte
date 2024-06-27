@@ -8,6 +8,8 @@
     import {Button} from "flowbite-svelte";
     import LiveIndicator
         from "$lib/page/customer-booking-portal/get/page/components/LiveIndicator/LiveIndicator.svelte";
+    import {customerBooking} from "$lib/page/customer-booking-portal/get/stores/customerBookingEstimate.js";
+    import {business} from "$lib/page/stores/business/business.js";
 </script>
 
 <div class="p-6">
@@ -34,7 +36,7 @@
                 <span class="block sm:inline mb-2 sm:mb-0">
                     Your appointment is
 
-                    {#if isTomorrow($customerBookingEstimate.customerBooking.bookingDate)}
+                    {#if isTomorrow($customerBooking.bookingDate)}
                             <span class="underline">Tomorrow</span>
                     {:else}
                         on <span class="underline">{$customerBookingEstimate.bookingDateFormatted}</span>
@@ -63,7 +65,7 @@
     <div class="mt-4 flex flex-wrap justify-center">
         <Button
                 class="mr-2"
-                on:click={() => handleCustomerBookingPortalEditCustomerBooking($customerBookingEstimate.customerBooking)}
+                on:click={() => handleCustomerBookingPortalEditCustomerBooking($customerBooking)}
                 color="light" outline> Edit my appointment
             <svg class="ml-1 w-6 h-6 text-gray-800 dark:text-white" aria-hidden="true"
                  xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
@@ -74,7 +76,7 @@
 
         <a
                 class="text-gray-900 bg-white border border-gray-300 focus:outline-none hover:bg-gray-100 focus:ring-4 focus:ring-gray-100 font-medium rounded-lg text-sm px-3 py-2.5 dark:bg-gray-800 dark:text-white dark:border-gray-600 dark:hover:bg-gray-700 dark:hover:border-gray-600 dark:focus:ring-gray-700"
-                href="tel:{$customerBookingEstimate.business.businessInfo.businessPhoneNumber}"
+                href="tel:{$business.businessInfo.businessPhoneNumber}"
                 target="_blank"
                 type="button"
         >
