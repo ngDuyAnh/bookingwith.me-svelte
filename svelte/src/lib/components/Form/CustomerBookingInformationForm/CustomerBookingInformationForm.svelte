@@ -160,7 +160,7 @@
     // Fetch the walk-in availability
     let selectedAvailability = undefined;
     $: {
-        console.log("selectedAvailability", selectedAvailability)
+        //console.log("selectedAvailability", selectedAvailability)
 
         selectedAvailability = availableTimeOptionList.find(option => option.value === customerBooking.bookingTime)?.availability;
     }
@@ -335,6 +335,10 @@
                             console.error('Failed to send appointment confirmation:', error);
                         });
                 }
+            }
+            else
+            {
+                await fetchAvailableTimeList();
             }
         } catch (err) {
             error = true;
