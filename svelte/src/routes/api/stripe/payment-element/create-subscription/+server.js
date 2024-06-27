@@ -1,7 +1,6 @@
 import Stripe from 'stripe'
 import {SECRET_STRIPE_KEY} from '$env/static/private'
 import {StripeProductIDs} from "$lib/api/initialize_functions/Stripe.js";
-import {StripeProductionProductIDs} from "$lib/api/initialize_functions/Stripe.js";
 
 const stripe = new Stripe(SECRET_STRIPE_KEY)
 
@@ -20,9 +19,9 @@ async function createSubscription(customerId, paymentMethodId) {
     const subscription = await stripe.subscriptions.create({
         customer: customerId,
         items: [
-            { price: StripeProductionProductIDs.LOBBY },
-            { price: StripeProductionProductIDs.ONLINE },
-            { price: StripeProductionProductIDs.SMS },
+            { price: StripeProductIDs.LOBBY },
+            { price: StripeProductIDs.ONLINE },
+            { price: StripeProductIDs.SMS },
         ],
         collection_method: "charge_automatically",
         currency: "cad",

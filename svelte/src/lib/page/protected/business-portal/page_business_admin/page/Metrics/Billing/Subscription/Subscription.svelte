@@ -1,7 +1,5 @@
 <script>
-    import {loadStripe} from '@stripe/stripe-js'
     import {onMount} from 'svelte'
-    import {PUBLIC_STRIPE_KEY} from '$env/static/public'
     import {Button, Spinner} from "flowbite-svelte";
 
 

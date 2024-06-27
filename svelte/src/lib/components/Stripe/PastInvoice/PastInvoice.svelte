@@ -23,7 +23,6 @@
 
     let invoices = [];
 
-    let loading = true;
     let selectedMonth = $now.format(formatToYearMonth);
     let startDateSelected = null;
     let endDateSelected = null;

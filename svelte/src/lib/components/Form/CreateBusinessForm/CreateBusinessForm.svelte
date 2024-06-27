@@ -1,8 +1,7 @@
 <script>
-    import {goto} from '$app/navigation';
     import {createBusiness} from "$lib/api/api_server/api_endpoints/business-portal/api.js";
     import {
-        BusinessInformation, BusinessScheduleManagement, TestBusinessInformation
+        BusinessInformation, BusinessScheduleManagement
     } from "$lib/api/initialize_functions/Business.js";
     import {formatPhoneNumber} from "$lib/application/FormatPhoneNumber.js";
     import {Select} from "flowbite-svelte";
@@ -78,8 +77,7 @@
             body: JSON.stringify({email:businessEmail, name:businessName}),
         });
 
-        const result = await response.json();
-        return result;
+        return await response.json();
     }
 
     async function handleSubmit() {

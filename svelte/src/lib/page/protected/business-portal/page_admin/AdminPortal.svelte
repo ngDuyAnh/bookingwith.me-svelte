@@ -1,5 +1,4 @@
 <script>
-  import Header from "$lib/page/protected/components/Header/Header.svelte";
   import CreateBusiness from "$lib/page/protected/business-portal/page_admin/page/CreateBusiness/CreateBusiness.svelte";
   import Setting from "$lib/components/Setting/Setting.svelte";
   import Businesses from "$lib/page/protected/business-portal/page_admin/page/Businesses/Businesses.svelte";

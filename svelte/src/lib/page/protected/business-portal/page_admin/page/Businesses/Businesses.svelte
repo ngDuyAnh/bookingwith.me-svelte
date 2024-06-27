@@ -18,8 +18,7 @@
     } from "$lib/api/api_server/api_endpoints/business-portal/api.js";
     import {CustomerBookingChannel} from "$lib/api/initialize_functions/CustomerBooking.js";
     import {today} from "$lib/page/stores/now/now_dayjs_store.js";
-    import {slide} from "svelte/transition";
-    import {CheckCircleSolid, CloseCircleSolid} from "flowbite-svelte-icons";
+    import {CloseCircleSolid} from "flowbite-svelte-icons";
     import dayjs from "dayjs";
     import {formatToDate} from "$lib/application/Formatter.js";
 

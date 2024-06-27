@@ -3,7 +3,6 @@
     import Metrics from "$lib/page/protected/business-portal/page_business_admin/page/Metrics/Metrics.svelte";
     import Employee from "$lib/page/protected/business-portal/page_business_admin/page/Employee/Employee.svelte";
     import Service from "$lib/page/protected/business-portal/page_business_admin/page/Service/Service.svelte";
-    import Setting from "$lib/components/Setting/Setting.svelte";
     import NavBar from "$lib/page/protected/components/NavBar/NavBar.svelte";
 
     let tabs = ["Dashboard", "Metrics", "Employee", "Service"];

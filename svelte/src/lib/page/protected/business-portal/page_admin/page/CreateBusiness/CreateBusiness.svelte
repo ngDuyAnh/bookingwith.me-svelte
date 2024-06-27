@@ -1,6 +1,5 @@
 <script>
     import CreateBusinessForm from "$lib/components/Form/CreateBusinessForm/CreateBusinessForm.svelte";
-    import {Button} from "flowbite-svelte";
 
 </script>
 <div class="flex flex-col items-center justify-center w-full min-h-screen">

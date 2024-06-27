@@ -1,4 +1,4 @@
-import {PUBLIC_STRIPE_KEY, SECRET_STRIPE_KEY} from '$env/static/private';
+import {SECRET_STRIPE_KEY} from '$env/static/private';
 import Stripe from 'stripe';
 
 const stripe = new Stripe(SECRET_STRIPE_KEY);

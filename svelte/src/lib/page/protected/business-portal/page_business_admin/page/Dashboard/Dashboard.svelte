@@ -226,7 +226,7 @@
 {:else}
     <h1>Dashboard</h1>
     <div class="w-full h-full flex justify-center items-center">
-        <div class="bg-yellow-50 p-3 w-fit md:space-x-4 rounded-lg border-2 space-y-1 h-auto overflow-y-auto p-4 flex md:flex-row flex-col md:items-stretch items-center md:justify-evenly justify-center text-green-800">
+        <div class="bg-yellow-50 p-3 w-fit md:space-x-4 rounded-lg border-2 space-y-1 h-auto overflow-y-auto flex md:flex-row flex-col md:items-stretch items-center md:justify-evenly justify-center text-green-800">
             <Card>
                 <div class="flex justify-between items-start w-full">
                     <div class="flex-col items-center">

@@ -1,5 +1,5 @@
 <script>
-    import {Button, Card, Spinner} from "flowbite-svelte";
+    import {Button, Card} from "flowbite-svelte";
     import dinero from "dinero.js";
     import {CustomerBookingCost} from "$lib/api/initialize_functions/CustomerBooking.js";
     import {CheckCircleSolid} from "flowbite-svelte-icons";

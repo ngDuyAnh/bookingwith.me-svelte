@@ -143,7 +143,7 @@
                                 <ChevronDownOutline
                                         class="text-black dark:text-white"/>
                             </span>
-                            <Dropdown classContainer="bg-blue-200" class="p-3 drop rounded-lg" on:click={openDropDown(tab)} bind:open={dropdownStates[tab]}>
+                            <Dropdown classContainer="bg-blue-200" class="p-3 drop rounded-lg" on:click={()=>openDropDown(tab)} bind:open={dropdownStates[tab]}>
 
                                 {#each Object.keys(dropdownOptions[tab]) as category}
 
@@ -193,7 +193,7 @@
 </header>
 
 <div class="z-[2000]">
-    <Drawer class="z-[2000]"bind:hidden={navigateButtonHidden} id="sidebar2" {transitionParams} transitionType="fly">
+    <Drawer class="z-[2000]" bind:hidden={navigateButtonHidden} id="sidebar2" {transitionParams} transitionType="fly">
         <div class="flex items-center">
             <LogoButton/>
 

@@ -73,7 +73,6 @@
     })
 
     let subscriptionStep = 0;
-    let paymentMethodId = null;
 </script>
 
 <div class="p-2 flex flex-col justify-center items-center space-y-3">

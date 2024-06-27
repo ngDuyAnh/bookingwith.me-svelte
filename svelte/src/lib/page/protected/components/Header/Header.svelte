@@ -1,6 +1,6 @@
 <script>
     import LogoButton from "$lib/components/assets/Logo/LogoButton.svelte";
-    //import {sineIn} from "svelte/easing";
+
     import {
         CloseButton,
         Drawer,
@@ -16,7 +16,6 @@
         CalendarMonthOutline,
         CalendarMonthSolid,
         ChevronDownOutline,
-        ChevronRightOutline,
         ClockSolid,
         FlagSolid,
         GridPlusOutline,

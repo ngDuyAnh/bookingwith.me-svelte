@@ -25,8 +25,6 @@
     export let customerId;
 
 
-    let stripe = null;
-    let error = null;
     let invoices = [];
 
     let loading = true;
@@ -59,22 +57,6 @@
         // await submitInvoiceDate();
         loading = false;
     })
-
-
-    async function reportUsage() {
-        const response = await fetch('/api/stripe/reportUsage', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify({
-                customerId: customerId,
-                usage: usage
-            })
-        });
-
-        console.log("response", response);
-    }
 
     async function submitInvoiceDate() {
         submitInvoice = true;
