@@ -355,7 +355,14 @@
         if (selectElement) {
             selectElement.querySelectorAll('option').forEach(option => {
                 if (option.textContent.includes('~')) {
-                    option.style.backgroundColor = '#ff9494'; // Light red background
+                    option.style.backgroundColor = '#f8efab';
+                }
+                else if (option.textContent.includes(':')) {
+                    option.style.backgroundColor = '#ccfccc';
+                }
+                else
+                {
+                    option.style.backgroundColor = '#ffffff';
                 }
             });
         }
@@ -409,7 +416,7 @@
         {:else}
             <Select
                     id="available-Time"
-                    class={selectedAvailability?.walkIn ? 'bg-red-100' : ''}
+                    class={selectedAvailability?.walkIn ? 'bg-[#f8efab]' : ''}
                     placeholder="Select a time"
                     items={availableTimeOptionList}
                     bind:value={customerBooking.bookingTime}
