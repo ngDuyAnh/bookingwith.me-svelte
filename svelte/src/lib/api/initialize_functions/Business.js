@@ -34,7 +34,9 @@ export function BusinessInformation()
         "googleMapsDirectionLink": "",
 
         "active": true,
-        "scheduleManagement": BusinessScheduleManagement.NONE
+        "scheduleManagement": BusinessScheduleManagement.NONE,
+
+        "stripeLastReportedDate": null
     };
 }
 
