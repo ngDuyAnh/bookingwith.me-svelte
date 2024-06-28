@@ -1,4 +1,4 @@
-import {User} from "$lib/api/initialize_functions/User.js";
+import { User } from "$lib/api/initialize_functions/User.js";
 
 export const BusinessScheduleManagement = {
     NONE: 0,
@@ -6,20 +6,20 @@ export const BusinessScheduleManagement = {
     ACTIVE: 2
 }
 
-export function Business()
-{
+export function Business() {
     return {
         "businessInfo": BusinessInformation(),
-        "serviceGroupList":[],
-        "employeeList":[],
+        "serviceGroupList": [],
+        "employeeList": [],
     }
 }
 
-export function BusinessInformation()
-{
+export function BusinessInformation() {
     return {
-        "id":-1,
+        "id": -1,
         "businessID": null,
+        "stripeID": null,
+
         "businessName": "",
         "businessPhoneNumber": "",
         "websiteUrl": "",
@@ -32,7 +32,31 @@ export function BusinessInformation()
         "googleMapsDirectionLink": "",
 
         "active": true,
-        "scheduleManagement": BusinessScheduleManagement.NONE
+        "scheduleManagement": BusinessScheduleManagement.NONE,
+
+        "stripeLastReportedDate": null
+    };
+}
+
+export function TestBusinessInformation() {
+    return {
+        "id": -1,
+        "businessID": null,
+        "stripeID": null,
+
+        "businessName": "test",
+        "businessPhoneNumber": "1111111111",
+        "websiteUrl": "qwewe",
+        "businessType": "qwe",
+        "socialMediaLink": "qweqwe",
+
+        "googleReviewLink": "ewew",
+        "googleMapsLink": "wewe",
+        "googleEmbedMapLink": "weew",
+        "googleMapsDirectionLink": "wewe",
+
+        "active": true,
+        "scheduleManagement": BusinessScheduleManagement.NONE,
     };
 }
 
@@ -47,8 +71,7 @@ export function Employee() {
     };
 }
 
-export function Service()
-{
+export function Service() {
     return {
         "id": -1,
         "serviceName": "",
@@ -63,8 +86,7 @@ export function Service()
     };
 }
 
-export function ServiceGroup()
-{
+export function ServiceGroup() {
     return {
         "id": -1,
         "serviceGroupName": "",

@@ -75,9 +75,15 @@
                 // Initialize the available time
                 availableTimeOptionList = response.availabilityList.map(
                     availability => {
+                        const startTimeFormatted = dayjs(availability.timePeriod.startTime, formatToTime).format(formatToTimeAM);
+                        const endTimeFormatted = dayjs(availability.timePeriod.endTime, formatToTime).format(formatToTimeAM);
+                        const durationDisplay = availability.walkIn
+                            ? `(~${availability.duration} minutes)`
+                            : `(${availability.duration} minutes)`;
+
                         return {
                             value: availability.timePeriod.startTime,
-                            name: `${dayjs(availability.timePeriod.startTime, formatToTime).format(formatToTimeAM)} to ${dayjs(availability.timePeriod.endTime, formatToTime).format(formatToTimeAM)} (~${availability.duration} minutes)`,
+                            name: `${startTimeFormatted} to ${endTimeFormatted} ${durationDisplay}`,
                             availability: availability
                         };
                     });
@@ -153,19 +159,26 @@
     // Show more availability is selected
     // Fetch the walk-in availability
     let selectedAvailability = undefined;
-    $: selectedAvailability = availableTimeOptionList.find(option => option.value === customerBooking.bookingTime)?.availability;
+    $: {
+        //console.log("selectedAvailability", selectedAvailability)
+
+        selectedAvailability = availableTimeOptionList.find(option => option.value === customerBooking.bookingTime)?.availability;
+    }
     $: if (customerBooking.bookingTime === undefined) {
         // Reset the selected booking time
         customerBooking.bookingTime = null;
 
         // Fetch walk-in availability
         walkinAvailabilityFlag = true;
-        fetchAvailableTimeList();
+
+        (async () => {
+            await fetchAvailableTimeList().finally(styleOptions);
+        })();
     }
 
     let dateSelected = customerBooking.bookingDate;
 
-    function getAvailableTimeOptionList() {
+    async function getAvailableTimeOptionList() {
         // New date selected
         customerBooking.bookingDate = dateSelected;
 
@@ -184,22 +197,26 @@
         //console.log(`Date selected ${dateSelected} walk-in ${walkinAvailabilityFlag}`);
 
         // Get the new available time
-        fetchAvailableTimeList();
+        await fetchAvailableTimeList();
     }
 
     // Initial fetch for availability
     onMount(async () => {
-        getAvailableTimeOptionList();
+        await getAvailableTimeOptionList().finally(()=>{
+            styleOptions();
+        });
     })
 
     // Reactive statement to fetch times when the date changes
     $: if (dateSelected !== customerBooking.bookingDate) {
-        getAvailableTimeOptionList();
+        (async () => {
+            await getAvailableTimeOptionList().finally(styleOptions);
+        })();
     }
 
     function customerExists() {
         if (customerBookingInformationFormProps.customerNameAutoComplete) {
-            getCustomer(customerBooking.customer.phoneNumber)
+            getCustomer(businessInfo.businessID, customerBooking.customer.phoneNumber)
                 .then(customer => {
                     if (customer && customer.customerName) {
                         customerBooking.customer.customerName = customer.customerName;
@@ -278,10 +295,10 @@
                 if (isToday(customerBooking.bookingDate))
                 {
                     if (customerBookingInformationProps.lobbyBookingStateFlag) {
-                        moveToLobby($now, response.customerBooking, initializeCustomerBooking);
+                        moveToLobby(response.customerBooking);
                     }
                     else if (customerBookingInformationProps.appointmentBookingStateFlag) {
-                        moveToAppointment($now, response.customerBooking, initializeCustomerBooking);
+                        moveToAppointment(response.customerBooking);
                     }
                 }
 
@@ -319,6 +336,10 @@
                         });
                 }
             }
+            else
+            {
+                await fetchAvailableTimeList();
+            }
         } catch (err) {
             error = true;
             console.error("Error submitting booking:", err);
@@ -331,6 +352,25 @@
     }
 
     let isConsentChecked = false;
+
+    function styleOptions() {
+        //console.log("styling");
+        const selectElement = document.getElementById('available-Time');
+        if (selectElement) {
+            selectElement.querySelectorAll('option').forEach(option => {
+                if (option.textContent.includes('~')) {
+                    option.style.backgroundColor = '#f8efab';
+                }
+                else if (option.textContent.includes(':')) {
+                    option.style.backgroundColor = '#ccfccc';
+                }
+                else
+                {
+                    option.style.backgroundColor = '#ffffff';
+                }
+            });
+        }
+    }
 </script>
 
 <form on:submit|preventDefault={submit} class="space-y-4">
@@ -379,7 +419,8 @@
             />
         {:else}
             <Select
-                    id="time"
+                    id="available-Time"
+                    class={selectedAvailability?.walkIn ? 'bg-[#f8efab]' : ''}
                     placeholder="Select a time"
                     items={availableTimeOptionList}
                     bind:value={customerBooking.bookingTime}

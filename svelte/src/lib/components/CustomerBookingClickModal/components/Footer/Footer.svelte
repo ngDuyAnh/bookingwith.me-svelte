@@ -4,43 +4,45 @@
     } from "$lib/components/Modal/EditCustomerBooking/modalEditCustomerBooking.js";
     import {business} from "$lib/page/stores/business/business.js";
     import {Button, Tooltip} from "flowbite-svelte";
-    import {getContext} from "svelte";
     import {sendSmsAppointment, sendSMSAskingForReview} from "$lib/api/api_twilio/functions.js";
     import {
         moveToCompleted,
         moveToLobby,
         moveToServicing
     } from "$lib/components/CustomerBookingClickModal/handle_customer_booking_state.js";
-    import {now} from "$lib/page/stores/now/now_dayjs_store.js";
     import {CustomerBookingState} from "$lib/api/initialize_functions/CustomerBooking.js";
     import {checkAbleToSendReviewReminder} from "$lib/api/api_server/api_endpoints/lobby-portal/api.js";
     import {checkAbleToSendSmsReviewReminder} from "$lib/api/api_server/functions.js";
+    import {initializeCustomerBooking} from "$lib/api/api_server/api_endpoints/customer-booking-portal/api.js";
 
     export let customerBooking;
 
     export let indicateSendToCompleted = false;
 
     let ableToSendSmsReviewReminder = false;
+    let sendingAppointmentReminder = false;
+    let sendingReviewReminder = false;
+
     $: {
         // Check if sms review reminder can be sent
         if (customerBooking) {
+
             ableToSendSmsReviewReminder = false;
             checkAbleToSendReviewReminder(customerBooking)
                 .then(response => {
                     ableToSendSmsReviewReminder = checkAbleToSendSmsReviewReminder(response);
-
                     //console.log(`customerBooking.smsReviewReminderSent ${customerBooking.smsReviewReminderSent} ableToSendSmsReviewReminder ${ableToSendSmsReviewReminder}, allowToSendReviewReminderSMS ${allowToSendReviewReminderSMS}, moreThan6Months ${moreThan6Months}`)
                 })
                 .catch(error => {
+                    sendingReviewReminder=false;
                     console.error('Failed at checkAbleToSendReviewReminder():', error);
                 });
         }
     }
 
-    // Retrieve customer booking list update function
-    const submitCustomerBooking = getContext('submitCustomerBooking');
 
     async function handleSendSmsAppointment() {
+        sendingAppointmentReminder = true;
         if (!customerBooking.smsAppointmentSent) {
             sendSmsAppointment($business.businessInfo.businessName, customerBooking)
                 .then(() => {
@@ -48,52 +50,56 @@
 
                     // Record appointment SMS to the database
                     customerBooking.smsAppointmentSent = true;
-                    submitCustomerBooking(customerBooking);
+                    initializeCustomerBooking(customerBooking);
                 })
                 .catch(error => {
                     console.error('Failed to send SMS appointment ready soon reminder:', error);
                 });
+            sendingAppointmentReminder = false;
         }
     }
 
     async function handleReviewSend() {
         if (ableToSendSmsReviewReminder &&
             !customerBooking.smsReviewReminderSent) {
+            sendingReviewReminder=true;
+
             sendSMSAskingForReview($business.businessInfo.businessName, customerBooking)
                 .then(() => {
                     console.log('Review reminder sent.');
 
                     // Record appointment SMS to the database
                     customerBooking.smsReviewReminderSent = true;
-                    submitCustomerBooking(customerBooking);
+                    initializeCustomerBooking(customerBooking);
                 })
                 .catch(error => {
+                    sendingReviewReminder=false;
                     console.error('Error sending review reminder:', error);
                 });
+
+
         }
     }
 
     async function handleLobbyClick() {
-        moveToLobby($now, customerBooking, submitCustomerBooking);
+        moveToLobby(customerBooking);
     }
 
     async function handleServicingClick() {
         customerBooking.noShow = false;
-        moveToServicing($now, customerBooking, submitCustomerBooking);
+        moveToServicing(customerBooking);
     }
 
     function handleCompleteClick() {
-        if (confirm("Are you sure you want to mark this as complete?"))
-        {
-            moveToCompleted($now, customerBooking, submitCustomerBooking);
+        if (confirm("Are you sure you want to mark this as complete?")) {
+            moveToCompleted(customerBooking);
         }
     }
 
     async function handleNoShowClick() {
-        if (confirm("Are you sure you want to mark this as no show?"))
-        {
+        if (confirm("Are you sure you want to mark this as no show?")) {
             customerBooking.noShow = true;
-            moveToCompleted($now, customerBooking, submitCustomerBooking);
+            moveToCompleted(customerBooking);
         }
     }
 </script>
@@ -119,7 +125,7 @@
 
         {:else}
             <!--Asking for review-->
-            <Button disabled={!ableToSendSmsReviewReminder || customerBooking.smsReviewReminderSent}
+            <Button disabled={sendingReviewReminder|| !ableToSendSmsReviewReminder || customerBooking.smsReviewReminderSent || customerBooking.noShow}
                     color="light"
                     outline
                     on:click={handleReviewSend}
@@ -142,7 +148,7 @@
 
         <!--Send SMS appointment reminder-->
         {#if customerBooking.bookingState === CustomerBookingState.APPOINTMENT}
-            <Button disabled={customerBooking.smsAppointmentSent}
+            <Button disabled={customerBooking.smsAppointmentSent || sendingAppointmentReminder}
                     id="show-tooltip"
                     color="light" outline
                     on:click={handleSendSmsAppointment}

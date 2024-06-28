@@ -2,13 +2,15 @@
     import dayjs from "dayjs";
     import {employeeSelectOptions} from "$lib/page/stores/employeeSelectOptions/employeeSelectOptions.js";
     import {Button, Select} from "flowbite-svelte";
-    import {now} from "$lib/page/stores/now/now_dayjs_store.js";
+    import {nowTime} from "$lib/page/stores/now/now_dayjs_store.js";
     import {formatToTime, formatToTimeAm} from "$lib/application/Formatter.js";
-    import {getContext} from "svelte";
     import {ServicingTicket} from "$lib/api/initialize_functions/CustomerBooking.js";
     import {moveToServicing} from "$lib/components/CustomerBookingClickModal/handle_customer_booking_state.js";
     import {BusinessScheduleManagement, Employee} from "$lib/api/initialize_functions/Business.js";
     import {business} from "$lib/page/stores/business/business.js";
+    import {
+        initializeCustomerBookingAndBroadcast
+    } from "$lib/api/api_server/api_endpoints/customer-booking-portal/api.js";
 
     export let customerBooking;
     export let serviceBooking;
@@ -19,9 +21,6 @@
     if (preselectEmployeeID !== undefined) {
         selectedEmployeeID = preselectEmployeeID;
     }
-
-    // Retrieve customer booking list update function
-    const submitCustomerBooking = getContext('submitCustomerBooking');
 
     async function handleStartServicing()
     {
@@ -35,7 +34,7 @@
             },
 
             timePeriod: {
-                startTime: $now.format(formatToTime),
+                startTime: nowTime(),
                 endTime: null
             },
         }
@@ -46,31 +45,37 @@
         console.log('Start servicing:', serviceBooking, selectedEmployeeID);
 
         // Service the customer booking
-        moveToServicing($now, customerBooking, submitCustomerBooking);
+        moveToServicing(customerBooking);
 
         // Reset the selected employee after starting servicing
         selectedEmployeeID = null;
     }
 
     function handleEndServicing(servicingTicket) {
+        // Get the current time
+        const currentTime = nowTime();
+
         // Initialize the end time
-        servicingTicket.timePeriod.endTime = $now.format(formatToTime);
+        servicingTicket.timePeriod.endTime = currentTime;
 
         console.log('End servicing:', servicingTicket);
 
         // Save the customer booking change
-        submitCustomerBooking(customerBooking);
+        initializeCustomerBookingAndBroadcast(customerBooking, currentTime);
     }
 
     function handleServiceBookingCompletedToggle() {
+        // Get the current time
+        const currentTime = nowTime();
+
         // Set the service booking completed toggle
         serviceBooking.completed = !serviceBooking.completed;
 
-        // End all ongoing servicing ticket associated to the service booking
+        // End get-by-month ongoing servicing ticket associated to the service booking
         if (serviceBooking.completed) {
             serviceBooking.servicingTicketList.forEach(ticket => {
                 if (!ticket.isCompleted) {
-                    ticket.timePeriod.endTime = $now.format(formatToTime);
+                    ticket.timePeriod.endTime = currentTime;
                 }
             });
         }
@@ -78,7 +83,7 @@
         //console.log('Service booking completed:', serviceBooking);
 
         // Save the customer booking change
-        submitCustomerBooking(customerBooking);
+        initializeCustomerBookingAndBroadcast(customerBooking, currentTime);
     }
 </script>
 

@@ -1,8 +1,10 @@
-import {formatToTime} from "$lib/application/Formatter.js";
 import {CustomerBookingState} from "$lib/api/initialize_functions/CustomerBooking.js";
-import dayjs from "dayjs";
+import {
+    initializeCustomerBookingAndBroadcast
+} from "$lib/api/api_server/api_endpoints/customer-booking-portal/api.js";
+import {nowTime} from "$lib/page/stores/now/now_dayjs_store.js";
 
-export function moveToAppointment(now, customerBooking, submitCustomerBooking) {
+export function moveToAppointment(customerBooking) {
     customerBooking.bookingState = CustomerBookingState.APPOINTMENT;
 
     // Reset the booking stats
@@ -11,7 +13,7 @@ export function moveToAppointment(now, customerBooking, submitCustomerBooking) {
     customerBooking.servicingEndTime = null;
 
     // Save the customer booking change
-    submitCustomerBooking(customerBooking)
+    initializeCustomerBookingAndBroadcast(customerBooking, nowTime())
         .then(() => {
             console.log("Moved customer booking to appointment.");
         })
@@ -20,15 +22,17 @@ export function moveToAppointment(now, customerBooking, submitCustomerBooking) {
         });
 }
 
-export function moveToLobby(now, customerBooking, submitCustomerBooking) {
+export function moveToLobby(customerBooking) {
+    const currentTime = nowTime();
+
     customerBooking.bookingState = CustomerBookingState.LOBBY;
 
     if (!customerBooking.checkinTime) {
-        customerBooking.checkinTime = now.format(formatToTime);
+        customerBooking.checkinTime = currentTime;
     }
 
     // Save the customer booking change
-    submitCustomerBooking(customerBooking)
+    initializeCustomerBookingAndBroadcast(customerBooking, currentTime)
         .then(() => {
             console.log("Moved customer booking to lobby.");
         })
@@ -37,19 +41,21 @@ export function moveToLobby(now, customerBooking, submitCustomerBooking) {
         });
 }
 
-export function moveToServicing(now, customerBooking, submitCustomerBooking) {
+export function moveToServicing(customerBooking) {
+    const currentTime = nowTime();
+
     customerBooking.bookingState = CustomerBookingState.SERVICING;
 
     // Initialize the checkin time if it is null
     if (!customerBooking.checkinTime) {
-        customerBooking.checkinTime = now.format(formatToTime);
+        customerBooking.checkinTime = currentTime;
     }
     if (!customerBooking.servicingStartTime) {
-        customerBooking.servicingStartTime = now.format(formatToTime);
+        customerBooking.servicingStartTime = currentTime;
     }
 
     // Save the customer booking change
-    submitCustomerBooking(customerBooking)
+    initializeCustomerBookingAndBroadcast(customerBooking, currentTime)
         .then(() => {
             console.log("Moved customer booking to servicing.");
         })
@@ -58,9 +64,11 @@ export function moveToServicing(now, customerBooking, submitCustomerBooking) {
         });
 }
 
-export function moveToCompleted(now, customerBooking, submitCustomerBooking) {
+export function moveToCompleted(customerBooking) {
+    const currentTime = nowTime();
+
     customerBooking.bookingState = CustomerBookingState.COMPLETED;
-    customerBooking.servicingEndTime = now.format(formatToTime);
+    customerBooking.servicingEndTime = currentTime;
 
     // Iterate over each individual booking
     customerBooking.customerIndividualBookingList.forEach(individualBooking => {
@@ -72,14 +80,14 @@ export function moveToCompleted(now, customerBooking, submitCustomerBooking) {
             // Mark all tickets within the service as completed
             serviceBooking.servicingTicketList.forEach(ticket => {
                 if (!ticket.isCompleted) {
-                    ticket.timePeriod.endTime = dayjs().format(formatToTime); // Set end time to now
+                    ticket.timePeriod.endTime = currentTime;
                 }
             });
         });
     });
 
     // Save the customer booking change
-    submitCustomerBooking(customerBooking)
+    initializeCustomerBookingAndBroadcast(customerBooking, currentTime)
         .then(() => {
             console.log("Moved customer booking to completed.");
         })

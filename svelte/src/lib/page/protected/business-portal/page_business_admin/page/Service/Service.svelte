@@ -92,6 +92,5 @@
 <!-- Modal for editing service -->
 <EditServiceModal
         bind:open={openEditServiceModal}
-        {editingServiceGroup}
         {editingService}
 />
