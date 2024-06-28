@@ -1,8 +1,8 @@
 import {get, writable} from "svelte/store";
-import {getCustomerBooking} from "$lib/api/api_server/api_endpoints/customer-booking-portal/api.js";
+import {findCustomerBookingById} from "$lib/page/protected/business-portal/page_lobby/stores/dashboard_store.js";
 import {
     findServiceBookingFromCustomerBooking
-} from "$lib/api/initialize_functions/customer-booking-utility-functions.js";
+} from "$lib/api/initialize_functions/utilitiy_functions/CustomerBooking.js";
 
 export const servicingTicketClickModal = writable({
     open: false,
@@ -13,9 +13,18 @@ export const servicingTicketClickModal = writable({
 
 export async function servicingTicketClickModalOpenWithServicingTicketEventInfo(servicingTicketEventInfo) {
     // Get the customer booking and service booking associated with the servicing ticket
+    let customerBooking = findCustomerBookingById(
+        servicingTicketEventInfo.event.extendedProps.servicingTicket.bookingID
+    );
+
+    /*
+    This is the version to fetch the customer booking
+
     let customerBooking = await getCustomerBooking(
         servicingTicketEventInfo.event.extendedProps.servicingTicket.bookingID
     );
+    */
+
     let serviceBooking = findServiceBookingFromCustomerBooking(
         customerBooking,
         servicingTicketEventInfo.event.extendedProps.servicingTicket.serviceBookingID
@@ -58,25 +67,45 @@ export async function handleTimetableUpdateForServicingTicketClickModal(employee
     const modalState = get(servicingTicketClickModal);
 
     // Fetch and reinitialize the customer booking for the modal
-    if (modalState.open && modalState.customerBooking) {
-        try {
-            // Fetch the recent changes to the customer booking
-            const fetchCustomerBooking = await getCustomerBooking(modalState.customerBooking.bookingID);
+    if (modalState.open &&
+        modalState.customerBooking &&
+        modalState.serviceBooking) {
+        let customerBooking = findCustomerBookingById(
+            modalState.customerBooking.bookingID
+        );
 
-            if (fetchCustomerBooking) {
-                // Get the latest service booking from the customer booking
-                const fetchServiceBooking = findServiceBookingFromCustomerBooking(
-                    fetchCustomerBooking,
-                    modalState.serviceBooking.serviceBookingID
-                );
+        let serviceBooking = undefined;
+        if (customerBooking) {
+            serviceBooking = findServiceBookingFromCustomerBooking(
+                customerBooking,
+                modalState.serviceBooking.serviceBookingID
+            );
+        }
 
-                // Reopen the modal with updated bookings
-                servicingTicketClickModalOpen(fetchCustomerBooking, fetchServiceBooking);
-            } else {
-                console.log('Customer booking not found for customer booking click modal.');
-            }
-        } catch (error) {
-            console.error('Failed to fetch customer booking:', error);
+        // Set the updated customer booking and service booking
+        if (customerBooking && serviceBooking) {
+            servicingTicketClickModal.update(modal => {
+                return {
+                    ...modal,
+                    customerBooking: customerBooking,
+                    serviceBooking: serviceBooking
+                };
+            });
+
+            // Reopen the modal with updated bookings
+            servicingTicketClickModalOpen(customerBooking, serviceBooking);
+        }
+        // Close the modal, customer booking no longer exist, maybe deleted
+        else
+        {
+            servicingTicketClickModal.update(modal => {
+                return {
+                    ...modal,
+                    open: false,
+                    customerBooking: undefined,
+                    serviceBooking: undefined
+                };
+            });
         }
     }
 }
