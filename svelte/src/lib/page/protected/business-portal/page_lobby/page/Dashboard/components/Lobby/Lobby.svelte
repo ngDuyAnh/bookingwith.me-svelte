@@ -1,7 +1,7 @@
 <script>
   import CustomerBookingList from "$lib/page/protected/business-portal/page_lobby/page/Dashboard/components/components/CustomerBookingList/CustomerBookingList.svelte";
-  import { customerBookingQueueList } from "$lib/page/protected/business-portal/page_lobby/stores/dashboard_store.js";
   import { handleNewCustomerBookingWalkin } from "$lib/components/Modal/CreateCustomerBooking/modalCreateCustomerBooking.js";
+  export let customerBookingQueueList;
 </script>
 
 <div
@@ -12,7 +12,7 @@
     <h2 class="text-lg font-bold">{"Lobby"}</h2>
 
     <div class="flex items-center space-x-4">
-      <span class="text-sm">{$customerBookingQueueList[1].length}</span>
+      <span class="text-sm">{customerBookingQueueList[1].length}</span>
 
       <button
         on:click={handleNewCustomerBookingWalkin}
@@ -36,5 +36,5 @@
     </div>
   </div>
 
-  <CustomerBookingList customerBookingList={$customerBookingQueueList[1]} />
+  <CustomerBookingList customerBookingList={customerBookingQueueList[1]} />
 </div>
