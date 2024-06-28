@@ -1,21 +1,25 @@
 <script>
-  import Header from "$lib/page/protected/components/Header/Header.svelte";
   import CreateBusiness from "$lib/page/protected/business-portal/page_admin/page/CreateBusiness/CreateBusiness.svelte";
   import Setting from "$lib/components/Setting/Setting.svelte";
+  import Businesses from "$lib/page/protected/business-portal/page_admin/page/Businesses/Businesses.svelte";
+  import NavBar from "$lib/page/protected/components/NavBar/NavBar.svelte";
 
-  let tabs = ["Create Business", "Setting"];
+  let tabs = ["Businesses","Create Business", "Setting"];
   let selectedIndex = 0;
 </script>
 
-<Header
+<NavBar
         {tabs}
         bind:selectedIndex={selectedIndex}
 />
 
+
 <div class="m-1">
   {#if selectedIndex === 0}
-    <CreateBusiness />
+    <Businesses/>
   {:else if selectedIndex === 1}
+    <CreateBusiness />
+  {:else if selectedIndex === 2}
     <Setting/>
   {/if}
 </div>

@@ -1,5 +1,5 @@
 <script>
-    import {bookingEstimate} from "$lib/page/customer-booking-portal/get/stores/bookingEstimate.js";
+    import {customerBookingEstimate} from "$lib/page/customer-booking-portal/get/stores/customerBookingEstimate.js";
     import LiveIndicator
         from "$lib/page/customer-booking-portal/get/page/components/LiveIndicator/LiveIndicator.svelte";
 </script>
@@ -17,7 +17,7 @@
         <!-- Appointment information -->
         <div class="p-4 text-green-800 text-sm">
             <span>Estimate servicing end time is</span>
-            <span class="animate-pulse text-sm font-semibold">{$bookingEstimate.estimateServicingEndTime}</span>
+            <span class="animate-pulse text-sm font-semibold">{$customerBookingEstimate.estimateServicingEndTime}</span>
         </div>
     </div>
 </div>

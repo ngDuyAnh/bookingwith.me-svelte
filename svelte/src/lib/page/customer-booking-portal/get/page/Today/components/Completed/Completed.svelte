@@ -1,30 +1,25 @@
 <script>
-    import {bookingEstimate} from "$lib/page/customer-booking-portal/get/stores/bookingEstimate.js";
     import {CustomerBookingReview} from "$lib/api/initialize_functions/CustomerBooking.js";
     import {fly, slide} from "svelte/transition";
     import {CheckCircleSolid, CloseCircleSolid} from "flowbite-svelte-icons";
     import {Spinner, Toast} from "flowbite-svelte";
     import {initializeCustomerBooking} from "$lib/api/api_server/api_endpoints/customer-booking-portal/api.js";
+    import {customerBooking} from "$lib/page/customer-booking-portal/get/stores/customerBookingEstimate.js";
+    import {business} from "$lib/page/stores/business/business.js";
 
-    let getReview = !$bookingEstimate.customerBooking.customerBookingReview;
+    let getReview = !$customerBooking.customerBookingReview;
     let review = CustomerBookingReview();
     let polishUsed = false;
 
     async function submitReviewToDatabase() {
-        let customerBooking = {
-            ...$bookingEstimate.customerBooking,
-            customerBookingReview: review
-        };
-
         // Submit the changes to the backend
-        customerBooking = await initializeCustomerBooking(customerBooking);
-
-        bookingEstimate.update(estimate => {
-            return {
-                ...estimate,
-                customerBooking: customerBooking
-            };
+        let updatedCustomerBooking = await initializeCustomerBooking({
+            ...$customerBooking,
+            smsConfirmation: true
         });
+
+        // Set the store
+        customerBooking.set(updatedCustomerBooking);
     }
 
     function handleGoogleReviewClick() {
@@ -89,8 +84,8 @@
                     'Content-Type': 'application/json'
                 },
                 body: JSON.stringify({
-                    businessName: $bookingEstimate.business.businessInfo.businessName,
-                    businessType: $bookingEstimate.business.businessInfo.businessType,
+                    businessName: $business.businessInfo.businessName,
+                    businessType: $business.businessInfo.businessType,
                     reviewText: review.reviewText,
                     threadID: threadID
                 })
@@ -229,7 +224,7 @@
                     </button>
                     <a
                             class="text-center flex flex-row items-center justify-center bg-green-500 text-white p-2 rounded-md hover:bg-green-600"
-                            href={$bookingEstimate.business.businessInfo.googleReviewLink}
+                            href={$business.businessInfo.googleReviewLink}
                             target="_blank"
                             on:click={handleGoogleReviewClick}
                     >

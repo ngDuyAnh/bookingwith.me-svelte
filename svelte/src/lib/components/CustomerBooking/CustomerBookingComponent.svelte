@@ -1,7 +1,6 @@
 <script>
     import NumGuestSelect from "$lib/components/CustomerBooking/NumGuestSelect/NumGuestSelect.svelte";
     import {CustomerBooking, CustomerIndividualBooking} from "$lib/api/initialize_functions/CustomerBooking.js";
-    import {now} from "$lib/page/stores/now/now_dayjs_store.js";
     import CustomerIndividualBookingServiceSelect
         from "$lib/components/CustomerBooking/CustomerIndividualBookingServiceSelect/CustomerIndividualBookingServiceSelect.svelte";
     import CustomerBookingInformation
@@ -32,7 +31,7 @@
     export let business;
 
     export let customerBooking = {
-        ...CustomerBooking($now),
+        ...CustomerBooking(),
         customerIndividualBookingList: [CustomerIndividualBooking()]
     };
 

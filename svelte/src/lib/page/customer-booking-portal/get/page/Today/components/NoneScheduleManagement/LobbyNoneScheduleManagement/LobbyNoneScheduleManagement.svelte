@@ -1,5 +1,5 @@
 <script>
-    import {bookingEstimate} from "$lib/page/customer-booking-portal/get/stores/bookingEstimate.js";
+    import {customerBookingEstimate} from "$lib/page/customer-booking-portal/get/stores/customerBookingEstimate.js";
 </script>
 
 <div class="p-2 h-full w-full flex flex-col items-center justify-center">
@@ -10,9 +10,9 @@
             <div class="flex flex-col items-center">
                 <span>Servicing time</span>
                 <div>
-                    <span class="animate-pulse text-sm font-semibold">{$bookingEstimate.estimateServicingStartTime}</span>
+                    <span class="animate-pulse text-sm font-semibold">{$customerBookingEstimate.estimateServicingStartTime}</span>
                     <span class="text-sm">to</span>
-                    <span class="animate-pulse text-sm font-semibold">{$bookingEstimate.estimateServicingEndTime}</span>
+                    <span class="animate-pulse text-sm font-semibold">{$customerBookingEstimate.estimateServicingEndTime}</span>
                 </div>
             </div>
         </div>
