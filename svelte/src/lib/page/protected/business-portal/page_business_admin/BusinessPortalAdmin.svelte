@@ -19,11 +19,6 @@
   import {
     fetchCustomerBookingQueueList
   } from "$lib/page/protected/business-portal/page_lobby/stores/dashboard_store.js";
-  import {fetchTimetable, timetableComponent} from "$lib/components/TimeTable/stores/timetableComponent.js";
-  import {
-    bookingList,
-    fetchAppointmentCustomerBookingList
-  } from "$lib/page/protected/business-portal/page_lobby/page/BookingList/stores/bookingList.js";
 
   let tabs = ["Dashboard", "Metrics", "Employee", "Service"];
 
