@@ -6,13 +6,14 @@
     } from "$lib/components/CustomerBookingClickModal/stores/customerBookingClickModal.js";
     import CustomerIndividualBookingComponent
         from "$lib/components/CustomerBookingClickModal/Servicing/components/CustomerIndivdualBookingComponent/CustomerIndividualBookingComponent.svelte";
+    import PhoneNumber from "$lib/components/CustomerBookingClickModal/PhoneNumber/PhoneNumber.svelte";
 </script>
 
 <div class="flex flex-col space-y-4">
     <div class="flex flex-col space-y-2">
         <div>
             <p><strong>Customer name:</strong> {$customerBookingClickModal.customerBooking.customer.customerName}</p>
-            <p><strong>Phone number:</strong> {$customerBookingClickModal.customerBooking.customer.phoneNumber}</p>
+            <PhoneNumber/>
             <p><strong>Booking
                 time:</strong> {dayjs($customerBookingClickModal.customerBooking.bookingTime, formatToTime).format(formatToTimeAm)}
             </p>
