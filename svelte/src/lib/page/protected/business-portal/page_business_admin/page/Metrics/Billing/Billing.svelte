@@ -14,8 +14,6 @@
         from "$lib/page/protected/business-portal/page_business_admin/page/Metrics/Billing/Subscription/Subscription.svelte";
     import {businessInfo} from "$lib/page/customer-booking-portal/create/stores/customer_booking_portal_create_store.js";
 
-    $:console.log("userProfile userProfile", $userProfile);
-    $:console.log("businessInfo businessInfo", $businessInfo);
 
     let hasStripeAccount = false;
     let hasSubscribed = false;
@@ -46,7 +44,6 @@
         });
 
         const result = await response.json();
-        console.log("paymentMethods result", result);
         if (result.hasPaymentMethod == true) {
             hasPaymentMethod = true;
             paymentMethod = result.paymentMethod;
@@ -57,8 +54,6 @@
         }
     }
 
-    $:console.log("customerId", customerId);
-    $:console.log("hasSubscribed", hasSubscribed);
     onMount(async () => {
         if ($userProfile.user.businessInfo.stripeID) {
             customerId = $userProfile.user.businessInfo.stripeID;
@@ -80,49 +75,50 @@
     {#if loading}
         <Spinner/>
     {:else}
-        {#if !hasStripeAccount}
-            <span class="text-red-800">No billing stripe account has been attached to this account, contact bookingwith.me to resolve.</span>
-        {:else}
-            {#if !hasSubscribed}
-                <span>No Active Subscription To bookingwith.me</span>
+        <h1>Billing System Coming Soon.</h1>
+        <!--{#if !hasStripeAccount}-->
+        <!--    <span class="text-red-800">No billing stripe account has been attached to this account, contact bookingwith.me to resolve.</span>-->
+        <!--{:else}-->
+        <!--    {#if !hasSubscribed}-->
+        <!--        <span>No Active Subscription To bookingwith.me</span>-->
 
-                {#if hasPaymentMethod}
-                    <Card
-                            bind:paymentMethod={paymentMethod}
-                    />
-                    {#if subscriptionStep == 0}
-                        <ShowPlan
-                                bind:subscriptionStep={subscriptionStep}
-                        />
-                    {:else if subscriptionStep == 1}
-                        <Subscription
-                                bind:customerId={customerId}
-                                bind:subscriptionStep={subscriptionStep}
-                                bind:paymentMethodId={paymentMethod.id}
-                                bind:hasSubscribed={hasSubscribed}
-                        />
-                    {/if}
-                    <PastInvoice
-                            {customerId}
-                    />
-                {:else}
-                    {#if subscriptionStep == 0}
-                        <ShowPlan
-                                bind:subscriptionStep={subscriptionStep}
-                        />
-                    {:else if subscriptionStep == 1}
-                        <Intent
-                                bind:customerId={customerId}
-                                bind:hasSubscribed={hasSubscribed}
-                        />
-                    {/if}
-                {/if}
-            {:else}
-                <Subscribed
-                        bind:customerId={customerId}
-                        bind:paymentMethod={paymentMethod}
-                />
-            {/if}
-        {/if}
+        <!--        {#if hasPaymentMethod}-->
+        <!--            <Card-->
+        <!--                    bind:paymentMethod={paymentMethod}-->
+        <!--            />-->
+        <!--            {#if subscriptionStep == 0}-->
+        <!--                <ShowPlan-->
+        <!--                        bind:subscriptionStep={subscriptionStep}-->
+        <!--                />-->
+        <!--            {:else if subscriptionStep == 1}-->
+        <!--                <Subscription-->
+        <!--                        bind:customerId={customerId}-->
+        <!--                        bind:subscriptionStep={subscriptionStep}-->
+        <!--                        bind:paymentMethodId={paymentMethod.id}-->
+        <!--                        bind:hasSubscribed={hasSubscribed}-->
+        <!--                />-->
+        <!--            {/if}-->
+        <!--            <PastInvoice-->
+        <!--                    {customerId}-->
+        <!--            />-->
+        <!--        {:else}-->
+        <!--            {#if subscriptionStep == 0}-->
+        <!--                <ShowPlan-->
+        <!--                        bind:subscriptionStep={subscriptionStep}-->
+        <!--                />-->
+        <!--            {:else if subscriptionStep == 1}-->
+        <!--                <Intent-->
+        <!--                        bind:customerId={customerId}-->
+        <!--                        bind:hasSubscribed={hasSubscribed}-->
+        <!--                />-->
+        <!--            {/if}-->
+        <!--        {/if}-->
+        <!--    {:else}-->
+        <!--        <Subscribed-->
+        <!--                bind:customerId={customerId}-->
+        <!--                bind:paymentMethod={paymentMethod}-->
+        <!--        />-->
+        <!--    {/if}-->
+        <!--{/if}-->
     {/if}
 </div>
