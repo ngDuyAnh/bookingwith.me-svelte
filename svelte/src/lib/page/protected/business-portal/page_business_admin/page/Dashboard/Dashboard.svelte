@@ -101,7 +101,9 @@
     $: {
         if($customerBookingQueueList)
         {
-            (async ()=> await updateDashBoardData())
+            (async () => {
+                await updateDashBoardData();
+            })();
         }
     }
 
@@ -165,6 +167,8 @@
 
     async function updateDashBoardData()
     {
+        console.log("calling update to dashboard")
+
         todaysProgress["toDo"] = $customerBookingQueueList[0].length + $customerBookingQueueList[1].length;
         todaysProgress["inProgress"] = $customerBookingQueueList[2].length;
         todaysProgress["Done"] = $customerBookingQueueList[3].length;
@@ -194,7 +198,7 @@
     let employeesWorkingToday = [];
 
     async function fetchSchedule() {
-        loading = true;
+
 
         try {
             // Get the current time based on if it is today
@@ -216,7 +220,6 @@
             console.error("Failed to  fetch tasks", error);
         }
 
-        loading = false;
     }
 
     function countEmployeesWorkingNow() {
@@ -314,7 +317,7 @@
                            contentClass="flex space-x-4 rtl:space-x-reverse divide-x rtl:divide-x-reverse divide-gray-200 dark:divide-gray-700 items-center justify-center">
                         <UsersGroupSolid class="w-5 h-5 text-primary-600 dark:text-primary-500"/>
                         <div class="ps-4 text-sm font-normal flex flex-col items-center justify-center"><span
-                                class="text-xl font-medium text-primary-600 dark:text-primary-500">{employeesWorkingToday.length - 1}</span>
+                                class="text-xl font-medium text-primary-600 dark:text-primary-500">{employeesWorkingToday.length>1? employeesWorkingToday.length-1:0}</span>
                             <span class="text-center text-xs">employees on today's schedule.</span>
                         </div>
                         <div class="ps-4 text-sm font-normal flex flex-col items-center"><span
