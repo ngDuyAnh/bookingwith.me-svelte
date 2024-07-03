@@ -15,7 +15,7 @@
         fetchAppointmentCustomerBookingList
     } from "$lib/page/protected/business-portal/page_lobby/page/BookingList/stores/bookingList.js";
 
-    function handleRemoveBookingClick()
+    function handleDeleteClick()
     {
         if (confirm("Are you sure you want to cancel this appointment?"))
         {
@@ -71,7 +71,7 @@
 
             <div class="ml-auto justify-end items-center space-x-2">
                 <button class="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded"
-                        on:click={handleRemoveBookingClick}>Remove
+                        on:click={handleDeleteClick}>Delete
                 </button>
             </div>
         </div>

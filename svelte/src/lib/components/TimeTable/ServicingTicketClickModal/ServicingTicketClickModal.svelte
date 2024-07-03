@@ -9,7 +9,7 @@
     } from "$lib/components/TimeTable/ServicingTicketClickModal/functions.js";
     import {
         findIndividualBookingFromCustomerBooking
-    } from "$lib/api/initialize_functions/utilitiy_functions/customer-booking-utility-functions.js";
+    } from "$lib/api/initialize_functions/utilitiy_functions/CustomerBooking.js";
     import Footer from "$lib/components/CustomerBookingClickModal/components/Footer/Footer.svelte";
     import TicketInformation from "$lib/components/TimeTable/TimetableModal/TicketInformation/TicketInformation.svelte";
 
