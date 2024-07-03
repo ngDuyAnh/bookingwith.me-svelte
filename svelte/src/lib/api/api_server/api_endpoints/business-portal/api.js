@@ -32,6 +32,16 @@ export async function getBusiness(id) {
     return await response.json();
 }
 
+export async function validateManagerAccess(id, password) {
+    const FETCH_URL = `${API_URL}/validate-manager-access/${id}?password=${password}`;
+
+    const response = await fetch(`${FETCH_URL}`);
+
+    if (!response.ok) {
+        throw new Error(`Failed to fetch. Status: ${response.status}`);
+    }
+}
+
 export async function getBusinessIDList() {
     const FETCH_URL = `${API_URL}/get-business-id-list`;
 
