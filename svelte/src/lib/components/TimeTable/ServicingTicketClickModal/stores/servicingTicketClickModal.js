@@ -11,12 +11,7 @@ export const servicingTicketClickModal = writable({
     serviceBooking: undefined
 });
 
-export async function servicingTicketClickModalOpenWithServicingTicketEventInfo(servicingTicketEventInfo) {
-    // Get the customer booking and service booking associated with the servicing ticket
-    let customerBooking = findCustomerBookingById(
-        servicingTicketEventInfo.event.extendedProps.servicingTicket.bookingID
-    );
-
+function update(id, serviceBookingID) {
     /*
     This is the version to fetch the customer booking
 
@@ -25,16 +20,50 @@ export async function servicingTicketClickModalOpenWithServicingTicketEventInfo(
     );
     */
 
-    let serviceBooking = findServiceBookingFromCustomerBooking(
-        customerBooking,
-        servicingTicketEventInfo.event.extendedProps.servicingTicket.serviceBookingID
-    );
+    // Get the customer booking and service booking associated with the servicing ticket
+    let customerBooking = findCustomerBookingById(id);
+    let serviceBooking = undefined;
+    if (customerBooking)
+    {
+        serviceBooking = findServiceBookingFromCustomerBooking(
+            customerBooking,
+            serviceBookingID
+        );
+    }
 
-    servicingTicketClickModalOpen(customerBooking, serviceBooking);
+    // Set the updated customer booking and service booking
+    if (customerBooking && serviceBooking) {
+        servicingTicketClickModal.update(modal => {
+            return {
+                ...modal,
+                customerBooking: customerBooking,
+                serviceBooking: serviceBooking
+            };
+        });
+
+        // Update
+        servicingTicketClickModalOpen(customerBooking, serviceBooking);
+    }
+    // Close the modal, customer booking or service booking no longer exist, maybe deleted
+    else {
+        console.log('Customer booking not found for servicing ticket click modal.');
+        servicingTicketClickModal.update(modal => {
+            return {
+                ...modal,
+                open: false,
+            };
+        });
+    }
 }
 
-export function servicingTicketClickModalOpen(customerBooking, serviceBooking)
-{
+export function servicingTicketClickModalOpenWithServicingTicketEventInfo(servicingTicketEventInfo) {
+    update(
+        servicingTicketEventInfo.event.extendedProps.servicingTicket.servicingTicketInfo.id,
+        servicingTicketEventInfo.event.extendedProps.servicingTicket.serviceBookingID
+    );
+}
+
+export function servicingTicketClickModalOpen(customerBooking, serviceBooking) {
     servicingTicketClickModal.update(modal => {
         return {
             ...modal,
@@ -70,42 +99,10 @@ export async function handleTimetableUpdateForServicingTicketClickModal(employee
     if (modalState.open &&
         modalState.customerBooking &&
         modalState.serviceBooking) {
-        let customerBooking = findCustomerBookingById(
-            modalState.customerBooking.bookingID
+
+        update(
+            modalState.customerBooking.id,
+            modalState.serviceBooking.serviceBookingID
         );
-
-        let serviceBooking = undefined;
-        if (customerBooking) {
-            serviceBooking = findServiceBookingFromCustomerBooking(
-                customerBooking,
-                modalState.serviceBooking.serviceBookingID
-            );
-        }
-
-        // Set the updated customer booking and service booking
-        if (customerBooking && serviceBooking) {
-            servicingTicketClickModal.update(modal => {
-                return {
-                    ...modal,
-                    customerBooking: customerBooking,
-                    serviceBooking: serviceBooking
-                };
-            });
-
-            // Reopen the modal with updated bookings
-            servicingTicketClickModalOpen(customerBooking, serviceBooking);
-        }
-        // Close the modal, customer booking no longer exist, maybe deleted
-        else
-        {
-            servicingTicketClickModal.update(modal => {
-                return {
-                    ...modal,
-                    open: false,
-                    customerBooking: undefined,
-                    serviceBooking: undefined
-                };
-            });
-        }
     }
 }

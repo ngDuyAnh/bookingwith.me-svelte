@@ -13,37 +13,54 @@
     import {CustomerBookingState} from "$lib/api/initialize_functions/CustomerBooking.js";
     import {checkAbleToSendReviewReminder} from "$lib/api/api_server/api_endpoints/lobby-portal/api.js";
     import {checkAbleToSendSmsReviewReminder} from "$lib/api/api_server/functions.js";
-    import {initializeCustomerBooking} from "$lib/api/api_server/api_endpoints/customer-booking-portal/api.js";
+    import {
+        deleteCustomerBooking,
+        initializeCustomerBooking
+    } from "$lib/api/api_server/api_endpoints/customer-booking-portal/api.js";
+    import {
+        bookingListCustomerBookingClickModal
+    } from "$lib/page/protected/business-portal/page_lobby/page/BookingList/components/BookingListCustomerBookingClickModal/stores/BookingListCustomerBookingClickModal.js";
+    import {
+        bookingList,
+        fetchAppointmentCustomerBookingList
+    } from "$lib/page/protected/business-portal/page_lobby/page/BookingList/stores/bookingList.js";
 
     export let customerBooking;
 
     export let indicateSendToCompleted = false;
 
+    // Check if sms review reminder can be sent
+    // Only check if the customer booking is completed and review reminder not yet sent
     let ableToSendSmsReviewReminder = false;
-    let sendingAppointmentReminder = false;
     let sendingReviewReminder = false;
-
-    $: {
-        // Check if sms review reminder can be sent
-        if (customerBooking) {
+    $: if (customerBooking &&
+        customerBooking.bookingState === CustomerBookingState.COMPLETED &&
+        !customerBooking.smsReviewReminderSent) {
 
             ableToSendSmsReviewReminder = false;
+
             checkAbleToSendReviewReminder(customerBooking)
                 .then(response => {
                     ableToSendSmsReviewReminder = checkAbleToSendSmsReviewReminder(response);
                     //console.log(`customerBooking.smsReviewReminderSent ${customerBooking.smsReviewReminderSent} ableToSendSmsReviewReminder ${ableToSendSmsReviewReminder}, allowToSendReviewReminderSMS ${allowToSendReviewReminderSMS}, moreThan6Months ${moreThan6Months}`)
                 })
                 .catch(error => {
-                    sendingReviewReminder=false;
                     console.error('Failed at checkAbleToSendReviewReminder():', error);
                 });
-        }
+    }
+    else {
+        ableToSendSmsReviewReminder = false;
     }
 
 
+
+    // Send appointment reminder
+    let sendingAppointmentReminder = false;
     async function handleSendSmsAppointment() {
-        sendingAppointmentReminder = true;
         if (!customerBooking.smsAppointmentSent) {
+
+            sendingAppointmentReminder = true;
+
             sendSmsAppointment($business.businessInfo.businessName, customerBooking)
                 .then(() => {
                     console.log('Sent SMS appointment ready soon reminder.');
@@ -53,16 +70,16 @@
                     initializeCustomerBooking(customerBooking);
                 })
                 .catch(error => {
+                    sendingAppointmentReminder = false;
                     console.error('Failed to send SMS appointment ready soon reminder:', error);
                 });
-            sendingAppointmentReminder = false;
         }
     }
 
     async function handleReviewSend() {
-        if (ableToSendSmsReviewReminder &&
-            !customerBooking.smsReviewReminderSent) {
-            sendingReviewReminder=true;
+        if (ableToSendSmsReviewReminder && !customerBooking.smsReviewReminderSent) {
+
+            sendingReviewReminder = true;
 
             sendSMSAskingForReview($business.businessInfo.businessName, customerBooking)
                 .then(() => {
@@ -73,21 +90,10 @@
                     initializeCustomerBooking(customerBooking);
                 })
                 .catch(error => {
-                    sendingReviewReminder=false;
+                    sendingReviewReminder = false;
                     console.error('Error sending review reminder:', error);
                 });
-
-
         }
-    }
-
-    async function handleLobbyClick() {
-        moveToLobby(customerBooking);
-    }
-
-    async function handleServicingClick() {
-        customerBooking.noShow = false;
-        moveToServicing(customerBooking);
     }
 
     function handleCompleteClick() {
@@ -96,7 +102,22 @@
         }
     }
 
-    async function handleNoShowClick() {
+    function handleDeleteClick() {
+        if (confirm("Are you sure you want to delete this appointment?")) {
+            deleteCustomerBooking($business.businessInfo.businessID, customerBooking)
+                .then(() => {
+                    console.log("Deleted customer booking.");
+
+                    // Re-fetch the customer booking list
+                    fetchAppointmentCustomerBookingList($business.businessInfo.businessID, $bookingList.date);
+                })
+                .catch(error => {
+                    console.error('Error deleting customer booking:', error);
+                });
+        }
+    }
+
+    function handleNoShowClick() {
         if (confirm("Are you sure you want to mark this as no show?")) {
             customerBooking.noShow = true;
             moveToCompleted(customerBooking);
@@ -108,7 +129,7 @@
 
     <!--Left options-->
     <div>
-        <!--Edit booking-->
+        <!--Edit booking or ask for review-->
         {#if customerBooking.bookingState !== CustomerBookingState.COMPLETED}
             <Button
                     color="light"
@@ -124,8 +145,7 @@
             <Tooltip>Edit booking</Tooltip>
 
         {:else}
-            <!--Asking for review-->
-            <Button disabled={sendingReviewReminder|| !ableToSendSmsReviewReminder || customerBooking.smsReviewReminderSent || customerBooking.noShow}
+            <Button disabled={sendingReviewReminder || !ableToSendSmsReviewReminder || customerBooking.smsReviewReminderSent || customerBooking.noShow}
                     color="light"
                     outline
                     on:click={handleReviewSend}
@@ -148,7 +168,7 @@
 
         <!--Send SMS appointment reminder-->
         {#if customerBooking.bookingState === CustomerBookingState.APPOINTMENT}
-            <Button disabled={customerBooking.smsAppointmentSent || sendingAppointmentReminder}
+            <Button disabled={sendingAppointmentReminder || customerBooking.smsAppointmentSent}
                     id="show-tooltip"
                     color="light" outline
                     on:click={handleSendSmsAppointment}
@@ -171,20 +191,31 @@
     <div class="content-center space-x-2">
         <span class="text-gray-700 font-bold">Move to:</span>
 
+        <!--Move to lobby-->
         {#if customerBooking.bookingState < CustomerBookingState.LOBBY}
             <Button class="bg-orange-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
-                    on:click={handleLobbyClick}>Lobby
+                    on:click={() => moveToLobby(customerBooking)}>Lobby
             </Button>
         {/if}
 
+        <!--Move to servicing-->
         {#if customerBooking.bookingState !== CustomerBookingState.SERVICING}
             <Button class="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded"
-                    on:click={handleServicingClick}>Servicing
+                    on:click={() => moveToServicing(customerBooking)}>Servicing
             </Button>
         {/if}
 
+        <!--Cancel the appointment-->
+        {#if customerBooking.bookingState === CustomerBookingState.APPOINTMENT}
+            <Button disabled={customerBooking.deleted}
+                    class="bg-red-400 hover:bg-red-700 text-white font-bold py-2 px-4 rounded"
+                    on:click={handleDeleteClick}>Delete
+            </Button>
+        {/if}
+
+        <!--No show or send customer booking to completed-->
         {#if customerBooking.bookingState === CustomerBookingState.APPOINTMENT ||
-        customerBooking.bookingState === CustomerBookingState.COMPLETED}
+                customerBooking.bookingState === CustomerBookingState.COMPLETED}
             <Button disabled={customerBooking.noShow}
                     class="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded"
                     on:click={handleNoShowClick}>No show

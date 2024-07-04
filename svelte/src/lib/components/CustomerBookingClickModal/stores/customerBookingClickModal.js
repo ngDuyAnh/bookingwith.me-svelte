@@ -24,14 +24,15 @@ export function handleCustomerBookingClickUpdate()
         const findID = customerBookingClickModalValue.customerBooking.id;
         const foundCustomerBooking = findCustomerBookingById(findID);
         if (foundCustomerBooking) {
-            customerBookingClickModal.update(current => {
-                return {
-                    ...current,
-                    customerBooking: foundCustomerBooking
-                };
-            });
+            handleCustomerBookingClick(foundCustomerBooking);
         } else {
             console.log('Customer booking not found for customer booking click modal.');
+            customerBookingClickModal.update(modal => {
+                return {
+                    ...modal,
+                    open: false,
+                };
+            });
         }
     }
 }
