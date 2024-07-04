@@ -86,9 +86,14 @@ export function CustomerIndividualServiceBooking() {
         "bookingID": "",
         "individualID": -1,
         "serviceBookingID": -1,
+
         "employee": null,
         "service": null,
         "completed": false,
+
+        "startTime": null,
+        "servicingDuration": null,
+
         "servicingTicketList": []
     };
 }
@@ -96,7 +101,9 @@ export function CustomerIndividualServiceBooking() {
 export function ServicingTicketInfo() {
     return {
         "customerName": "",
-        "bookingTime": null,
+
+        "id": -1,
+
         "bookingState": -1,
         "service": null,
         "bookedEmployee": null
