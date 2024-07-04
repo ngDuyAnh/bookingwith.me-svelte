@@ -30,7 +30,7 @@
 
     function initializeSelectedServiceBookingInfo(serviceBooking) {
         serviceBookingInfo = serviceBooking;
-        employeeIdSelected = serviceBookingInfo && serviceBookingInfo.employee ? serviceBookingInfo.employee.id : -1;
+        employeeIdSelected = serviceBookingInfo && serviceBookingInfo.bookedEmployee ? serviceBookingInfo.bookedEmployee.id : -1;
     }
 
     onMount(() => {
@@ -63,9 +63,9 @@
     // Employee selected change
     $: if (isSelected) {
         // Get the selected employee id from the service booking
-        let serviceBookingSelectedEmployeeId = serviceBookingInfo?.employee?.id ?? -1;
+        let serviceBookingSelectedEmployeeId = serviceBookingInfo?.bookedEmployee?.id ?? -1;
         if (serviceBookingSelectedEmployeeId !== employeeIdSelected) {
-            serviceBookingInfo.employee = getEmployeeFromEmployeeId(employeeIdSelected);
+            serviceBookingInfo.bookedEmployee = getEmployeeFromEmployeeId(employeeIdSelected);
         }
     }
 
@@ -95,13 +95,13 @@
             let employeeSelected = getEmployeeFromEmployeeId(employeeIdSelected);
             serviceBookingInfo = {
                 service: service,
-                employee: employeeSelected
+                bookedEmployee: employeeSelected
             };
 
             customerIndividualBooking.customerIndividualServiceBookingList.push({
                 ...CustomerIndividualServiceBooking(),
                 service: service,
-                employee: employeeSelected
+                bookedEmployee: employeeSelected
             });
 
             currentSelectedServiceIds.add(service.id);

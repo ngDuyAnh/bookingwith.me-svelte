@@ -87,7 +87,7 @@ export function CustomerIndividualServiceBooking() {
         "individualID": -1,
         "serviceBookingID": -1,
 
-        "employee": null,
+        "bookedEmployee": null,
         "service": null,
         "completed": false,
 
