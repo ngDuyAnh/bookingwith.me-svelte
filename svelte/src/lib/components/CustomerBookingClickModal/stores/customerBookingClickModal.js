@@ -1,4 +1,5 @@
 import {get, writable} from 'svelte/store';
+import {findCustomerBookingById} from "$lib/page/protected/business-portal/page_lobby/stores/dashboard_store.js";
 
 export const customerBookingClickModal = writable({
     open: false,
@@ -23,23 +24,15 @@ export function handleCustomerBookingClickUpdate()
         const findID = customerBookingClickModalValue.customerBooking.id;
         const foundCustomerBooking = findCustomerBookingById(findID);
         if (foundCustomerBooking) {
-            customerBookingClickModal.update(current => {
-                return {
-                    ...current,
-                    customerBooking: foundCustomerBooking
-                };
-            });
-        }
-        // Customer booking not found
-        // Close the modal
-        else {
-            customerBookingClickModal.update(current => {
-                return {
-                    ...current,
-                    open: false
-                };
-            });
+            handleCustomerBookingClick(foundCustomerBooking);
+        } else {
             console.log('Customer booking not found for customer booking click modal.');
+            customerBookingClickModal.update(modal => {
+                return {
+                    ...modal,
+                    open: false,
+                };
+            });
         }
     }
 }

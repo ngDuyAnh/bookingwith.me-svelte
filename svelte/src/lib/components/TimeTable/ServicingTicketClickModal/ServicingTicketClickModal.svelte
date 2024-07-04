@@ -1,21 +1,15 @@
 <script>
     import {tick} from 'svelte';
-    import dayjs from "dayjs";
-    import {formatToTime, formatToTimeAm} from "$lib/application/Formatter.js";
     import {Modal} from "flowbite-svelte";
-    import CustomerIndividualServiceBookingComponent
-        from "$lib/components/CustomerBookingClickModal/Servicing/components/CustomerIndivdualBookingComponent/CustomerIndividualServiceBookingComponent/CustomerIndividualServiceBookingComponent.svelte";
     import {
         servicingTicketClickModal
     } from "$lib/components/TimeTable/ServicingTicketClickModal/stores/servicingTicketClickModal.js";
     import {
-        findPreselectEmployeeID,
         indicateToSendCustomerBookingToCompleted
     } from "$lib/components/TimeTable/ServicingTicketClickModal/functions.js";
     import {
         findIndividualBookingFromCustomerBooking
-    } from "$lib/api/initialize_functions/customer-booking-utility-functions.js";
-    import {CustomerBookingState} from "$lib/api/initialize_functions/CustomerBooking.js";
+    } from "$lib/api/initialize_functions/utilitiy_functions/CustomerBooking.js";
     import Footer from "$lib/components/CustomerBookingClickModal/components/Footer/Footer.svelte";
     import TicketInformation from "$lib/components/TimeTable/TimetableModal/TicketInformation/TicketInformation.svelte";
 

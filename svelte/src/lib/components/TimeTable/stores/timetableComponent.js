@@ -46,6 +46,7 @@ export async function fetchTimetable(dateString) {
     }
 }
 
+/*
 export  async function handleScheduleUpdate(eventData) {
     const data = eventData.data;
 
@@ -58,3 +59,4 @@ export  async function handleScheduleUpdate(eventData) {
         timetableComponent.set(data);
     }
 }
+*/
