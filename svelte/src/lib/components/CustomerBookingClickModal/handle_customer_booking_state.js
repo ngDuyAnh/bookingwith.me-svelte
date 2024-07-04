@@ -45,6 +45,7 @@ export function moveToServicing(customerBooking) {
     const currentTime = nowTime();
 
     customerBooking.bookingState = CustomerBookingState.SERVICING;
+    customerBooking.noShow = false;
 
     // Initialize the checkin time if it is null
     if (!customerBooking.checkinTime) {
