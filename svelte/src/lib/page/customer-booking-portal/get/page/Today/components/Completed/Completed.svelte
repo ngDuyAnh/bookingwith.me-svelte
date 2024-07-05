@@ -1,132 +1,39 @@
 <script>
     import {CustomerBookingReview} from "$lib/api/initialize_functions/CustomerBooking.js";
-    import {fly, slide} from "svelte/transition";
-    import {CheckCircleSolid, CloseCircleSolid} from "flowbite-svelte-icons";
-    import {Spinner, Toast} from "flowbite-svelte";
     import {initializeCustomerBooking} from "$lib/api/api_server/api_endpoints/customer-booking-portal/api.js";
     import {customerBooking} from "$lib/page/customer-booking-portal/get/stores/customerBookingEstimate.js";
     import {business} from "$lib/page/stores/business/business.js";
 
-    let getReview = !$customerBooking.customerBookingReview;
     let review = CustomerBookingReview();
-    let polishUsed = false;
 
     async function submitReviewToDatabase() {
         // Submit the changes to the backend
         let updatedCustomerBooking = await initializeCustomerBooking({
             ...$customerBooking,
-            smsConfirmation: true
+            customerBookingReview: review
         });
 
         // Set the store
         customerBooking.set(updatedCustomerBooking);
     }
 
-    function handleGoogleReviewClick() {
-        // Review text is empty
-        if (!review.reviewText) {
-            review.reviewText = "Customer clicked take me directly to Google review.";
-        }
-
-        // Submit the review to the database
-        submitReviewToDatabase();
-    }
-
-    let reviewCopyGood = false;
-    let reviewCopyBad = false;
-    let copyToastTimer;
-    let isLoading = false;
-    let errorMessage = "";
-    let errorToastTimer;
-
-    function copyToClipboard(text) {
-        reviewCopyGood = false;
-        reviewCopyBad = false;
-
-        navigator.clipboard.writeText(text).then(() => {
-            reviewCopyGood = true;
-        }, () => {
-            reviewCopyBad = true;
-        });
-        copyToastTimer = 5;
-        timeoutCopyToast();
-    }
-
-    function timeoutCopyToast() {
-        if (--copyToastTimer > 0) return setTimeout(timeoutCopyToast, 1000);
-        reviewCopyGood = false;
-        reviewCopyBad = false;
-    }
-
-    function isNumeric(str) {
-        return /^\d+$/.test(str);
-    }
-
-    function removeQuotes(str) {
-        return str.replace(/^"|"$/g, '');
-    }
-
-    let numPolishReview = 0;
-    let threadID = undefined;
-
-    async function handlePolishReview()
+    function handleStarClick(star)
     {
-        polishUsed = true;
-        numPolishReview++;
+        review.rating = star
 
-        isLoading = true;
-        errorMessage = "";
-
-        try {
-            const response = await fetch('/api/review', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify({
-                    businessName: $business.businessInfo.businessName,
-                    businessType: $business.businessInfo.businessType,
-                    reviewText: review.reviewText,
-                    threadID: threadID
-                })
-            });
-
-            const data = await response.json();
-            if (response.ok)
-            {
-                review.reviewText = removeQuotes(data.polishedReview);
-                threadID = data.threadID;
-            }
-            else
-            {
-                throw new Error(data.error || "Unknown error occurred");
-            }
-
-            // Save the review to the database
-            await submitReviewToDatabase();
-        }
-        catch (error)
+        // 5 stars
+        // Redirect the customer to the Google review page and record to database
+        if (review.rating === 5)
         {
-            console.error('Error polishing review:', error);
-            errorMessage = error.message || "Failed to polish review. Please try again later.";
-            errorToastTimer = 5;
-            timeoutErrorToast();
-        }
-        finally
-        {
-            isLoading = false;
-        }
-
-        function timeoutErrorToast() {
-            if (--errorToastTimer > 0) return setTimeout(timeoutErrorToast, 1000);
-            errorMessage = "";
+            submitReviewToDatabase();
+            window.open($business.businessInfo.googleReviewLink, '_blank');
         }
     }
 </script>
 
 <div class="flex items-center justify-center h-screen bg-gray-100 rounded-lg space-y-4">
     <div class="flex flex-col justify-center items-center p-4 bg-white shadow-lg rounded-lg w-full max-w-lg">
-        {#if getReview}
+        {#if !$customerBooking.customerBookingReview}
             <div class="text-xl font-semibold mb-4">
                 How was your service? Please rate us!
             </div>
@@ -134,7 +41,7 @@
             <!-- Get the review stars -->
             <div class="flex mb-4">
                 {#each [1, 2, 3, 4, 5] as star}
-                    <button on:click={() => review.rating = star}
+                    <button on:click={() => handleStarClick(star)}
                             class="text-3xl focus:outline-none {star <= review.rating ? 'text-yellow-300' : 'text-gray-300'}">
                         {#if star <= review.rating}
                             &#9733; <!-- Filled star -->
@@ -154,10 +61,7 @@
                           placeholder="Your feedback..."></textarea>
 
                 <div class="flex mt-2 space-x-2">
-                    <button on:click={() => {
-                        submitReviewToDatabase();
-                        getReview = false;
-                    }}
+                    <button on:click={() => submitReviewToDatabase()}
                             class="bg-blue-500 text-white py-2 px-4 rounded-md hover:bg-blue-600">
                         Submit
                     </button>
@@ -172,88 +76,11 @@
                           placeholder="Your feedback..."></textarea>
 
                 <div class="flex mt-2 space-x-2">
-                    <button on:click={() => {
-                        submitReviewToDatabase();
-                        getReview = false;
-                    }}
+                    <button on:click={() => submitReviewToDatabase()}
                             class="bg-blue-500 text-white py-2 px-4 rounded-md hover:bg-blue-600">
                         Submit
                     </button>
                 </div>
-            {:else if review.rating === 5}
-                <div class="text-gray-600 font-medium mb-4 p-4 border border-gray-300 rounded-lg">
-                    <ol class="list-decimal list-inside space-y-2">
-                        <li>
-                            Write about your experience. Optionally, press <span class="text-purple-500 font-semibold">"Polish Review"</span>
-                            to refine your feedback.
-                        </li>
-                        <li>
-                            Once finished, select <span class="text-blue-500 font-semibold">"Copy Review"</span>.
-                        </li>
-                        <li>
-                            Click <span class="text-green-500 font-semibold">"Post on Google"</span> to share your
-                            review.
-                        </li>
-                    </ol>
-                </div>
-
-                <Toast bind:open={errorMessage} transition={fly} params={{ y: 50 }} color="red"
-                       class="mt-4 w-auto p-4 flex items-center justify-center" divClass="bg-red-300" position="">
-                    {errorMessage}
-                </Toast>
-                <textarea disabled={isLoading}
-                          id="review-text" bind:value={review.reviewText}
-                          required
-                          class="border {errorMessage ? 'border-red-600' : 'border-gray-300'} {isLoading ? 'animate-pulse':''} border-gray-300 p-2 mt-2 w-full h-32 rounded-md"
-                          placeholder="Your review..."></textarea>
-
-                <div class="flex mt-2 p-1 space-x-4">
-                    <button disabled={isLoading || !review.reviewText.trim() || isNumeric(review.reviewText) || numPolishReview > 2}
-                            on:click={handlePolishReview}
-                            class="text-center p-2 flex flex-row text-white rounded-md items-center justify-center {isLoading || !review.reviewText.trim() || isNumeric(review.reviewText) || numPolishReview > 2 ? 'bg-gray-500' : 'bg-purple-500 hover:bg-purple-600'}">
-                        {#if isLoading}
-                            <Spinner/>
-                            Polishing...
-                        {:else}
-                            Polish Review
-                        {/if}
-                    </button>
-                    <button on:click={() => copyToClipboard(review.reviewText)}
-                            class=" text-center	 flex flex-row items-center justify-center bg-blue-500 text-white p-2  rounded-md hover:bg-blue-600">
-                        Copy Review
-                    </button>
-                    <a
-                            class="text-center flex flex-row items-center justify-center bg-green-500 text-white p-2 rounded-md hover:bg-green-600"
-                            href={$business.businessInfo.googleReviewLink}
-                            target="_blank"
-                            on:click={handleGoogleReviewClick}
-                    >
-                        Post on Google
-                    </a>
-                </div>
-
-                <Toast
-                        color="green"
-                        transition={slide}
-                        class="mt-4 w-auto p-4 flex items-center justify-center"
-                        position="bottom-right"
-                        bind:open={reviewCopyGood}
-                >
-                    <CheckCircleSolid slot="icon" class="w-5 h-5 "/>
-                    Review Copied.
-                </Toast>
-                <Toast color="red" class="mt-4 w-auto p-4 flex items-center justify-center" dismissable={false}
-                       position="bottom-right" bind:open={reviewCopyBad}>
-                    <CloseCircleSolid slot="icon" class="w-5 h-5"/>
-                    Failed to Copy.
-                </Toast>
-
-                {#if polishUsed}
-                    <div>
-                        {numPolishReview} out of 3 polishes used.
-                    </div>
-                {/if}
-
             {/if}
         {:else}
             Thank you for taking the time to write the review!

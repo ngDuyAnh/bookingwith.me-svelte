@@ -100,6 +100,7 @@ export function CustomerIndividualServiceBooking() {
 
 export function ServicingTicketInfo() {
     return {
+        "phoneNumber": "",
         "customerName": "",
 
         "id": -1,

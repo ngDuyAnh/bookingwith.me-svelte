@@ -5,11 +5,15 @@
     } from "$lib/components/CustomerBookingClickModal/handle_customer_booking_state.js";
     import {Button, Modal} from "flowbite-svelte";
     import {ExclamationCircleOutline} from "flowbite-svelte-icons";
+    import {business} from "$lib/page/stores/business/business.js";
+    import {customerBooking} from "$lib/page/customer-booking-portal/get/stores/customerBookingEstimate.js";
+    import LiveIndicator
+        from "$lib/page/customer-booking-portal/get/page/components/LiveIndicator/LiveIndicator.svelte";
 
     let openArrivalModal = false;
 
     async function notifyArrival() {
-        moveToLobby($customerBookingEstimate.customerBooking);
+        moveToLobby($customerBooking);
 
         // Force react
         customerBookingEstimate.set($customerBookingEstimate);
@@ -29,6 +33,7 @@
             <div class="flex flex-col items-center sm:flex-row sm:items-center justify-center sm:justify-between w-full">
                 <span class="block sm:inline mb-2 sm:mb-0">Your appointment is <span
                         class="underline">today</span>!</span>
+                <LiveIndicator/>
             </div>
         </div>
 
@@ -62,7 +67,7 @@
 
         <a
                 class="mr-2 text-gray-900 bg-white border border-gray-300 focus:outline-none hover:bg-gray-100 focus:ring-4 focus:ring-gray-100 font-medium rounded-lg text-sm px-3 py-2.5 dark:bg-gray-800 dark:text-white dark:border-gray-600 dark:hover:bg-gray-700 dark:hover:border-gray-600 dark:focus:ring-gray-700"
-                href={$customerBookingEstimate.business.businessInfo.googleMapsDirectionLink}
+                href={$business.businessInfo.googleMapsDirectionLink}
                 target="_blank"
                 type="button"
         >
@@ -85,7 +90,7 @@
 
         <a
                 class="text-gray-900 bg-white border border-gray-300 focus:outline-none hover:bg-gray-100 focus:ring-4 focus:ring-gray-100 font-medium rounded-lg text-sm px-3 py-2.5 dark:bg-gray-800 dark:text-white dark:border-gray-600 dark:hover:bg-gray-700 dark:hover:border-gray-600 dark:focus:ring-gray-700"
-                href="tel:{$customerBookingEstimate.business.businessInfo.businessPhoneNumber}"
+                href="tel:{$business.businessInfo.businessPhoneNumber}"
                 target="_blank"
                 type="button"
         >
