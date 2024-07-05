@@ -3,9 +3,13 @@ import {getCustomerBookingQueueList} from "$lib/api/api_server/api_endpoints/lob
 import {business} from "$lib/page/stores/business/business.js";
 import {now} from "$lib/page/stores/now/now_dayjs_store.js";
 import {formatToDate} from "$lib/application/Formatter.js";
+// import {
+//     handleCustomerBookingClickUpdate
+// } from "$lib/components/CustomerBookingClickModal/stores/customerBookingClickModal.js";
+
 import {
     handleCustomerBookingClickUpdate
-} from "$lib/components/CustomerBookingClickModal/stores/customerBookingClickModal.js";
+} from "../../../../../components/CustomerBookingClickModal/stores/customerBookingClickModal.js";
 
 export const customerBookingQueueList = writable([[],[],[],[]]);
 

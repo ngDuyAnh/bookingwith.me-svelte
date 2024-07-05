@@ -1,8 +1,12 @@
 <script>
-    import {isToday, now, today, isPast} from "$lib/page/stores/now/now_dayjs_store.js";
+    import {isPast, isToday, now, today} from "$lib/page/stores/now/now_dayjs_store.js";
     import {formatTimeAm, formatToTime} from "$lib/application/Formatter.js";
     import Calendar from "@event-calendar/core";
+
+    import Interaction from '@event-calendar/interaction';
     import ResourceTimeGrid from "@event-calendar/resource-time-grid";
+
+
     import {CustomerBookingState} from "$lib/api/initialize_functions/CustomerBooking.js";
     import ServicingTicketClickModal
         from "$lib/components/TimeTable/ServicingTicketClickModal/ServicingTicketClickModal.svelte";
@@ -15,11 +19,13 @@
     } from "$lib/components/Modal/CreateCustomerBooking/modalCreateCustomerBooking.js";
     import {fetchTimetable, timetableComponent} from "$lib/components/TimeTable/stores/timetableComponent.js";
     import {onMount} from "svelte";
+    import {Spinner} from "flowbite-svelte";
 
     // Date select
     let selectedDate = today();
 
     let calendarInstance;
+    let loading = true;
 
     let prevSelected = null;
     let prevSelectedServiceID = null;
@@ -28,32 +34,66 @@
     let conflictEmployeeEvents = {};
     let assignedEmployeeEvents = {};
 
-    let plugins = [ResourceTimeGrid];
+    let plugins = [ResourceTimeGrid, Interaction];
 
     let options = {
-        view: "resourceTimeGridDay",
-        views: {
-            resourceTimeGridDay: {pointer: true},
-        },
+        editable: true,
+        eventStartEditable: true,
+        eventDurationEditable: true,
+        view: 'resourceTimeGridDay',
+        selectable: true,
         allDaySlot: false,
-        nowIndicator: isToday(selectedDate),
-        dayMaxEvents: true,
-        slotDuration: "00:05:00",
-        scrollTime: $now.format("HH:mm:ss"),
         headerToolbar: {
             start: "",
             center: "",
             end: "",
         },
-        resources: [],
-        events: [],
-        eventClick: function (info) {
+        nowIndicator: isToday(selectedDate),
+        dayMaxEvents: true,
+        slotDuration: "00:05:00",
+        scrollTime: $now.format("HH:mm:ss"),
+        eventClick: (info) => {
             servicingTicketClickModalOpenWithServicingTicketEventInfo(info);
         },
+        events: [],
+        resources: [],
+        eventLongPressDelay: 500,
         eventAllUpdated: function () {
             findECBody();
         },
-        eventMouseEnter: function (info) { //under weird circumstances, can be called infinitely when hovering over an event
+        eventDidMount: function (info) {
+            if (info.event.title !== "") {
+                let extendedProps = info.event.extendedProps;
+                let employeeID = extendedProps.employeeTimetable.employee.id;
+                let bookedEmployee = extendedProps.servicingTicket.servicingTicketInfo.bookedEmployee;
+                let conflicted = false;
+                if (bookedEmployee !== null && bookedEmployee.id !== employeeID) {
+                    conflicted = true;
+                    conflictEmployeeEvents[info.event.id] = "border-2 border-red-600";
+                    info.el.className = `ec-event border-2 border-red-600`;
+                } else if (bookedEmployee !== null && bookedEmployee.id === employeeID) {
+                    info.el.className = `ec-event border-4 border-black`;
+                    assignedEmployeeEvents[info.event.id] = "border-4 border-black";
+                }
+
+                const timeDiv = `<div class="text-sm font-semibold">${extendedProps.time}</div>`;
+                const descriptionDiv = `<div class="text-sm text-ellipsis overflow-hidden ... whitespace-pre-line">${extendedProps.description}</div>`;
+
+                const tempDiv = document.createElement('div'); // Create a temporary DIV
+                tempDiv.innerHTML = `<div class="flex flex-col w-full ">${timeDiv}${descriptionDiv}</div>`;
+
+                const firstChild = info.el.firstChild; // Get the first child of the element
+                while (tempDiv.firstChild) {
+                    info.el.insertBefore(tempDiv.firstChild, firstChild);
+                }
+
+                if (!conflicted && conflictEmployeeEvents[info.event.id]) {
+                    delete conflictEmployeeEvents[info.event.id];
+                }
+            }
+        },
+        eventMouseEnter: function (info) {
+            //under weird circumstances, can be called infinitely when hovering over an event
             // until you move the mouse elsewhere. observed when an event occupies
             // very little time range.
             if (info.event.title !== "") {
@@ -109,38 +149,6 @@
                 info.el.className = `ec-event ${assignedEmployeeEvents[info.event.id] ? assignedEmployeeEvents[info.event.id] : ""} ${conflictEmployeeEvents[info.event.id] ? conflictEmployeeEvents[info.event.id] : ""}`;
             }
         },
-        eventDidMount: function (info) {
-            if (info.event.title !== "") {
-
-                let extendedProps = info.event.extendedProps;
-                let employeeID = extendedProps.employeeTimetable.employee.id;
-                let bookedEmployee = extendedProps.servicingTicket.servicingTicketInfo.bookedEmployee;
-                let conflicted = false;
-
-                if (bookedEmployee !== null && bookedEmployee.id !== employeeID) {
-                    conflicted = true;
-                    conflictEmployeeEvents[info.event.id] = "border-2 border-red-600";
-                    info.el.className = `ec-event border-2 border-red-600`;
-                } else if (bookedEmployee !== null && bookedEmployee.id === employeeID) {
-                    info.el.className = `ec-event border-4 border-black`;
-                    assignedEmployeeEvents[info.event.id] = "border-4 border-black";
-                }
-
-                info.el.innerHTML = buildInnerHTML(extendedProps.time, extendedProps.description);
-
-                if (!conflicted && conflictEmployeeEvents[info.event.id]) {
-                    delete conflictEmployeeEvents[info.event.id];
-                }
-            }
-
-        }
-    };
-
-    function buildInnerHTML(time, description) {
-        const timeDiv = `<div class="timeDivClass">${time}</div>`;
-        const descriptionDiv = `<div class="text-sm text-ellipsis overflow-hidden ... whitespace-pre-line">${description}</div>`;
-
-        return `<div class="flex flex-col">${timeDiv}${descriptionDiv}</div>`
     }
 
     function highlightRelatedEvents(bookingID) {
@@ -190,6 +198,20 @@
 
     function findECBody() {
         const element = document.querySelector(".ec-body");
+
+        if (element) {
+            element.style.overflowX = "hidden";
+            element.style.overflowY = "auto";
+            element.style.scrollbarWidth = "auto";
+            element.style.scrollbarColor = "white ";
+        }
+
+        const eventTime = document.querySelectorAll(".ec-event-body");
+
+        eventTime.forEach((element) => {
+            element.style.display = "none";
+        });
+
 
         if (element) {
             element.style.overflowX = "hidden";
@@ -252,8 +274,7 @@
     // Date select change
     // Or current time change if it is today
     $: if ($timetableComponent.date !== selectedDate ||
-        (isToday($timetableComponent.date) && $timetableComponent.currentTime !== $now.format(formatToTime)))
-    {
+        (isToday($timetableComponent.date) && $timetableComponent.currentTime !== $now.format(formatToTime))) {
         // Now indicator for today
         options.nowIndicator = isToday(selectedDate);
 
@@ -282,6 +303,8 @@
     let resources = [];
 
     async function updateCalendarEvents(employeeTimetableList) {
+        loading = true;
+
         handleTimetableUpdateForServicingTicketClickModal(employeeTimetableList)
             .then(() => {
                 //console.log("handleTimetableUpdateForServicingTicketClickModal() completed.");
@@ -296,6 +319,7 @@
                 start: `${$now.format("YYYY-MM-DD")} ${employeeTable.timePeriod.startTime}`,
                 end: `${$now.format("YYYY-MM-DD")} ${employeeTable.timePeriod.endTime}`,
                 display: "background",
+
             });
             return {
                 id: employeeTable.employee.id,
@@ -307,7 +331,9 @@
 
         options.resources = resources;
         options.events = employeeWorkHourEvent.concat(employeeEvents);
+        // options.events = employeeEvents;
 
+        loading = false;
         if (options.events.length === 0) {
             setTimeout(function () {
                 findECBody();
@@ -381,6 +407,7 @@
                 })
         );
     }
+
 </script>
 
 <div class="flex flex-col items-center justify-center p-1.5">
@@ -426,15 +453,17 @@
         </div>
     </div>
 </div>
-
 <div
         class="flex flex-col items-center justify-center w-4/5 h-4/5 mx-auto overflow-x-auto"
 >
     <div class="flex h-full m-auto">
-        <Calendar bind:this={calendarInstance} {plugins} {options}/>
+        {#if loading}
+            <Spinner/>
+        {:else}
+            <Calendar bind:this={calendarInstance} {plugins} {options}/>
+        {/if}
     </div>
 </div>
-
 <div style="z-index: 1006;">
     <ServicingTicketClickModal
             isToday={isToday(selectedDate)}
