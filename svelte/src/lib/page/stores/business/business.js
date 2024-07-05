@@ -1,5 +1,4 @@
 import {get, writable} from 'svelte/store';
-import {now} from "$lib/page/stores/now/now_dayjs_store.js";
 
 export const business = writable(undefined);
 

@@ -18,7 +18,7 @@
     } from "$lib/components/Modal/CreateCustomerBooking/modalCreateCustomerBooking.js";
     import {fetchTimetable, timetableComponent,} from "$lib/components/TimeTable/stores/timetableComponent.js";
     import {onMount} from "svelte";
-    import {Button, Search, Spinner} from "flowbite-svelte";
+    import {Button, Search} from "flowbite-svelte";
     import {SearchOutline} from "flowbite-svelte-icons";
     import dayjs from "dayjs";
     import {findCustomerBookingById} from "$lib/page/protected/business-portal/page_lobby/stores/dashboard_store.js";
@@ -28,13 +28,12 @@
     import {
         initializeCustomerBookingAndBroadcast
     } from "$lib/api/api_server/api_endpoints/customer-booking-portal/api.js";
-    import {business, getEmployee} from "$lib/page/stores/business/business.js";
+    import {getEmployee} from "$lib/page/stores/business/business.js";
 
     // Date select
     let selectedDate = today();
 
     let calendarInstance;
-    let loading = true;
 
     let prevSelected = null;
     let prevSelectedServiceID = null;
