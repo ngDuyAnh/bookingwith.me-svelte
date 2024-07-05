@@ -15,6 +15,9 @@
     } from "$lib/components/Modal/CreateCustomerBooking/modalCreateCustomerBooking.js";
     import {fetchTimetable, timetableComponent} from "$lib/components/TimeTable/stores/timetableComponent.js";
     import {onMount} from "svelte";
+    import {SearchOutline} from "flowbite-svelte-icons";
+    import {Button, Search} from "flowbite-svelte";
+    import {customerBookingQueueList} from "$lib/page/protected/business-portal/page_lobby/stores/dashboard_store.js";
 
     // Date select
     let selectedDate = today();
@@ -270,11 +273,68 @@
         }
     }
 
-    // Timetable update generate events for calendar
-    $: {
-        if ($timetableComponent.employeeTimetableList) {
-            updateCalendarEvents($timetableComponent.employeeTimetableList);
+    let searchValue = '';
+    let showSearchText = "";
+    let filteredEmployeeTimetableList = $timetableComponent.employeeTimetableList;
+
+    function normalize(text) {
+        return text.replace(/[\W_]+/g, "").toLowerCase();
+    }
+
+    function searchBookings() {
+        const normalizedSearchValue = normalize(searchValue);
+
+        if (searchValue.length === 0) {
+
+            // Reset the scroll to current time
+            options.scrollTime = $now.format("HH:mm:ss");
+
+            filteredEmployeeTimetableList = $timetableComponent.employeeTimetableList;
+            showSearchText = "";
+        } else {
+            filteredEmployeeTimetableList = $timetableComponent.employeeTimetableList.map(employeeTimetable => {
+                return {
+                    ...employeeTimetable,
+                    servicingTicketList: employeeTimetable.servicingTicketList.filter(ticket =>
+                        normalize(ticket.servicingTicketInfo.phoneNumber).includes(normalizedSearchValue) ||
+                        normalize(ticket.servicingTicketInfo.customerName).includes(normalizedSearchValue) ||
+                        normalize(ticket.servicingTicketInfo.id.toString()).includes(normalizedSearchValue)
+                    )
+                };
+            }).filter(employeeTimetable => employeeTimetable.servicingTicketList.length > 0);
+
+            // Find the earliest non-completed servicing ticket
+            let earliestServicingTicketStartTimeNotCompleted = undefined;
+            filteredEmployeeTimetableList.forEach(timetable => {
+                timetable.servicingTicketList.forEach(ticket => {
+                    if (ticket.servicingTicketInfo.bookingState !== CustomerBookingState.COMPLETED) {
+                        if (!earliestServicingTicketStartTimeNotCompleted ||
+                            ticket.timePeriod.startTime < earliestServicingTicketStartTimeNotCompleted)
+                        {
+                            earliestServicingTicketStartTimeNotCompleted = ticket.timePeriod.startTime;
+                        }
+                    }
+                })
+            });
+
+            // Scroll to the start time
+            if (earliestServicingTicketStartTimeNotCompleted)
+            {
+                options.scrollTime = `${earliestServicingTicketStartTimeNotCompleted}:00`;
+            }
+
+            showSearchText = `Showing Results For: ${searchValue}`;
         }
+    }
+
+    // Searching input changes
+    // Timetable update generate events for calendar
+    $: if (searchValue.length >= 0 || $timetableComponent.employeeTimetableList) {
+        // Apply search filter
+        searchBookings();
+
+        // Generate the events for the calendar
+        updateCalendarEvents(filteredEmployeeTimetableList);
     }
 
     let employeeEvents = [];
@@ -404,6 +464,21 @@
         </button>
     </div>
 
+    <div class="flex sm:flex-row flex-col sm:items-center items-start justify-start sm:space-x-4 pt-4 px-4 2xl:items-center 2xl:justify-center">
+        <form class="flex max-w-xs items-center" on:submit={searchBookings}>
+            <Search bind:value={searchValue} size="md" class="rounded-none rounded-l-lg py-2.5"
+                    placeholder="Search Booking Info" maxlength="20">
+            </Search>
+            <Button type="submit" class="!p-2.5 rounded-s-none">
+                <SearchOutline class="w-5 h-5"/>
+            </Button>
+        </form>
+
+        <div class="!flex !flex-col">
+            <strong class="sm:my-0 mt-1 text-sm">{showSearchText}</strong>
+        </div>
+    </div>
+
     <!-- Legend for color coding -->
     <div
             class="legend flex justify-around items-center w-full p-2 bg-white shadow rounded-lg mb-1"
@@ -430,9 +505,11 @@
 <div
         class="flex flex-col items-center justify-center w-4/5 h-4/5 mx-auto overflow-x-auto"
 >
-    <div class="flex h-full m-auto">
-        <Calendar bind:this={calendarInstance} {plugins} {options}/>
-    </div>
+    {#key options.scrollTime}
+        <div class="flex h-full m-auto">
+            <Calendar bind:this={calendarInstance} {plugins} {options}/>
+        </div>
+    {/key}
 </div>
 
 <div style="z-index: 1006;">

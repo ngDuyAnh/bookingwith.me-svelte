@@ -12,11 +12,9 @@
     import CustomerBookingClickModal from "$lib/components/CustomerBookingClickModal/CustomerBookingClickModal.svelte";
     import {SearchOutline} from 'flowbite-svelte-icons';
 
-
-    let filteredBookingStateList = [];
     let searchValue = '';
-
     let showSearchText = "";
+    let filteredBookingStateList = $customerBookingQueueList;
 
     function normalize(text) {
         return text.replace(/[\W_]+/g, "").toLowerCase();
@@ -40,8 +38,6 @@
             });
             showSearchText = `Showing Results For: ${searchValue}`;
         }
-
-
     }
 
 
