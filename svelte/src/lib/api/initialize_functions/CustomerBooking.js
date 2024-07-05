@@ -91,6 +91,7 @@ export function CustomerIndividualServiceBooking() {
         "service": null,
         "completed": false,
 
+        "assignedEmployee": null,
         "startTime": null,
         "servicingDuration": null,
 
