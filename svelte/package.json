@@ -11,6 +11,10 @@
     "test:unit": "vitest"
   },
   "devDependencies": {
+    "@event-calendar/core": "^3.1.0",
+    "@event-calendar/interaction": "^3.1.0",
+    "@event-calendar/resource-time-grid": "^3.1.0",
+    "@event-calendar/time-grid": "^3.1.0",
     "@fontsource/fira-mono": "^4.5.10",
     "@neoconfetti/svelte": "^1.0.0",
     "@playwright/test": "^1.28.1",
@@ -32,8 +36,6 @@
   },
   "type": "module",
   "dependencies": {
-    "@event-calendar/core": "^2.6.1",
-    "@event-calendar/resource-time-grid": "^2.6.1",
     "@sveltejs/adapter-cloudflare": "^4.2.0",
     "dayjs": "^1.11.10",
     "dexie": "^4.0.1",
