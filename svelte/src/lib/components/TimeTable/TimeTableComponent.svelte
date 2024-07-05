@@ -222,41 +222,39 @@
         eventDrop: function (info) {
             let startTime = dayjs(info.event.start).format(formatToTime);
 
-
-            let currServiceBookingID = info.event.extendedProps.servicingTicket.serviceBookingID;
-
-
-
-            let serviceBooking = undefined;
             let customerBookingId = info.event.extendedProps.servicingTicket.servicingTicketInfo.id;
+            let serviceBookingID = info.event.extendedProps.servicingTicket.serviceBookingID;
+
+            // Get the customer booking and service booking instance
             let customerBooking = findCustomerBookingById(customerBookingId);
+            let serviceBooking = undefined;
             if (customerBooking) {
                 serviceBooking = findServiceBookingFromCustomerBooking(
                     customerBooking,
-                    currServiceBookingID
+                    serviceBookingID
                 );
 
+                // Assign employee working on the service
                 if(info.newResource)
                 {
-                    const employee=getEmployee(parseInt(info.newResource.id, 10));
+                    const employee = getEmployee(parseInt(info.newResource.id, 10));
                     if(employee)
                     {
-                        serviceBooking.assignedEmployee=employee;
+                        serviceBooking.assignedEmployee = employee;
                     }
                 }
 
-                // Only set the start time if the drag duration was more than 1 second (1000 milliseconds)
-                if (dragDuration > 1000) {
+                // Only set the start time if the customer booking is SERVICING
+                if (customerBooking.bookingState === CustomerBookingState.SERVICING) {
                     serviceBooking.startTime = startTime;
                 }
-                else
-                {
+                // Reset start time
+                else if (customerBooking.bookingState !== CustomerBookingState.COMPLETED){
                     serviceBooking.startTime = null;
                 }
 
                 initializeCustomerBookingAndBroadcast(customerBooking, nowTime());
             }
-
         },
 
     };
@@ -264,10 +262,10 @@
     function highlightRelatedEvents(bookingID) {
         const allEvents = calendarInstance.getEvents();
         allEvents.forEach((event) => {
-            if (
-                event.extendedProps.servicingTicket &&
-                event.extendedProps.servicingTicket.bookingID === bookingID
-            ) {
+            // Customer booking
+            if (event.extendedProps.servicingTicket &&
+                event.extendedProps.servicingTicket.bookingID === bookingID)
+            {
                 event.backgroundColor = "#7d5821";
 
                 calendarInstance.updateEvent(event);
