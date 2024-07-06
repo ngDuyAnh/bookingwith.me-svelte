@@ -3,6 +3,10 @@ import {
     initializeCustomerBookingAndBroadcast
 } from "$lib/api/api_server/api_endpoints/customer-booking-portal/api.js";
 import {nowTime} from "$lib/page/stores/now/now_dayjs_store.js";
+import {
+    timetableComponent
+} from "$lib/components/TimeTable/stores/timetableComponent.js";
+import {get} from "svelte/store";
 
 export function moveToAppointment(customerBooking) {
     customerBooking.bookingState = CustomerBookingState.APPOINTMENT;
@@ -11,6 +15,13 @@ export function moveToAppointment(customerBooking) {
     customerBooking.checkinTime = null;
     customerBooking.servicingStartTime = null;
     customerBooking.servicingEndTime = null;
+
+    // Reset the service booking start time
+    customerBooking.customerIndividualBookingList.forEach(individualBooking => {
+        individualBooking.customerIndividualServiceBookingList.forEach(serviceBooking => {
+            serviceBooking.startTime = null;
+        });
+    });
 
     // Save the customer booking change
     initializeCustomerBookingAndBroadcast(customerBooking, nowTime())
@@ -31,6 +42,13 @@ export function moveToLobby(customerBooking) {
         customerBooking.checkinTime = currentTime;
     }
 
+    // Reset the service booking start time
+    customerBooking.customerIndividualBookingList.forEach(individualBooking => {
+        individualBooking.customerIndividualServiceBookingList.forEach(serviceBooking => {
+            serviceBooking.startTime = null;
+        });
+    });
+
     // Save the customer booking change
     initializeCustomerBookingAndBroadcast(customerBooking, currentTime)
         .then(() => {
@@ -43,6 +61,7 @@ export function moveToLobby(customerBooking) {
 
 export function moveToServicing(customerBooking) {
     const currentTime = nowTime();
+    const timetableComponentValue = get(timetableComponent);
 
     customerBooking.bookingState = CustomerBookingState.SERVICING;
     customerBooking.noShow = false;
@@ -54,6 +73,29 @@ export function moveToServicing(customerBooking) {
     if (!customerBooking.servicingStartTime) {
         customerBooking.servicingStartTime = currentTime;
     }
+
+    // Initialize the service booking with the scheduled start time and assigned employee
+    customerBooking.customerIndividualBookingList.forEach(individualBooking => {
+        individualBooking.customerIndividualServiceBookingList.forEach(serviceBooking => {
+            // Find the earliest start time and assigned employee from the tickets
+            let earliestStartTime = null;
+            let assignedEmployee = null;
+            timetableComponentValue.employeeTimetableList.forEach(employeeTimetable => {
+                employeeTimetable.servicingTicketList.forEach(ticket => {
+                    let ticketStartTime = ticket.timePeriod.startTime;
+                    if (ticket.serviceBookingID === serviceBooking.serviceBookingID &&
+                        (!earliestStartTime || ticketStartTime < earliestStartTime)) {
+                        earliestStartTime = ticketStartTime;
+                        assignedEmployee = employeeTimetable.employee;
+                    }
+                });
+            });
+
+            // Assign the employee and start time
+            serviceBooking.startTime = earliestStartTime;
+            serviceBooking.assignedEmployee = assignedEmployee;
+        });
+    });
 
     // Save the customer booking change
     initializeCustomerBookingAndBroadcast(customerBooking, currentTime)
