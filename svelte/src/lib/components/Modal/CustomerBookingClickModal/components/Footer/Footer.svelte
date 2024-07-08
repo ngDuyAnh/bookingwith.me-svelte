@@ -9,7 +9,7 @@
         moveToCompleted,
         moveToLobby,
         moveToServicing
-    } from "$lib/components/CustomerBookingClickModal/handle_customer_booking_state.js";
+    } from "$lib/components/Modal/CustomerBookingClickModal/handle_customer_booking_state.js";
     import {CustomerBookingState} from "$lib/api/initialize_functions/CustomerBooking.js";
     import {checkAbleToSendReviewReminder} from "$lib/api/api_server/api_endpoints/lobby-portal/api.js";
     import {checkAbleToSendSmsReviewReminder} from "$lib/api/api_server/functions.js";

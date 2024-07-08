@@ -9,7 +9,7 @@
         from "$lib/page/protected/business-portal/page_lobby/page/Dashboard/components/Completed/Completed.svelte";
     import {customerBookingQueueList} from "$lib/page/protected/business-portal/page_lobby/stores/dashboard_store.js";
     import {Button, Search, Spinner} from "flowbite-svelte";
-    import CustomerBookingClickModal from "$lib/components/CustomerBookingClickModal/CustomerBookingClickModal.svelte";
+    import CustomerBookingClickModal from "$lib/components/Modal/CustomerBookingClickModal/CustomerBookingClickModal.svelte";
     import {SearchOutline} from 'flowbite-svelte-icons';
     import {handleOpenCustomerProfileModal} from "$lib/components/Modal/CustomerProfileModal/customerProfileModal.js";
 
@@ -144,7 +144,7 @@
                             bind:droppedIntoID={droppedIntoID}
                             bind:customerBookingQueueList={filteredBookingStateList}
                     />
-                {:else if index == 2}
+                {:else if index === 2}
                     <Servicing
                             bind:dragStartedID={dragStartedID}
                             bind:droppedIntoID={droppedIntoID}

@@ -2,7 +2,7 @@
     import {Modal, Button, Input, Label} from "flowbite-svelte";
     import {
         grantManagerAccess
-    } from "$lib/components/CustomerBookingClickModal/stores/managerAccess.js";
+    } from "$lib/components/Modal/CustomerBookingClickModal/stores/managerAccess.js";
 
     export let open = false;
     let managerPassword = "";

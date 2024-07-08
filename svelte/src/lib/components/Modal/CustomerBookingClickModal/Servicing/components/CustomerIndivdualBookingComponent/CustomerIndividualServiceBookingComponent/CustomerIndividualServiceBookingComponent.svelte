@@ -5,7 +5,7 @@
     import {nowTime} from "$lib/page/stores/now/now_dayjs_store.js";
     import {formatToTime, formatToTimeAm} from "$lib/application/Formatter.js";
     import {ServicingTicket} from "$lib/api/initialize_functions/CustomerBooking.js";
-    import {moveToServicing} from "$lib/components/CustomerBookingClickModal/handle_customer_booking_state.js";
+    import {moveToServicing} from "$lib/components/Modal/CustomerBookingClickModal/handle_customer_booking_state.js";
     import {BusinessScheduleManagement, Employee} from "$lib/api/initialize_functions/Business.js";
     import {business} from "$lib/page/stores/business/business.js";
     import {

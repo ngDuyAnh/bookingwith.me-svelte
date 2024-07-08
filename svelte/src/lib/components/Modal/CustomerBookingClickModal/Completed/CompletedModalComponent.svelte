@@ -3,8 +3,8 @@
     import {formatToTime, formatToTimeAm} from "$lib/application/Formatter.js";
     import {
         customerBookingClickModal
-    } from "$lib/components/CustomerBookingClickModal/stores/customerBookingClickModal.js";
-    import PhoneNumber from "$lib/components/CustomerBookingClickModal/components/PhoneNumber/PhoneNumber.svelte";
+    } from "$lib/components/Modal/CustomerBookingClickModal/stores/customerBookingClickModal.js";
+    import PhoneNumber from "$lib/components/Modal/CustomerBookingClickModal/components/PhoneNumber/PhoneNumber.svelte";
 </script>
 
 <div class="flex flex-col space-y-4">
@@ -17,6 +17,12 @@
             </p>
             <p><strong>Check-in
                 time:</strong> {dayjs($customerBookingClickModal.customerBooking.checkinTime, formatToTime).format(formatToTimeAm)}
+            </p>
+            <p><strong>Start
+                time:</strong> {dayjs($customerBookingClickModal.customerBooking.servicingStartTime, formatToTime).format(formatToTimeAm)}
+            </p>
+            <p><strong>End
+                time:</strong> {dayjs($customerBookingClickModal.customerBooking.servicingEndTime, formatToTime).format(formatToTimeAm)}
             </p>
             {#if $customerBookingClickModal.customerBooking.message.length !== 0}
                 <p class="break-words">
