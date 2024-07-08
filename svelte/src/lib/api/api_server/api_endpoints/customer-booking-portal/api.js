@@ -111,6 +111,37 @@ export async function getCustomerBooking(bookingid) {
     return await response.json();
 }
 
+export async function initializeCustomerProfile(customerProfile) {
+    const FETCH_URL = `${API_URL}/initialize-customer-profile`;
+
+    const response = await fetch(`${FETCH_URL}`, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(customerProfile)
+    });
+
+    if (!response.ok) {
+        throw new Error(`Failed to fetch. Status: ${response.status}`);
+    }
+
+    return await response.json();
+}
+
+export async function getCustomerProfile(businessID, phoneNumber)
+{
+    const FETCH_URL = `${API_URL}/get-customer-profile/${businessID}?phoneNumber=${phoneNumber}`;
+
+    const response = await fetch(`${FETCH_URL}`);
+
+    if (!response.ok) {
+        throw new Error(`Failed to fetch. Status: ${response.status}`);
+    }
+
+    return await response.json();
+}
+
 export async function getBusinessFromCustomerBooking(bookingid) {
     const FETCH_URL = `${API_URL}/get-business-from-customer-booking?bookingid=${bookingid}`;
 

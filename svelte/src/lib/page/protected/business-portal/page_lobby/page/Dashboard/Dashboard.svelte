@@ -11,6 +11,7 @@
     import {Button, Search, Spinner} from "flowbite-svelte";
     import CustomerBookingClickModal from "$lib/components/CustomerBookingClickModal/CustomerBookingClickModal.svelte";
     import {SearchOutline} from 'flowbite-svelte-icons';
+    import {handleOpenCustomerProfileModal} from "$lib/components/Modal/CustomerProfileModal/customerProfileModal.js";
 
     let searchValue = '';
     let showSearchText = "";
@@ -20,7 +21,7 @@
         return text.replace(/[\W_]+/g, "").toLowerCase();
     }
 
-    function searchBookings() {
+    function handleSearchFilter() {
         const normalizedSearchValue = normalize(searchValue);
 
         // Assume $customerBookingQueueList is structured like: [ [], [], [], [] ]
@@ -40,20 +41,38 @@
         }
     }
 
+    function handleSearchClick()
+    {
+        const normalizedSearchValue = normalize(searchValue);
+
+        // Customer profile
+        const phonePattern1 = /^\d{10}$/;
+        if (phonePattern1.test(normalizedSearchValue))
+        {
+            console.log("Opening customer profile...")
+            handleOpenCustomerProfileModal(normalizedSearchValue);
+
+            // Reset the search field
+            searchValue = "";
+        }
+        // Filter search
+        else {
+            handleSearchFilter();
+        }
+    }
 
     let loading = true;
     onMount(async () => {
-
         loading = false;
     });
 
 
     $: if (searchValue.length >= 0) {
-        searchBookings();
+        handleSearchFilter();
     }
 
     $: if ($customerBookingQueueList) {
-        searchBookings();
+        handleSearchFilter();
     }
 
     // $: console.log("filteredBookingStateList", filteredBookingStateList);
@@ -67,7 +86,7 @@
 
 
     <div class="flex sm:flex-row flex-col sm:items-center items-start justify-start sm:space-x-4 pt-4 px-4 2xl:items-center 2xl:justify-center">
-        <form class="flex max-w-xs items-center" on:submit={searchBookings}>
+        <form class="flex max-w-xs items-center" on:submit={handleSearchClick}>
             <Search bind:value={searchValue} size="md" class="rounded-none rounded-l-lg py-2.5"
                     placeholder="Search Booking Info" maxlength="20">
             </Search>

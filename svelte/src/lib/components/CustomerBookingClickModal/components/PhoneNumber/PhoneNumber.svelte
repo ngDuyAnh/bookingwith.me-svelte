@@ -8,7 +8,7 @@
         disableManagerAccess,
         managerAccess
     } from "$lib/components/CustomerBookingClickModal/stores/managerAccess.js";
-    import GetManagerPasswordModal from "$lib/components/GetManagerPasswordModal/GetManagerPasswordModal.svelte";
+    import GetManagerPasswordModal from "$lib/components/Modal/GetManagerPasswordModal/GetManagerPasswordModal.svelte";
 
     // Computed to mask/unmask phone number based on visibility state
     $: maskedPhoneNumber = $managerAccess

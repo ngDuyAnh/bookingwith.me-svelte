@@ -16,6 +16,7 @@
         employeeToSelectOption
     } from "$lib/components/CustomerBooking/CustomerIndividualBookingServiceSelect/components/ServiceOption/functions.js";
     import {employeeSelectOptions} from "$lib/page/stores/employeeSelectOptions/employeeSelectOptions.js";
+    import CustomerProfileModal from "$lib/components/Modal/CustomerProfileModal/CustomerProfileModal.svelte";
 
     export let data;
     let loading = true;
@@ -68,3 +69,6 @@
 <ModalEditCustomerBooking
         business={$business}
 />
+
+<!-- Modal for customer profile -->
+<CustomerProfileModal/>
