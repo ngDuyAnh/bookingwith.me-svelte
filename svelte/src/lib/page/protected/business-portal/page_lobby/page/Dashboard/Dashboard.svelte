@@ -13,6 +13,32 @@
     import {SearchOutline} from 'flowbite-svelte-icons';
     import {handleOpenCustomerProfileModal} from "$lib/components/Modal/CustomerProfileModal/customerProfileModal.js";
 
+    import {dndzone} from 'svelte-dnd-action';
+
+    const flipDurationMs = 200;
+
+
+    let columns = [
+        {
+            id: 0,
+            name: "Appointment"
+        },
+        {
+            id: 1,
+            name: "Lobby"
+        },
+        {
+            id: 2,
+            name: "Servicing"
+        },
+        {
+            id: 3,
+            name: "Completed"
+        }
+    ];
+
+
+
     let searchValue = '';
     let showSearchText = "";
     let filteredBookingStateList = $customerBookingQueueList;
@@ -76,6 +102,11 @@
     }
 
     // $: console.log("filteredBookingStateList", filteredBookingStateList);
+
+    let dragStartedID;
+    let droppedIntoID;
+
+    $:console.log("droppedIntoID ",droppedIntoID," from ",dragStartedID);
 </script>
 
 {#if loading}
@@ -103,19 +134,39 @@
                 <strong>{filteredBookingStateList[3].length}</strong></div>
         </div>
     </div>
+
     <div class="flex flex-row w-screen h-full justify-between 2xl:items-center 2xl:justify-center space-x-4 overflow-x-auto p-4">
-        <Appointment
-                bind:customerBookingQueueList={filteredBookingStateList}
-        />
-        <Lobby
-                bind:customerBookingQueueList={filteredBookingStateList}
-        />
-        <Servicing
-                bind:customerBookingQueueList={filteredBookingStateList}
-        />
-        <Completed
-                bind:customerBookingQueueList={filteredBookingStateList}
-        />
+        {#each columns as column, index (column.id)}
+            <div
+                    class="flex flex-col min-w-[348.4px] h-full bg-gray-100 rounded shadow overflow-y-auto border border-sky-200"
+            >
+                {#if index == 0}
+                    <Appointment
+                            bind:dragStartedID={dragStartedID}
+                            bind:droppedIntoID={droppedIntoID}
+                            bind:customerBookingQueueList={filteredBookingStateList}
+                    />
+                {:else if index == 1}
+                    <Lobby
+                            bind:dragStartedID={dragStartedID}
+                            bind:droppedIntoID={droppedIntoID}
+                            bind:customerBookingQueueList={filteredBookingStateList}
+                    />
+                {:else if index == 2}
+                    <Servicing
+                            bind:dragStartedID={dragStartedID}
+                            bind:droppedIntoID={droppedIntoID}
+                            bind:customerBookingQueueList={filteredBookingStateList}
+                    />
+                {:else if index == 3}
+                    <Completed
+                            bind:dragStartedID={dragStartedID}
+                            bind:droppedIntoID={droppedIntoID}
+                            bind:customerBookingQueueList={filteredBookingStateList}
+                    />
+                {/if}
+            </div>
+        {/each}
     </div>
 {/if}
 

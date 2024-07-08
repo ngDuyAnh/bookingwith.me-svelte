@@ -30,12 +30,14 @@
     "postcss": "^8.4.32",
     "postcss-load-config": "^5.0.2",
     "svelte": "^4.2.7",
+    "svelte-dnd-action": "^0.9.49",
     "tailwindcss": "^3.3.6",
     "vite": "^5.0.3",
     "vitest": "^1.2.0"
   },
   "type": "module",
   "dependencies": {
+    "@atlaskit/pragmatic-drag-and-drop": "^1.2.1",
     "@sveltejs/adapter-cloudflare": "^4.2.0",
     "dayjs": "^1.11.10",
     "dexie": "^4.0.1",
