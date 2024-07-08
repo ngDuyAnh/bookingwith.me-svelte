@@ -4,9 +4,6 @@
   import {handleNewCustomerBooking} from "$lib/components/Modal/CreateCustomerBooking/modalCreateCustomerBooking.js";
 
   export let customerBookingQueueList;
-  export let dragStartedID;
-  export let droppedIntoID;
-
 </script>
 
 <!-- List Header -->

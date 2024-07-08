@@ -3,7 +3,6 @@
         from "$lib/page/protected/business-portal/page_lobby/page/Dashboard/components/components/CustomerBookingList/CustomerBookingList.svelte";
 
     export let customerBookingQueueList;
-
 </script>
 
 <!-- List Header -->

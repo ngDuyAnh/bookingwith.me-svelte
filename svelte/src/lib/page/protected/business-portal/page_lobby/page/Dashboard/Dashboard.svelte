@@ -132,13 +132,13 @@
             <div
                     class="flex flex-col min-w-[348.4px] h-full bg-gray-100 rounded shadow overflow-y-auto border border-sky-200"
             >
-                {#if index == 0}
+                {#if index === 0}
                     <Appointment
                             bind:dragStartedID={dragStartedID}
                             bind:droppedIntoID={droppedIntoID}
                             bind:customerBookingQueueList={filteredBookingStateList}
                     />
-                {:else if index == 1}
+                {:else if index === 1}
                     <Lobby
                             bind:dragStartedID={dragStartedID}
                             bind:droppedIntoID={droppedIntoID}
@@ -150,7 +150,7 @@
                             bind:droppedIntoID={droppedIntoID}
                             bind:customerBookingQueueList={filteredBookingStateList}
                     />
-                {:else if index == 3}
+                {:else if index === 3}
                     <Completed
                             bind:dragStartedID={dragStartedID}
                             bind:droppedIntoID={droppedIntoID}
