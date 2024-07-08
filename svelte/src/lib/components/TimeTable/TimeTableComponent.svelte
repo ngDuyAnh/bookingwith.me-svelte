@@ -107,44 +107,16 @@
       }
     },
     eventMouseEnter: function (info) {
-      //under weird circumstances, can be called infinitely when hovering over an event
-      // until you move the mouse elsewhere. observed when an event occupies
-      // very little time range.
+        //if infinite hover bug appears again, might have to refer to old commits and bring bag the horrible fixes for it.
       if (info.event.title !== "") {
         let bookingID = info.event.extendedProps.servicingTicket.bookingID;
         let individualID =
           info.event.extendedProps.servicingTicket.individualID;
-        /*let currServiceID =
-                    info.event.extendedProps.servicingTicket.serviceBookingID;*/
-
-        // calendar is slow in updating events so need these two checks to make sure the borders and highlight
-        // dont stay on events that are not supposed to have them anymore
-        // if (prevSelectedServiceID && prevSelectedServiceID !== currServiceID) {
-        //     resetIndividualHighlight(prevSelectedServiceID);
-        //     prevEL.className = `ec-event ${assignedEmployeeEvents[info.event.id] ? assignedEmployeeEvents[info.event.id] : ""} ${conflictEmployeeEvents[prevInfoID] ? conflictEmployeeEvents[prevInfoID] : ""}`;
-        // }
-        // if (prevSelected && prevSelected !== bookingID) {
-        //     resetHighlight(prevSelected);
-        // }
         info.el.className = `ec-event individual-${individualID}`;
 
         highlightRelatedEvents(bookingID, individualID);
       } else {
-        // bug where moving mouse quick between events can make highlight stick,
-        // even when not hovering over any events (except work hour event, which has no title)
-        // handled through extra checking
-        // if (prevSelected) {
-        //     resetHighlight(prevSelected);
-        //     prevSelected = null;
-        // }
-        // if (prevSelectedServiceID) {
-        //     resetIndividualHighlight(prevSelectedServiceID);
-        //
-        //     if (prevEL)
-        //         prevEL.className = `ec-event ${assignedEmployeeEvents[info.event.id] ? assignedEmployeeEvents[info.event.id] : ""} ${conflictEmployeeEvents[prevInfoID] ? conflictEmployeeEvents[prevInfoID] : ""}`;
-        //     prevEL = null;
-        //     prevSelectedServiceID = null;
-        // }
+        // empty for now
       }
     },
     eventMouseLeave: function (info) {
@@ -286,12 +258,6 @@
     });
 
     const elements = document.querySelectorAll(`.individual-${individualID}`);
-    /*console.log(
-          "elements with class starting 'individual-' found:",
-          elements.length
-        );*/
-
-    // console.log(elements);
 
     elements.forEach((element) => {
       element.className = `${element.className} border-black border-2`;
