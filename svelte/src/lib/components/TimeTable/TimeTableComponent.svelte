@@ -323,20 +323,20 @@
   }
 
   /* function resetIndividualHighlight(serviceBookingID) {
-         const allEvents = calendarInstance.getEvents();
-         allEvents.forEach((event) => {
-             if (
-                 event.extendedProps.servicingTicket &&
-                 event.extendedProps.servicingTicket.serviceBookingID ===
-                 serviceBookingID
-             ) {
-                 event.backgroundColor = bookingStateColour(
-                     event.extendedProps.servicingTicket
-                 );
-                 calendarInstance.updateEvent(event);
-             }
-         });
-     }*/
+        const allEvents = calendarInstance.getEvents();
+        allEvents.forEach((event) => {
+            if (
+                event.extendedProps.servicingTicket &&
+                event.extendedProps.servicingTicket.serviceBookingID ===
+                serviceBookingID
+            ) {
+                event.backgroundColor = bookingStateColour(
+                    event.extendedProps.servicingTicket
+                );
+                calendarInstance.updateEvent(event);
+            }
+        });
+    }*/
 
   function findECBody() {
     const element = document.querySelector(".ec-body");

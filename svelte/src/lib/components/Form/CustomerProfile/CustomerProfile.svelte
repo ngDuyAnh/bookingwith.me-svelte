@@ -4,10 +4,11 @@
     import {Button, Input, Label, Spinner, Textarea} from "flowbite-svelte";
     import {onMount} from "svelte";
 
+    export let showPhoneNumber = true;
+    export let editable = true;
     export let customerProfile;
 
-    function handleSave()
-    {
+    function handleSave() {
         loading = true;
         initializeCustomerProfile(customerProfile)
             .then(() => {
@@ -33,34 +34,42 @@
     </div>
 {:else}
     <form on:submit={handleSave} class="space-y-4">
-        <Label class="space-y-2">
-            <span>Phone Number:</span>
-            <Input
-                    id="phoneNumber"
-                    type="tel"
-                    placeholder="1234567890"
-                    bind:value={$customerProfileModal.customerProfile.customer.phoneNumber}
-                    required
-                    pattern="\d\d\d\d\d\d\d\d\d\d"
-                    title="Phone number must be in the format: 1234567890"
-            />
-        </Label>
+        {#if showPhoneNumber}
+            <Label class="space-y-2">
+                <span>Phone Number:</span>
+                <Input
+                        id="phoneNumber"
+                        type="tel"
+                        placeholder="1234567890"
+                        bind:value={$customerProfileModal.customerProfile.customer.phoneNumber}
+                        required
+                        pattern="\d\d\d\d\d\d\d\d\d\d"
+                        title="Phone number must be in the format: 1234567890"
+
+                        disabled={!editable}
+                />
+            </Label>
+        {/if}
 
         <Label class="space-y-2">
             <span>Name:</span>
             <Input
                     id="customerName"
                     bind:value={$customerProfileModal.customerProfile.customer.customerName}
+
+                    disabled={!editable}
             />
         </Label>
 
         <Label class="space-y-2">
-            <span>Message:</span>
+            <span>Note:</span>
             <Textarea
                     id="message"
                     placeholder="Enter any note here..."
                     rows="5"
                     bind:value={$customerProfileModal.customerProfile.note}
+
+                    disabled={!editable}
             />
         </Label>
 
