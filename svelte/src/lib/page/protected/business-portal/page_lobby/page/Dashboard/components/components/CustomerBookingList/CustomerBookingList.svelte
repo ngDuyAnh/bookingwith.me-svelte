@@ -50,7 +50,7 @@
 
 </script>
 
-<ul class="flex-grow px-4 shadow w-full overflow-y-auto space-y-2"
+<ul class="flex-grow px-4 py-1 shadow w-full overflow-y-auto space-y-2"
     use:dndzone={{items:customerBookingList, flipDurationMs, type:'columns'}}
     on:consider={(e) => handleSort(columnID, e)} on:finalize={(e) => handleSort(columnID, e)}>
 
@@ -59,7 +59,7 @@
                 animate:flip={{duration:flipDurationMs}}>
             <li class="border-b last:border-b-0">
                 <button
-                        class="p-4 bg-white rounded shadow select-none w-full text-left
+                        class="p-4 {customerBooking.bookingState == 3? 'bg-gray-400':'bg-white'} rounded shadow select-none w-full text-left
                         hover:bg-gray-300 transition-all duration-300 ease-in-out"
                         on:click={() => handleCustomerBookingClick(customerBooking)}
                 >
