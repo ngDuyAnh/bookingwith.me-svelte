@@ -55,7 +55,7 @@
             filteredBookingStateList = $customerBookingQueueList.map(state => {
                 return state.filter(booking =>
                     normalize(booking.customer.customerName).includes(normalizedSearchValue) ||
-                    normalize(booking.id.toString()).includes(normalizedSearchValue) ||
+                    normalize(((booking.id % 1000).toString().padStart(3, '0')).toString()).includes(normalizedSearchValue) ||
                     normalize(booking.customer.phoneNumber.toString()).includes(normalizedSearchValue)
                 );
             });
