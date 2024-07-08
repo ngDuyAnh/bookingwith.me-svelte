@@ -13,10 +13,6 @@
     import {SearchOutline} from 'flowbite-svelte-icons';
     import {handleOpenCustomerProfileModal} from "$lib/components/Modal/CustomerProfileModal/customerProfileModal.js";
 
-    import {dndzone} from 'svelte-dnd-action';
-
-    const flipDurationMs = 200;
-
 
     let columns = [
         {
