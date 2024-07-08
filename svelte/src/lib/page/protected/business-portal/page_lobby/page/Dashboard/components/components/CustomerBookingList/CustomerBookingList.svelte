@@ -20,7 +20,7 @@
 
 
     function handleSort(id, e) {
-        if (e.detail.info.trigger == "droppedIntoZone") {
+        if (e.detail.info.trigger === "droppedIntoZone") {
 
             const custBooking = e.detail.items.find(booking => booking.id === e.detail.info.id);
             console.log("the customer booking", custBooking);
@@ -59,7 +59,7 @@
                 animate:flip={{duration:flipDurationMs}}>
             <li class="border-b last:border-b-0">
                 <button
-                        class="p-4 {customerBooking.bookingState == 3? 'bg-gray-400':'bg-white'} rounded shadow select-none w-full text-left
+                        class="p-4 {customerBooking.bookingState === 3? 'bg-gray-400':'bg-white'} rounded shadow select-none w-full text-left
                         hover:bg-gray-300 transition-all duration-300 ease-in-out"
                         on:click={() => handleCustomerBookingClick(customerBooking)}
                 >
