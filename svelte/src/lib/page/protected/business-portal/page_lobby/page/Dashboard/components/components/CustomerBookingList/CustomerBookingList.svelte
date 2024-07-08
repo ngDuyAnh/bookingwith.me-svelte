@@ -26,16 +26,16 @@
             console.log("the customer booking", custBooking);
 
             if (custBooking) {
-                if (id == 0) {
+                if (id === 0) {
                     moveToAppointment(custBooking);
 
-                } else if (id == 1) {
+                } else if (id === 1) {
                     moveToLobby(custBooking);
 
-                } else if (id == 2) {
+                } else if (id === 2) {
                     moveToServicing(custBooking);
 
-                } else if (id == 3) {
+                } else if (id === 3) {
                     moveToCompleted(custBooking);
 
                 }
