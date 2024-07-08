@@ -1,6 +1,6 @@
 <script>
     import CustomerIndividualServiceBookingComponent
-        from "$lib/components/CustomerBookingClickModal/Servicing/components/CustomerIndivdualBookingComponent/CustomerIndividualServiceBookingComponent/CustomerIndividualServiceBookingComponent.svelte";
+        from "$lib/components/Modal/CustomerBookingClickModal/Servicing/components/CustomerIndivdualBookingComponent/CustomerIndividualServiceBookingComponent/CustomerIndividualServiceBookingComponent.svelte";
 
     export let customerBooking;
     export let individualBooking;

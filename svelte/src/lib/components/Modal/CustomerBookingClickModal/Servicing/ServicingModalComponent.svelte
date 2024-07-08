@@ -3,10 +3,10 @@
     import {formatToTime, formatToTimeAm} from "$lib/application/Formatter.js";
     import {
         customerBookingClickModal
-    } from "$lib/components/CustomerBookingClickModal/stores/customerBookingClickModal.js";
+    } from "$lib/components/Modal/CustomerBookingClickModal/stores/customerBookingClickModal.js";
     import CustomerIndividualBookingComponent
-        from "$lib/components/CustomerBookingClickModal/Servicing/components/CustomerIndivdualBookingComponent/CustomerIndividualBookingComponent.svelte";
-    import PhoneNumber from "$lib/components/CustomerBookingClickModal/components/PhoneNumber/PhoneNumber.svelte";
+        from "$lib/components/Modal/CustomerBookingClickModal/Servicing/components/CustomerIndivdualBookingComponent/CustomerIndividualBookingComponent.svelte";
+    import PhoneNumber from "$lib/components/Modal/CustomerBookingClickModal/components/PhoneNumber/PhoneNumber.svelte";
 </script>
 
 <div class="flex flex-col space-y-4">

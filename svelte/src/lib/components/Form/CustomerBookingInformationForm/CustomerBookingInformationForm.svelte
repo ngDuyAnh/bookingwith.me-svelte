@@ -19,7 +19,7 @@
     import {
         moveToAppointment,
         moveToLobby
-    } from "$lib/components/CustomerBookingClickModal/handle_customer_booking_state.js";
+    } from "$lib/components/Modal/CustomerBookingClickModal/handle_customer_booking_state.js";
     import {isToday} from "$lib/page/stores/now/now_dayjs_store.js";
 
     export let customerBookingInformationFormProps;

@@ -3,7 +3,7 @@
         from "$lib/page/protected/business-portal/page_lobby/page/Dashboard/components/components/CustomerBookingList/CustomerBookingListItem/CustomerBookingListItem.svelte";
     import {
         handleCustomerBookingClick
-    } from "$lib/components/CustomerBookingClickModal/stores/customerBookingClickModal.js";
+    } from "$lib/components/Modal/CustomerBookingClickModal/stores/customerBookingClickModal.js";
     import {dndzone} from 'svelte-dnd-action';
     import {flip} from 'svelte/animate';
     import {
@@ -11,7 +11,7 @@
         moveToCompleted,
         moveToLobby,
         moveToServicing
-    } from "$lib/components/CustomerBookingClickModal/handle_customer_booking_state.js";
+    } from "$lib/components/Modal/CustomerBookingClickModal/handle_customer_booking_state.js";
 
     const flipDurationMs = 200;
 

@@ -9,7 +9,7 @@ import {formatToDate} from "$lib/application/Formatter.js";
 
 import {
     handleCustomerBookingClickUpdate
-} from "../../../../../components/CustomerBookingClickModal/stores/customerBookingClickModal.js";
+} from "../../../../../components/Modal/CustomerBookingClickModal/stores/customerBookingClickModal.js";
 
 export const customerBookingQueueList = writable([[],[],[],[]]);
 

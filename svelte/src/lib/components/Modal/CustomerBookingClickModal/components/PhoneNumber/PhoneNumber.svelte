@@ -1,13 +1,13 @@
 <script>
     import {
         customerBookingClickModal
-    } from "$lib/components/CustomerBookingClickModal/stores/customerBookingClickModal.js";
+    } from "$lib/components/Modal/CustomerBookingClickModal/stores/customerBookingClickModal.js";
     import {EyeOutline, EyeSlashOutline} from "flowbite-svelte-icons";
     import {formatPhoneNumber} from "$lib/application/FormatPhoneNumber.js";
     import {
         disableManagerAccess,
         managerAccess
-    } from "$lib/components/CustomerBookingClickModal/stores/managerAccess.js";
+    } from "$lib/components/Modal/CustomerBookingClickModal/stores/managerAccess.js";
     import GetManagerPasswordModal from "$lib/components/Modal/GetManagerPasswordModal/GetManagerPasswordModal.svelte";
 
     // Computed to mask/unmask phone number based on visibility state

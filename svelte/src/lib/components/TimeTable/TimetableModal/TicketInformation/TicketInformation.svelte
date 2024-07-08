@@ -6,7 +6,7 @@
     import {CustomerBookingState} from "$lib/api/initialize_functions/CustomerBooking.js";
     import {findPreselectEmployeeID} from "$lib/components/TimeTable/ServicingTicketClickModal/functions.js";
     import CustomerIndividualServiceBookingComponent
-        from "$lib/components/CustomerBookingClickModal/Servicing/components/CustomerIndivdualBookingComponent/CustomerIndividualServiceBookingComponent/CustomerIndividualServiceBookingComponent.svelte";
+        from "$lib/components/Modal/CustomerBookingClickModal/Servicing/components/CustomerIndivdualBookingComponent/CustomerIndividualServiceBookingComponent/CustomerIndividualServiceBookingComponent.svelte";
     export let customerBooking;
     export let individualBooking;
     export let serviceBooking;
