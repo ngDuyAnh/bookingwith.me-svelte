@@ -3,6 +3,8 @@
     import {formatTimeAm, formatToTime} from "$lib/application/Formatter.js";
     import Calendar from "@event-calendar/core";
 
+    import {SearchOutline} from "flowbite-svelte-icons";
+
     import Interaction from "@event-calendar/interaction";
     import ResourceTimeGrid from "@event-calendar/resource-time-grid";
 
@@ -19,7 +21,6 @@
     import {fetchTimetable, timetableComponent,} from "$lib/components/TimeTable/stores/timetableComponent.js";
     import {onMount} from "svelte";
     import {Button, Search} from "flowbite-svelte";
-    import {SearchOutline} from "flowbite-svelte-icons";
     import dayjs from "dayjs";
     import {findCustomerBookingById} from "$lib/page/protected/business-portal/page_lobby/stores/dashboard_store.js";
     import {
@@ -541,6 +542,9 @@
 
         // Generate the events for display
         employeeWorkHourEvent = [];
+        // console.log("employeeTimetableList", employeeTimetableList);
+        employeeEvents = await createEvents(employeeTimetableList);
+
         resources = employeeTimetableList.flatMap((employeeTable) => {
             employeeWorkHourEvent.push({
                 resourceId: employeeTable.employee.id,
@@ -552,14 +556,27 @@
                 end: `${$now.format("YYYY-MM-DD")} ${employeeTable.timePeriod.endTime}`,
                 display: "background",
             });
+            let countOfNullResourceIds = employeeEvents.filter(event => event.resourceId === null).length;
+
             return {
                 id: employeeTable.employee.id,
-                title: `${employeeTable.employee.employeeName}`,
+                title: {
+                    html: employeeTable.employee.id
+                        ? `<span class="flex flex-row items-center justify-center">
+                   <svg class="w-6 h-6 text-gray-500 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" viewBox="0 0 24 24">
+                       <path fill-rule="evenodd" d="M12 4a4 4 0 1 0 0 8 4 4 0 0 0 0-8Zm-2 9a4 4 0 0 0-4 4v1a2 2 0 0 0 2 2h8a2 2 0 0 0 2-2v-1a4 4 0 0 0-4-4h-4Z" clip-rule="evenodd"/>
+                   </svg>
+                   ${employeeTable.employee.employeeName}
+               </span>`
+                        : `<span class="flex flex-row items-center justify-center ${countOfNullResourceIds>0?'animate-pulse':''}">
+                   <svg class="w-5 h-5 text-red-400 dark:text-white"  fill="currentColor" width="24" height="24"  xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 512"><!--!Font Awesome Free 6.5.2 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free Copyright 2024 Fonticons, Inc.--><path d="M38.8 5.1C28.4-3.1 13.3-1.2 5.1 9.2S-1.2 34.7 9.2 42.9l592 464c10.4 8.2 25.5 6.3 33.7-4.1s6.3-25.5-4.1-33.7L353.3 251.6C407.9 237 448 187.2 448 128C448 57.3 390.7 0 320 0C250.2 0 193.5 55.8 192 125.2L38.8 5.1zM264.3 304.3C170.5 309.4 96 387.2 96 482.3c0 16.4 13.3 29.7 29.7 29.7H514.3c3.9 0 7.6-.7 11-2.1l-261-205.6z"/></svg>
+                   ${employeeTable.employee.employeeName} - ${countOfNullResourceIds}
+               </span>`
+                }
             };
+
         });
 
-        // console.log("employeeTimetableList", employeeTimetableList);
-        employeeEvents = await createEvents(employeeTimetableList);
 
         options.resources = resources;
         options.events = employeeWorkHourEvent.concat(employeeEvents);
