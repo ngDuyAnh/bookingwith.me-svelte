@@ -29,6 +29,7 @@
         initializeCustomerBookingAndBroadcast
     } from "$lib/api/api_server/api_endpoints/customer-booking-portal/api.js";
     import {getEmployee} from "$lib/page/stores/business/business.js";
+    import {handleOpenCustomerProfileModal} from "$lib/components/Modal/CustomerProfileModal/customerProfileModal.js";
 
     // Date select
     let selectedDate = today();
@@ -456,7 +457,7 @@
         return text.replace(/[\W_]+/g, "").toLowerCase();
     }
 
-    function searchBookings() {
+    function handleSearchFilter() {
         const normalizedSearchValue = normalize(searchValue);
 
         if (searchValue.length === 0) {
@@ -519,11 +520,31 @@
         }
     }
 
+    function handleSearchClick()
+    {
+        const normalizedSearchValue = normalize(searchValue);
+
+        // Customer profile
+        const phonePattern1 = /^\d{10}$/;
+        if (phonePattern1.test(normalizedSearchValue))
+        {
+            console.log("Opening customer profile...")
+            handleOpenCustomerProfileModal(normalizedSearchValue);
+
+            // Reset the search field
+            searchValue = "";
+        }
+        // Filter search
+        else {
+            handleSearchFilter();
+        }
+    }
+
     // Searching input changes
     // Timetable update generate events for calendar
     $: if (searchValue.length >= 0 || $timetableComponent.employeeTimetableList) {
         // Apply search filter
-        searchBookings();
+        handleSearchFilter();
 
         // Generate the events for the calendar
         updateCalendarEvents(filteredEmployeeTimetableList);
@@ -680,7 +701,7 @@
     <div
             class="flex sm:flex-row flex-col sm:items-center items-start justify-start sm:space-x-4 pt-4 px-4 2xl:items-center 2xl:justify-center"
     >
-        <form class="flex max-w-xs items-center" on:submit={searchBookings}>
+        <form class="flex max-w-xs items-center" on:submit={handleSearchClick}>
             <Search
                     bind:value={searchValue}
                     size="md"

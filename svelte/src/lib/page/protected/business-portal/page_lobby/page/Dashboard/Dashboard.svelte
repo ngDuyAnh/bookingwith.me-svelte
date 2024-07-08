@@ -67,11 +67,7 @@
     });
 
 
-    $: if (searchValue.length >= 0) {
-        handleSearchFilter();
-    }
-
-    $: if ($customerBookingQueueList) {
+    $: if (searchValue.length >= 0 || $customerBookingQueueList) {
         handleSearchFilter();
     }
 
