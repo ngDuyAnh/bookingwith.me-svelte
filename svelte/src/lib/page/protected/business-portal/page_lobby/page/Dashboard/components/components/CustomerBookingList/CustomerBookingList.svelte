@@ -57,7 +57,7 @@
     {#each customerBookingList as customerBooking (customerBooking.id)}
         <div
                 animate:flip={{duration:flipDurationMs}}>
-            <li class="border-b last:border-b-0">
+            <div class="border-b last:border-b-0">
                 <button
                         class="p-4 {customerBooking.bookingState === 3? 'bg-gray-400':'bg-white'} rounded shadow select-none w-full text-left
                         hover:bg-gray-300 transition-all duration-300 ease-in-out"
@@ -65,7 +65,7 @@
                 >
                     <CustomerBookingListItem {customerBooking}/>
                 </button>
-            </li>
+            </div>
         </div>
     {/each}
 </ul>
