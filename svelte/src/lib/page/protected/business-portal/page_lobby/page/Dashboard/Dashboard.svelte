@@ -144,7 +144,7 @@
                             bind:droppedIntoID={droppedIntoID}
                             bind:customerBookingQueueList={filteredBookingStateList}
                     />
-                {:else if index == 2}
+                {:else if index === 2}
                     <Servicing
                             bind:dragStartedID={dragStartedID}
                             bind:droppedIntoID={droppedIntoID}
