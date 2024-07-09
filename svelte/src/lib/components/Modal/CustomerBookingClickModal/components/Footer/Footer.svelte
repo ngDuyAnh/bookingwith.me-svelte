@@ -18,9 +18,6 @@
         initializeCustomerBooking
     } from "$lib/api/api_server/api_endpoints/customer-booking-portal/api.js";
     import {
-        bookingListCustomerBookingClickModal
-    } from "$lib/page/protected/business-portal/page_lobby/page/BookingList/components/BookingListCustomerBookingClickModal/stores/BookingListCustomerBookingClickModal.js";
-    import {
         bookingList,
         fetchAppointmentCustomerBookingList
     } from "$lib/page/protected/business-portal/page_lobby/page/BookingList/stores/bookingList.js";

@@ -1,5 +1,6 @@
 <script>
-    import {Footer, Modal} from "flowbite-svelte";
+    import {Modal} from "flowbite-svelte";
+    import Footer from "$lib/components/Modal/CustomerBookingClickModal/components/Footer/Footer.svelte";
     import {
         CustomerBookingState
     } from "$lib/api/initialize_functions/CustomerBooking.js";
