@@ -242,6 +242,7 @@
                     serviceBookingID
                 );
 
+                console.log("here", info.newResource);
                 // Assign employee working on the service
                 // Cannot assign when the booking state is completed
                 if (
