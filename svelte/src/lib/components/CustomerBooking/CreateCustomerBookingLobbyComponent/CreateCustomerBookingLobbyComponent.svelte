@@ -79,7 +79,9 @@
     <div class="flex-1 flex flex-col">
         <ul class="flex-grow px-4 py-1 shadow w-full overflow-y-auto space-y-2">
             <GuestSelectService
-
+                    bind:individualBooking={
+                        customerBooking.customerIndividualBookingList[selectedIndividualBookingIndex]
+                        }
             />
         </ul>
     </div>
