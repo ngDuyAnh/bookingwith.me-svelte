@@ -4,6 +4,7 @@
         from "$lib/components/CustomerBooking/CreateCustomerBookingLobbyComponent/GuestSelectService/components/SelectServiceBooking/SelectServiceBooking.svelte";
     import GuestSelectService
         from "$lib/components/CustomerBooking/CreateCustomerBookingLobbyComponent/GuestSelectService/GuestSelectService.svelte";
+    import {Tooltip} from "flowbite-svelte";
 
     export let customerBooking = {
         ...CustomerBooking(),
@@ -59,12 +60,12 @@
 
             <ul class="flex-grow mt-4 space-y-2 px-2">
                 {#each customerBooking.customerIndividualBookingList as individualBooking, index (index)}
-                    <li id={index} class="flex justify-between items-center {selectedIndividualBookingIndex === index ? 'bg-blue-200 py-2':'bg-gray-100 py-1'} px-1 rounded-md shadow-sm ">
+                    <li id={index} class="flex justify-between items-center {selectedIndividualBookingIndex === index ? 'bg-blue-50 py-2 border-[1px] border-black':'bg-gray-100 py-1'} px-1 rounded-md shadow-sm ">
                         <button
                                 on:click={() => {selectedIndividualBookingIndex = index}}
                                 class="flex-1 text-left cursor-pointer"
                         >
-                        <span>
+                        <span class="text-gray-950">
                             Guest #{index + 1} (<span class="{individualBooking.customerIndividualServiceBookingList.length>0? '':'text-red-600'}">{individualBooking.customerIndividualServiceBookingList.length}</span>)
                         </span>
                         </button>
@@ -75,8 +76,9 @@
                             <svg class="w-6 h-6 text-red-800 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" viewBox="0 0 24 24">
                                 <path fill-rule="evenodd" d="M8.586 2.586A2 2 0 0 1 10 2h4a2 2 0 0 1 2 2v2h3a1 1 0 1 1 0 2v12a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V8a1 1 0 0 1 0-2h3V4a2 2 0 0 1 .586-1.414ZM10 6h4V4h-4v2Zm1 4a1 1 0 1 0-2 0v8a1 1 0 1 0 2 0v-8Zm4 0a1 1 0 1 0-2 0v8a1 1 0 1 0 2 0v-8Z" clip-rule="evenodd"/>
                             </svg>
-
                         </button>
+                        <Tooltip type="light">Delete Guest</Tooltip>
+
                     </li>
                 {/each}
             </ul>
