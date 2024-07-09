@@ -3,7 +3,7 @@
         from "$lib/page/protected/business-portal/page_lobby/page/Dashboard/components/components/CustomerBookingList/CustomerBookingList.svelte";
     import {
         handleNewCustomerBookingWalkin
-    } from "$lib/components/Modal/CreateCustomerBooking/modalCreateCustomerBooking.js";
+    } from "$lib/components/Modal/CreateCustomerBooking/stores/modalCreateCustomerBooking.js";
 
     export let customerBookingQueueList;
 </script>

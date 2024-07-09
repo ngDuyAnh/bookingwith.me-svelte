@@ -1,5 +1,7 @@
 <script>
     import {CustomerBooking, CustomerIndividualBooking} from "$lib/api/initialize_functions/CustomerBooking.js";
+    import SelectServiceBooking
+        from "$lib/components/CustomerBooking/CreateCustomerBookingLobbyComponent/SelectServiceBooking/SelectServiceBooking.svelte";
 
     export let customerBooking = {
         ...CustomerBooking(),
@@ -36,6 +38,8 @@
 </script>
 
 <div class="flex space-x-4">
+
+    <!--Guest column-->
     <div class="flex-1 flex flex-col">
         <ul class="flex-grow px-4 py-1 shadow w-full overflow-y-auto space-y-2">
             {#each customerBooking.customerIndividualBookingList as individualBooking, index (index)}
@@ -69,10 +73,13 @@
         </ul>
     </div>
 
+    <!--Service selection for guest column-->
     <div class="flex-1 flex flex-col">
-        <!-- Additional content for the second column -->
         <ul class="flex-grow px-4 py-1 shadow w-full overflow-y-auto space-y-2">
-            <!-- Additional list items can go here -->
+            <SelectServiceBooking/>
+
+
+
         </ul>
     </div>
 

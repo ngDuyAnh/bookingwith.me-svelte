@@ -2,10 +2,10 @@
     import {employeeSelectOptions} from "$lib/page/stores/employeeSelectOptions/employeeSelectOptions.js";
     import {
         employeeToSelectOption
-    } from "$lib/components/CustomerBooking/CustomerIndividualBookingServiceSelect/components/ServiceOption/functions.js";
+    } from "$lib/components/CustomerBooking/CreateCustomerBookingComponent/CustomerIndividualBookingServiceSelect/components/ServiceOption/functions.js";
     import {business} from "$lib/page/stores/business/business.js";
     import {Spinner} from "flowbite-svelte";
-    import CustomerBookingComponent from "$lib/components/CustomerBooking/CustomerBookingComponent.svelte";
+    import CustomerBookingComponent from "$lib/components/CustomerBooking/CreateCustomerBookingComponent/CustomerBookingComponent.svelte";
     import {CustomerBookingChannel} from "$lib/api/initialize_functions/CustomerBooking.js";
 
     export let data;

@@ -14,9 +14,11 @@
         from "$lib/components/Modal/CreateCustomerBooking/ModalCreateCustomerBooking.svelte";
     import {
         employeeToSelectOption
-    } from "$lib/components/CustomerBooking/CustomerIndividualBookingServiceSelect/components/ServiceOption/functions.js";
+    } from "$lib/components/CustomerBooking/CreateCustomerBookingComponent/CustomerIndividualBookingServiceSelect/components/ServiceOption/functions.js";
     import {employeeSelectOptions} from "$lib/page/stores/employeeSelectOptions/employeeSelectOptions.js";
     import CustomerProfileModal from "$lib/components/Modal/CustomerProfileModal/CustomerProfileModal.svelte";
+    import CreateCustomerBookingLobbyModal
+        from "$lib/components/Modal/CreateCustomerBookingLobby/CreateCustomerBookingLobbyModal.svelte";
 
     export let data;
     let loading = true;
@@ -72,3 +74,6 @@
 
 <!-- Modal for customer profile -->
 <CustomerProfileModal/>
+
+<!-- Modal for create customer booking in lobby -->
+<CreateCustomerBookingLobbyModal/>

@@ -1,11 +1,12 @@
 <script>
     import {Modal} from "flowbite-svelte";
-    import CustomerBookingComponent from "$lib/components/CustomerBooking/CustomerBookingComponent.svelte";
+    import CreateCustomerBookingComponent
+        from "$lib/components/CustomerBooking/CreateCustomerBookingComponent/CreateCustomerBookingComponent.svelte";
     import {modalEditCustomerBooking} from "$lib/components/Modal/EditCustomerBooking/modalEditCustomerBooking.js";
     import {CustomerBookingChannel} from "$lib/api/initialize_functions/CustomerBooking.js";
     import {
         modalCreateCustomerBooking
-    } from "$lib/components/Modal/CreateCustomerBooking/modalCreateCustomerBooking.js";
+    } from "$lib/components/Modal/CreateCustomerBooking/stores/modalCreateCustomerBooking.js";
 
     export let business;
 
@@ -21,7 +22,7 @@
                 Edit Booking
             </h1>
         </svelte:fragment>
-        <CustomerBookingComponent
+        <CreateCustomerBookingComponent
                 bookingChannel={CustomerBookingChannel.LOBBY}
 
                 {business}
