@@ -9,7 +9,7 @@
     } from "$lib/api/api_server/api_endpoints/customer-booking-portal/api.js";
     import dayjs from "dayjs";
     import {onMount} from "svelte";
-    import {getCustomer} from "$lib/api/api_server/api_endpoints/lobby-portal/api.js";
+    import {getCustomer} from "$lib/api/api_server/api_endpoints/customer-booking-portal/api.js";
     import {
         CustomerBookingState
     } from "$lib/api/initialize_functions/CustomerBooking.js";

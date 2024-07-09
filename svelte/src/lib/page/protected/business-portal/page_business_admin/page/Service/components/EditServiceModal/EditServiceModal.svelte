@@ -4,7 +4,7 @@
     import {business} from "$lib/page/stores/business/business.js";
     import {
         employeeToSelectOption
-    } from "$lib/components/CustomerBooking/CreateCustomerBookingComponent/CustomerIndividualBookingServiceSelect/components/ServiceOption/functions.js";
+    } from "$lib/components/CustomerBooking/CustomerBookingComponent/components/ServiceOption/functions.js";
 
     export let open = false;
     export let editingService;

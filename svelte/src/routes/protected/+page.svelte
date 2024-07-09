@@ -14,7 +14,7 @@
         from "$lib/components/Modal/CreateCustomerBooking/ModalCreateCustomerBooking.svelte";
     import {
         employeeToSelectOption
-    } from "$lib/components/CustomerBooking/CreateCustomerBookingComponent/CustomerIndividualBookingServiceSelect/components/ServiceOption/functions.js";
+    } from "$lib/components/CustomerBooking/CustomerBookingComponent/components/ServiceOption/functions.js";
     import {employeeSelectOptions} from "$lib/page/stores/employeeSelectOptions/employeeSelectOptions.js";
     import CustomerProfileModal from "$lib/components/Modal/CustomerProfileModal/CustomerProfileModal.svelte";
     import CreateCustomerBookingLobbyModal

@@ -3,6 +3,7 @@
     import {customerProfileModal} from "$lib/components/Modal/CustomerProfileModal/customerProfileModal.js";
     import {Button, Input, Label, Spinner, Textarea} from "flowbite-svelte";
     import {onMount} from "svelte";
+    import {business} from "$lib/page/stores/business/business.js";
 
     export let showPhoneNumber = true;
     export let editable = true;
@@ -10,7 +11,7 @@
 
     function handleSave() {
         loading = true;
-        initializeCustomerProfile(customerProfile)
+        initializeCustomerProfile($business.businessInfo.businessID, customerProfile)
             .then(() => {
                 loading = false;
             })

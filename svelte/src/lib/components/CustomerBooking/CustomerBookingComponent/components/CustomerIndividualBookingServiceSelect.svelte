@@ -1,7 +1,7 @@
 <script>
     import {Accordion, AccordionItem, Alert, Button} from "flowbite-svelte";
     import ServiceOption
-        from "$lib/components/CustomerBooking/CreateCustomerBookingComponent/CustomerIndividualBookingServiceSelect/components/ServiceOption/ServiceOption.svelte";
+        from "$lib/components/CustomerBooking/CustomerBookingComponent/components/ServiceOption/ServiceOption.svelte";
     import {ArrowLeftOutline, ArrowRightOutline, InfoCircleSolid} from 'flowbite-svelte-icons';
     import {fly} from 'svelte/transition';
     import {selectedServiceIds} from "$lib/page/stores/selectedServiceIds/selectedServiceIds.js";

@@ -1,7 +1,7 @@
 <script>
     import {Modal} from "flowbite-svelte";
-    import CreateCustomerBookingComponent
-        from "$lib/components/CustomerBooking/CreateCustomerBookingComponent/CreateCustomerBookingComponent.svelte";
+    import CustomerBookingComponent
+        from "$lib/components/CustomerBooking/CustomerBookingComponent/CustomerBookingComponent.svelte";
     import {
         CustomerBooking,
         CustomerBookingChannel,
@@ -42,7 +42,7 @@
                 New Booking
             </h1>
         </svelte:fragment>
-        <CreateCustomerBookingComponent
+        <CustomerBookingComponent
                 bookingChannel={CustomerBookingChannel.LOBBY}
 
                 {business}

@@ -69,13 +69,18 @@
         }
     }
 
-    function handleDeleteServiceBooking(event)
+    function handleDeleteServiceBooking()
     {
-        let service = event.detail.value;
+        // console.log("handleDeleteServiceBooking", event);
 
-        const index = individualBooking.customerIndividualServiceBookingList.findIndex(serviceBooking => serviceBooking.service.id === service.id);
-        if (index !== -1) {
-            individualBooking.customerIndividualServiceBookingList.splice(index, 1);
+        if (serviceBookingIndex < individualBooking.customerIndividualServiceBookingList.length)
+        {
+            individualBooking.customerIndividualServiceBookingList = [
+                ...individualBooking.customerIndividualServiceBookingList.slice(0, serviceBookingIndex),
+                ...individualBooking.customerIndividualServiceBookingList.slice(serviceBookingIndex + 1)
+            ];
+
+            console.log(`individualBooking.customerIndividualServiceBookingList ${serviceBookingIndex}`, individualBooking.customerIndividualServiceBookingList)
         }
     }
 
@@ -95,8 +100,8 @@
     }
 </script>
 
-<div>
-    <Select
+<div class="max-w-[300px]">
+    <Select --margin="2px 0px"
             items={serviceSelectOptions} groupBy={(item) => item.group}
             value={selectedService}
             on:change={handleServiceBookingSelect}
@@ -105,5 +110,16 @@
     <Select items={employeeSelectOptions} clearable={false}
             value={selectedEmployee}
             on:change={handleEmployeeSelect}
+            disabled={!selectedService}
     />
 </div>
+
+<style>
+    :global(.svelte-select-list) {
+        /*background:#FA517A!important;*/
+        /*background-color: #333333 !important;*/
+        /*z-index: 10000000000 !important;*/
+        width: 300px !important;
+        height: fit-content !important;
+    }
+</style>
