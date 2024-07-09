@@ -17,7 +17,7 @@
     } from "$lib/components/TimeTable/ServicingTicketClickModal/stores/servicingTicketClickModal.js";
     import {
         handleNewCustomerBookingWalkin
-    } from "$lib/components/Modal/CreateCustomerBooking/modalCreateCustomerBooking.js";
+    } from "$lib/components/Modal/CreateCustomerBooking/stores/modalCreateCustomerBooking.js";
     import {fetchTimetable, timetableComponent,} from "$lib/components/TimeTable/stores/timetableComponent.js";
     import {onMount} from "svelte";
     import {Button, Search} from "flowbite-svelte";
@@ -226,14 +226,17 @@
         eventDragStop: function () {
         },
         eventDrop: function (info) {
+
+            console.log("info", info)
+
+            let assignedEmployeeID = null;
             let startTime = dayjs(info.event.start).format(formatToTime);
 
+            // Get the customer booking and service booking instances
             let customerBookingId =
                 info.event.extendedProps.servicingTicket.servicingTicketInfo.id;
             let serviceBookingID =
                 info.event.extendedProps.servicingTicket.serviceBookingID;
-
-            // Get the customer booking and service booking instance
             let customerBooking = findCustomerBookingById(customerBookingId);
             let serviceBooking = undefined;
             if (customerBooking) {
@@ -241,35 +244,44 @@
                     customerBooking,
                     serviceBookingID
                 );
+            }
+
+            // Drag between employee timetable
+            if (info.newResource && info.oldResource) {
 
                 // Assign employee working on the service
                 // Cannot assign when the booking state is completed
-                if (
-                    info.newResource &&
-                    customerBooking.bookingState !== CustomerBookingState.COMPLETED
-                ) {
-                    // Assign the employee to the service
-                    serviceBooking.assignedEmployee = null;
+                if (customerBooking.bookingState !== CustomerBookingState.COMPLETED) {
                     if (info.newResource.id !== "null") {
-                        let employeeID = parseInt(info.newResource.id, 10);
-                        serviceBooking.assignedEmployee = getEmployee(employeeID);
+                        assignedEmployeeID = parseInt(info.newResource.id, 10);
                     }
                 }
 
                 // Only set the start time if the customer booking is SERVICING
                 if (customerBooking.bookingState === CustomerBookingState.SERVICING) {
-                    serviceBooking.startTime = startTime;
+                    startTime = dayjs(info.event.start).format(formatToTime);
                 }
-                // Reset start time
-                else if (
-                    customerBooking.bookingState !== CustomerBookingState.COMPLETED
-                ) {
-                    serviceBooking.startTime = null;
-                }
-
-                initializeCustomerBookingAndBroadcast(customerBooking, nowTime());
             }
-        },
+            // Same employee timetable
+            else {
+                let employeeID = info.event.resourceIds[0];
+                if (employeeID !== "null") {
+                    assignedEmployeeID = parseInt(employeeID, 10);
+                }
+            }
+
+            // Assign the employee to the service
+            serviceBooking.assignedEmployee = getEmployee(assignedEmployeeID);
+
+            // Only set the start time if the customer booking is SERVICING
+            if (customerBooking.bookingState === CustomerBookingState.SERVICING) {
+                serviceBooking.startTime = startTime;
+            }
+
+            // Submit to the database
+            initializeCustomerBookingAndBroadcast(customerBooking, nowTime());
+        }
+        ,
     };
 
     function highlightRelatedEvents(bookingID, individualID) {
@@ -567,7 +579,7 @@
                    </svg>
                    ${employeeTable.employee.employeeName}
                </span>`
-                        : `<span class="flex flex-row items-center justify-center ${countOfNullResourceIds>0?'animate-pulse':''}">
+                        : `<span class="flex flex-row items-center justify-center ${countOfNullResourceIds > 0 ? 'animate-pulse' : ''}">
                    <svg class="w-5 h-5 text-red-400 dark:text-white"  fill="currentColor" width="24" height="24"  xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 512"><!--!Font Awesome Free 6.5.2 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free Copyright 2024 Fonticons, Inc.--><path d="M38.8 5.1C28.4-3.1 13.3-1.2 5.1 9.2S-1.2 34.7 9.2 42.9l592 464c10.4 8.2 25.5 6.3 33.7-4.1s6.3-25.5-4.1-33.7L353.3 251.6C407.9 237 448 187.2 448 128C448 57.3 390.7 0 320 0C250.2 0 193.5 55.8 192 125.2L38.8 5.1zM264.3 304.3C170.5 309.4 96 387.2 96 482.3c0 16.4 13.3 29.7 29.7 29.7H514.3c3.9 0 7.6-.7 11-2.1l-261-205.6z"/></svg>
                    ${employeeTable.employee.employeeName} - ${countOfNullResourceIds}
                </span>`
