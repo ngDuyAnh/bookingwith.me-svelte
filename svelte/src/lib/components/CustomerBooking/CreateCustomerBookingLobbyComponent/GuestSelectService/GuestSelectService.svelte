@@ -5,19 +5,25 @@
 
     export let individualBooking;
 
+    $: console.log("individualBooking", individualBooking);
 </script>
 
 <!--List of service booking from the guest-->
-{#each individualBooking.customerIndividualServiceBookingList as serviceBooking, index (index)}
-    <SelectServiceBooking {serviceBooking}/>
-    <button
-            on:click={() => {}}
-            class="ml-4 text-red-500 cursor-pointer"
-    >
-        Delete
-    </button>
-{/each}
+<ul class="flex-grow px-4 py-1 shadow w-full overflow-y-auto space-y-2">
+    {#key individualBooking.customerIndividualServiceBookingList.length}
+        <!--Selected service booking-->
+        {#each individualBooking.customerIndividualServiceBookingList as serviceBooking, index (serviceBooking)}
+            <SelectServiceBooking
+                    bind:individualBooking={individualBooking}
+                    serviceBookingIndex={index}
+            />
+        {/each}
 
-<!--Append a new service booking-->
-<span>New service</span>
-<SelectServiceBooking/>
+        <!--Create new service booking-->
+        <span>New service</span>
+        <SelectServiceBooking
+                bind:individualBooking={individualBooking}
+                serviceBookingIndex={individualBooking.customerIndividualServiceBookingList.length}
+        />
+    {/key}
+</ul>
