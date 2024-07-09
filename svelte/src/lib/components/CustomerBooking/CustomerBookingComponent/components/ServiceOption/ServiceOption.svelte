@@ -6,7 +6,7 @@
     import {selectedServiceIds} from "$lib/page/stores/selectedServiceIds/selectedServiceIds.js";
     import {
         employeeToSelectOption
-    } from "$lib/components/CustomerBooking/CreateCustomerBookingComponent/CustomerIndividualBookingServiceSelect/components/ServiceOption/functions.js";
+    } from "$lib/components/CustomerBooking/CustomerBookingComponent/components/ServiceOption/functions.js";
 
     export let service;
     export let customerIndividualBooking;

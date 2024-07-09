@@ -111,8 +111,8 @@ export async function getCustomerBooking(bookingid) {
     return await response.json();
 }
 
-export async function initializeCustomerProfile(customerProfile) {
-    const FETCH_URL = `${API_URL}/initialize-customer-profile`;
+export async function initializeCustomerProfile(businessID, customerProfile) {
+    const FETCH_URL = `${API_URL}/initialize-customer-profile/${businessID}`;
 
     const response = await fetch(`${FETCH_URL}`, {
         method: 'POST',
@@ -188,6 +188,19 @@ export async function deleteCustomerBooking(businessID, customerBooking) {
         },
         body: JSON.stringify(customerBooking)
     });
+
+    if (!response.ok) {
+        throw new Error(`Failed to fetch. Status: ${response.status}`);
+    }
+
+    return await response.json();
+}
+
+export async function getCustomer(businessID, phoneNumber)
+{
+    const FETCH_URL = `${API_URL}/get-customer/${businessID}?phoneNumber=${phoneNumber}`;
+
+    const response = await fetch(`${FETCH_URL}`);
 
     if (!response.ok) {
         throw new Error(`Failed to fetch. Status: ${response.status}`);
