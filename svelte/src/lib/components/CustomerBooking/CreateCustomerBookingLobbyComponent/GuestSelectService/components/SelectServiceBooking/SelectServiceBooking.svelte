@@ -35,10 +35,21 @@
 
 </script>
 
-<div>
-    <Select
+<div class="max-w-[300px]">
+    <Select --margin="2px 0px"
             items={serviceSelectOptions} groupBy={(item) => item.group}
             on:change={() => {}}
+            placeholder="Select a service"
     />
-    <Select value={null} items={employeeSelectOptions}/>
+    <Select value={null} placeholder="Select an employee" items={employeeSelectOptions}/>
 </div>
+
+<style>
+    :global(.svelte-select-list) {
+        /*background:#FA517A!important;*/
+        /*background-color: #333333 !important;*/
+        /*z-index: 10000000000 !important;*/
+        width: 300px !important;
+        height: fit-content !important;
+    }
+</style>

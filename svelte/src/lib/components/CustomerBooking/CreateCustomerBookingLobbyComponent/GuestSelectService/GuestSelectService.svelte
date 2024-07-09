@@ -21,3 +21,4 @@
 <!--Append a new service booking-->
 <span>New service</span>
 <SelectServiceBooking/>
+

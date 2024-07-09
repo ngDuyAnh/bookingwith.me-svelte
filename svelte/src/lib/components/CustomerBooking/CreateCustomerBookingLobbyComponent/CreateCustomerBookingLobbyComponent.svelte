@@ -39,11 +39,11 @@
     }
 </script>
 
-<div class="flex space-x-4">
+<div class="flex space-x-4 h-full">
 
     <!--Guest column-->
-    <div class="flex-1 flex flex-col">
-        <ul class="flex-grow px-4 py-1 shadow w-full overflow-y-auto space-y-2">
+    <div class="flex flex-col h-full">
+        <ul class="flex-grow w-[200px] h-full px-4 py-1 shadow overflow-y-auto space-y-2">
             {#each customerBooking.customerIndividualBookingList as individualBooking, index (index)}
                 <li id={index} class="flex justify-between items-center p-2 bg-gray-100 rounded-md shadow-sm">
                     <button
@@ -58,7 +58,10 @@
                             on:click={() => deleteGuest(index)}
                             class="ml-4 text-red-500 cursor-pointer"
                     >
-                        Delete
+                        <svg class="w-6 h-6 text-red-800 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" viewBox="0 0 24 24">
+                            <path fill-rule="evenodd" d="M8.586 2.586A2 2 0 0 1 10 2h4a2 2 0 0 1 2 2v2h3a1 1 0 1 1 0 2v12a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V8a1 1 0 0 1 0-2h3V4a2 2 0 0 1 .586-1.414ZM10 6h4V4h-4v2Zm1 4a1 1 0 1 0-2 0v8a1 1 0 1 0 2 0v-8Zm4 0a1 1 0 1 0-2 0v8a1 1 0 1 0 2 0v-8Z" clip-rule="evenodd"/>
+                        </svg>
+
                     </button>
                 </li>
             {/each}
@@ -67,9 +70,13 @@
             <li>
                 <button
                         on:click={createNewGuest}
-                        class="select-none w-full text-center cursor-pointer bg-green-500 text-white py-2 mt-4"
+                        class="new-guest select-none w-full text-center cursor-pointer text-white py-2 mt-4 flex flex-row justify-center items-center space-x-1"
                 >
-                    + Add New Guest
+                    <svg class="w-6 h-6 text-gray-800 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" viewBox="0 0 24 24">
+                        <path fill-rule="evenodd" d="M9 4a4 4 0 1 0 0 8 4 4 0 0 0 0-8Zm-2 9a4 4 0 0 0-4 4v1a2 2 0 0 0 2 2h8a2 2 0 0 0 2-2v-1a4 4 0 0 0-4-4H7Zm8-1a1 1 0 0 1 1-1h1v-1a1 1 0 1 1 2 0v1h1a1 1 0 1 1 0 2h-1v1a1 1 0 1 1-2 0v-1h-1a1 1 0 0 1-1-1Z" clip-rule="evenodd"/>
+                    </svg>
+
+                    <span class="text-black text-sm">Add Guest</span>
                 </button>
             </li>
         </ul>
@@ -77,7 +84,7 @@
 
     <!--Service selection for guest column-->
     <div class="flex-1 flex flex-col">
-        <ul class="flex-grow px-4 py-1 shadow w-full overflow-y-auto space-y-2">
+        <ul class="flex-grow px-4 py-1 shadow w-full overflow-visible space-y-2">
             <GuestSelectService
                     bind:individualBooking={
                         customerBooking.customerIndividualBookingList[selectedIndividualBookingIndex]
@@ -100,3 +107,19 @@
         </ul>
     </div>
 </div>
+
+<style>
+    .new-guest{
+        background: rgb(0,212,255);
+        background: linear-gradient(0deg, rgb(75, 248, 27) 0%, rgba(255, 255, 255, 0) 100%);
+        border-bottom-left-radius: 5px;
+        border-bottom-right-radius: 5px;
+    }
+
+
+    .new-guest:hover {
+        background: rgb(0, 212, 255);
+        background: linear-gradient(0deg, rgb(154, 255, 125) 0%, rgba(255, 255, 255, 0) 100%);
+
+    }
+</style>
