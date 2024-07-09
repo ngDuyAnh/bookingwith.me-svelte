@@ -16,15 +16,17 @@
 </script>
 
 <Modal bind:open={open} size="sm" autoclose outsideclose>
-    <div class="flex flex-col space-y-4 p-4">
-        <h3 class="text-lg font-semibold">Enter Manager Password</h3>
-        <div class="flex flex-col space-y-2">
+    <form class="flex flex-col space-y-4 p-4"
+          on:submit={() => {}}
+    >
+        <h3 class="select-none text-lg font-semibold">Enter Manager Password</h3>
+        <div class="select-none flex flex-col space-y-2">
             <Label for="password" class="font-bold mb-1">Password</Label>
             <Input type="password" id="password" bind:value={managerPassword} placeholder="•••••••••" required
                    class="p-2 border rounded border-gray-300"/>
         </div>
-        <div class="flex justify-end space-x-2">
-            <Button color="blue" on:click={handlePasswordSubmit}>Submit</Button>
+        <div class="select-none flex justify-end">
+            <Button type="submit" on:click={handlePasswordSubmit}>Submit</Button>
         </div>
-    </div>
+    </form>
 </Modal>
