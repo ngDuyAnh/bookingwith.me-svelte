@@ -4,7 +4,8 @@
 
     export let serviceBooking = null;
 
-    $: selectedService = serviceSelectOptions.find(option => option.value.id === serviceBooking.service?.id) || null;
+    $: selectedService = serviceBooking !== null ?
+        serviceBooking.service : null;
     $: selectedEmployee = serviceBooking !== null ?
         serviceBooking.bookedEmployee : null;
 
@@ -39,5 +40,5 @@
             items={serviceSelectOptions} groupBy={(item) => item.group}
             on:change={() => {}}
     />
-    <Select value={selectedEmployee} items={employeeSelectOptions}/>
+    <Select value={null} items={employeeSelectOptions}/>
 </div>
