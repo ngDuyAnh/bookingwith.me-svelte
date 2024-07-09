@@ -1,5 +1,5 @@
 <script>
-    import {Button, Label, Select} from "flowbite-svelte";
+    import {Button, Select} from "flowbite-svelte";
     import {onMount} from "svelte";
     import {formatCost} from "$lib/application/FormatCost.js";
     import {CustomerIndividualServiceBooking} from "$lib/api/initialize_functions/CustomerBooking.js";

@@ -1,7 +1,9 @@
 <script>
     import {CustomerBooking, CustomerIndividualBooking} from "$lib/api/initialize_functions/CustomerBooking.js";
     import SelectServiceBooking
-        from "$lib/components/CustomerBooking/CreateCustomerBookingLobbyComponent/SelectServiceBooking/SelectServiceBooking.svelte";
+        from "$lib/components/CustomerBooking/CreateCustomerBookingLobbyComponent/GuestSelectService/components/SelectServiceBooking/SelectServiceBooking.svelte";
+    import GuestSelectService
+        from "$lib/components/CustomerBooking/CreateCustomerBookingLobbyComponent/GuestSelectService/GuestSelectService.svelte";
 
     export let customerBooking = {
         ...CustomerBooking(),
@@ -76,10 +78,9 @@
     <!--Service selection for guest column-->
     <div class="flex-1 flex flex-col">
         <ul class="flex-grow px-4 py-1 shadow w-full overflow-y-auto space-y-2">
-            <SelectServiceBooking/>
+            <GuestSelectService
 
-
-
+            />
         </ul>
     </div>
 
