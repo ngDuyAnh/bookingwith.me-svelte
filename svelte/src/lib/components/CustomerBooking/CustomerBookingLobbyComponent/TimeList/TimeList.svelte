@@ -15,23 +15,36 @@
 
     // Serialize to track deep changes in nested structures
     let requiredAvailabilitiesSearch = true;
-    let serializedBooking = JSON.stringify({
+    let beforeSerializedBooking = {
         bookingDate: customerBooking.bookingDate,
         customerIndividualBookingList: customerBooking.customerIndividualBookingList
-    });
+    };
+    let serializedBooking = JSON.stringify(beforeSerializedBooking);
     $: {
-        const currentSerialized = JSON.stringify({
+        const currentBeforeSerialized = {
             bookingDate: customerBooking.bookingDate,
             customerIndividualBookingList: customerBooking.customerIndividualBookingList
-        });
+        };
+        const currentSerialized = JSON.stringify(currentBeforeSerialized);
         if (serializedBooking !== currentSerialized) {
             requiredAvailabilitiesSearch = true; // Trigger the UI to show the re-fetch button
-            serializedBooking = currentSerialized; // Update the stored serialized form
 
+            // If it is date change, automatically perform the availability search
+            if (beforeSerializedBooking.bookingDate !== currentBeforeSerialized.bookingDate)
+            {
+                getAvailabilities();
+            }
             // Reset
-            availabilityList = [];
-            selectedAvailability = undefined;
-            customerBooking.bookingTime = null;
+            else
+            {
+                availabilityList = [];
+                selectedAvailability = undefined;
+                customerBooking.bookingTime = null;
+            }
+
+            // Update the stored serialized form
+            beforeSerializedBooking = currentBeforeSerialized;
+            serializedBooking = currentSerialized;
         }
     }
 
