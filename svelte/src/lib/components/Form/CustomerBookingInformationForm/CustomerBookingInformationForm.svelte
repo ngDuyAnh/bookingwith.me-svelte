@@ -232,7 +232,7 @@
 
     let formattedPhoneNumber = formatPhoneNumber(customerBooking.customer.phoneNumber);
 
-    function handleBusinessPhoneNumberInput(event) {
+    function handlePhoneNumberInput(event) {
         const input = event.target.value;
 
         // Update the raw customer phone number
@@ -381,7 +381,7 @@
                 type="tel"
                 placeholder="(123) 456-7890"
                 bind:value={formattedPhoneNumber}
-                on:input={handleBusinessPhoneNumberInput}
+                on:input={handlePhoneNumberInput}
                 required
                 pattern="\(\d\d\d\) \d\d\d-\d\d\d\d"
                 title="Phone number must be in the format: (123) 456-7890"
