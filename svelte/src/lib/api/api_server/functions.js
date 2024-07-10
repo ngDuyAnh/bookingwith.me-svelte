@@ -4,6 +4,7 @@ import {CustomerBookingState} from "$lib/api/initialize_functions/CustomerBookin
 import {availability} from "$lib/api/api_server/api_endpoints/customer-booking-portal/api.js";
 import {isPast, isToday, nowTime} from "$lib/page/stores/now/now_dayjs_store.js";
 import {getBusinessID} from "$lib/page/stores/business/business.js";
+import {sanitizeCustomerBooking} from "$lib/api/utilitiy_functions/CustomerBooking.js";
 
 export function checkAbleToSendSmsReviewReminder(checkAbleToSendresponse)
 {
@@ -39,7 +40,7 @@ export async function fetchAvailableTimeList(customerBooking, isWalkIn)
     // Get the availability from the backend server
     try {
         // Cloned
-        const clonedCustomerBooking = JSON.parse(JSON.stringify(customerBooking));
+        const clonedCustomerBooking = sanitizeCustomerBooking(customerBooking);
 
         // Set the customer booking state for walk-in or same time schedule
         if (isWalkIn) {
@@ -58,7 +59,7 @@ export async function fetchAvailableTimeList(customerBooking, isWalkIn)
         ));
 
     } catch (error) {
-        console.log(error);
+        throw error;
     }
 
     // Return

@@ -4,6 +4,18 @@ export function shortCustomerBookingID(id)
     return (id % 1000).toString().padStart(3, '0');
 }
 
+export function sanitizeCustomerBooking(customerBooking) {
+    // Cloning the entire customerBooking object to avoid mutating the original
+    const clonedCustomerBooking = JSON.parse(JSON.stringify(customerBooking));
+
+    // Filter out individual bookings that have an empty service booking list
+    clonedCustomerBooking.customerIndividualBookingList = clonedCustomerBooking.customerIndividualBookingList.filter(individualBooking => {
+        return individualBooking.customerIndividualServiceBookingList.length > 0;
+    });
+
+    return clonedCustomerBooking;
+}
+
 export function findIndividualBookingFromCustomerBooking(customerBooking, individualID)
 {
     for (let individualBooking of customerBooking.customerIndividualBookingList) {

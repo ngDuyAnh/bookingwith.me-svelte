@@ -46,6 +46,9 @@
                 availabilityList = availabilities;
 
                 console.log("availabilityList", availabilityList)
+            })
+            .catch((err) => {
+                console.error("Error getAvailabilities():", err);
             });
     }
 
