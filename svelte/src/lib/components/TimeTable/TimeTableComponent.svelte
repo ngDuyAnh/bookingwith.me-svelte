@@ -1,6 +1,6 @@
 <script>
     import {isPast, isToday, now, nowTime, today,} from "$lib/page/stores/now/now_dayjs_store.js";
-    import {formatTimeAm, formatToTime} from "$lib/application/Formatter.js";
+    import {formatTimeAm, formatToDate, formatToTime} from "$lib/application/Formatter.js";
     import Calendar from "@event-calendar/core";
 
     import {
@@ -30,7 +30,8 @@
     import dayjs from "dayjs";
     import {findCustomerBookingById} from "$lib/page/protected/business-portal/page_lobby/stores/dashboard_store.js";
     import {
-        findServiceBookingFromCustomerBooking, shortCustomerBookingID
+        findServiceBookingFromCustomerBooking,
+        shortCustomerBookingID
     } from "$lib/api/utilitiy_functions/CustomerBooking.js";
     import {
         initializeCustomerBookingAndBroadcast
@@ -469,13 +470,13 @@
     let filteredEmployeeTimetableList = $timetableComponent.employeeTimetableList;
 
     let autoScroll = false;
+
     function searchBookings() {
         const normalizedSearchValue = normalizeSearchInput(searchValue);
 
         if (searchValue.length === 0) {
             // Re-scroll to the current time
-            if (autoScroll)
-            {
+            if (autoScroll) {
                 autoScroll = false;
                 options.scrollTime = $now.format("HH:mm:ss");
             }
@@ -687,38 +688,41 @@
                 })
         );
     }
+
+    function selectToday() {
+        selectedDate = today();
+    }
+
+    function selectTomorrow() {
+        selectedDate = dayjs(selectedDate).add(1, 'day').format(formatToDate);
+        ;
+    }
+
+    function selectYesterday() {
+        selectedDate = dayjs(selectedDate).subtract(1, 'day').format(formatToDate);
+        ;
+    }
 </script>
 
-<!--<div class="flex flex-col items-center justify-center p-1.5">-->
-
-
-<!--     Legend for color coding-->
-
-<!--</div>-->
-
-<div class="relative flex flex-col items-center justify-center w-5/6 h-5/6 mx-auto my-2 overflow-x-auto">
-    <div class="flex sm:flex-row flex-col left-0 inline-block h-fit space-x-1 space-y-1 items-center justify-between border-2 border-black">
-        <div class="flex flex-row space-x-1 sm:justify-normal justify-between">
-            <Button class="h-fit text-md" size="xs" color="light">Today</Button>
+<div class="relative flex flex-col items-center justify-center w-5/6 h-auto mx-auto my-2 overflow-x-auto space-y-1">
+    <div class="flex sm:flex-row flex-col left-0 inline-block h-fit sm:space-y-0 space-y-1 items-center justify-evenly w-full">
+        <div class="flex flex-row sm:justify-normal justify-center items-center">
+            <Button class="h-fit text-md mr-1" size="xs" color="light" on:click={()=>{selectToday()}} disabled={isToday(selectedDate)}>Today</Button>
             <div class="flex items-center">
-                <Button class="rounded-r-none h-fit" size="xs" color="light">
+                <Button class="rounded-r-none h-fit" size="xs" color="light" on:click={()=>{selectYesterday()}}>
                     <ChevronLeftOutline class="w-6 h-6"/>
                 </Button>
-                <input class="border-gray-300" bind:value={selectedDate} type="date"/>
-                <Button class="rounded-l-none h-fit" size="xs" color="light">
+                <input class="border-gray-300 w-[8rem]" bind:value={selectedDate} type="date"/>
+                <Button class="rounded-l-none h-fit" size="xs" color="light" on:click={()=>{selectTomorrow()}}>
                     <ChevronRightOutline class="w-6 h-6"/>
                 </Button>
-            </div>
-            <div class="flex flex-row h-fit ">
-
-
             </div>
         </div>
 
         <div
-                class="w-full flex flex-row items-center justify-center"
+                class="flex flex-row sm:justify-normal justify-center items-center m-0"
         >
-            <form class="flex max-w-xs justify-center items-center" on:submit={searchBookings}>
+            <form class="flex flex-row max-w-xs justify-center items-center" on:submit={searchBookings}>
                 <Search
                         bind:value={searchValue}
                         size="md"
@@ -729,63 +733,50 @@
                 <Button type="submit" class="!p-2.5 rounded-none">
                     <SearchOutline class="w-5 h-5"/>
                 </Button>
-                <Button class="!p-2.5 rounded-s-none" on:click={handleNewCustomerBookingWalkin}>
+                <Button color="blue" class="!p-2.5 rounded-s-none" on:click={handleNewCustomerBookingWalkin}>
                     <PlusOutline class="w-5 h-5"/>
                 </Button>
             </form>
-            <!--            <button-->
-            <!--                    class="text-blue-500 hover:text-blue-700 focus:outline-none"-->
-            <!--                    on:click={handleNewCustomerBookingWalkin}-->
-            <!--            >-->
-            <!--                <svg-->
-            <!--                        class="w-10 h-10"-->
-            <!--                        fill="none"-->
-            <!--                        stroke="currentColor"-->
-            <!--                        stroke-width="1.5"-->
-            <!--                        viewBox="0 0 24 24"-->
-            <!--                        xmlns="http://www.w3.org/2000/svg"-->
-            <!--                >-->
-            <!--                    <path-->
-            <!--                            d="M12 9v6m3-3H9m12 0a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z"-->
-            <!--                            stroke-linecap="round"-->
-            <!--                            stroke-linejoin="round"-->
-            <!--                    />-->
-            <!--                </svg>-->
-            <!--            </button>-->
         </div>
 
     </div>
     <div class="flex flex-col">
         <strong class="sm:my-0 mt-1 text-sm">{showSearchText}</strong>
     </div>
-    <div class="relative flex flex-col items-center justify-center w-full h-full mx-auto overflow-x-auto">
-        <div class="relative h-full max-h-[calc(100%-40px)] mx-auto">
-            <div class="absolute top-0 left-0 ml-8">
-                <InfoCircleSolid size="lg" id="b1"
-                                 class="text-gray-400 hover:text-gray-900 dark:hover:text-white cursor-pointer ms-1"/>
-                <Popover placement='right' triggeredBy="#b1"
-                         class="text-sm text-gray-500 bg-white border border-gray-200 rounded-lg shadow-sm w-72 dark:bg-gray-800 dark:border-gray-600 dark:text-gray-400 z-[1050]">
-                    <div
-                            class="flex-col justify-start"
-                    >
-                        <div class="flex items-center">
-                            <span class="block w-4 h-4 bg-blue-500 mr-2"></span>
-                            <span class="text-sm">Appointment (Light Blue)</span>
+
+    <div
+            class="flex flex-col items-center justify-center w-4/5 h-auto mx-auto mb-2 overflow-x-auto"
+    >
+
+        <div class="flex h-full mx-auto">
+            <div class="relative w-full h-full max-h-[calc(100%-40px)] mx-auto">
+                <div class="absolute top-0 left-0 ml-8">
+                    <InfoCircleSolid size="lg" id="b1"
+                                     class="text-gray-400 hover:text-gray-900 dark:hover:text-white cursor-pointer ms-1"/>
+                    <Popover placement='right' triggeredBy="#b1"
+                             class="text-sm text-gray-500 bg-white border border-gray-200 rounded-lg shadow-sm w-72 dark:bg-gray-800 dark:border-gray-600 dark:text-gray-400 z-[1050]">
+                        <div
+                                class="flex-col justify-start"
+                        >
+                            <div class="flex items-center">
+                                <span class="block w-4 h-4 bg-blue-500 mr-2"></span>
+                                <span class="text-sm">Appointment (Light Blue)</span>
+                            </div>
+                            <div class="flex items-center">
+                                <span class="block w-4 h-4 bg-yellow-300 mr-2"></span>
+                                <span class="text-sm">Lobby (Yellow)</span>
+                            </div>
+                            <div class="flex items-center">
+                                <span class="block w-4 h-4 bg-green-400 mr-2"></span>
+                                <span class="text-sm">In Progress (Green)</span>
+                            </div>
+                            <div class="flex items-center">
+                                <span class="block w-4 h-4 bg-gray-400 mr-2"></span>
+                                <span class="text-sm">Completed (Gray)</span>
+                            </div>
                         </div>
-                        <div class="flex items-center">
-                            <span class="block w-4 h-4 bg-yellow-300 mr-2"></span>
-                            <span class="text-sm">Lobby (Yellow)</span>
-                        </div>
-                        <div class="flex items-center">
-                            <span class="block w-4 h-4 bg-green-400 mr-2"></span>
-                            <span class="text-sm">In Progress (Green)</span>
-                        </div>
-                        <div class="flex items-center">
-                            <span class="block w-4 h-4 bg-gray-400 mr-2"></span>
-                            <span class="text-sm">Completed (Gray)</span>
-                        </div>
-                    </div>
-                </Popover>
+                    </Popover>
+                </div>
             </div>
             <Calendar bind:this={calendarInstance} {plugins} {options}/>
         </div>
