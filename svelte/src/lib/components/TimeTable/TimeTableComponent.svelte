@@ -488,9 +488,9 @@
                                 normalize(ticket.servicingTicketInfo.customerName).includes(
                                     normalizedSearchValue
                                 ) ||
-                                normalize((ticket.servicingTicketInfo.id % 1000).toString().padStart(3, '0').includes(
+                                normalize((ticket.servicingTicketInfo.id % 1000).toString().padStart(3, '0')).includes(
                                     normalizedSearchValue
-                                ))
+                                )
                         ),
                     };
                 })
