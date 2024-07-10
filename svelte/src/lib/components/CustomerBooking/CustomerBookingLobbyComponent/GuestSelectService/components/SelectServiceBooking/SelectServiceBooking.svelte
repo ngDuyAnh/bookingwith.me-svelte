@@ -3,6 +3,8 @@
     import {business} from "$lib/page/stores/business/business.js";
     import {CustomerIndividualServiceBooking} from "$lib/api/initialize_functions/CustomerBooking.js";
 
+    export let newServiceSelect = false;
+
     export let individualBooking;
     export let serviceBookingIndex;
 
@@ -59,7 +61,7 @@
                 }
             ];
 
-            console.log("Add new service booking", individualBooking)
+            // console.log("Add new service booking", individualBooking)
         } else {
             serviceBooking.service = newService;
         }
@@ -102,16 +104,17 @@
             on:change={handleServiceBookingSelect}
             on:clear={handleDeleteServiceBooking}
     />
-    <Select
-            floatingConfig={{
-            strategy: 'fixed',
-        }}
-            --multi-max-width="fit"
-            items={employeeSelectOptions} clearable={false}
-            value={selectedEmployee}
-            on:change={handleEmployeeSelect}
-            disabled={!selectedService}
-    />
+
+    {#if !newServiceSelect}
+        <Select
+                floatingConfig={{strategy: 'fixed',}}
+                --multi-max-width="fit"
+                items={employeeSelectOptions} clearable={false}
+                value={selectedEmployee}
+                on:change={handleEmployeeSelect}
+                disabled={!selectedService}
+        />
+    {/if}
 </div>
 
 <style>

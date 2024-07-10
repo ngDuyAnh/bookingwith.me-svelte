@@ -25,19 +25,19 @@
 
 <ul class="flex-grow mt-4 space-y-2 px-2">
     {#each customerBooking.customerIndividualBookingList as individualBooking, index (index)}
-            <li id={index}
-                class="flex justify-between items-center {selectedIndividualBookingIndex === index ? 'bg-blue-50 py-2 border-[1px] border-blue-700':'bg-gray-100 py-1'} px-1 rounded-md shadow-sm ">
-                <button
-                        on:click={() => {selectedIndividualBookingIndex = index}}
-                        class="flex-1 text-left cursor-pointer"
-                >
-                    {#key customerBooking.customerIndividualBookingList[index].customerIndividualServiceBookingList}
+        <li id={index}
+            class="flex justify-between items-center {selectedIndividualBookingIndex === index ? 'bg-blue-50 py-2 border-[1px] border-blue-700':'bg-gray-100 py-1'} px-1 rounded-md shadow-sm ">
+            <button
+                    on:click={() => {selectedIndividualBookingIndex = index}}
+                    class="flex-1 text-left cursor-pointer"
+            >
                         <span class="text-gray-950">
                             Guest #{index + 1} (<span
                                 class="{individualBooking.customerIndividualServiceBookingList.length>0? '':'text-red-600'}">{individualBooking.customerIndividualServiceBookingList.length}</span>)
                         </span>
-                    {/key}
-                </button>
+            </button>
+
+            {#if customerBooking.customerIndividualBookingList.length > 1}
                 <button
                         on:click={() => deleteGuest(index)}
                         class="ml-4 text-red-500 cursor-pointer"
@@ -50,6 +50,7 @@
                     </svg>
                 </button>
                 <Tooltip class="z-[1050]" type="light">Delete Guest</Tooltip>
-            </li>
+            {/if}
+        </li>
     {/each}
 </ul>

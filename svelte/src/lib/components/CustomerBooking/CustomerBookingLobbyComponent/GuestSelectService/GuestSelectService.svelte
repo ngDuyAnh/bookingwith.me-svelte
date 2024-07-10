@@ -1,11 +1,11 @@
 <script>
-
     import SelectServiceBooking
         from "$lib/components/CustomerBooking/CustomerBookingLobbyComponent/GuestSelectService/components/SelectServiceBooking/SelectServiceBooking.svelte";
 
-    export let individualBooking;
+    export let customerBooking;
+    export let individualBookingIndex;
 
-    $: console.log("individualBooking", individualBooking);
+    $: individualBooking = customerBooking.customerIndividualBookingList[individualBookingIndex];
 </script>
 
 <!--List of service booking from the guest-->
@@ -22,6 +22,8 @@
         <!--Append a new service booking-->
         <span>New service</span>
         <SelectServiceBooking
+                newServiceSelect={true}
+
                 bind:individualBooking={individualBooking}
                 serviceBookingIndex={individualBooking.customerIndividualServiceBookingList.length}
         />
