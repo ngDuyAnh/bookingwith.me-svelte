@@ -13,6 +13,7 @@
     {#key individualBooking.customerIndividualServiceBookingList.length}
         {#each individualBooking.customerIndividualServiceBookingList as serviceBooking, index (serviceBooking)}
             <SelectServiceBooking
+
                     bind:individualBooking={individualBooking}
                     serviceBookingIndex={index}
             />

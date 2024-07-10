@@ -28,7 +28,6 @@
 </script>
 
 <div class="flex space-x-4 h-full">
-
     <!--Guest column-->
     <div class="flex flex-col h-full">
         <div class="relative flex flex-row flex-grow items-center justify-center mb-2">
