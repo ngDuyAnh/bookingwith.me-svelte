@@ -24,12 +24,13 @@
     import dayjs from "dayjs";
     import {findCustomerBookingById} from "$lib/page/protected/business-portal/page_lobby/stores/dashboard_store.js";
     import {
-        findServiceBookingFromCustomerBooking
-    } from "$lib/api/initialize_functions/utilitiy_functions/CustomerBooking.js";
+        findServiceBookingFromCustomerBooking, shortCustomerBookingID
+    } from "$lib/api/utilitiy_functions/CustomerBooking.js";
     import {
         initializeCustomerBookingAndBroadcast
     } from "$lib/api/api_server/api_endpoints/customer-booking-portal/api.js";
     import {getEmployee} from "$lib/page/stores/business/business.js";
+    import {normalizeSearchInput} from "$lib/application/NormalizeSearchInput.js";
 
     // Date select
     let selectedDate = today();
@@ -461,34 +462,38 @@
     let showSearchText = "";
     let filteredEmployeeTimetableList = $timetableComponent.employeeTimetableList;
 
-    function normalize(text) {
-        return text.replace(/[\W_]+/g, "").toLowerCase();
-    }
-
+    let autoScroll = false;
     function searchBookings() {
-        const normalizedSearchValue = normalize(searchValue);
+        const normalizedSearchValue = normalizeSearchInput(searchValue);
 
         if (searchValue.length === 0) {
-            // Reset the scroll to current time
-            // console.log("here?");
-            // options.scrollTime = $now.format("HH:mm:ss");
+            // Re-scroll to the current time
+            if (autoScroll)
+            {
+                autoScroll = false;
+                options.scrollTime = $now.format("HH:mm:ss");
+            }
 
             filteredEmployeeTimetableList = $timetableComponent.employeeTimetableList;
             showSearchText = "";
         } else {
+
+            // Keep track of autoscroll for later when the search box is empty
+            autoScroll = true;
+
             filteredEmployeeTimetableList = $timetableComponent.employeeTimetableList
                 .map((employeeTimetable) => {
                     return {
                         ...employeeTimetable,
                         servicingTicketList: employeeTimetable.servicingTicketList.filter(
                             (ticket) =>
-                                normalize(ticket.servicingTicketInfo.phoneNumber).includes(
+                                normalizeSearchInput(ticket.servicingTicketInfo.phoneNumber).includes(
                                     normalizedSearchValue
                                 ) ||
-                                normalize(ticket.servicingTicketInfo.customerName).includes(
+                                normalizeSearchInput(ticket.servicingTicketInfo.customerName).includes(
                                     normalizedSearchValue
                                 ) ||
-                                normalize((ticket.servicingTicketInfo.id % 1000).toString().padStart(3, '0')).includes(
+                                normalizeSearchInput(shortCustomerBookingID(ticket.servicingTicketInfo.id)).includes(
                                     normalizedSearchValue
                                 )
                         ),
