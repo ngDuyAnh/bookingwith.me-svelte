@@ -2,9 +2,13 @@
     import {CustomerBooking, CustomerIndividualBooking} from "$lib/api/initialize_functions/CustomerBooking.js";
     import GuestSelectService
         from "$lib/components/CustomerBooking/CustomerBookingLobbyComponent/GuestSelectService/GuestSelectService.svelte";
-    import {Avatar} from "flowbite-svelte";
+    import {Avatar, Button} from "flowbite-svelte";
     import GuestList from "$lib/components/CustomerBooking/CustomerBookingLobbyComponent/GuestList/GuestList.svelte";
     import TimeList from "$lib/components/CustomerBooking/CustomerBookingLobbyComponent/TimeList/TimeList.svelte";
+    import {isToday, today} from "$lib/page/stores/now/now_dayjs_store.js";
+    import {ChevronLeftOutline, ChevronRightOutline} from "flowbite-svelte-icons";
+    import dayjs from "dayjs";
+    import {formatToDate} from "$lib/application/Formatter.js";
 
     export let customerBooking = {
         ...CustomerBooking(),
@@ -25,6 +29,18 @@
             CustomerIndividualBooking()
         ]
         selectedIndividualBookingIndex = customerBooking.customerIndividualBookingList.length - 1;
+    }
+
+    function selectToday() {
+        customerBooking.bookingDate = today();
+    }
+
+    function selectTomorrow() {
+        customerBooking.bookingDate = dayjs(customerBooking.bookingDate).add(1, 'day').format(formatToDate);
+    }
+
+    function selectYesterday() {
+        customerBooking.bookingDate = dayjs(customerBooking.bookingDate).subtract(1, 'day').format(formatToDate);
     }
 
     $: console.log("customerBooking", customerBooking);
@@ -91,11 +107,26 @@
             <div class="relative flex flex-row flex-grow items-center justify-center mb-2">
                 <div class="absolute border-2 border-gray-200 h-1 w-full rounded-lg"></div>
                 <div class="flex flex-row bg-white z-10 space-x-1 px-1">
-                    <Avatar size="xs" class="flex justify-center items-center">1</Avatar>
-                    <span class="font-bold">Time</span>
+                    <Avatar size="xs" class="flex justify-center items-center">3</Avatar>
+                    <span class="font-bold">Date & Time</span>
                 </div>
             </div>
 
+            <!--Date select-->
+            <div class="flex flex-row sm:justify-normal justify-center items-center pb-2">
+                <Button class="h-fit text-md mr-1" size="xs" color="light" on:click={()=>{selectToday()}} disabled={isToday(customerBooking.bookingDate)}>Today</Button>
+                <div class="flex items-center">
+                    <Button class="rounded-r-none h-fit" size="xs" color="light" on:click={()=>{selectYesterday()}}>
+                        <ChevronLeftOutline class="w-6 h-6"/>
+                    </Button>
+                    <input class="border-gray-300 w-[8rem]" bind:value={customerBooking.bookingDate} type="date"/>
+                    <Button class="rounded-l-none h-fit" size="xs" color="light" on:click={()=>{selectTomorrow()}}>
+                        <ChevronRightOutline class="w-6 h-6"/>
+                    </Button>
+                </div>
+            </div>
+
+            <!--Time select-->
             <div class="h-full shadow overflow-y-auto">
                 <TimeList
                         bind:customerBooking={customerBooking}
