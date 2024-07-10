@@ -1,9 +1,9 @@
 <script>
     import {CustomerBooking, CustomerIndividualBooking} from "$lib/api/initialize_functions/CustomerBooking.js";
     import GuestSelectService
-        from "$lib/components/CustomerBooking/CreateCustomerBookingLobbyComponent/GuestSelectService/GuestSelectService.svelte";
+        from "$lib/components/CustomerBooking/CustomerBookingLobbyComponent/GuestSelectService/GuestSelectService.svelte";
     import {Avatar} from "flowbite-svelte";
-    import GuestList from "$lib/components/CustomerBooking/CreateCustomerBookingLobbyComponent/Guest/GuestList.svelte";
+    import GuestList from "$lib/components/CustomerBooking/CustomerBookingLobbyComponent/Guest/GuestList.svelte";
 
     export let customerBooking = {
         ...CustomerBooking(),
