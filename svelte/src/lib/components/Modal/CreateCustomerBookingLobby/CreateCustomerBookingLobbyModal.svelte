@@ -8,8 +8,8 @@
         modalCreateCustomerBookingLobby
     } from "$lib/components/Modal/CreateCustomerBookingLobby/stores/createCustomerBookingLobby.js";
     import {Modal} from "flowbite-svelte";
-    import CreateCustomerBookingLobbyComponent
-        from "$lib/components/CustomerBooking/CreateCustomerBookingLobbyComponent/CreateCustomerBookingLobbyComponent.svelte";
+    import CustomerBookingLobbyComponent
+        from "$lib/components/CustomerBooking/CustomerBookingLobbyComponent/CustomerBookingLobbyComponent.svelte";
 
     export let customerBooking = {
         ...CustomerBooking(),
@@ -43,7 +43,7 @@
                 New Booking
             </h1>
         </svelte:fragment>
-        <CreateCustomerBookingLobbyComponent
+        <CustomerBookingLobbyComponent
                 bookingChannel={CustomerBookingChannel.LOBBY}
 
                 {customerBooking}

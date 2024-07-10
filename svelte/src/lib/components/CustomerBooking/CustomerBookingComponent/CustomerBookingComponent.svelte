@@ -1,11 +1,11 @@
 <script>
-    import NumGuestSelect from "$lib/components/CustomerBooking/CreateCustomerBookingComponent/NumGuestSelect/NumGuestSelect.svelte";
+    import NumGuestSelect from "$lib/components/CustomerBooking/CustomerBookingComponent/NumGuestSelect/NumGuestSelect.svelte";
     import {CustomerBooking, CustomerIndividualBooking} from "$lib/api/initialize_functions/CustomerBooking.js";
     import CustomerIndividualBookingServiceSelect
-        from "$lib/components/CustomerBooking/CreateCustomerBookingComponent/CustomerIndividualBookingServiceSelect/CustomerIndividualBookingServiceSelect.svelte";
+        from "$lib/components/CustomerBooking/CustomerBookingComponent/components/CustomerIndividualBookingServiceSelect.svelte";
     import CustomerBookingInformation
-        from "$lib/components/CustomerBooking/CreateCustomerBookingComponent/CustomerBookingInformation/CustomerBookingInformation.svelte";
-    import BookingSuccess from "$lib/components/CustomerBooking/CreateCustomerBookingComponent/BookingSuccess/BookingSuccess.svelte";
+        from "$lib/components/CustomerBooking/CustomerBookingComponent/CustomerBookingInformation/CustomerBookingInformation.svelte";
+    import BookingSuccess from "$lib/page/customer-booking-portal/create/page/BookingSuccess/BookingSuccess.svelte";
 
     export let customerIndividualBookingServiceSelectProps = {
         showAllServiceGroup: false,
