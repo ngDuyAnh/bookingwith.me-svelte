@@ -3,7 +3,7 @@
     import GuestSelectService
         from "$lib/components/CustomerBooking/CustomerBookingLobbyComponent/GuestSelectService/GuestSelectService.svelte";
     import {Avatar} from "flowbite-svelte";
-    import GuestList from "$lib/components/CustomerBooking/CustomerBookingLobbyComponent/Guest/GuestList.svelte";
+    import GuestList from "$lib/components/CustomerBooking/CustomerBookingLobbyComponent/GuestList/GuestList.svelte";
 
     export let customerBooking = {
         ...CustomerBooking(),
@@ -30,17 +30,15 @@
 <div class="flex space-x-4 h-full">
 
     <!--Guest column-->
-    <div class="flex-1 flex flex-col">
-        <div class="flex flex-col h-full">
-            <div class="relative flex flex-row flex-grow items-center justify-center mb-2">
-                <div class="absolute border-2 border-gray-200 h-1 w-full rounded-lg"></div>
-                <div class="flex flex-row bg-white z-10 space-x-1 px-1">
-                    <Avatar size="xs" class="flex justify-center items-center">1</Avatar>
-                    <span class="font-bold">Guest</span>
-                </div>
+    <div class="flex flex-col h-full">
+        <div class="relative flex flex-row flex-grow items-center justify-center mb-2">
+            <div class="absolute border-2 border-gray-200 h-1 w-full rounded-lg"></div>
+            <div class="flex flex-row bg-white z-10 space-x-1 px-1">
+                <Avatar size="xs" class="flex justify-center items-center">1</Avatar>
+                <span class="font-bold">Guest</span>
             </div>
-
-            <div class="h-full shadow overflow-y-auto">
+        </div>
+        <div class="w-[200px] h-full shadow overflow-y-auto">
                 <!--Create a new guest-->
                 <div class="flex justify-end">
                     <button
@@ -64,7 +62,6 @@
 
             </div>
         </div>
-    </div>
 
     <!--Service selection for guest column-->
     <div class="flex-1 flex flex-col">
@@ -72,7 +69,7 @@
             <div class="relative flex flex-row flex-grow items-center justify-center mb-2">
                 <div class="absolute border-2 border-gray-200 h-1 w-full rounded-lg"></div>
                 <div class="flex flex-row bg-white z-10 space-x-1 px-1">
-                    <Avatar size="xs" class="flex justify-center items-center">1</Avatar>
+                    <Avatar size="xs" class="flex justify-center items-center">2</Avatar>
                     <span class="font-bold">Service(s)</span>
                 </div>
             </div>

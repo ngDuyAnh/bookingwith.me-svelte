@@ -118,8 +118,9 @@
     :global(.svelte-select-list) {
         /*background:#FA517A!important;*/
         /*background-color: #333333 !important;*/
-        /*z-index: 10000000000 !important;*/
-        width: 300px !important;
+        overflow: visible;
+        z-index: 10000000000 !important;
+        width: 400px !important;
         height: fit-content !important;
     }
 </style>
