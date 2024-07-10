@@ -1,9 +1,10 @@
 <script>
     import {fetchAvailableTimeList} from "$lib/api/api_server/functions.js";
     import {isToday} from "$lib/page/stores/now/now_dayjs_store.js";
-    import {Button} from "flowbite-svelte";
+    import {Button, Search} from "flowbite-svelte";
     import dayjs from "dayjs";
     import {formatToTime, formatToTimeAM} from "$lib/application/Formatter.js";
+    import {normalizeSearchInput} from "$lib/application/NormalizeSearchInput.js";
 
     export let customerBooking;
 
@@ -58,6 +59,55 @@
             });
     }
 
+    // Filter search
+    let searchValue = "";
+    let filteredAvailabilityList = [];
+
+    // Searching input changes
+    // Timetable update generate events for calendar
+    $: if (searchValue.length >= 0 || availabilityList) {
+        searchTime();
+    }
+
+    function searchTime()
+    {
+        const normalizedSearchValue = normalizeSearchInput(searchValue);
+
+        if (searchValue.length === 0) {
+            filteredAvailabilityList = availabilityList;
+        } else {
+            // Filter based on the search value
+            filteredAvailabilityList = availabilityList.filter((availability) => {
+                const displayString = availabilityString(availability);
+
+                // The display string include the search
+                // Or it is the selected availability
+                return (selectedAvailability === availability) ||
+                    normalizeSearchInput(displayString).includes(
+                        normalizedSearchValue
+                    );
+            });
+
+            // Sort the filtered list based on the index of match
+            filteredAvailabilityList.sort((a, b) => {
+                const displayStringA = normalizeSearchInput(availabilityString(a));
+                const displayStringB = normalizeSearchInput(availabilityString(b));
+
+                // Calculate match position for each item
+                const matchIndexA = displayStringA.indexOf(normalizedSearchValue);
+                const matchIndexB = displayStringB.indexOf(normalizedSearchValue);
+
+                // If one or both items are the selected availability, prioritize them
+                if (selectedAvailability === a) return -1;
+                if (selectedAvailability === b) return 1;
+
+                // Sort by the match index; earlier matches are better
+                // If no match found (index = -1), push to the end
+                return (matchIndexA !== -1 ? matchIndexA : Infinity) - (matchIndexB !== -1 ? matchIndexB : Infinity);
+            });
+        }
+    }
+
     function selectAvailability(availability) {
         selectedAvailability = availability;
         customerBooking.bookingTime = availability.timePeriod.startTime;
@@ -77,26 +127,36 @@
 
 <!--Maybe add loading here while getting the availabilities-->
 
+<Search
+        bind:value={searchValue}
+        size="md"
+        class="rounded-none rounded-l-lg py-2.5"
+        placeholder="Search Booking Info"
+        maxlength="20"
+></Search>
+
 {#if requiredAvailabilitiesSearch}
     <Button on:click={getAvailabilities}>
         Check Availability
     </Button>
-{:else if availabilityList.length > 0}
-    <ul class="space-y-2">
-        {#each availabilityList as availability, index (index)}
-            <li id={index}
-                class="flex justify-between items-center py-1 px-1 rounded-md shadow-sm
+{:else}
+    {#if filteredAvailabilityList.length > 0}
+        <ul class="space-y-2">
+            {#each filteredAvailabilityList as availability, index (index)}
+                <li id={index}
+                    class="flex justify-between items-center py-1 px-1 rounded-md shadow-sm
                     {selectedAvailability === availability ? (availability.walkIn ? 'border-[3px] border-red-700' : 'border-[3px] border-blue-700') : ''}
                     {availability.walkIn ? 'bg-yellow-200' : 'bg-green-200'}"
-            >
-                <button
-                        class="flex-1 text-left cursor-pointer"
-                        on:click={() => selectAvailability(availability)}
                 >
-                    {availabilityString(availability)}
-                </button>
-        {/each}
-    </ul>
-{:else}
-    <p>No availability.</p>
+                    <button
+                            class="flex-1 text-left cursor-pointer"
+                            on:click={() => selectAvailability(availability)}
+                    >
+                        {availabilityString(availability)}
+                    </button>
+            {/each}
+        </ul>
+    {:else}
+        <p class="select-none">No availability.</p>
+    {/if}
 {/if}
