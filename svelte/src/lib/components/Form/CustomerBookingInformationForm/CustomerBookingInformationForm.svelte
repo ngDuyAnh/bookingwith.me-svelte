@@ -48,7 +48,7 @@
         if (bookingDate.isSame($now, 'day')) {
             currentTimeString = $now.format(formatToTime)
         }
-            // Invalid, the date selected is before today
+        // Invalid, the date selected is before today
         // Set it to the end of the day for no availability
         else if (bookingDate.isBefore($now, 'day')) {
             currentTimeString = "23:59";

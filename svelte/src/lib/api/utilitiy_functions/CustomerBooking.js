@@ -1,4 +1,9 @@
 
+export function shortCustomerBookingID(id)
+{
+    return (id % 1000).toString().padStart(3, '0');
+}
+
 export function findIndividualBookingFromCustomerBooking(customerBooking, individualID)
 {
     for (let individualBooking of customerBooking.customerIndividualBookingList) {

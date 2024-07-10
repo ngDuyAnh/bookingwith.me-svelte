@@ -10,7 +10,7 @@
   import { getCustomerBooking } from "$lib/api/api_server/api_endpoints/customer-booking-portal/api.js";
   import {
     findServiceBookingFromCustomerBooking
-  } from "$lib/api/initialize_functions/utilitiy_functions/CustomerBooking.js";
+  } from "$lib/api/utilitiy_functions/CustomerBooking.js";
   import { onDestroy, onMount } from "svelte";
   import { getEmployeeSchedule } from "$lib/page/protected/business-portal/page_employee/page/MyTimetable/MyTimeTable.js";
   import { Button, Spinner } from "flowbite-svelte";

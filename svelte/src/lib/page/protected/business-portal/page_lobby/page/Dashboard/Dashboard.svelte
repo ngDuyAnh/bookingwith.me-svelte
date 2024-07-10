@@ -12,7 +12,8 @@
     import CustomerBookingClickModal from "$lib/components/Modal/CustomerBookingClickModal/CustomerBookingClickModal.svelte";
     import {SearchOutline} from 'flowbite-svelte-icons';
     import {handleOpenCustomerProfileModal} from "$lib/components/Modal/CustomerProfileModal/customerProfileModal.js";
-
+    import {normalizeSearchInput} from "$lib/application/NormalizeSearchInput.js";
+    import {shortCustomerBookingID} from "$lib/api/utilitiy_functions/CustomerBooking.js";
 
     let columns = [
         {
@@ -39,12 +40,8 @@
     let showSearchText = "";
     let filteredBookingStateList = $customerBookingQueueList;
 
-    function normalize(text) {
-        return text.replace(/[\W_]+/g, "").toLowerCase();
-    }
-
     function handleSearchFilter() {
-        const normalizedSearchValue = normalize(searchValue);
+        const normalizedSearchValue = normalizeSearchInput(searchValue);
 
         // Assume $customerBookingQueueList is structured like: [ [], [], [], [] ]
         // where each sub-array represents bookings in different states: 0->appointment, 1->lobby, 2->servicing, 3->completed
@@ -54,9 +51,9 @@
         } else {
             filteredBookingStateList = $customerBookingQueueList.map(state => {
                 return state.filter(booking =>
-                    normalize(booking.customer.customerName).includes(normalizedSearchValue) ||
-                    normalize(((booking.id % 1000).toString().padStart(3, '0')).toString()).includes(normalizedSearchValue) ||
-                    normalize(booking.customer.phoneNumber.toString()).includes(normalizedSearchValue)
+                    normalizeSearchInput(booking.customer.customerName).includes(normalizedSearchValue) ||
+                    normalizeSearchInput(shortCustomerBookingID(booking.id)).includes(normalizedSearchValue) ||
+                    normalizeSearchInput(booking.customer.phoneNumber.toString()).includes(normalizedSearchValue)
                 );
             });
             showSearchText = `Showing Results For: ${searchValue}`;
@@ -65,7 +62,7 @@
 
     function handleSearchClick()
     {
-        const normalizedSearchValue = normalize(searchValue);
+        const normalizedSearchValue = normalizeSearchInput(searchValue);
 
         // Customer profile
         const phonePattern1 = /^\d{10}$/;
@@ -98,7 +95,7 @@
     let dragStartedID;
     let droppedIntoID;
 
-    $:console.log("droppedIntoID ",droppedIntoID," from ",dragStartedID);
+    // $:console.log("droppedIntoID ",droppedIntoID," from ",dragStartedID);
 </script>
 
 {#if loading}
