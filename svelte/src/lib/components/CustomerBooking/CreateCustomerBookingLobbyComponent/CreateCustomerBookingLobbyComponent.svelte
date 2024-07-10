@@ -40,7 +40,7 @@
                 </div>
             </div>
 
-            <div class="w-[200px] h-full shadow overflow-y-auto">
+            <div class="h-full shadow overflow-y-auto">
                 <!--Create a new guest-->
                 <div class="flex justify-end">
                     <button
@@ -68,11 +68,23 @@
 
     <!--Service selection for guest column-->
     <div class="flex-1 flex flex-col">
-        <GuestSelectService
-                bind:individualBooking={
+        <div class="flex flex-col h-full">
+            <div class="relative flex flex-row flex-grow items-center justify-center mb-2">
+                <div class="absolute border-2 border-gray-200 h-1 w-full rounded-lg"></div>
+                <div class="flex flex-row bg-white z-10 space-x-1 px-1">
+                    <Avatar size="xs" class="flex justify-center items-center">1</Avatar>
+                    <span class="font-bold">Service(s)</span>
+                </div>
+            </div>
+
+            <div class="h-full shadow overflow-y-auto">
+                <GuestSelectService
+                        bind:individualBooking={
                     customerBooking.customerIndividualBookingList[selectedIndividualBookingIndex]
                 }
-        />
+                />
+            </div>
+        </div>
     </div>
 
     <div class="flex-1 flex flex-col">
