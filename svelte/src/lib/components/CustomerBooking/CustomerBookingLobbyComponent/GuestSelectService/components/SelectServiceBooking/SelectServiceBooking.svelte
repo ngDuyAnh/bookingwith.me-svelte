@@ -16,7 +16,7 @@
             group: group.serviceGroupName,
             label: service.serviceName,
             value: service
-    })));
+        })));
 
     function generateEmployeeOptions(service) {
 
@@ -40,20 +40,18 @@
     }
 
     $: employeeSelectOptions = serviceBooking ?
-        generateEmployeeOptions(serviceBooking.service) : [{ label: "Any employee", value: null }];
+        generateEmployeeOptions(serviceBooking.service) : [{label: "Any employee", value: null}];
 
     $: selectedService = serviceSelectOptions.find(option => option.value.id === serviceBooking?.service?.id) || null;
     $: selectedEmployee = employeeSelectOptions.find(option => option.value?.id === serviceBooking?.bookedEmployee?.id);
 
-    function handleServiceBookingSelect(event)
-    {
+    function handleServiceBookingSelect(event) {
         // console.log("handleServiceBookingSelect", event);
 
         let newService = event.detail.value;
 
         // Create new service booking
-        if (individualBooking.customerIndividualServiceBookingList.length === serviceBookingIndex)
-        {
+        if (individualBooking.customerIndividualServiceBookingList.length === serviceBookingIndex) {
             individualBooking.customerIndividualServiceBookingList = [
                 ...individualBooking.customerIndividualServiceBookingList,
                 {
@@ -64,19 +62,15 @@
             ];
 
             // console.log("Add new service booking", individualBooking)
-        }
-        else
-        {
+        } else {
             serviceBooking.service = newService;
         }
     }
 
-    function handleDeleteServiceBooking()
-    {
+    function handleDeleteServiceBooking() {
         // console.log("handleDeleteServiceBooking", event);
 
-        if (serviceBookingIndex < individualBooking.customerIndividualServiceBookingList.length)
-        {
+        if (serviceBookingIndex < individualBooking.customerIndividualServiceBookingList.length) {
             individualBooking.customerIndividualServiceBookingList = [
                 ...individualBooking.customerIndividualServiceBookingList.slice(0, serviceBookingIndex),
                 ...individualBooking.customerIndividualServiceBookingList.slice(serviceBookingIndex + 1)
@@ -86,15 +80,13 @@
         }
     }
 
-    function handleEmployeeSelect(event)
-    {
+    function handleEmployeeSelect(event) {
         // console.log("handleEmployeeSelect", event);
 
         let newEmployee = event.detail.value;
 
         // Select the employee
-        if (serviceBookingIndex < individualBooking.customerIndividualServiceBookingList.length)
-        {
+        if (serviceBookingIndex < individualBooking.customerIndividualServiceBookingList.length) {
             serviceBooking.bookedEmployee = newEmployee;
 
             console.log("handleEmployeeSelect serviceBooking", serviceBooking);
@@ -104,6 +96,9 @@
 
 <div class="max-w-[300px]">
     <Select --margin="2px 0px"
+            floatingConfig={{
+            strategy: 'fixed',
+        }}
             items={serviceSelectOptions} groupBy={(item) => item.group}
             value={selectedService}
             on:change={handleServiceBookingSelect}
@@ -111,7 +106,10 @@
     />
 
     {#if !newServiceSelect}
-        <Select items={employeeSelectOptions} clearable={false}
+        <Select
+                floatingConfig={{strategy: 'fixed',}}
+                --multi-max-width="fit"
+                items={employeeSelectOptions} clearable={false}
                 value={selectedEmployee}
                 on:change={handleEmployeeSelect}
                 disabled={!selectedService}
@@ -123,8 +121,9 @@
     :global(.svelte-select-list) {
         /*background:#FA517A!important;*/
         /*background-color: #333333 !important;*/
+        /*overflow: visible;*/
         /*z-index: 10000000000 !important;*/
-        width: 300px !important;
+        width: 400px !important;
         height: fit-content !important;
     }
 </style>

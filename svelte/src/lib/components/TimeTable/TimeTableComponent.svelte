@@ -692,14 +692,12 @@
 <!--<div class="flex flex-col items-center justify-center p-1.5">-->
 
 
-
-
 <!--     Legend for color coding-->
 
 <!--</div>-->
 
 <div class="relative flex flex-col items-center justify-center w-5/6 h-5/6 mx-auto my-2 overflow-x-auto">
-    <div class="flex sm:flex-row flex-col sticky left-0 inline-block h-fit space-x-1 space-y-1 items-center justify-between">
+    <div class="flex sm:flex-row flex-col left-0 inline-block h-fit space-x-1 space-y-1 items-center justify-between border-2 border-black">
         <div class="flex flex-row space-x-1 sm:justify-normal justify-between">
             <Button class="h-fit text-md" size="xs" color="light">Today</Button>
             <div class="flex items-center">
@@ -716,9 +714,6 @@
 
             </div>
         </div>
-
-
-
 
         <div
                 class="w-full flex flex-row items-center justify-center"
@@ -738,60 +733,62 @@
                     <PlusOutline class="w-5 h-5"/>
                 </Button>
             </form>
-<!--            <button-->
-<!--                    class="text-blue-500 hover:text-blue-700 focus:outline-none"-->
-<!--                    on:click={handleNewCustomerBookingWalkin}-->
-<!--            >-->
-<!--                <svg-->
-<!--                        class="w-10 h-10"-->
-<!--                        fill="none"-->
-<!--                        stroke="currentColor"-->
-<!--                        stroke-width="1.5"-->
-<!--                        viewBox="0 0 24 24"-->
-<!--                        xmlns="http://www.w3.org/2000/svg"-->
-<!--                >-->
-<!--                    <path-->
-<!--                            d="M12 9v6m3-3H9m12 0a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z"-->
-<!--                            stroke-linecap="round"-->
-<!--                            stroke-linejoin="round"-->
-<!--                    />-->
-<!--                </svg>-->
-<!--            </button>-->
+            <!--            <button-->
+            <!--                    class="text-blue-500 hover:text-blue-700 focus:outline-none"-->
+            <!--                    on:click={handleNewCustomerBookingWalkin}-->
+            <!--            >-->
+            <!--                <svg-->
+            <!--                        class="w-10 h-10"-->
+            <!--                        fill="none"-->
+            <!--                        stroke="currentColor"-->
+            <!--                        stroke-width="1.5"-->
+            <!--                        viewBox="0 0 24 24"-->
+            <!--                        xmlns="http://www.w3.org/2000/svg"-->
+            <!--                >-->
+            <!--                    <path-->
+            <!--                            d="M12 9v6m3-3H9m12 0a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z"-->
+            <!--                            stroke-linecap="round"-->
+            <!--                            stroke-linejoin="round"-->
+            <!--                    />-->
+            <!--                </svg>-->
+            <!--            </button>-->
         </div>
 
     </div>
     <div class="flex flex-col">
         <strong class="sm:my-0 mt-1 text-sm">{showSearchText}</strong>
     </div>
-    <div class="relative h-full max-h-[calc(100%-40px)] overflow-auto mx-auto">
-        <div class="absolute top-0 left-0 ml-8">
-            <InfoCircleSolid size="lg" id="b1"
-                             class="text-gray-400 hover:text-gray-900 dark:hover:text-white cursor-pointer ms-1"/>
-            <Popover placement='right' triggeredBy="#b1"
-                     class="text-sm text-gray-500 bg-white border border-gray-200 rounded-lg shadow-sm w-72 dark:bg-gray-800 dark:border-gray-600 dark:text-gray-400 z-[1050]">
-                <div
-                        class="flex-col justify-start"
-                >
-                    <div class="flex items-center">
-                        <span class="block w-4 h-4 bg-blue-500 mr-2"></span>
-                        <span class="text-sm">Appointment (Light Blue)</span>
+    <div class="relative flex flex-col items-center justify-center w-full h-full mx-auto overflow-x-auto">
+        <div class="relative h-full max-h-[calc(100%-40px)] mx-auto">
+            <div class="absolute top-0 left-0 ml-8">
+                <InfoCircleSolid size="lg" id="b1"
+                                 class="text-gray-400 hover:text-gray-900 dark:hover:text-white cursor-pointer ms-1"/>
+                <Popover placement='right' triggeredBy="#b1"
+                         class="text-sm text-gray-500 bg-white border border-gray-200 rounded-lg shadow-sm w-72 dark:bg-gray-800 dark:border-gray-600 dark:text-gray-400 z-[1050]">
+                    <div
+                            class="flex-col justify-start"
+                    >
+                        <div class="flex items-center">
+                            <span class="block w-4 h-4 bg-blue-500 mr-2"></span>
+                            <span class="text-sm">Appointment (Light Blue)</span>
+                        </div>
+                        <div class="flex items-center">
+                            <span class="block w-4 h-4 bg-yellow-300 mr-2"></span>
+                            <span class="text-sm">Lobby (Yellow)</span>
+                        </div>
+                        <div class="flex items-center">
+                            <span class="block w-4 h-4 bg-green-400 mr-2"></span>
+                            <span class="text-sm">In Progress (Green)</span>
+                        </div>
+                        <div class="flex items-center">
+                            <span class="block w-4 h-4 bg-gray-400 mr-2"></span>
+                            <span class="text-sm">Completed (Gray)</span>
+                        </div>
                     </div>
-                    <div class="flex items-center">
-                        <span class="block w-4 h-4 bg-yellow-300 mr-2"></span>
-                        <span class="text-sm">Lobby (Yellow)</span>
-                    </div>
-                    <div class="flex items-center">
-                        <span class="block w-4 h-4 bg-green-400 mr-2"></span>
-                        <span class="text-sm">In Progress (Green)</span>
-                    </div>
-                    <div class="flex items-center">
-                        <span class="block w-4 h-4 bg-gray-400 mr-2"></span>
-                        <span class="text-sm">Completed (Gray)</span>
-                    </div>
-                </div>
-            </Popover>
+                </Popover>
+            </div>
+            <Calendar bind:this={calendarInstance} {plugins} {options}/>
         </div>
-        <Calendar bind:this={calendarInstance} {plugins} {options}/>
     </div>
 </div>
 <div style="z-index: 1006;">
