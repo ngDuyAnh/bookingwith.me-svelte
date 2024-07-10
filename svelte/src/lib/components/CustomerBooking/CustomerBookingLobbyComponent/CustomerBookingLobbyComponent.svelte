@@ -4,6 +4,7 @@
         from "$lib/components/CustomerBooking/CustomerBookingLobbyComponent/GuestSelectService/GuestSelectService.svelte";
     import {Avatar} from "flowbite-svelte";
     import GuestList from "$lib/components/CustomerBooking/CustomerBookingLobbyComponent/GuestList/GuestList.svelte";
+    import TimeList from "$lib/components/CustomerBooking/CustomerBookingLobbyComponent/TimeList/TimeList.svelte";
 
     export let customerBooking = {
         ...CustomerBooking(),
@@ -25,6 +26,8 @@
         ]
         selectedIndividualBookingIndex = customerBooking.customerIndividualBookingList.length - 1;
     }
+
+    $: console.log("customerBooking", customerBooking);
 </script>
 
 <div class="flex space-x-4 h-full">
@@ -75,19 +78,30 @@
 
             <div class="h-full shadow overflow-y-auto">
                 <GuestSelectService
-                        bind:individualBooking={
-                    customerBooking.customerIndividualBookingList[selectedIndividualBookingIndex]
-                }
+                        bind:customerBooking={customerBooking}
+                        individualBookingIndex={selectedIndividualBookingIndex}
                 />
             </div>
         </div>
     </div>
 
+    <!--Booking time-->
     <div class="flex-1 flex flex-col">
-        <!-- Additional content for the third column -->
-        <ul class="flex-grow px-4 py-1 shadow w-full overflow-y-auto space-y-2">
-            <!-- Additional list items can go here -->
-        </ul>
+        <div class="flex flex-col h-full">
+            <div class="relative flex flex-row flex-grow items-center justify-center mb-2">
+                <div class="absolute border-2 border-gray-200 h-1 w-full rounded-lg"></div>
+                <div class="flex flex-row bg-white z-10 space-x-1 px-1">
+                    <Avatar size="xs" class="flex justify-center items-center">1</Avatar>
+                    <span class="font-bold">Time</span>
+                </div>
+            </div>
+
+            <div class="h-full shadow overflow-y-auto">
+                <TimeList
+                        bind:customerBooking={customerBooking}
+                />
+            </div>
+        </div>
     </div>
 
     <div class="flex-1 flex flex-col">
@@ -108,7 +122,6 @@
         border-right: #333333;
         border-width: 1px;
     }
-
 
     .new-guest:hover {
         background: rgb(0, 212, 255);

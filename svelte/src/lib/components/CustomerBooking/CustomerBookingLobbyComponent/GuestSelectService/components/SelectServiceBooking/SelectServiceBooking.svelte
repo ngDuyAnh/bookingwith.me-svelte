@@ -87,9 +87,14 @@
 
         // Select the employee
         if (serviceBookingIndex < individualBooking.customerIndividualServiceBookingList.length) {
-            serviceBooking.bookedEmployee = newEmployee;
+            // Force reactivity
+            individualBooking.customerIndividualServiceBookingList = [
+                ...individualBooking.customerIndividualServiceBookingList.slice(0, serviceBookingIndex),
+                {...serviceBooking, bookedEmployee: newEmployee},
+                ...individualBooking.customerIndividualServiceBookingList.slice(serviceBookingIndex + 1)
+            ];
 
-            console.log("handleEmployeeSelect serviceBooking", serviceBooking);
+            // console.log("handleEmployeeSelect serviceBooking", serviceBooking);
         }
     }
 </script>
