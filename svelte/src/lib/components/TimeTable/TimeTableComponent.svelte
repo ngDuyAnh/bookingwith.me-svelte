@@ -695,12 +695,10 @@
 
     function selectTomorrow() {
         selectedDate = dayjs(selectedDate).add(1, 'day').format(formatToDate);
-        ;
     }
 
     function selectYesterday() {
         selectedDate = dayjs(selectedDate).subtract(1, 'day').format(formatToDate);
-        ;
     }
 </script>
 

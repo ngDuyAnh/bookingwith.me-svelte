@@ -45,7 +45,13 @@
                 requiredAvailabilitiesSearch = false;
                 availabilityList = availabilities;
 
-                console.log("availabilityList", availabilityList)
+                // Select the first booking time
+                if (availabilityList.length > 0)
+                {
+                    selectAvailability(availabilityList[0]);
+                }
+
+                // console.log("availabilityList", availabilityList)
             })
             .catch((err) => {
                 console.error("Error getAvailabilities():", err);
@@ -55,7 +61,7 @@
     function selectAvailability(availability) {
         selectedAvailability = availability;
         customerBooking.bookingTime = availability.timePeriod.startTime;
-        console.log("Selected time: ", customerBooking.bookingTime);
+        // console.log("Selected time: ", customerBooking.bookingTime);
     }
 
     function availabilityString(availability) {

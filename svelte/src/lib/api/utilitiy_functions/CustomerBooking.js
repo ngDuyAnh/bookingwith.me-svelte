@@ -5,15 +5,12 @@ export function shortCustomerBookingID(id)
 }
 
 export function sanitizeCustomerBooking(customerBooking) {
-    // Cloning the entire customerBooking object to avoid mutating the original
-    const clonedCustomerBooking = JSON.parse(JSON.stringify(customerBooking));
-
     // Filter out individual bookings that have an empty service booking list
-    clonedCustomerBooking.customerIndividualBookingList = clonedCustomerBooking.customerIndividualBookingList.filter(individualBooking => {
+    customerBooking.customerIndividualBookingList = customerBooking.customerIndividualBookingList.filter(individualBooking => {
         return individualBooking.customerIndividualServiceBookingList.length > 0;
     });
 
-    return clonedCustomerBooking;
+    return customerBooking;
 }
 
 export function findIndividualBookingFromCustomerBooking(customerBooking, individualID)
