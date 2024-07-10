@@ -3,7 +3,13 @@
     import {formatTimeAm, formatToTime} from "$lib/application/Formatter.js";
     import Calendar from "@event-calendar/core";
 
-    import {SearchOutline} from "flowbite-svelte-icons";
+    import {
+        ChevronLeftOutline,
+        ChevronRightOutline,
+        InfoCircleSolid,
+        PlusOutline,
+        SearchOutline
+    } from "flowbite-svelte-icons";
 
     import Interaction from "@event-calendar/interaction";
     import ResourceTimeGrid from "@event-calendar/resource-time-grid";
@@ -20,7 +26,7 @@
     } from "$lib/components/Modal/CreateCustomerBooking/stores/modalCreateCustomerBooking.js";
     import {fetchTimetable, timetableComponent,} from "$lib/components/TimeTable/stores/timetableComponent.js";
     import {onMount} from "svelte";
-    import {Button, Search} from "flowbite-svelte";
+    import {Button, Popover, Search} from "flowbite-svelte";
     import dayjs from "dayjs";
     import {findCustomerBookingById} from "$lib/page/protected/business-portal/page_lobby/stores/dashboard_store.js";
     import {
@@ -678,77 +684,108 @@
     }
 </script>
 
-<div class="flex flex-col items-center justify-center p-1.5">
-    <div class="flex items-center justify-center p-1.5">
-        <input bind:value={selectedDate} type="date"/>
-        <button
-                class="text-blue-500 hover:text-blue-700 focus:outline-none"
-                on:click={handleNewCustomerBookingWalkin}
+<!--<div class="flex flex-col items-center justify-center p-1.5">-->
+
+
+
+
+<!--     Legend for color coding-->
+
+<!--</div>-->
+
+<div class="relative flex flex-col items-center justify-center w-5/6 h-5/6 mx-auto my-2 overflow-x-auto">
+    <div class="flex sm:flex-row flex-col sticky left-0 inline-block h-fit space-x-1 space-y-1 items-center justify-between">
+        <div class="flex flex-row space-x-1 sm:justify-normal justify-between">
+            <Button class="h-fit text-md" size="xs" color="light">Today</Button>
+            <div class="flex items-center">
+                <Button class="rounded-r-none h-fit" size="xs" color="light">
+                    <ChevronLeftOutline class="w-6 h-6"/>
+                </Button>
+                <input class="border-gray-300" bind:value={selectedDate} type="date"/>
+                <Button class="rounded-l-none h-fit" size="xs" color="light">
+                    <ChevronRightOutline class="w-6 h-6"/>
+                </Button>
+            </div>
+            <div class="flex flex-row h-fit ">
+
+
+            </div>
+        </div>
+
+
+
+
+        <div
+                class="w-full flex flex-row items-center justify-center"
         >
-            <svg
-                    class="w-10 h-10"
-                    fill="none"
-                    stroke="currentColor"
-                    stroke-width="1.5"
-                    viewBox="0 0 24 24"
-                    xmlns="http://www.w3.org/2000/svg"
-            >
-                <path
-                        d="M12 9v6m3-3H9m12 0a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z"
-                        stroke-linecap="round"
-                        stroke-linejoin="round"
-                />
-            </svg>
-        </button>
-    </div>
+            <form class="flex max-w-xs justify-center items-center" on:submit={searchBookings}>
+                <Search
+                        bind:value={searchValue}
+                        size="md"
+                        class="rounded-none rounded-l-lg py-2.5"
+                        placeholder="Search Booking Info"
+                        maxlength="20"
+                ></Search>
+                <Button type="submit" class="!p-2.5 rounded-none">
+                    <SearchOutline class="w-5 h-5"/>
+                </Button>
+                <Button class="!p-2.5 rounded-s-none" on:click={handleNewCustomerBookingWalkin}>
+                    <PlusOutline class="w-5 h-5"/>
+                </Button>
+            </form>
+<!--            <button-->
+<!--                    class="text-blue-500 hover:text-blue-700 focus:outline-none"-->
+<!--                    on:click={handleNewCustomerBookingWalkin}-->
+<!--            >-->
+<!--                <svg-->
+<!--                        class="w-10 h-10"-->
+<!--                        fill="none"-->
+<!--                        stroke="currentColor"-->
+<!--                        stroke-width="1.5"-->
+<!--                        viewBox="0 0 24 24"-->
+<!--                        xmlns="http://www.w3.org/2000/svg"-->
+<!--                >-->
+<!--                    <path-->
+<!--                            d="M12 9v6m3-3H9m12 0a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z"-->
+<!--                            stroke-linecap="round"-->
+<!--                            stroke-linejoin="round"-->
+<!--                    />-->
+<!--                </svg>-->
+<!--            </button>-->
+        </div>
 
-    <div
-            class="flex sm:flex-row flex-col sm:items-center items-start justify-start sm:space-x-4 pt-4 px-4 2xl:items-center 2xl:justify-center"
-    >
-        <form class="flex max-w-xs items-center" on:submit={searchBookings}>
-            <Search
-                    bind:value={searchValue}
-                    size="md"
-                    class="rounded-none rounded-l-lg py-2.5"
-                    placeholder="Search Booking Info"
-                    maxlength="20"
-            ></Search>
-            <Button type="submit" class="!p-2.5 rounded-s-none">
-                <SearchOutline class="w-5 h-5"/>
-            </Button>
-        </form>
-
-        <div class="!flex !flex-col">
-            <strong class="sm:my-0 mt-1 text-sm">{showSearchText}</strong>
-        </div>
     </div>
-
-    <!-- Legend for color coding -->
-    <div
-            class="legend flex justify-around items-center w-full p-2 bg-white shadow rounded-lg"
-    >
-        <div class="flex items-center">
-            <span class="block w-4 h-4 bg-blue-500 mr-2"></span>
-            <span class="text-sm">Appointment (Light Blue)</span>
-        </div>
-        <div class="flex items-center">
-            <span class="block w-4 h-4 bg-yellow-300 mr-2"></span>
-            <span class="text-sm">Lobby (Yellow)</span>
-        </div>
-        <div class="flex items-center">
-            <span class="block w-4 h-4 bg-green-400 mr-2"></span>
-            <span class="text-sm">In Progress (Green)</span>
-        </div>
-        <div class="flex items-center">
-            <span class="block w-4 h-4 bg-gray-400 mr-2"></span>
-            <span class="text-sm">Completed (Gray)</span>
-        </div>
+    <div class="flex flex-col">
+        <strong class="sm:my-0 mt-1 text-sm">{showSearchText}</strong>
     </div>
-</div>
-<div
-        class="flex flex-col items-center justify-center w-4/5 h-4/5 mx-auto mb-2 overflow-x-auto"
->
-    <div class="flex h-full mx-auto">
+    <div class="relative h-full max-h-[calc(100%-40px)] overflow-auto mx-auto">
+        <div class="absolute top-0 left-0 ml-8">
+            <InfoCircleSolid size="lg" id="b1"
+                             class="text-gray-400 hover:text-gray-900 dark:hover:text-white cursor-pointer ms-1"/>
+            <Popover placement='right' triggeredBy="#b1"
+                     class="text-sm text-gray-500 bg-white border border-gray-200 rounded-lg shadow-sm w-72 dark:bg-gray-800 dark:border-gray-600 dark:text-gray-400 z-[1050]">
+                <div
+                        class="flex-col justify-start"
+                >
+                    <div class="flex items-center">
+                        <span class="block w-4 h-4 bg-blue-500 mr-2"></span>
+                        <span class="text-sm">Appointment (Light Blue)</span>
+                    </div>
+                    <div class="flex items-center">
+                        <span class="block w-4 h-4 bg-yellow-300 mr-2"></span>
+                        <span class="text-sm">Lobby (Yellow)</span>
+                    </div>
+                    <div class="flex items-center">
+                        <span class="block w-4 h-4 bg-green-400 mr-2"></span>
+                        <span class="text-sm">In Progress (Green)</span>
+                    </div>
+                    <div class="flex items-center">
+                        <span class="block w-4 h-4 bg-gray-400 mr-2"></span>
+                        <span class="text-sm">Completed (Gray)</span>
+                    </div>
+                </div>
+            </Popover>
+        </div>
         <Calendar bind:this={calendarInstance} {plugins} {options}/>
     </div>
 </div>
@@ -763,6 +800,10 @@
 
     :global(.timeDivClass) {
         color: white;
+    }
+
+    :global(.ec-now-indicator) {
+        z-index: 1049;
     }
 
     /*:global(.ec-preview) {*/
