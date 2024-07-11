@@ -88,6 +88,22 @@
             business.businessInfo.stripeID = customerId;
 
             await createBusiness(business);
+
+            // Reset
+            business = {
+                businessInfo: {
+                    ...BusinessInformation()
+                },
+
+                businessEmail: "",
+                lobbyEmail: "",
+                contactEmail: "",
+                contactName: "",
+                contactPhoneNumber: "",
+            };
+
+            // Notify success
+            alert("Successfully created the business!");
         } catch (error) {
             console.log(error)
             alert('Failed to create the business!');
