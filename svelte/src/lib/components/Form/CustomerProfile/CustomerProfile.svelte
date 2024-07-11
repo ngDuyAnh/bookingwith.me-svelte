@@ -45,7 +45,7 @@
                         bind:value={$customerProfileModal.customerProfile.customer.phoneNumber}
                         required
                         pattern="\d\d\d\d\d\d\d\d\d\d"
-                        title="Phone number must be in the format: 1234567890"
+                        title="Phone number must be 10 numbers in the format: 1234567890"
 
                         disabled={!editable}
                 />
