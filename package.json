@@ -38,8 +38,7 @@
   "type": "module",
   "dependencies": {
     "@atlaskit/pragmatic-drag-and-drop": "^1.2.1",
-    "@sveltejs/adapter-cloudflare": "^4.2.0",
-    "amplify-adapter": "^0.1.2",
+    "@sveltejs/adapter-node": "^5.2.0",
     "dayjs": "^1.11.10",
     "dexie": "^4.0.1",
     "dinero.js": "^1.9.1",
