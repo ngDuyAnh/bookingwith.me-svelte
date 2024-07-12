@@ -61,9 +61,11 @@ export function CustomerBooking() {
         "noShow": false,
         "deleted": false,
 
-        "smsConfirmationSent": false,
         "smsConfirmation": false,
+
+        "smsConfirmationSent": false,
         "smsAppointmentSent": false,
+        "smsLobbySent": false,
         "smsAppointmentReminderSid": null,
         "smsReviewReminderSent": false,
 
