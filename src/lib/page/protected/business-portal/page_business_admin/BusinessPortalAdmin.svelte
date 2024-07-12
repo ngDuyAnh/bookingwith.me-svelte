@@ -108,7 +108,7 @@
   let reconnectionTimeout;
   function reconnectWebSocket() {
     clearTimeout(reconnectionTimeout);
-    reconnectionTimeout = setTimeout(connectWebSocket, 1000); // Add a 1-second delay before reconnecting
+    reconnectionTimeout = setTimeout(connectWebSocket, 10000);
   }
 
   onMount(async () => {

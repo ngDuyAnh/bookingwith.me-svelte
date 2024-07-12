@@ -122,7 +122,7 @@
 
     function reconnectWebSocket() {
         clearTimeout(reconnectionTimeout);
-        reconnectionTimeout = setTimeout(connectWebSocket, 200);
+        reconnectionTimeout = setTimeout(connectWebSocket, 500);
     }
 
     onMount(() => {

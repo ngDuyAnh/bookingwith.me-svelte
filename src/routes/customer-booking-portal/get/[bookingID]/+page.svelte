@@ -116,7 +116,7 @@
     let reconnectionTimeout;
     function reconnectWebSocket() {
         clearTimeout(reconnectionTimeout);
-        reconnectionTimeout = setTimeout(connectWebSocket, 200);
+        reconnectionTimeout = setTimeout(connectWebSocket, 60000);
     }
 
     async function handleCustomerBookingUpdate(eventData) {
