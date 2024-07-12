@@ -2,7 +2,7 @@
   import MyTimetable from "$lib/page/protected/business-portal/page_employee/page/MyTimetable/MyTimetable.svelte";
   import UpcomingService from "$lib/page/protected/business-portal/page_employee/page/UpcomingService/UpcomingService.svelte";
   import NavBar from "$lib/page/protected/components/NavBar/NavBar.svelte";
-  import { servicingTicketClickModal } from "$lib/components/TimeTable/ServicingTicketClickModal/stores/servicingTicketClickModal.js";
+  import { servicingTicketClickModal } from "$lib/components/Modal/ServicingTicketClickModal/stores/servicingTicketClickModal.js";
   import {onMount} from "svelte";
 
   let tabs = ["Service Spotlight", "My Timetable"];

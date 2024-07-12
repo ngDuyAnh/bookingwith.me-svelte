@@ -16,15 +16,15 @@
 
     import {CustomerBookingState} from "$lib/api/initialize_functions/CustomerBooking.js";
     import ServicingTicketClickModal
-        from "$lib/components/TimeTable/ServicingTicketClickModal/ServicingTicketClickModal.svelte";
+        from "$lib/components/Modal/ServicingTicketClickModal/ServicingTicketClickModal.svelte";
     import {
         handleTimetableUpdateForServicingTicketClickModal,
         servicingTicketClickModalOpenWithServicingTicketEventInfo,
-    } from "$lib/components/TimeTable/ServicingTicketClickModal/stores/servicingTicketClickModal.js";
+    } from "$lib/components/Modal/ServicingTicketClickModal/stores/servicingTicketClickModal.js";
     import {
         handleNewCustomerBookingWalkin
     } from "$lib/components/Modal/CreateCustomerBooking/stores/modalCreateCustomerBooking.js";
-    import {fetchTimetable, timetableComponent,} from "$lib/components/TimeTable/stores/timetableComponent.js";
+    import {timetableComponent, fetchTimetable} from "$lib/components/Timetable/stores/timetableComponent.js";
     import {onMount} from "svelte";
     import {Button, Popover, Search} from "flowbite-svelte";
     import dayjs from "dayjs";

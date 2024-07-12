@@ -1,5 +1,5 @@
 <script>
-    import TimeTableComponent from "$lib/components/Timetable/TimeTableComponent.svelte";
+    import TimetableComponent from "$lib/components/Timetable/TimetableComponent.svelte";
 </script>
 
-<TimeTableComponent/>
+<TimetableComponent/>

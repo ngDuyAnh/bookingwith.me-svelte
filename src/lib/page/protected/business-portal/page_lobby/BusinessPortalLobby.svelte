@@ -19,7 +19,7 @@
     } from "$lib/api/api_server/api_endpoints/ws/api.js";
     import {onMount} from "svelte";
     import {isToday} from "$lib/page/stores/now/now_dayjs_store.js";
-    import {fetchTimetable, timetableComponent,} from "$lib/components/TimeTable/stores/timetableComponent.js";
+    import {timetableComponent, fetchTimetable} from "$lib/components/Timetable/stores/timetableComponent.js";
     import {
         bookingList,
         fetchAppointmentCustomerBookingList,

@@ -1,10 +1,10 @@
 <script>
     import {
-        servicingTicketClickModal} from "$lib/components/TimeTable/ServicingTicketClickModal/stores/servicingTicketClickModal.js";
+        servicingTicketClickModal} from "$lib/components/Modal/ServicingTicketClickModal/stores/servicingTicketClickModal.js";
     import dayjs from "dayjs";
     import {formatToTime, formatToTimeAm} from "$lib/application/Formatter.js";
     import {CustomerBookingState} from "$lib/api/initialize_functions/CustomerBooking.js";
-    import {findPreselectEmployeeID} from "$lib/components/TimeTable/ServicingTicketClickModal/functions.js";
+    import {findPreselectEmployeeID} from "$lib/components/Modal/ServicingTicketClickModal/functions.js";
     import CustomerIndividualServiceBookingComponent
         from "$lib/components/Modal/CustomerBookingClickModal/Servicing/components/CustomerIndivdualBookingComponent/CustomerIndividualServiceBookingComponent/CustomerIndividualServiceBookingComponent.svelte";
     export let customerBooking;

@@ -1,10 +1,10 @@
 <script>
-    import TimeTableComponent from "$lib/components/Timetable/TimeTableComponent.svelte";
+    import TimetableComponent from "$lib/components/Timetable/TimetableComponent.svelte";
     import {
         getEmployeeSchedule
     } from "$lib/page/protected/business-portal/page_employee/page/MyTimetable/MyTimeTable.js";
 </script>
 
-<TimeTableComponent
+<TimetableComponent
         getSchedule={getEmployeeSchedule}
 />

@@ -3,9 +3,7 @@ import {
     initializeCustomerBookingAndBroadcast
 } from "$lib/api/api_server/api_endpoints/customer-booking-portal/api.js";
 import {nowTime} from "$lib/page/stores/now/now_dayjs_store.js";
-import {
-    timetableComponent
-} from "$lib/components/TimeTable/stores/timetableComponent.js";
+import {timetableComponent} from "$lib/components/Timetable/stores/timetableComponent.js";
 import {get} from "svelte/store";
 
 export function moveToAppointment(customerBooking) {

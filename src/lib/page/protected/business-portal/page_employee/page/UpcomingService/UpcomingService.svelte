@@ -6,7 +6,7 @@
     servicingTicketClickModal,
     servicingTicketClickModalOpen,
     servicingTicketClickModalSetEmployeeTimetableList, servicingTicketClickModalToggleOpen,
-  } from "$lib/components/TimeTable/ServicingTicketClickModal/stores/servicingTicketClickModal.js";
+  } from "$lib/components/Modal/ServicingTicketClickModal/stores/servicingTicketClickModal.js";
   import { getCustomerBooking } from "$lib/api/api_server/api_endpoints/customer-booking-portal/api.js";
   import {
     findServiceBookingFromCustomerBooking
@@ -19,7 +19,7 @@
     ArrowRightOutline,
     InfoCircleSolid,
   } from "flowbite-svelte-icons";
-  import ServicingTicketClickModal from "$lib/components/TimeTable/ServicingTicketClickModal/ServicingTicketClickModal.svelte";
+  import ServicingTicketClickModal from "$lib/components/Modal/ServicingTicketClickModal/ServicingTicketClickModal.svelte";
 
   let loading = false;
   let employeeTimetableList = undefined;

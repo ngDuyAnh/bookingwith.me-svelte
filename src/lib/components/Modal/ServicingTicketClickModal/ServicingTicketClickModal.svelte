@@ -3,15 +3,16 @@
     import {Modal} from "flowbite-svelte";
     import {
         servicingTicketClickModal
-    } from "$lib/components/TimeTable/ServicingTicketClickModal/stores/servicingTicketClickModal.js";
+    } from "$lib/components/Modal/ServicingTicketClickModal/stores/servicingTicketClickModal.js";
     import {
         indicateToSendCustomerBookingToCompleted
-    } from "$lib/components/TimeTable/ServicingTicketClickModal/functions.js";
+    } from "$lib/components/Modal/ServicingTicketClickModal/functions.js";
     import {
         findIndividualBookingFromCustomerBooking
     } from "$lib/api/utilitiy_functions/CustomerBooking.js";
     import Footer from "$lib/components/Modal/CustomerBookingClickModal/components/Footer/Footer.svelte";
-    import TicketInformation from "$lib/components/TimeTable/TimetableModal/TicketInformation/TicketInformation.svelte";
+    import ServicingTicketInformation
+        from "$lib/components/Modal/ServicingTicketClickModal/components/ServicingTicketInformation/ServicingTicketInformation.svelte";
 
     export let isToday;
     export let nonModal = false;
@@ -66,7 +67,7 @@
                    dismissable={!nonModal}
                    classBackdrop={nonModal? "hidden":""} class="lg:max-h-[80vh]" classDialog="{nonModal? 'z-[0]':''}"
             >
-                <TicketInformation bind:customerBooking={customerBooking}
+                <ServicingTicketInformation bind:customerBooking={customerBooking}
                                    bind:individualBooking={individualBooking}
                                    bind:serviceBooking={serviceBooking}
                                    bind:isToday={isToday}
@@ -84,7 +85,7 @@
         </div>
     {:else}
         <div class="flex flex-col p-4 bg-gray-50 w-full h-full overflow-y-auto">
-            <TicketInformation bind:customerBooking={customerBooking}
+            <ServicingTicketInformation bind:customerBooking={customerBooking}
                                bind:individualBooking={individualBooking}
                                bind:serviceBooking={serviceBooking}
                                bind:isToday={isToday}
