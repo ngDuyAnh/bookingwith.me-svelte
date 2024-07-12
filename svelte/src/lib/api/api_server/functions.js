@@ -15,6 +15,8 @@ export function checkAbleToSendSmsReviewReminder(checkAbleToSendresponse) {
         ? dayjs().diff(dayjs(mostRecentDateReviewReminderSent, formatToDate), 'month') > 6
         : true;
 
+    // console.log(`allowToSendReviewReminderSMS ${allowToSendReviewReminderSMS} mostRecentDateReviewReminderSent ${mostRecentDateReviewReminderSent} moreThan6Months ${moreThan6Months}`)
+
     // Return
     return allowToSendReviewReminderSMS && moreThan6Months;
 }

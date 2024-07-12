@@ -1,6 +1,10 @@
 <script>
     import {Button, Input, Label} from "flowbite-svelte";
-    import {CustomerBooking, CustomerBookingState, CustomerBookingChannel} from "$lib/api/initialize_functions/CustomerBooking.js";
+    import {
+        CustomerBooking,
+        CustomerBookingState,
+        CustomerBookingChannel
+    } from "$lib/api/initialize_functions/CustomerBooking.js";
     import {
         forceSubmitBooking,
         initializeCustomerBooking
@@ -30,8 +34,7 @@
         formattedPhoneNumber = formatPhoneNumber(input);
 
         // When the formatted phone number is complete, check if able to send review reminder
-        if (phoneNumber.length === 10)
-        {
+        if (phoneNumber.length === 10) {
             completedPhoneNumber = true;
 
             ableToSendSmsReviewReminder = false;
@@ -39,54 +42,52 @@
                 .then(response => {
                     ableToSendSmsReviewReminder = checkAbleToSendSmsReviewReminder(response);
 
-                    console.log(`ableToSendSmsReviewReminder ${ableToSendSmsReviewReminder}`)
+                    // console.log(`ableToSendSmsReviewReminder ${ableToSendSmsReviewReminder}`)
                 })
                 .catch(error => {
                     console.error('Failed at checkAbleToSendReviewReminder():', error);
                 });
-        }
-        else
-        {
+        } else {
             completedPhoneNumber = false;
         }
     }
 
     async function send() {
-        try
-        {
-            // Create the customer instance
-            let customer = Customer(phoneNumber)
+        // Ensure able to send sms asking for review
+        if (ableToSendSmsReviewReminder) {
+            // Sent
+            ableToSendSmsReviewReminder = false;
 
-            // Create the filler customer booking
-            let customerBooking = {
-                ...CustomerBooking(),
-                bookingChannel: CustomerBookingChannel.REVIEW,
-                bookingState: CustomerBookingState.COMPLETED,
+            try {
+                // Create the filler customer booking
+                let customerBooking = {
+                    ...CustomerBooking(),
+                    customer: Customer(phoneNumber),
 
-                customer: customer,
-                bookingTime: nowTime()
-            };
+                    bookingChannel: CustomerBookingChannel.REVIEW,
+                    bookingState: CustomerBookingState.COMPLETED,
+                    bookingTime: nowTime()
+                };
 
-            // Submit the filler customer booking to be used to send review reminder
-            if (ableToSendSmsReviewReminder)
-            {
+                // Submit the filler customer booking to be used to send review reminder
                 let response = await forceSubmitBooking(
                     $business.businessInfo.businessID,
                     "00:00",
                     customerBooking
                 );
 
-                if (response.submitted)
-                {
-                    // Prevent resend of review reminder
-                    ableToSendSmsReviewReminder = false;
+                // Send the SMS
+                if (response.submitted) {
+                    await sendSMSAskingForReview($business.businessInfo.businessName, response.customerBooking);
 
-                    sendSMSAskingForReview($business.businessInfo.businessName, response.customerBooking);
+                    // Record the sms sent to the database
+                    response.customerBooking.smsReviewReminderSent = true;
                     await initializeCustomerBooking(response.customerBooking);
                 }
+            } catch (err) {
+                console.error("Error sending sms review:", err);
+                alert("Error sending SMS asking for review!");
             }
-        } catch (err) {
-            console.error("Error submitting booking:", err);
         }
     }
 </script>
