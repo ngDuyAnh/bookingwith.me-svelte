@@ -1,15 +1,16 @@
 <script>
     import {Modal} from "flowbite-svelte";
-    import CustomerBookingComponent from "$lib/components/CustomerBooking/CustomerBookingComponent.svelte";
+    import CustomerBookingComponent
+        from "$lib/components/CustomerBooking/CustomerBookingComponent/CustomerBookingComponent.svelte";
     import {modalEditCustomerBooking} from "$lib/components/Modal/EditCustomerBooking/modalEditCustomerBooking.js";
     import {CustomerBookingChannel} from "$lib/api/initialize_functions/CustomerBooking.js";
     import {
         modalCreateCustomerBooking
-    } from "$lib/components/Modal/CreateCustomerBooking/modalCreateCustomerBooking.js";
+    } from "$lib/components/Modal/CreateCustomerBooking/stores/modalCreateCustomerBooking.js";
 
     export let business;
 
-    //$: console.log("$modalEditCustomerBooking.customerBooking", $modalEditCustomerBooking.customerBooking)
+    // $: console.log("$modalEditCustomerBooking.customerBooking", $modalEditCustomerBooking.customerBooking)
 </script>
 
 <div class="absolute top-0 left-0 right-0 z-[2000]">

@@ -2,19 +2,6 @@ import {API_BASE_URL} from "$lib/api/api_server/API-URL.js";
 
 const API_URL = `${API_BASE_URL}/lobby-portal`;
 
-export async function getCustomer(businessID, phoneNumber)
-{
-    const FETCH_URL = `${API_URL}/get-customer/${businessID}?phoneNumber=${phoneNumber}`;
-
-    const response = await fetch(`${FETCH_URL}`);
-
-    if (!response.ok) {
-        throw new Error(`Failed to fetch. Status: ${response.status}`);
-    }
-
-    return await response.json();
-}
-
 export async function getAppointmentBookingList(businessID, dateString)
 {
     const FETCH_URL = `${API_URL}/get-appointment-booking-list/${businessID}?date=${dateString}`;

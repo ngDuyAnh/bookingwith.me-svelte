@@ -13,7 +13,6 @@
 
         businessEmail: "",
         lobbyEmail: "",
-        contactEmail: "",
         contactName: "",
         contactPhoneNumber: "",
     };
@@ -25,7 +24,6 @@
     //
     //     businessEmail: "testBus@gamil.com",
     //     lobbyEmail: "testLob@gamil.com",
-    //     contactEmail: "testBus@gamil.com",
     //     contactName: "123423",
     //     contactPhoneNumber: "2222222222",
     // };
@@ -88,6 +86,24 @@
             business.businessInfo.stripeID = customerId;
 
             await createBusiness(business);
+
+            // Reset
+            business = {
+                businessInfo: {
+                    ...BusinessInformation()
+                },
+
+                businessEmail: "",
+                lobbyEmail: "",
+                contactName: "",
+                contactPhoneNumber: "",
+            };
+
+            formattedBusinessPhoneNumber = "";
+            formattedContactPhoneNumber = "";
+
+            // Notify success
+            alert("Successfully created the business!");
         } catch (error) {
             console.log(error)
             alert('Failed to create the business!');
@@ -117,10 +133,6 @@
     <div class="form-group">
         <label for="lobbyEmail">Lobby Email:</label>
         <input type="email" id="lobbyEmail" bind:value={business.lobbyEmail} class="input-field" required>
-    </div>
-    <div class="form-group">
-        <label for="contactEmail">Contact Email:</label>
-        <input type="email" id="contactEmail" bind:value={business.contactEmail} class="input-field" required>
     </div>
 
     <div class="form-group">

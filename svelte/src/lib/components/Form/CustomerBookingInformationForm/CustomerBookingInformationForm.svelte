@@ -9,7 +9,7 @@
     } from "$lib/api/api_server/api_endpoints/customer-booking-portal/api.js";
     import dayjs from "dayjs";
     import {onMount} from "svelte";
-    import {getCustomer} from "$lib/api/api_server/api_endpoints/lobby-portal/api.js";
+    import {getCustomer} from "$lib/api/api_server/api_endpoints/customer-booking-portal/api.js";
     import {
         CustomerBookingState
     } from "$lib/api/initialize_functions/CustomerBooking.js";
@@ -19,7 +19,7 @@
     import {
         moveToAppointment,
         moveToLobby
-    } from "$lib/components/CustomerBookingClickModal/handle_customer_booking_state.js";
+    } from "$lib/components/Modal/CustomerBookingClickModal/handle_customer_booking_state.js";
     import {isToday} from "$lib/page/stores/now/now_dayjs_store.js";
 
     export let customerBookingInformationFormProps;
@@ -48,7 +48,7 @@
         if (bookingDate.isSame($now, 'day')) {
             currentTimeString = $now.format(formatToTime)
         }
-            // Invalid, the date selected is before today
+        // Invalid, the date selected is before today
         // Set it to the end of the day for no availability
         else if (bookingDate.isBefore($now, 'day')) {
             currentTimeString = "23:59";
@@ -232,7 +232,7 @@
 
     let formattedPhoneNumber = formatPhoneNumber(customerBooking.customer.phoneNumber);
 
-    function handleBusinessPhoneNumberInput(event) {
+    function handlePhoneNumberInput(event) {
         const input = event.target.value;
 
         // Update the raw customer phone number
@@ -381,7 +381,7 @@
                 type="tel"
                 placeholder="(123) 456-7890"
                 bind:value={formattedPhoneNumber}
-                on:input={handleBusinessPhoneNumberInput}
+                on:input={handlePhoneNumberInput}
                 required
                 pattern="\(\d\d\d\) \d\d\d-\d\d\d\d"
                 title="Phone number must be in the format: (123) 456-7890"

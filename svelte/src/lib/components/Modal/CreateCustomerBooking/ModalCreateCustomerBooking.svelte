@@ -1,6 +1,7 @@
 <script>
     import {Modal} from "flowbite-svelte";
-    import CustomerBookingComponent from "$lib/components/CustomerBooking/CustomerBookingComponent.svelte";
+    import CustomerBookingComponent
+        from "$lib/components/CustomerBooking/CustomerBookingComponent/CustomerBookingComponent.svelte";
     import {
         CustomerBooking,
         CustomerBookingChannel,
@@ -8,7 +9,7 @@
     } from "$lib/api/initialize_functions/CustomerBooking.js";
     import {
         modalCreateCustomerBooking
-    } from "$lib/components/Modal/CreateCustomerBooking/modalCreateCustomerBooking.js";
+    } from "$lib/components/Modal/CreateCustomerBooking/stores/modalCreateCustomerBooking.js";
 
     export let business;
     export let customerBooking = {

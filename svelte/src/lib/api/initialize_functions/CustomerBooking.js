@@ -61,9 +61,11 @@ export function CustomerBooking() {
         "noShow": false,
         "deleted": false,
 
-        "smsConfirmationSent": false,
         "smsConfirmation": false,
+
+        "smsConfirmationSent": false,
         "smsAppointmentSent": false,
+        "smsLobbySent": false,
         "smsAppointmentReminderSid": null,
         "smsReviewReminderSent": false,
 
@@ -91,6 +93,7 @@ export function CustomerIndividualServiceBooking() {
         "service": null,
         "completed": false,
 
+        "assignedEmployee": null,
         "startTime": null,
         "servicingDuration": null,
 
@@ -100,6 +103,7 @@ export function CustomerIndividualServiceBooking() {
 
 export function ServicingTicketInfo() {
     return {
+        "phoneNumber": "",
         "customerName": "",
 
         "id": -1,

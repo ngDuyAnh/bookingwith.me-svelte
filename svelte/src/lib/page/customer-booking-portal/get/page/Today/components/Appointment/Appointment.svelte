@@ -2,7 +2,7 @@
     import {customerBookingEstimate} from "$lib/page/customer-booking-portal/get/stores/customerBookingEstimate.js";
     import {
         moveToLobby
-    } from "$lib/components/CustomerBookingClickModal/handle_customer_booking_state.js";
+    } from "$lib/components/Modal/CustomerBookingClickModal/handle_customer_booking_state.js";
     import {Button, Modal} from "flowbite-svelte";
     import {ExclamationCircleOutline} from "flowbite-svelte-icons";
     import LiveIndicator
