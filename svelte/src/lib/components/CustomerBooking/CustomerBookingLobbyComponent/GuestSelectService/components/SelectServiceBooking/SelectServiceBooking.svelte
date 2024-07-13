@@ -142,6 +142,10 @@
                 --font-size="0.9rem"
                 floatingConfig={{strategy: 'fixed',}}
                 --multi-max-width="fit"
+
+                --list-border="1px solid #006fe8"
+
+
                 items={employeeSelectOptions} clearable={false}
                 value={selectedEmployee}
                 on:change={handleEmployeeSelect}
