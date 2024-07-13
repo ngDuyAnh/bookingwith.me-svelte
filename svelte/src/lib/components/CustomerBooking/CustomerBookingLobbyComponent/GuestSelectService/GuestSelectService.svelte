@@ -9,23 +9,29 @@
 </script>
 
 <!--List of service booking from the guest-->
-<div class="flex flex-col">
+<div class="flex flex-col m-1">
     {#key individualBooking.customerIndividualServiceBookingList.length}
+<!--        <div class="flex items-center justify-center mb-4">-->
+<!--            <span class="text-sm text-gray-700">Services for Guest #{individualBookingIndex + 1}</span>-->
+<!--        </div>-->
+        <!-- Each loop for existing services -->
         {#each individualBooking.customerIndividualServiceBookingList as serviceBooking, index (serviceBooking)}
-            <SelectServiceBooking
-
-                    bind:individualBooking={individualBooking}
-                    serviceBookingIndex={index}
-            />
+            <div class="bg-gray-100 border border-gray-300 p-4 mb-2 rounded">
+                <SelectServiceBooking
+                        bind:individualBooking={individualBooking}
+                        serviceBookingIndex={index}
+                />
+            </div>
         {/each}
 
-        <!--Append a new service booking-->
-        <span>New service</span>
-        <SelectServiceBooking
-                newServiceSelect={true}
-
-                bind:individualBooking={individualBooking}
-                serviceBookingIndex={individualBooking.customerIndividualServiceBookingList.length}
-        />
+        <!-- Section for adding a new service booking -->
+        <div class="bg-green-100 border-2 border-dashed border-green-300 p-6 mt-4 rounded text-bold">
+            <span class="block text-green-700 mb-2">Add New Service for Guest #{individualBookingIndex + 1}</span>
+            <SelectServiceBooking
+                    newServiceSelect={true}
+                    bind:individualBooking={individualBooking}
+                    serviceBookingIndex={individualBooking.customerIndividualServiceBookingList.length}
+            />
+        </div>
     {/key}
 </div>

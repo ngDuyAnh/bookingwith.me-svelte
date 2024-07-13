@@ -1,5 +1,6 @@
 <script>
     import {Tooltip} from "flowbite-svelte";
+    import {UserOutline, UserSolid} from "flowbite-svelte-icons";
 
     export let customerBooking;
     export let selectedIndividualBookingIndex;
@@ -31,10 +32,17 @@
                     on:click={() => {selectedIndividualBookingIndex = index}}
                     class="flex-1 text-left cursor-pointer"
             >
-                        <span class="text-gray-950">
-                            Guest #{index + 1} (<span
-                                class="{individualBooking.customerIndividualServiceBookingList.length>0? '':'text-red-600'}">{individualBooking.customerIndividualServiceBookingList.length}</span>)
-                        </span>
+                <span class="flex items-center text-gray-950">
+                    {#if selectedIndividualBookingIndex === index}
+                        <UserSolid class="mr-2 h-5 w-5 text-gray-700"/>
+                    {:else}
+                        <UserOutline class="mr-2 h-5 w-5 text-gray-700"/>
+                    {/if}
+
+                    <span class="text-gray-950"> Guest #{index + 1}
+                        (<span class="{individualBooking.customerIndividualServiceBookingList.length>0? '':'text-red-600'}">{individualBooking.customerIndividualServiceBookingList.length}</span>)
+                    </span>
+                </span>
             </button>
 
             {#if customerBooking.customerIndividualBookingList.length > 1}

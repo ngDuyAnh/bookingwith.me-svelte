@@ -2,6 +2,7 @@
     import Select from 'svelte-select';
     import {business} from "$lib/page/stores/business/business.js";
     import {CustomerIndividualServiceBooking} from "$lib/api/initialize_functions/CustomerBooking.js";
+    import {ClockOutline} from "flowbite-svelte-icons";
 
     export let newServiceSelect = false;
 
@@ -17,6 +18,8 @@
             label: service.serviceName,
             value: service
         })));
+
+    $:console.log("serviceSelectOptions", serviceSelectOptions);
 
     function generateEmployeeOptions(service) {
 
@@ -97,18 +100,45 @@
             // console.log("handleEmployeeSelect serviceBooking", serviceBooking);
         }
     }
+
+    function formatOption(item) {
+        return `<div>
+                    <strong>${item.label}</strong>
+                    <div>${item.value.serviceTimeLength} | ${item.value.serviceCost}</div>
+                </div>`;
+    }
+
 </script>
 
-<div class="max-w-[300px]">
+<div class="max-w-[250px]">
     <Select --margin="2px 0px"
-            floatingConfig={{
-            strategy: 'fixed',
-        }}
+            floatingConfig={{ strategy: 'fixed' }}
+            --item-height="auto"
+            --input-color="black"
             items={serviceSelectOptions} groupBy={(item) => item.group}
             value={selectedService}
             on:change={handleServiceBookingSelect}
-            on:clear={handleDeleteServiceBooking}
-    />
+            on:clear={handleDeleteServiceBooking}>
+        <svelte:fragment slot="item" let:item>
+            <div class="flex flex-col">
+                {#if item.groupHeader}
+                    <div class="font-semibold">
+                        {item.label}
+                    </div>
+                {:else if item.groupItem}
+                    <div class="space-y-0 text-inherit">
+                        <div class="flex flex-row justify-between items-center text-left text-sm text-inherit">
+                            <span class="font-bold">{item.label}</span>
+                            <span class="font-semibold">${item.value.serviceCost}</span>
+                        </div>
+                        <div class="flex flex-row items-center text-left text-xs text-inherit">
+                            <ClockOutline/> {item.value.serviceTimeLength} minutes
+                        </div>
+                    </div>
+                {/if}
+            </div>
+        </svelte:fragment>
+    </Select>
 
     {#if !newServiceSelect}
         <Select
@@ -124,10 +154,6 @@
 
 <style>
     :global(.svelte-select-list) {
-        /*background:#FA517A!important;*/
-        /*background-color: #333333 !important;*/
-        /*overflow: visible;*/
-        /*z-index: 10000000000 !important;*/
         width: 400px !important;
         height: fit-content !important;
     }
