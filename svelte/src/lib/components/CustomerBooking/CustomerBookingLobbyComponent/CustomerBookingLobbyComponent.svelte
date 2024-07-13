@@ -124,7 +124,7 @@
                 <div class="absolute border-2 border-gray-200 h-1 w-full rounded-lg"></div>
                 <div class="flex flex-row bg-white z-10 space-x-1 px-1">
                     <Avatar size="xs" class="flex justify-center items-center">2</Avatar>
-                    <span class="font-bold">Service(s)</span>
+                    <span class="font-bold">Service</span>
                 </div>
             </div>
 

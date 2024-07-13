@@ -105,9 +105,13 @@
 
 <div class="max-w-[250px]">
     <Select --margin="2px 0px"
+            --font-size="0.9rem"
             floatingConfig={{ strategy: 'fixed' }}
             --item-height="auto"
             --input-color="black"
+
+            --list-border="1px solid #006fe8"
+
             items={serviceSelectOptions} groupBy={(item) => item.group}
             value={selectedService}
             on:change={handleServiceBookingSelect}
@@ -135,6 +139,7 @@
 
     {#if !newServiceSelect}
         <Select
+                --font-size="0.9rem"
                 floatingConfig={{strategy: 'fixed',}}
                 --multi-max-width="fit"
                 items={employeeSelectOptions} clearable={false}
