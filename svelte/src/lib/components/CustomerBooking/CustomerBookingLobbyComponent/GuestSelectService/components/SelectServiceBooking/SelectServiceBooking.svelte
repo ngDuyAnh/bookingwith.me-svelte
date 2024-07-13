@@ -101,13 +101,6 @@
         }
     }
 
-    function formatOption(item) {
-        return `<div>
-                    <strong>${item.label}</strong>
-                    <div>${item.value.serviceTimeLength} | ${item.value.serviceCost}</div>
-                </div>`;
-    }
-
 </script>
 
 <div class="max-w-[250px]">
