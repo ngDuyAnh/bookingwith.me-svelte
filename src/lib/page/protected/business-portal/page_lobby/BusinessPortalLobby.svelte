@@ -13,9 +13,10 @@
         eventConfirmation,
         handleBusinessUpdate,
         handleTestEvent,
+        handleHeartbeatEvent,
         handleUnknownEvent,
         listenSocketFrom,
-        ServerEvent,
+        ServerEvent
     } from "$lib/api/api_server/api_endpoints/ws/api.js";
     import {onMount} from "svelte";
     import {isToday} from "$lib/page/stores/now/now_dayjs_store.js";
@@ -44,7 +45,7 @@
             );
 
             socket.onopen = function () {
-                //console.log("Socket connected.");
+                console.log("Socket connected.");
             };
 
             socket.onclose = function () {
@@ -77,7 +78,7 @@
 
                 const eventData = JSON.parse(event.data);
 
-                //console.log("eventData", eventData);
+                // console.log("eventData", eventData);
 
                 // EVENT_REQUEST
                 // eventData = { type, event, requestId }
@@ -112,10 +113,10 @@
 
     const eventHandlers = {
         [ServerEvent.TEST]: handleTestEvent,
+        [ServerEvent.HEARTBEAT]: handleHeartbeatEvent,
         [ServerEvent.UPDATE_BUSINESS]: handleBusinessUpdate,
-        [ServerEvent.UPDATE_EMPLOYEE_WORK_SCHEDULE]:
-        handleEmployeeWorKScheduleUpdate,
-        [ServerEvent.UPDATE_CUSTOMER_BOOKING]: handleCustomerBookingUpdate,
+        [ServerEvent.UPDATE_EMPLOYEE_WORK_SCHEDULE]: handleEmployeeWorKScheduleUpdate,
+        [ServerEvent.UPDATE_CUSTOMER_BOOKING]: handleCustomerBookingUpdate
     };
 
     let reconnectionTimeout;
@@ -138,14 +139,14 @@
     });
 
     async function handleEmployeeWorKScheduleUpdate(eventData) {
-        console.log(`Handle ${eventData.type}`, eventData);
+        // console.log(`Handle ${eventData.type}`, eventData);
         await fetchTimetable($timetableComponent.date);
     }
 
     async function handleCustomerBookingUpdate(eventData) {
         const customerBooking = eventData.data;
 
-        console.log(`Handle ${eventData.type}`, eventData);
+        // console.log(`Handle ${eventData.type}`, eventData);
 
         // Dashboard
         if (isToday(customerBooking.bookingDate)) {

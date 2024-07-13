@@ -3,6 +3,7 @@ import {business} from "$lib/page/stores/business/business.js";
 
 export const ServerEvent = {
     TEST: "TEST",
+    HEARTBEAT: "HEARTBEAT",
 
     EVENT_REQUEST: "EVENT_REQUEST",
     EVENT_CONFIRMATION: "EVENT_CONFIRMATION",
@@ -35,6 +36,10 @@ export function eventConfirmation(socket, requestId, confirmed) {
 
 export function handleUnknownEvent(event) {
     console.error("Handle unknown event:", event);
+}
+
+export function handleHeartbeatEvent(event) {
+    console.log(`Bee Gees - Stayin' Alive`);
 }
 
 export function handleTestEvent(event) {

@@ -9,6 +9,7 @@
     eventConfirmation,
     handleBusinessUpdate,
     handleTestEvent,
+    handleHeartbeatEvent,
     handleUnknownEvent,
     listenSocketFrom,
     ServerEvent,
@@ -49,7 +50,7 @@
       };
 
       socket.onclose = function () {
-        console.log("Disconnected from WebSocket. Trying to reconnect.");
+        // console.log("Disconnected from WebSocket. Trying to reconnect.");
         if (socket) {
           socket.close();
           socket = undefined;
@@ -59,7 +60,7 @@
       };
 
       socket.onerror = function (error) {
-        console.error("Socket error. Trying to reconnect.", error);
+        // console.error("Socket error. Trying to reconnect.", error);
         if (socket) {
           socket.close();
           socket = undefined;
@@ -70,7 +71,7 @@
 
       // Log all received messages
       socket.onmessage = function (event) {
-        console.log("Socket received:", event);
+        // console.log("Socket received:", event);
 
         const eventData = JSON.parse(event.data);
 
@@ -101,8 +102,9 @@
 
   const eventHandlers = {
     [ServerEvent.TEST]: handleTestEvent,
+    [ServerEvent.HEARTBEAT]: handleHeartbeatEvent,
     [ServerEvent.UPDATE_BUSINESS]: handleBusinessUpdate,
-    [ServerEvent.UPDATE_CUSTOMER_BOOKING]: handleCustomerBookingUpdate,
+    [ServerEvent.UPDATE_CUSTOMER_BOOKING]: handleCustomerBookingUpdate
   };
 
   let reconnectionTimeout;
@@ -124,7 +126,7 @@
   async function handleCustomerBookingUpdate(eventData) {
     const customerBooking = eventData.data;
 
-    console.log(`Handle ${eventData.type}`, eventData);
+    // console.log(`Handle ${eventData.type}`, eventData);
 
     // Dashboard
     if (isToday(customerBooking.bookingDate)) {

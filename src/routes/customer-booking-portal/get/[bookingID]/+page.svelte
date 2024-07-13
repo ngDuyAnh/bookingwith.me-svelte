@@ -19,7 +19,9 @@
     import {customerBooking} from "$lib/page/customer-booking-portal/get/stores/customerBookingEstimate.js";
     import {getBusinessFromCustomerBooking} from "$lib/api/api_server/api_endpoints/customer-booking-portal/api.js";
     import {
-        eventConfirmation, handleTestEvent,
+        eventConfirmation,
+        handleTestEvent,
+        handleHeartbeatEvent,
         handleUnknownEvent,
         listenSocketFrom,
         ServerEvent
@@ -42,7 +44,7 @@
             socket = new WebSocket(listenSocketFrom($business.businessInfo.businessID));
 
             socket.onopen = function () {
-                //console.log("Socket connected.");
+                console.log("Socket connected.");
             };
 
             socket.onclose = function () {
@@ -75,7 +77,7 @@
 
                 const eventData = JSON.parse(event.data);
 
-                //console.log("eventData", eventData);
+                // console.log("eventData", eventData);
 
                 // EVENT_REQUEST
                 // eventData = { type, event, requestId }
@@ -109,6 +111,7 @@
 
     const eventHandlers = {
         [ServerEvent.TEST]: handleTestEvent,
+        [ServerEvent.HEARTBEAT]: handleHeartbeatEvent,
         [ServerEvent.UPDATE_CUSTOMER_BOOKING_ESTIMATE]: handleCustomerBookingEstimateUpdateEvent,
         [ServerEvent.UPDATE_CUSTOMER_BOOKING]: handleCustomerBookingUpdate
     };
@@ -122,7 +125,7 @@
     async function handleCustomerBookingUpdate(eventData) {
         const updatedCustomerBooking = eventData.data;
 
-        console.log(`Handle ${eventData.type}`, eventData)
+        // console.log(`Handle ${eventData.type}`, eventData)
 
         // Is customer booking
         if ($customerBooking.bookingID === updatedCustomerBooking.bookingID)
@@ -168,7 +171,9 @@
 
         // Connect WebSocket
         connectWebSocket()
-            .then(() => console.log("Websocket connected."));
+            .then(() => {
+                // console.log("Initial websocket connected.")
+            });
 
         // Get the customer booking servicing estimate
         await fetchCustomerBookingEstimate();
