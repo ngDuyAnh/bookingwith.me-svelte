@@ -1,7 +1,7 @@
-import {API_BASE_URL} from "$lib/api/api_server/API-URL.js";
+import {PUBLIC_API_BASE_URL} from "$env/static/public";
 import {cancelScheduledReminderSms} from "$lib/api/api_twilio/functions.js";
 
-const API_URL = `${API_BASE_URL}/customer-booking-portal`;
+const API_URL = `${PUBLIC_API_BASE_URL}/customer-booking-portal`;
 
 export async function availability(id, dateString, currentTimeString, customerBooking, timeSlot) {
     const FETCH_URL = `${API_URL}/availability/${id}?time=${currentTimeString}&slot=${timeSlot}`;

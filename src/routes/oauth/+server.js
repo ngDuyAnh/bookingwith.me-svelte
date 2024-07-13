@@ -1,14 +1,18 @@
 import {redirect} from "@sveltejs/kit";
 import {OAuth2Client} from "google-auth-library"
-import {SECRET_CLIENT_ID, SECRET_CLIENT_SECRET, ORIGIN} from "$env/static/private";
+import {PUBLIC_ORIGIN} from "$env/static/public";
+import {
+    PRIVATE_GOOGLE_OAUTH_CLIENT_ID,
+    PRIVATE_GOOGLE_OAUTH_CLIENT_SECRET
+} from "$env/static/private";
 
 export const GET = async ({url, cookies})=>{
-    const redirectURL = `${ORIGIN}/oauth`;
+    const redirectURL = `${PUBLIC_ORIGIN}/oauth`;
     const code = await url.searchParams.get('code');
 
     try
     {
-        const oAuth2Client = new OAuth2Client(SECRET_CLIENT_ID, SECRET_CLIENT_SECRET, redirectURL);
+        const oAuth2Client = new OAuth2Client(PRIVATE_GOOGLE_OAUTH_CLIENT_ID, PRIVATE_GOOGLE_OAUTH_CLIENT_SECRET, redirectURL);
 
         // Get the token
         const r = await oAuth2Client.getToken(code);

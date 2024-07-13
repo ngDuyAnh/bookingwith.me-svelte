@@ -1,4 +1,4 @@
-import {API_BASE_URL} from "$lib/api/api_server/API-URL.js";
+import {PUBLIC_API_BASE_URL} from "$env/static/public";
 import {business} from "$lib/page/stores/business/business.js";
 
 export const ServerEvent = {
@@ -16,7 +16,7 @@ export const ServerEvent = {
 };
 
 export function listenSocketFrom(businessID) {
-    return API_BASE_URL + '/ws/' + businessID;
+    return PUBLIC_API_BASE_URL + '/ws/' + businessID;
 }
 
 export function eventConfirmation(socket, requestId, confirmed) {
@@ -39,7 +39,7 @@ export function handleUnknownEvent(event) {
 }
 
 export function handleHeartbeatEvent(event) {
-    console.log(`Bee Gees - Stayin' Alive`);
+    console.info(`Bee Gees - Stayin' Alive`);
 }
 
 export function handleTestEvent(event) {

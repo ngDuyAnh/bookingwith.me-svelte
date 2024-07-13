@@ -1,8 +1,8 @@
-import {SECRET_STRIPE_KEY} from '$env/static/private';
+import {PRIVATE_STRIPE_KEY} from '$env/static/private';
 import Stripe from 'stripe';
 import {StripeProductIDs} from "$lib/api/initialize_functions/Stripe.js";
 
-const stripe = new Stripe(SECRET_STRIPE_KEY);
+const stripe = new Stripe(PRIVATE_STRIPE_KEY);
 
 const eventNames = {
     LOBBY: "lobby_booking",
