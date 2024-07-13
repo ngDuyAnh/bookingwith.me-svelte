@@ -42,10 +42,10 @@
 
 
     export let tabs;
-    export let selectedIndex;
+    export let selectedIndex = undefined;
     export let dropdown = false;
-    export let dropdownOptions;
-    export let selectedDropDownIndex;
+    export let dropdownOptions = [];
+    export let selectedDropDownIndex = undefined;
 
 
     let dropdownStates = {};
