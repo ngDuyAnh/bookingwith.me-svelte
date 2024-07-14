@@ -1,7 +1,7 @@
-import {SECRET_STRIPE_KEY} from '$env/static/private';
+import {PRIVATE_STRIPE_KEY} from '$env/static/private';
 import Stripe from 'stripe';
 
-const stripe = new Stripe(SECRET_STRIPE_KEY);
+const stripe = new Stripe(PRIVATE_STRIPE_KEY);
 
 export async function POST({ request }) {
     try {

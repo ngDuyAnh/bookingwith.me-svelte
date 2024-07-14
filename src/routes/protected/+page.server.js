@@ -1,5 +1,9 @@
 import {OAuth2Client} from "google-auth-library";
-import {ORIGIN, SECRET_CLIENT_ID, SECRET_CLIENT_SECRET} from "$env/static/private";
+import {PUBLIC_ORIGIN} from "$env/static/public";
+import {
+    PRIVATE_GOOGLE_OAUTH_CLIENT_ID,
+    PRIVATE_GOOGLE_OAUTH_CLIENT_SECRET
+} from "$env/static/private";
 import {error, redirect} from "@sveltejs/kit";
 import {login} from "$lib/api/api_server/api_endpoints/user-portal/api.js";
 import {getBusiness} from "$lib/api/api_server/api_endpoints/business-portal/api.js";
@@ -42,9 +46,9 @@ export async function load({ cookies }) {
 
 export const actions={
     OAuth2: async()=> {
-        const redirectURL = `${ORIGIN}/oauth`;
+        const redirectURL = `${PUBLIC_ORIGIN}/oauth`;
 
-        const oAuth2Client = new OAuth2Client(SECRET_CLIENT_ID, SECRET_CLIENT_SECRET, redirectURL);
+        const oAuth2Client = new OAuth2Client(PRIVATE_GOOGLE_OAUTH_CLIENT_ID, PRIVATE_GOOGLE_OAUTH_CLIENT_SECRET, redirectURL);
 
         const authorizeUrl = oAuth2Client.generateAuthUrl({
             access_type: 'offline',

@@ -1,6 +1,6 @@
-import {API_BASE_URL} from "$lib/api/api_server/API-URL.js";
+import {PUBLIC_API_BASE_URL} from "$env/static/public";
 
-const API_URL = `${API_BASE_URL}/lobby-portal`;
+const API_URL = `${PUBLIC_API_BASE_URL}/lobby-portal`;
 
 export async function getAppointmentBookingList(businessID, dateString)
 {

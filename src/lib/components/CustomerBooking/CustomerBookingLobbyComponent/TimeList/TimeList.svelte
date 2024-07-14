@@ -1,10 +1,12 @@
 <script>
     import {fetchAvailableTimeList} from "$lib/api/api_server/functions.js";
     import {isToday} from "$lib/page/stores/now/now_dayjs_store.js";
-    import {Button, Search} from "flowbite-svelte";
+    import {Alert, Button, Search, Spinner} from "flowbite-svelte";
     import dayjs from "dayjs";
     import {formatToTime, formatToTimeAM} from "$lib/application/Formatter.js";
     import {normalizeSearchInput} from "$lib/application/NormalizeSearchInput.js";
+    import {fly} from "svelte/transition";
+    import {ExclamationCircleOutline, InfoCircleSolid} from "flowbite-svelte-icons";
 
     export let customerBooking;
 
@@ -30,13 +32,11 @@
             requiredAvailabilitiesSearch = true; // Trigger the UI to show the re-fetch button
 
             // If it is date change, automatically perform the availability search
-            if (beforeSerializedBooking.bookingDate !== currentBeforeSerialized.bookingDate)
-            {
+            if (beforeSerializedBooking.bookingDate !== currentBeforeSerialized.bookingDate) {
                 getAvailabilities();
             }
             // Reset
-            else
-            {
+            else {
                 availabilityList = [];
                 selectedAvailability = undefined;
                 customerBooking.bookingTime = null;
@@ -52,24 +52,64 @@
     let availabilityList = [];
     let selectedAvailability = undefined;
 
-    function getAvailabilities()
-    {
-        fetchAvailableTimeList(customerBooking, walkin)
-            .then((availabilities) => {
-                requiredAvailabilitiesSearch = false;
-                availabilityList = availabilities;
+    // Array to store indices of bookings with empty service lists
+    let emptyServiceBookingIndices = [];
 
-                // Select the first booking time
-                if (availabilityList.length > 0)
-                {
-                    selectAvailability(availabilityList[0]);
-                }
+    // Loop through the list and check the length of customerIndividualServiceBookingList
 
-                // console.log("availabilityList", availabilityList)
-            })
-            .catch((err) => {
-                console.error("Error getAvailabilities():", err);
+    let showAlert = false;
+    let alertMsg = '';
+    let fetching = false;
+
+    function getAvailabilities() {
+        showAlert = false;
+        alertMsg = "";
+
+        emptyServiceBookingIndices = [];
+        customerBooking.customerIndividualBookingList.forEach((booking, index) => {
+            if (booking.customerIndividualServiceBookingList.length === 0) {
+                emptyServiceBookingIndices.push(index + 1);
+            }
+        });
+
+
+        console.log("emptyServiceBookingIndices", emptyServiceBookingIndices);
+
+        // console.log("getAvailabilities customerBooking", customerBooking);
+
+        if (emptyServiceBookingIndices.length == 0) {
+            fetching = true;
+            fetchAvailableTimeList(customerBooking, walkin)
+                .then((availabilities) => {
+                    availabilityList = availabilities;
+
+                    // Select the first booking time
+                    if (availabilityList.length > 0) {
+                        selectAvailability(availabilityList[0]);
+                    }
+
+
+                    // console.log("availabilityList", availabilityList)
+                })
+                .catch((err) => {
+                    console.error("Error getAvailabilities():", err);
+                }).finally(() => {
+                fetching = false;
             });
+        } else {
+            showAlert = true;
+            if (emptyServiceBookingIndices.length <= 4) {
+                if (emptyServiceBookingIndices.length === 4) {
+                    alertMsg = `Guests # ${emptyServiceBookingIndices.slice(0, -1).join(', ')} & ${emptyServiceBookingIndices.slice(-1)} have not selected a service.`;
+                } else {
+                    alertMsg = `Guest${emptyServiceBookingIndices.length > 1 ? 's' : ''} # ${emptyServiceBookingIndices.join(' & ')} ${emptyServiceBookingIndices.length > 1 ? 'have' : 'has'} not selected a service.`;
+                }
+            } else {
+                alertMsg = `${emptyServiceBookingIndices.length} guests have not selected a service.`;
+            }
+        }
+
+        requiredAvailabilitiesSearch = false;
     }
 
     // Filter search
@@ -82,8 +122,7 @@
         searchTime();
     }
 
-    function searchTime()
-    {
+    function searchTime() {
         const normalizedSearchValue = normalizeSearchInput(searchValue);
 
         if (searchValue.length === 0) {
@@ -143,18 +182,27 @@
 <Search
         bind:value={searchValue}
         size="md"
-        class="rounded-none rounded-l-lg py-2.5"
+        class="rounded-none py-2.5"
         placeholder="Search Booking Info"
         maxlength="20"
 ></Search>
 
+
 {#if requiredAvailabilitiesSearch}
-    <Button on:click={getAvailabilities}>
+    <Button on:click={getAvailabilities} class="mt-1">
         Check Availability
     </Button>
 {:else}
-    {#if filteredAvailabilityList.length > 0}
-        <ul class="space-y-2">
+    {#if showAlert}
+        <!--Alert for moving to customer booking information but at least a guest has not selected a service-->
+        <Alert class="{showAlert?'':'hidden'}" dismissable={false} params={{ x: 200 }} transition={fly}>
+            <InfoCircleSolid class="w-5 h-5 ripple" slot="icon"/>
+            {alertMsg}
+        </Alert>
+    {:else if fetching}
+        <Spinner class="h-[100px] w-fit my-auto"/>
+    {:else if filteredAvailabilityList.length > 0}
+        <ul class="space-y-2 w-full">
             {#each filteredAvailabilityList as availability, index (index)}
                 <li id={index}
                     class="flex justify-between items-center py-1 px-1 rounded-md shadow-sm
@@ -169,7 +217,10 @@
                     </button>
             {/each}
         </ul>
-    {:else}
-        <p class="select-none">No availability.</p>
+    {:else if !fetching}
+        <p class="flex flex-row items-center select-none text-center text-lg py-4 text-gray-500">
+            <ExclamationCircleOutline size="lg" class="text-gray-500 mr-2"/> No availability.
+        </p>
     {/if}
+
 {/if}

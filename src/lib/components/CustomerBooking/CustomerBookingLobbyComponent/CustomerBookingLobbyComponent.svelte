@@ -6,12 +6,11 @@
     import GuestList from "$lib/components/CustomerBooking/CustomerBookingLobbyComponent/GuestList/GuestList.svelte";
     import TimeList from "$lib/components/CustomerBooking/CustomerBookingLobbyComponent/TimeList/TimeList.svelte";
     import {isToday, today} from "$lib/page/stores/now/now_dayjs_store.js";
-    import {ChevronLeftOutline, ChevronRightOutline} from "flowbite-svelte-icons";
+    import {CashSolid, ChevronLeftOutline, ChevronRightOutline, UsersGroupSolid} from "flowbite-svelte-icons";
     import dayjs from "dayjs";
     import {formatToDate} from "$lib/application/Formatter.js";
     import {formatPhoneNumber, rawPhoneNumber} from "$lib/application/FormatPhoneNumber.js";
-    import CustomerProfile from "$lib/components/Form/CustomerProfile/CustomerProfile.svelte";
-    import {getCustomer, getCustomerProfile} from "$lib/api/api_server/api_endpoints/customer-booking-portal/api.js";
+    import {getCustomer} from "$lib/api/api_server/api_endpoints/customer-booking-portal/api.js";
     import {business} from "$lib/page/stores/business/business.js";
 
     export let customerBooking = {
@@ -81,6 +80,21 @@
     }
 
     $: console.log("customerBooking", customerBooking);
+
+    let totalServiceCost = 0;
+    let totalGuests = 0;
+
+   $:if(customerBooking) {
+       totalServiceCost = 0;
+       totalGuests = 0;
+
+       customerBooking.customerIndividualBookingList.forEach(individualBooking=>{
+           totalGuests+=1;
+           individualBooking.customerIndividualServiceBookingList.forEach(booking => {
+               totalServiceCost += booking.service.serviceCost;
+           });
+       })
+   }
 </script>
 
 <div class="flex space-x-4 h-full">
@@ -93,7 +107,7 @@
                 <span class="font-bold">Guest</span>
             </div>
         </div>
-        <div class="w-[200px] h-full shadow overflow-y-auto">
+        <div class="w-[230px] h-full shadow overflow-y-auto">
             <!--Create a new guest-->
             <div class="flex justify-end">
                 <button
@@ -125,7 +139,7 @@
                 <div class="absolute border-2 border-gray-200 h-1 w-full rounded-lg"></div>
                 <div class="flex flex-row bg-white z-10 space-x-1 px-1">
                     <Avatar size="xs" class="flex justify-center items-center">2</Avatar>
-                    <span class="font-bold">Service(s)</span>
+                    <span class="font-bold">Service</span>
                 </div>
             </div>
 
@@ -166,7 +180,7 @@
             </div>
 
             <!--Time select-->
-            <div class="h-full shadow overflow-y-auto">
+            <div class="h-full shadow overflow-y-auto flex flex-col items-center w-full">
                 <TimeList
                         bind:customerBooking={customerBooking}
                 />
@@ -175,77 +189,88 @@
     </div>
 
     <!--Customer profile-->
-    <div class="flex flex-col h-full">
-        <div class="relative flex flex-row flex-grow items-center justify-center mb-2">
-            <div class="absolute border-2 border-gray-200 h-1 w-full rounded-lg"></div>
-            <div class="flex flex-row bg-white z-10 space-x-1 px-1">
-                <Avatar size="xs" class="flex justify-center items-center">4</Avatar>
-                <span class="font-bold">Customer</span>
+    <div class="flex-1 flex flex-col">
+        <div class="flex flex-col h-full">
+            <div class="relative flex flex-row flex-grow items-center justify-center mb-2">
+                <div class="absolute border-2 border-gray-200 h-1 w-full rounded-lg"></div>
+                <div class="flex flex-row bg-white z-10 space-x-1 px-1">
+                    <Avatar size="xs" class="flex justify-center items-center">4</Avatar>
+                    <span class="font-bold">Customer</span>
+                </div>
             </div>
+
+            <!--Get customer phone number-->
+            <form on:submit|preventDefault={submit} class="space-y-4 h-full">
+                <Label class="space-y-2">
+                    <span class="flex flex-row"><UsersGroupSolid/> Guest(s):  {totalGuests}</span>
+                    <span class="flex flex-row"><CashSolid/> Cost Pre-Tax: ${totalServiceCost}</span>
+                </Label>
+                <Label class="space-y-2">
+                    <span>Phone Number:</span>
+                    <Input
+                            id="phoneNumber"
+                            type="tel"
+                            placeholder="(123) 456-7890"
+                            bind:value={formattedPhoneNumber}
+                            on:input={handlePhoneNumberInput}
+                            required
+                            pattern="\(\d\d\d\) \d\d\d-\d\d\d\d"
+                            title="Phone number must be in the format: (123) 456-7890"
+                    />
+                </Label>
+
+                <Label class="space-y-2">
+                    <span>Name:</span>
+                    <Input
+                            id="customerName"
+                            bind:value={customerBooking.customer.customerName}
+                    />
+                </Label>
+
+                <!--A button to access to customer profile-->
+                <!--A button to access to customer profile-->
+                <!--A button to access to customer profile-->
+                <!--A button to access to customer profile-->
+                <!--A button to access to customer profile-->
+                <!--A button to access to customer profile-->
+
+                <!--The message attach to the customer booking-->
+                <Label class="space-y-2">
+                    <span>Message:</span>
+                    <Textarea
+                            id="message"
+                            placeholder="Enter any message or note here..."
+                            rows="5"
+                            bind:value={customerBooking.message}
+                    />
+                </Label>
+
+                <Button type="submit" class="w-full">
+                    Submit
+                </Button>
+            </form>
         </div>
-
-        <!--Get customer phone number-->
-        <form on:submit|preventDefault={submit} class="space-y-4">
-            <Label class="space-y-2">
-                <span>Phone Number:</span>
-                <Input
-                        id="phoneNumber"
-                        type="tel"
-                        placeholder="(123) 456-7890"
-                        bind:value={formattedPhoneNumber}
-                        on:input={handlePhoneNumberInput}
-                        required
-                        pattern="\(\d\d\d\) \d\d\d-\d\d\d\d"
-                        title="Phone number must be in the format: (123) 456-7890"
-                />
-            </Label>
-
-            <Label class="space-y-2">
-                <span>Name:</span>
-                <Input
-                        id="customerName"
-                        bind:value={customerBooking.customer.customerName}
-                />
-            </Label>
-
-            <!--A button to access to customer profile-->
-            <!--A button to access to customer profile-->
-            <!--A button to access to customer profile-->
-            <!--A button to access to customer profile-->
-            <!--A button to access to customer profile-->
-            <!--A button to access to customer profile-->
-
-            <!--The message attach to the customer booking-->
-            <Label class="space-y-2">
-                <span>Message:</span>
-                <Textarea
-                        id="message"
-                        placeholder="Enter any message or note here..."
-                        rows="5"
-                        bind:value={customerBooking.message}
-                />
-            </Label>
-
-            <Button type="submit" class="w-full">
-                Submit
-            </Button>
-        </form>
     </div>
 </div>
 
 <style>
     .new-guest {
-        background: rgb(0, 212, 255);
-        background: linear-gradient(0deg, #d9d9d9 0%, rgba(255, 255, 255, 0) 100%);
-        border-bottom-left-radius: 5px;
-        color: #333;
-        border-top: #333333;
-        border-right: #333333;
-        border-width: 1px;
+        background: linear-gradient(0deg, #f0f0f0 0%, rgba(255, 255, 255, 0) 100%); /* Light gray to transparent */
+        color: #333; /* Dark gray for text */
+        border: 1px solid #ccc; /* Light gray border */
+        border-bottom-left-radius: 10px; /* Rounded corner for bottom-left */
+        transition: background-color 0.3s, border-color 0.3s; /* Smooth transitions for interaction */
     }
 
     .new-guest:hover {
-        background: rgb(0, 212, 255);
-        background: linear-gradient(0deg, rgb(154, 255, 125) 0%, rgba(255, 255, 255, 0) 100%);
+        background: linear-gradient(0deg, #e0e0e0 0%, rgba(255, 255, 255, 0) 100%); /* Slightly darker gray on hover */
+        border-color: #b3b3b3; /* Slightly darker border on hover */
     }
+
+    .new-guest:active {
+        background: linear-gradient(0deg, #cccccc 0%, rgba(255, 255, 255, 0) 100%); /* Even darker gray for active state */
+        border-color: #999; /* Darker border for active state */
+    }
+
+
 </style>
