@@ -202,7 +202,7 @@
     {:else if fetching}
         <Spinner class="h-[100px] w-fit my-auto"/>
     {:else if filteredAvailabilityList.length > 0}
-        <ul class="space-y-2 w-full">
+        <ul class="space-y-2 w-full overflow-x-hidden">
             {#each filteredAvailabilityList as availability, index (index)}
                 <li id={index}
                     class="flex justify-between items-center py-1 px-1 rounded-md shadow-sm

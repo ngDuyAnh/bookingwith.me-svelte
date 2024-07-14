@@ -163,24 +163,23 @@
                 </div>
             </div>
 
-            <!--Date select-->
-            <div class="flex flex-row sm:justify-normal justify-center items-center pb-2">
-                <Button class="h-fit text-md mr-1" size="xs" color="light" on:click={()=>{selectToday()}}
-                        disabled={isToday(customerBooking.bookingDate)}>Today
-                </Button>
-                <div class="flex items-center">
-                    <Button class="rounded-r-none h-fit" size="xs" color="light" on:click={()=>{selectYesterday()}}>
-                        <ChevronLeftOutline class="w-6 h-6"/>
-                    </Button>
-                    <input class="border-gray-300 w-[8rem]" bind:value={customerBooking.bookingDate} type="date"/>
-                    <Button class="rounded-l-none h-fit" size="xs" color="light" on:click={()=>{selectTomorrow()}}>
-                        <ChevronRightOutline class="w-6 h-6"/>
-                    </Button>
-                </div>
-            </div>
-
-            <!--Time select-->
+            <!--Date & Time select-->
             <div class="h-full shadow overflow-y-auto flex flex-col items-center w-full">
+                <div class="flex flex-row sm:justify-normal justify-center items-center pb-2">
+                    <Button class="h-fit text-md mr-1" size="xs" color="light" on:click={()=>{selectToday()}}
+                            disabled={isToday(customerBooking.bookingDate)}>Today
+                    </Button>
+                    <div class="flex items-center">
+                        <Button class="rounded-r-none h-fit" size="xs" color="light" on:click={()=>{selectYesterday()}}>
+                            <ChevronLeftOutline class="w-6 h-6"/>
+                        </Button>
+                        <input class="border-gray-300 w-[8rem]" bind:value={customerBooking.bookingDate} type="date"/>
+                        <Button class="rounded-l-none h-fit" size="xs" color="light" on:click={()=>{selectTomorrow()}}>
+                            <ChevronRightOutline class="w-6 h-6"/>
+                        </Button>
+                    </div>
+                </div>
+
                 <TimeList
                         bind:customerBooking={customerBooking}
                 />
