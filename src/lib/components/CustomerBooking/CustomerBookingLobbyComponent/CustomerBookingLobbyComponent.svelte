@@ -2,11 +2,11 @@
     import {CustomerBooking, CustomerIndividualBooking} from "$lib/api/initialize_functions/CustomerBooking.js";
     import GuestSelectService
         from "$lib/components/CustomerBooking/CustomerBookingLobbyComponent/GuestSelectService/GuestSelectService.svelte";
-    import {Avatar, Button, Input, Label, Textarea} from "flowbite-svelte";
+    import {Avatar, Button} from "flowbite-svelte";
     import GuestList from "$lib/components/CustomerBooking/CustomerBookingLobbyComponent/GuestList/GuestList.svelte";
     import TimeList from "$lib/components/CustomerBooking/CustomerBookingLobbyComponent/TimeList/TimeList.svelte";
     import {isToday, today} from "$lib/page/stores/now/now_dayjs_store.js";
-    import {CashSolid, ChevronLeftOutline, ChevronRightOutline, UsersGroupSolid} from "flowbite-svelte-icons";
+    import {ChevronLeftOutline, ChevronRightOutline} from "flowbite-svelte-icons";
     import dayjs from "dayjs";
     import {formatToDate} from "$lib/application/Formatter.js";
     import {formatPhoneNumber, rawPhoneNumber} from "$lib/application/FormatPhoneNumber.js";
@@ -46,34 +46,7 @@
         customerBooking.bookingDate = dayjs(customerBooking.bookingDate).subtract(1, 'day').format(formatToDate);
     }
 
-    // Phone number
-    let formattedPhoneNumber = formatPhoneNumber(customerBooking.customer.phoneNumber);
 
-    function handlePhoneNumberInput(event) {
-        const input = event.target.value;
-
-        // Update the raw customer phone number
-        customerBooking.customer.phoneNumber = rawPhoneNumber(input);
-
-        // Format as "(123) 456-7890"
-        formattedPhoneNumber = formatPhoneNumber(input);
-
-        // Fetch the customer profile
-        // Only fetch it one time
-        if (customerBooking.customer.phoneNumber.length === 10) {
-            getCustomer($business.businessInfo.businessID, customerBooking.customer.phoneNumber)
-                .then(customer => {
-                    if (customer && customer.customerName) {
-                        customerBooking.customer.customerName = customer.customerName;
-
-                        console.log(`Autofilled customer name ${customer.customerName}`);
-                    }
-                })
-                .catch(error => {
-                    console.error('Failed to get customer:', error);
-                });
-        }
-    }
 
     async function submit() {
         console.log("submit()", customerBooking);
@@ -200,55 +173,7 @@
 
             <!--Get customer phone number-->
             <div class="h-full shadow overflow-y-auto flex flex-col p-1.5 w-full">
-                <form on:submit|preventDefault={submit} class="space-y-4 h-full">
-                    <Label class="space-y-2">
-                        <span class="flex flex-row"><UsersGroupSolid/> Guest(s):  {totalGuests}</span>
-                        <span class="flex flex-row"><CashSolid/> Cost Pre-Tax: ${totalServiceCost}</span>
-                    </Label>
-                    <Label class="space-y-2">
-                        <span>Phone Number:</span>
-                        <Input
-                                id="phoneNumber"
-                                type="tel"
-                                placeholder="(123) 456-7890"
-                                bind:value={formattedPhoneNumber}
-                                on:input={handlePhoneNumberInput}
-                                required
-                                pattern="\(\d\d\d\) \d\d\d-\d\d\d\d"
-                                title="Phone number must be in the format: (123) 456-7890"
-                        />
-                    </Label>
 
-                    <Label class="space-y-2">
-                        <span>Name:</span>
-                        <Input
-                                id="customerName"
-                                bind:value={customerBooking.customer.customerName}
-                        />
-                    </Label>
-
-                    <!--A button to access to customer profile-->
-                    <!--A button to access to customer profile-->
-                    <!--A button to access to customer profile-->
-                    <!--A button to access to customer profile-->
-                    <!--A button to access to customer profile-->
-                    <!--A button to access to customer profile-->
-
-                    <!--The message attach to the customer booking-->
-                    <Label class="space-y-2">
-                        <span>Message:</span>
-                        <Textarea
-                                id="message"
-                                placeholder="Enter any message or note here..."
-                                rows="5"
-                                bind:value={customerBooking.message}
-                        />
-                    </Label>
-
-                    <Button type="submit" class="w-full">
-                        Submit
-                    </Button>
-                </form>
             </div>
         </div>
     </div>
