@@ -12,6 +12,8 @@
     import {formatPhoneNumber, rawPhoneNumber} from "$lib/application/FormatPhoneNumber.js";
     import {getCustomer} from "$lib/api/api_server/api_endpoints/customer-booking-portal/api.js";
     import {business} from "$lib/page/stores/business/business.js";
+    import SubmitBooking
+        from "$lib/components/CustomerBooking/CustomerBookingLobbyComponent/SubmitBooking/SubmitBooking.svelte";
 
     export let customerBooking = {
         ...CustomerBooking(),
@@ -173,7 +175,9 @@
 
             <!--Get customer phone number-->
             <div class="h-full shadow overflow-y-auto flex flex-col p-1.5 w-full">
-
+                <SubmitBooking
+                    bind:customerBooking={customerBooking}
+                />
             </div>
         </div>
     </div>
