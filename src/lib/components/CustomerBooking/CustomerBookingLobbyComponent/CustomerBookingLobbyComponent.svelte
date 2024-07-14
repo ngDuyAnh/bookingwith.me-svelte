@@ -9,11 +9,8 @@
     import {ChevronLeftOutline, ChevronRightOutline} from "flowbite-svelte-icons";
     import dayjs from "dayjs";
     import {formatToDate} from "$lib/application/Formatter.js";
-    import {formatPhoneNumber, rawPhoneNumber} from "$lib/application/FormatPhoneNumber.js";
-    import {getCustomer} from "$lib/api/api_server/api_endpoints/customer-booking-portal/api.js";
-    import {business} from "$lib/page/stores/business/business.js";
-    import SubmitBooking
-        from "$lib/components/CustomerBooking/CustomerBookingLobbyComponent/SubmitBooking/SubmitBooking.svelte";
+    import { onDestroy } from 'svelte';
+
 
     export let customerBooking = {
         ...CustomerBooking(),
@@ -48,141 +45,175 @@
         customerBooking.bookingDate = dayjs(customerBooking.bookingDate).subtract(1, 'day').format(formatToDate);
     }
 
+    let successfulSubmition = false;
 
+    let timeoutId = null;
+
+
+    // Second function to be called after a delay
+    function resetBooking() {
+        successfulSubmition = false;
+        customerBooking = {
+            ...CustomerBooking(),
+            customerIndividualBookingList: [CustomerIndividualBooking()]
+        };
+    }
 
     async function submit() {
-        console.log("submit()", customerBooking);
+        console.log("first submit() called", customerBooking);
+        successfulSubmition = true;
+
+        if (timeoutId !== null) {
+            clearTimeout(timeoutId);
+            console.log('Existing timeout cleared');
+        }
+
+        // Call second function after 2 seconds
+        timeoutId = setTimeout(resetBooking, 2000);
+        console.log(timeoutId);
+
+
     }
+
+    onDestroy(() => {
+        if (timeoutId !== null) {
+            clearTimeout(timeoutId);
+        }
+    });
 
     $: console.log("customerBooking", customerBooking);
 
-    let totalServiceCost = 0;
-    let totalGuests = 0;
-
-    $:if (customerBooking) {
-        totalServiceCost = 0;
-        totalGuests = 0;
-
-        customerBooking.customerIndividualBookingList.forEach(individualBooking => {
-            totalGuests += 1;
-            individualBooking.customerIndividualServiceBookingList.forEach(booking => {
-                totalServiceCost += booking.service.serviceCost;
-            });
-        })
-    }
 </script>
 
-<div class="flex space-x-4 h-full">
-    <!--Guest column-->
-    <div class="flex flex-col h-full">
-        <div class="relative flex flex-row flex-grow items-center justify-center mb-2">
-            <div class="absolute border-2 border-gray-200 h-1 w-full rounded-lg"></div>
-            <div class="flex flex-row bg-white z-10 space-x-1 px-1">
-                <Avatar size="xs" class="flex justify-center items-center">1</Avatar>
-                <span class="font-bold">Guest</span>
-            </div>
-        </div>
-        <div class="w-[230px] h-full shadow overflow-y-auto">
-            <!--Create a new guest-->
-            <div class="flex justify-end">
-                <button
-                        on:click={createNewGuest}
-                        class="new-guest select-none text-center cursor-pointer text-white px-2 py-2 flex flex-row justify-center items-center space-x-1"
-                >
-                    <svg class="w-6 h-6 text-gray-800 dark:text-white" aria-hidden="true" fill="currentColor"
-                         viewBox="0 0 24 24">
-                        <path fill-rule="evenodd"
-                              d="M9 4a4 4 0 1 0 0 8 4 4 0 0 0 0-8Zm-2 9a4 4 0 0 0-4 4v1a2 2 0 0 0 2 2h8a2 2 0 0 0 2-2v-1a4 4 0 0 0-4-4H7Zm8-1a1 1 0 0 1 1-1h1v-1a1 1 0 1 1 2 0v1h1a1 1 0 1 1 0 2h-1v1a1 1 0 1 1-2 0v-1h-1a1 1 0 0 1-1-1Z"
-                              clip-rule="evenodd"/>
-                    </svg>
-                    <span class="text-black text-sm">Add Guest</span>
-                </button>
-            </div>
-
-            <GuestList
-                    bind:customerBooking={customerBooking}
-                    bind:selectedIndividualBookingIndex={selectedIndividualBookingIndex}
-            />
-
-        </div>
-    </div>
-
-    <!--Service selection for guest column-->
-    <div class="flex-1 flex flex-col">
+{#if !successfulSubmition}
+    <div class="flex space-x-4 h-full">
+        <!--Guest column-->
         <div class="flex flex-col h-full">
             <div class="relative flex flex-row flex-grow items-center justify-center mb-2">
                 <div class="absolute border-2 border-gray-200 h-1 w-full rounded-lg"></div>
                 <div class="flex flex-row bg-white z-10 space-x-1 px-1">
-                    <Avatar size="xs" class="flex justify-center items-center">2</Avatar>
-                    <span class="font-bold">Service</span>
+                    <Avatar size="xs" class="flex justify-center items-center">1</Avatar>
+                    <span class="font-bold">Guest</span>
                 </div>
             </div>
+            <div class="w-[230px] h-full shadow overflow-y-auto">
+                <!--Create a new guest-->
+                <div class="flex justify-end">
+                    <button
+                            on:click={createNewGuest}
+                            class="new-guest select-none text-center cursor-pointer text-white px-2 py-2 flex flex-row justify-center items-center space-x-1"
+                    >
+                        <svg class="w-6 h-6 text-gray-800 dark:text-white" aria-hidden="true" fill="currentColor"
+                             viewBox="0 0 24 24">
+                            <path fill-rule="evenodd"
+                                  d="M9 4a4 4 0 1 0 0 8 4 4 0 0 0 0-8Zm-2 9a4 4 0 0 0-4 4v1a2 2 0 0 0 2 2h8a2 2 0 0 0 2-2v-1a4 4 0 0 0-4-4H7Zm8-1a1 1 0 0 1 1-1h1v-1a1 1 0 1 1 2 0v1h1a1 1 0 1 1 0 2h-1v1a1 1 0 1 1-2 0v-1h-1a1 1 0 0 1-1-1Z"
+                                  clip-rule="evenodd"/>
+                        </svg>
+                        <span class="text-black text-sm">Add Guest</span>
+                    </button>
+                </div>
 
-            <div class="h-full shadow overflow-y-auto">
-                <GuestSelectService
+                <GuestList
                         bind:customerBooking={customerBooking}
-                        individualBookingIndex={selectedIndividualBookingIndex}
+                        bind:selectedIndividualBookingIndex={selectedIndividualBookingIndex}
                 />
+
             </div>
         </div>
-    </div>
 
-    <!--Booking time-->
-    <div class="flex-1 flex flex-col">
-        <div class="flex flex-col h-full">
-            <div class="relative flex flex-row flex-grow items-center justify-center mb-2">
-                <div class="absolute border-2 border-gray-200 h-1 w-full rounded-lg"></div>
-                <div class="flex flex-row bg-white z-10 space-x-1 px-1">
-                    <Avatar size="xs" class="flex justify-center items-center">3</Avatar>
-                    <span class="font-bold">Date & Time</span>
-                </div>
-            </div>
-
-            <!--Date & Time select-->
-            <div class="h-full shadow overflow-y-auto flex flex-col items-center w-full">
-                <div class="flex flex-row sm:justify-normal justify-center items-center pb-2">
-                    <Button class="h-fit text-md mr-1" size="xs" color="light" on:click={()=>{selectToday()}}
-                            disabled={isToday(customerBooking.bookingDate)}>Today
-                    </Button>
-                    <div class="flex items-center">
-                        <Button class="rounded-r-none h-fit" size="xs" color="light" on:click={()=>{selectYesterday()}}>
-                            <ChevronLeftOutline class="w-6 h-6"/>
-                        </Button>
-                        <input class="border-gray-300 w-[8rem]" bind:value={customerBooking.bookingDate} type="date"/>
-                        <Button class="rounded-l-none h-fit" size="xs" color="light" on:click={()=>{selectTomorrow()}}>
-                            <ChevronRightOutline class="w-6 h-6"/>
-                        </Button>
+        <!--Service selection for guest column-->
+        <div class="flex-1 flex flex-col">
+            <div class="flex flex-col h-full">
+                <div class="relative flex flex-row flex-grow items-center justify-center mb-2">
+                    <div class="absolute border-2 border-gray-200 h-1 w-full rounded-lg"></div>
+                    <div class="flex flex-row bg-white z-10 space-x-1 px-1">
+                        <Avatar size="xs" class="flex justify-center items-center">2</Avatar>
+                        <span class="font-bold">Service</span>
                     </div>
                 </div>
 
-                <TimeList
-                        bind:customerBooking={customerBooking}
-                />
-            </div>
-        </div>
-    </div>
-
-    <!--Customer profile-->
-    <div class="flex-1 flex flex-col">
-        <div class="flex flex-col h-full">
-            <div class="relative flex flex-row flex-grow items-center justify-center mb-2">
-                <div class="absolute border-2 border-gray-200 h-1 w-full rounded-lg"></div>
-                <div class="flex flex-row bg-white z-10 space-x-1 px-1">
-                    <Avatar size="xs" class="flex justify-center items-center">4</Avatar>
-                    <span class="font-bold">Customer</span>
+                <div class="h-full shadow overflow-y-auto">
+                    <GuestSelectService
+                            bind:customerBooking={customerBooking}
+                            individualBookingIndex={selectedIndividualBookingIndex}
+                    />
                 </div>
             </div>
+        </div>
 
-            <!--Get customer phone number-->
-            <div class="h-full shadow overflow-y-auto flex flex-col p-1.5 w-full">
-                <SubmitBooking
-                    bind:customerBooking={customerBooking}
-                />
+        <!--Booking time-->
+        <div class="flex-1 flex flex-col">
+            <div class="flex flex-col h-full">
+                <div class="relative flex flex-row flex-grow items-center justify-center mb-2">
+                    <div class="absolute border-2 border-gray-200 h-1 w-full rounded-lg"></div>
+                    <div class="flex flex-row bg-white z-10 space-x-1 px-1">
+                        <Avatar size="xs" class="flex justify-center items-center">3</Avatar>
+                        <span class="font-bold">Date & Time</span>
+                    </div>
+                </div>
+
+                <!--Date & Time select-->
+                <div class="h-full shadow overflow-y-auto flex flex-col items-center w-full">
+                    <div class="flex flex-row sm:justify-normal justify-center items-center pb-2">
+                        <Button class="h-fit text-md mr-1" size="xs" color="light" on:click={()=>{selectToday()}}
+                                disabled={isToday(customerBooking.bookingDate)}>Today
+                        </Button>
+                        <div class="flex items-center">
+                            <Button class="rounded-r-none h-fit" size="xs" color="light"
+                                    on:click={()=>{selectYesterday()}}>
+                                <ChevronLeftOutline class="w-6 h-6"/>
+                            </Button>
+                            <input class="border-gray-300 w-[8rem]" bind:value={customerBooking.bookingDate}
+                                   type="date"/>
+                            <Button class="rounded-l-none h-fit" size="xs" color="light"
+                                    on:click={()=>{selectTomorrow()}}>
+                                <ChevronRightOutline class="w-6 h-6"/>
+                            </Button>
+                        </div>
+                    </div>
+
+                    <TimeList
+                            bind:customerBooking={customerBooking}
+                    />
+                </div>
+            </div>
+        </div>
+
+        <!--Customer profile-->
+        <div class="flex-1 flex flex-col">
+            <div class="flex flex-col h-full">
+                <div class="relative flex flex-row flex-grow items-center justify-center mb-2">
+                    <div class="absolute border-2 border-gray-200 h-1 w-full rounded-lg"></div>
+                    <div class="flex flex-row bg-white z-10 space-x-1 px-1">
+                        <Avatar size="xs" class="flex justify-center items-center">4</Avatar>
+                        <span class="font-bold">Customer</span>
+                    </div>
+                </div>
+
+                <!--Get customer phone number-->
+                <div class="h-full shadow overflow-y-auto flex flex-col p-1.5 w-full">
+                    <Button on:click={submit}>successfulSubmition</Button>
+                    <!--                <SubmitBooking-->
+                    <!--                        bind:successfulSubmition={successfulSubmition}-->
+                    <!--                        bind:customerBooking={customerBooking}-->
+                    <!--                />-->
+                </div>
             </div>
         </div>
     </div>
-</div>
-
+{:else}
+    <div class="flex flex-col items-center justify-center h-full">
+        <svg class="animate-pop-open text-gray-800 dark:text-white" aria-hidden="true"
+             xmlns="http://www.w3.org/2000/svg" width="300" height="300" fill="rgba(80,180,80,1)" viewBox="0 0 24 24">
+            <path fill-rule="evenodd"
+                  d="M2 12C2 6.477 6.477 2 12 2s10 4.477 10 10-4.477 10-10 10S2 17.523 2 12Zm13.707-1.293a1 1 0 0 0-1.414-1.414L11 12.586l-1.793-1.793a1 1 0 0 0-1.414 1.414l2.5 2.5a1 1 0 0 0 1.414 0l4-4Z"
+                  clip-rule="evenodd"/>
+        </svg>
+        <h1>
+            New Booking Successful!
+        </h1>
+    </div>
+{/if}
 <style>
     .new-guest {
         background: linear-gradient(0deg, #f0f0f0 0%, rgba(255, 255, 255, 0) 100%); /* Light gray to transparent */

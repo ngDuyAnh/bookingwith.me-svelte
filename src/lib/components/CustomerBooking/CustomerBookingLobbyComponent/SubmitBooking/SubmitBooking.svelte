@@ -16,8 +16,24 @@
     } from "$lib/components/Modal/CustomerBookingClickModal/handle_customer_booking_state.js";
     import {sendSmsBookingReminder, sendSmsConfirmBookingSuccess} from "$lib/api/api_twilio/functions.js";
 
+    export let successfulSubmition;
     export let customerBooking;
     export let customerBookingInformationProps;
+
+    let totalServiceCost = 0;
+    let totalGuests = 0;
+
+    $:if (customerBooking) {
+        totalServiceCost = 0;
+        totalGuests = 0;
+
+        customerBooking.customerIndividualBookingList.forEach(individualBooking => {
+            totalGuests += 1;
+            individualBooking.customerIndividualServiceBookingList.forEach(booking => {
+                totalServiceCost += booking.service.serviceCost;
+            });
+        })
+    }
 
     // Phone number
     let formattedPhoneNumber = formatPhoneNumber(customerBooking.customer.phoneNumber);
