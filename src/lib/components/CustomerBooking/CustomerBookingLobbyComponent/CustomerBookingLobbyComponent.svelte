@@ -165,7 +165,7 @@
             </div>
 
             <!--Time select-->
-            <div class="h-full shadow overflow-y-auto">
+            <div class="h-full shadow overflow-y-auto flex flex-col items-center w-full">
                 <TimeList
                         bind:customerBooking={customerBooking}
                 />
