@@ -6,7 +6,7 @@
     import {formatToTime, formatToTimeAM} from "$lib/application/Formatter.js";
     import {normalizeSearchInput} from "$lib/application/NormalizeSearchInput.js";
     import {fly} from "svelte/transition";
-    import {InfoCircleSolid} from "flowbite-svelte-icons";
+    import {ExclamationCircleOutline, InfoCircleSolid} from "flowbite-svelte-icons";
 
     export let customerBooking;
 
@@ -182,14 +182,14 @@
 <Search
         bind:value={searchValue}
         size="md"
-        class="rounded-none rounded-l-lg py-2.5"
+        class="rounded-none py-2.5"
         placeholder="Search Booking Info"
         maxlength="20"
 ></Search>
 
 
 {#if requiredAvailabilitiesSearch}
-    <Button on:click={getAvailabilities}>
+    <Button on:click={getAvailabilities} class="mt-1">
         Check Availability
     </Button>
 {:else}
@@ -218,6 +218,9 @@
             {/each}
         </ul>
     {:else if !fetching}
-        <p class="select-none">No availability.</p>
+        <p class="flex flex-row items-center select-none text-center text-lg py-4 text-gray-500">
+            <ExclamationCircleOutline size="lg" class="text-gray-500 mr-2"/> No availability.
+        </p>
     {/if}
+
 {/if}

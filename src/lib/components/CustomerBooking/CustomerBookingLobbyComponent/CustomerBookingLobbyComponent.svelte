@@ -6,7 +6,7 @@
     import GuestList from "$lib/components/CustomerBooking/CustomerBookingLobbyComponent/GuestList/GuestList.svelte";
     import TimeList from "$lib/components/CustomerBooking/CustomerBookingLobbyComponent/TimeList/TimeList.svelte";
     import {isToday, today} from "$lib/page/stores/now/now_dayjs_store.js";
-    import {ChevronLeftOutline, ChevronRightOutline} from "flowbite-svelte-icons";
+    import {CashSolid, ChevronLeftOutline, ChevronRightOutline, UsersGroupSolid} from "flowbite-svelte-icons";
     import dayjs from "dayjs";
     import {formatToDate} from "$lib/application/Formatter.js";
     import {formatPhoneNumber, rawPhoneNumber} from "$lib/application/FormatPhoneNumber.js";
@@ -80,6 +80,25 @@
     }
 
     $: console.log("customerBooking", customerBooking);
+
+    let totalServiceCost = 0;
+    let totalGuests = 0;
+
+   $:if(customerBooking) {
+       totalServiceCost = 0;
+       totalGuests = 0;
+
+       customerBooking.customerIndividualBookingList.forEach(individualBooking=>{
+           totalGuests+=1;
+           individualBooking.customerIndividualServiceBookingList.forEach(booking => {
+               totalServiceCost += booking.service.serviceCost;
+           });
+       })
+
+       console.log("totalServiceCost",totalServiceCost);
+       console.log("totalGuests",totalGuests);
+
+   }
 </script>
 
 <div class="flex space-x-4 h-full">
@@ -186,6 +205,10 @@
 
             <!--Get customer phone number-->
             <form on:submit|preventDefault={submit} class="space-y-4 h-full">
+                <Label class="space-y-2">
+                    <span class="flex flex-row"><UsersGroupSolid/> Guest(s):  {totalGuests}</span>
+                    <span class="flex flex-row"><CashSolid/> Cost Pre-Tax: ${totalServiceCost}</span>
+                </Label>
                 <Label class="space-y-2">
                     <span>Phone Number:</span>
                     <Input
