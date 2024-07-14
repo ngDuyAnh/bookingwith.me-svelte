@@ -94,10 +94,6 @@
                totalServiceCost += booking.service.serviceCost;
            });
        })
-
-       console.log("totalServiceCost",totalServiceCost);
-       console.log("totalGuests",totalGuests);
-
    }
 </script>
 
