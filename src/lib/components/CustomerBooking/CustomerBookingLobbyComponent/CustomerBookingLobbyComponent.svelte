@@ -84,17 +84,17 @@
     let totalServiceCost = 0;
     let totalGuests = 0;
 
-   $:if(customerBooking) {
-       totalServiceCost = 0;
-       totalGuests = 0;
+    $:if (customerBooking) {
+        totalServiceCost = 0;
+        totalGuests = 0;
 
-       customerBooking.customerIndividualBookingList.forEach(individualBooking=>{
-           totalGuests+=1;
-           individualBooking.customerIndividualServiceBookingList.forEach(booking => {
-               totalServiceCost += booking.service.serviceCost;
-           });
-       })
-   }
+        customerBooking.customerIndividualBookingList.forEach(individualBooking => {
+            totalGuests += 1;
+            individualBooking.customerIndividualServiceBookingList.forEach(booking => {
+                totalServiceCost += booking.service.serviceCost;
+            });
+        })
+    }
 </script>
 
 <div class="flex space-x-4 h-full">
@@ -199,55 +199,57 @@
             </div>
 
             <!--Get customer phone number-->
-            <form on:submit|preventDefault={submit} class="space-y-4 h-full">
-                <Label class="space-y-2">
-                    <span class="flex flex-row"><UsersGroupSolid/> Guest(s):  {totalGuests}</span>
-                    <span class="flex flex-row"><CashSolid/> Cost Pre-Tax: ${totalServiceCost}</span>
-                </Label>
-                <Label class="space-y-2">
-                    <span>Phone Number:</span>
-                    <Input
-                            id="phoneNumber"
-                            type="tel"
-                            placeholder="(123) 456-7890"
-                            bind:value={formattedPhoneNumber}
-                            on:input={handlePhoneNumberInput}
-                            required
-                            pattern="\(\d\d\d\) \d\d\d-\d\d\d\d"
-                            title="Phone number must be in the format: (123) 456-7890"
-                    />
-                </Label>
+            <div class="h-full shadow overflow-y-auto flex flex-col p-1.5 w-full">
+                <form on:submit|preventDefault={submit} class="space-y-4 h-full">
+                    <Label class="space-y-2">
+                        <span class="flex flex-row"><UsersGroupSolid/> Guest(s):  {totalGuests}</span>
+                        <span class="flex flex-row"><CashSolid/> Cost Pre-Tax: ${totalServiceCost}</span>
+                    </Label>
+                    <Label class="space-y-2">
+                        <span>Phone Number:</span>
+                        <Input
+                                id="phoneNumber"
+                                type="tel"
+                                placeholder="(123) 456-7890"
+                                bind:value={formattedPhoneNumber}
+                                on:input={handlePhoneNumberInput}
+                                required
+                                pattern="\(\d\d\d\) \d\d\d-\d\d\d\d"
+                                title="Phone number must be in the format: (123) 456-7890"
+                        />
+                    </Label>
 
-                <Label class="space-y-2">
-                    <span>Name:</span>
-                    <Input
-                            id="customerName"
-                            bind:value={customerBooking.customer.customerName}
-                    />
-                </Label>
+                    <Label class="space-y-2">
+                        <span>Name:</span>
+                        <Input
+                                id="customerName"
+                                bind:value={customerBooking.customer.customerName}
+                        />
+                    </Label>
 
-                <!--A button to access to customer profile-->
-                <!--A button to access to customer profile-->
-                <!--A button to access to customer profile-->
-                <!--A button to access to customer profile-->
-                <!--A button to access to customer profile-->
-                <!--A button to access to customer profile-->
+                    <!--A button to access to customer profile-->
+                    <!--A button to access to customer profile-->
+                    <!--A button to access to customer profile-->
+                    <!--A button to access to customer profile-->
+                    <!--A button to access to customer profile-->
+                    <!--A button to access to customer profile-->
 
-                <!--The message attach to the customer booking-->
-                <Label class="space-y-2">
-                    <span>Message:</span>
-                    <Textarea
-                            id="message"
-                            placeholder="Enter any message or note here..."
-                            rows="5"
-                            bind:value={customerBooking.message}
-                    />
-                </Label>
+                    <!--The message attach to the customer booking-->
+                    <Label class="space-y-2">
+                        <span>Message:</span>
+                        <Textarea
+                                id="message"
+                                placeholder="Enter any message or note here..."
+                                rows="5"
+                                bind:value={customerBooking.message}
+                        />
+                    </Label>
 
-                <Button type="submit" class="w-full">
-                    Submit
-                </Button>
-            </form>
+                    <Button type="submit" class="w-full">
+                        Submit
+                    </Button>
+                </form>
+            </div>
         </div>
     </div>
 </div>
