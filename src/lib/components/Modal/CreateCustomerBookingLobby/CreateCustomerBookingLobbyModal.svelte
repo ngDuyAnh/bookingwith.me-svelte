@@ -10,6 +10,7 @@
     import {Modal} from "flowbite-svelte";
     import CustomerBookingLobbyComponent
         from "$lib/components/CustomerBooking/CustomerBookingLobbyComponent/CustomerBookingLobbyComponent.svelte";
+    import {CalendarMonthOutline, CashSolid, UsersGroupSolid} from "flowbite-svelte-icons";
 
     export let customerBooking = {
         ...CustomerBooking(),
@@ -28,24 +29,55 @@
     } else if (!$modalCreateCustomerBookingLobby.open) {
         wasOpen = false;
     }
+
+    let successfulSubmition;
+    let totalServiceCost = 0;
+    let totalGuests = 0;
+
+    $:if (customerBooking) {
+        totalServiceCost = 0;
+        totalGuests = 0;
+
+        customerBooking.customerIndividualBookingList.forEach(individualBooking => {
+            totalGuests += 1;
+            individualBooking.customerIndividualServiceBookingList.forEach(booking => {
+                totalServiceCost += booking.service.serviceCost;
+            });
+        })
+    }
+
+    $:console.log("submit??", successfulSubmition);
+let modalInstance=null;
+$:console.log("modalInstance",modalInstance);
 </script>
 
 
 <div class="absolute top-0 left-0 right-0 z-[2000]">
     <Modal bind:open={$modalCreateCustomerBookingLobby.open}
-           bodyClass="p-4 md:p-5 space-y-0 flex-1 overflow-y-auto overscroll-contain"
+           bind:this={modalInstance}
+           classHeader="!p-1"
+           classBody="p-4 md:p-5 space-y-0 flex-1 overflow-y-auto overscroll-contain"
            class="w-full h-[80vh] border-8"
            classBackdrop="fixed inset-0 z-50 bg-gray-900 bg-opacity-90 dark:bg-opacity-80"
            size='xl'>
         <svelte:fragment slot="header">
-            <h1 class="select-none whitespace-nowrap text-2xl text-gray-700 font-bold">
-                New Booking
-            </h1>
+            <div class="flex sm:flex-row flex-col justify-evenly items-center w-full">
+                <h1 class="select-none whitespace-nowrap text-2xl text-gray-700 font-bold flex flex-row">
+                    <CalendarMonthOutline size="xl"/>
+                    Create Booking
+                </h1>
+                {#if !successfulSubmition}
+                    <div class="flex flex-row items-center justify-start space-x-2">
+                        <span class="flex flex-row"><UsersGroupSolid/> Guest(s):  {totalGuests}</span>
+                        <span class="flex flex-row"><CashSolid/> Total: ${totalServiceCost}</span>
+                    </div>
+                {/if}
+            </div>
         </svelte:fragment>
         <CustomerBookingLobbyComponent
                 bookingChannel={CustomerBookingChannel.LOBBY}
-
-                {customerBooking}
+                bind:customerBooking={customerBooking}
+                bind:successfulSubmition={successfulSubmition}
         />
     </Modal>
 </div>
