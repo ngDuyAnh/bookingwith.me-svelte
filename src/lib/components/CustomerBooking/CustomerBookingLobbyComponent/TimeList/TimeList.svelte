@@ -216,16 +216,6 @@
   }
 </script>
 
-<!--Maybe add loading here while getting the availabilities-->
-
-<Search
-  bind:value={searchValue}
-  size="md"
-  class="rounded-none py-2.5"
-  placeholder="Search Time Info"
-  maxlength="20"
-></Search>
-
 {#if requiredAvailabilitiesSearch}
   <button
     on:click={getAvailabilities}
@@ -295,7 +285,14 @@
 {:else if fetching}
   <Spinner class="h-[100px] w-fit my-auto" />
 {:else if filteredAvailabilityList.length > 0}
-  <span class="font-semibold flex w-full items-center justify-center w-full bg-white border-[1px] border-[#d1d5db]">Availability for {customerBooking.bookingDate}</span>
+  <Search
+          bind:value={searchValue}
+          size="md"
+          class="rounded-b-none py-2.5"
+          placeholder="Search Time Info"
+          maxlength="20"
+  ></Search>
+  <span class="font-semibold flex w-full items-center justify-center w-full bg-white border-[1px] border-[#d1d5db] rounded-b mb-1">Availability for {customerBooking.bookingDate}</span>
   <ul class="space-y-2 w-full overflow-x-hidden justify-center">
     {#each filteredAvailabilityList as availability, index (index)}
       <li
