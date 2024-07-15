@@ -24,6 +24,8 @@
         customerBooking.bookingChannel = bookingChannel;
     }
 
+    // export let submitSuccessful;
+
     let selectedIndividualBookingIndex = 0;
 
     // Function to handle the creation of a new individual booking
@@ -47,7 +49,7 @@
         customerBooking.bookingDate = dayjs(customerBooking.bookingDate).subtract(1, 'day').format(formatToDate);
     }
 
-    let successfulSubmition = false;
+    export let successfulSubmition = false;
 
     let timeoutId = null;
 

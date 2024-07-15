@@ -93,10 +93,6 @@
 
 <form on:submit|preventDefault={submit} class="space-y-4 h-full">
     <Label class="space-y-2">
-        <span class="flex flex-row"><UsersGroupSolid/> Guest(s):  {totalGuests}</span>
-        <span class="flex flex-row"><CashSolid/> Total: ${totalServiceCost}</span>
-    </Label>
-    <Label class="space-y-2">
         <span>Phone Number:</span>
         <Input
                 id="phoneNumber"
