@@ -1,7 +1,7 @@
 <script>
     import {fetchAvailableTimeList} from "$lib/api/api_server/functions.js";
     import {isToday} from "$lib/page/stores/now/now_dayjs_store.js";
-    import {Alert, Button, Search, Spinner} from "flowbite-svelte";
+    import {Alert, Search, Spinner} from "flowbite-svelte";
     import dayjs from "dayjs";
     import {formatToTime, formatToTimeAM} from "$lib/application/Formatter.js";
     import {normalizeSearchInput} from "$lib/application/NormalizeSearchInput.js";
@@ -189,9 +189,29 @@
 
 
 {#if requiredAvailabilitiesSearch}
-    <Button on:click={getAvailabilities} class="mt-1">
-        Check Availability
-    </Button>
+    <button on:click="{getAvailabilities}" on:mouseenter="{getAvailabilities}" class="focus:outline-none w-full h-full flex flex-col justify-center items-center shadow p-1 rounded-lg stripeBG">
+
+        <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px"
+             viewBox="0 0 25 25" style="enable-background:new 0 0 25 25;" xml:space="preserve"
+             class=" fill-current text-black hover:text-blue-500 w-5/6"
+        >
+                <path stroke-width="0.01" stroke="currentColor"
+                      d="M20,10.5c0,0.276,0.224,0.5,0.5,0.5s0.5-0.224,0.5-0.5C21,4.71,16.29,0,10.5,0S0,4.71,0,10.5S4.71,21,10.5,21  c0.276,0,0.5-0.224,0.5-0.5S10.776,20,10.5,20C5.262,20,1,15.738,1,10.5S5.262,1,10.5,1S20,5.262,20,10.5z"/>
+            <path stroke-width="0.01" stroke="currentColor"
+                  d="M10.5,3.141c-0.276,0-0.5,0.224-0.5,0.5V10.5c0,0.276,0.224,0.5,0.5,0.5h4.728c0.276,0,0.5-0.224,0.5-0.5  s-0.224-0.5-0.5-0.5H11V3.641C11,3.364,10.776,3.141,10.5,3.141z"/>
+            <path stroke-width="0.01" stroke="currentColor"
+                  d="M21.594,20.887c0.678-0.834,1.102-1.883,1.102-3.039c0-2.673-2.175-4.848-4.848-4.848S13,15.175,13,17.848  s2.175,4.848,4.848,4.848c1.156,0,2.205-0.424,3.039-1.102l2.26,2.26C23.244,23.951,23.372,24,23.5,24s0.256-0.049,0.354-0.146  c0.195-0.195,0.195-0.512,0-0.707L21.594,20.887z M17.848,21.696c-2.122,0-3.848-1.726-3.848-3.848S15.726,14,17.848,14  s3.848,1.726,3.848,3.848C21.695,19.97,19.97,21.696,17.848,21.696z"/>
+            <text x="0" y="39" fill="#000000" font-size="5px" font-weight="bold"
+                  font-family="'Helvetica Neue', Helvetica, Arial-Unicode, Arial, Sans-serif">Created by Royyan Wijaya</text>
+            <text x="0" y="44" fill="#000000" font-size="5px" font-weight="bold"
+                  font-family="'Helvetica Neue', Helvetica, Arial-Unicode, Arial, Sans-serif">from the Noun Project</text>
+
+        </svg>
+
+        <span class=" animate-pulse font-bold text-black text-xl">
+                Check Availability
+        </span>
+    </button>
 {:else}
     {#if showAlert}
         <!--Alert for moving to customer booking information but at least a guest has not selected a service-->
@@ -219,8 +239,20 @@
         </ul>
     {:else if !fetching}
         <p class="flex flex-row items-center select-none text-center text-lg py-4 text-gray-500">
-            <ExclamationCircleOutline size="lg" class="text-gray-500 mr-2"/> No availability.
+            <ExclamationCircleOutline size="lg" class="text-gray-500 mr-2"/>
+            No availability.
         </p>
     {/if}
 
 {/if}
+
+<style>
+    .stripeBG {
+        background-image: linear-gradient(45deg, #ebebeb 25%, #ffffff 25%, #ffffff 50%, #ebebeb 50%, #ebebeb 75%, #ffffff 75%, #ffffff 100%);
+        background-size: 36.77px 36.77px;
+    }
+
+    .sjhwj {
+        background: rgba(62, 255, 0, 0.58);
+    }
+</style>
