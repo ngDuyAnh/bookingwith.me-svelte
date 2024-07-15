@@ -83,6 +83,8 @@
     });
 
     $: console.log("customerBooking", customerBooking);
+
+    const hoverDiv = "border-2 border-transparent hover:border-gray-300 transition-colors duration-300 rounded"
 </script>
 
 {#if !successfulSubmition}
@@ -96,7 +98,7 @@
                     <span class="font-bold">Guest</span>
                 </div>
             </div>
-            <div class="w-[230px] h-full shadow overflow-y-auto">
+            <div class="w-[230px] h-full shadow overflow-y-auto {hoverDiv}">
                 <!--Create a new guest-->
                 <div class="flex justify-end">
                     <button
@@ -122,7 +124,7 @@
         </div>
 
         <!--Service selection for guest column-->
-        <div class="flex-1 flex flex-col">
+        <div class="flex-1 flex flex-col ">
             <div class="flex flex-col h-full">
                 <div class="relative flex flex-row flex-grow items-center justify-center mb-2">
                     <div class="absolute border-2 border-gray-200 h-1 w-full rounded-lg"></div>
@@ -132,7 +134,7 @@
                     </div>
                 </div>
 
-                <div class="h-full shadow overflow-y-auto">
+                <div class="h-full shadow overflow-y-auto {hoverDiv}">
                     <GuestSelectService
                             bind:customerBooking={customerBooking}
                             individualBookingIndex={selectedIndividualBookingIndex}
@@ -153,7 +155,7 @@
                 </div>
 
                 <!--Date & Time select-->
-                <div class="h-full shadow overflow-y-auto flex flex-col items-center w-full stripeBG">
+                <div class="h-full shadow overflow-y-auto flex flex-col items-center w-full stripeBG {hoverDiv}">
                     <div class="flex flex-row sm:justify-normal justify-center items-center p-1 bg-white w-full">
                         <Button class="h-fit text-md mr-1" size="xs" color="light" on:click={()=>{selectToday()}}
                                 disabled={isToday(customerBooking.bookingDate)}>Today
@@ -190,7 +192,7 @@
                     </div>
                 </div>
 
-                <div class="h-full shadow overflow-y-auto">
+                <div class="h-full shadow overflow-y-auto {hoverDiv}">
                     <SubmitBooking
                             bind:customerBooking={customerBooking}
                             submitSuccessful={submitSuccessful}
