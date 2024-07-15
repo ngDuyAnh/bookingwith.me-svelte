@@ -11,7 +11,7 @@ export const employeeModal = writable({
     clonedEmployee: Employee()
 });
 
-export function handleCreateNewEmployeeModal()
+export function handleOpenCreateNewEmployeeModal()
 {
     employeeModal.set({
         open: true,
@@ -36,7 +36,6 @@ export function handleOpenEditEmployeeModal(employee)
 
 export function handleCloseEditEmployeeModal()
 {
-    // Clone the employee
     employeeModal.set({
         open: false,
         createEmployeeFlag: true,
