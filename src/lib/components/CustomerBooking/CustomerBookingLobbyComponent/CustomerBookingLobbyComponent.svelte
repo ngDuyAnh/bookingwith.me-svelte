@@ -9,7 +9,9 @@
     import {ChevronLeftOutline, ChevronRightOutline} from "flowbite-svelte-icons";
     import dayjs from "dayjs";
     import {formatToDate} from "$lib/application/Formatter.js";
-    import { onDestroy } from 'svelte';
+    import {onDestroy} from 'svelte';
+    import SubmitBooking
+        from "$lib/components/CustomerBooking/CustomerBookingLobbyComponent/SubmitBooking/SubmitBooking.svelte";
 
 
     export let customerBooking = {
@@ -59,8 +61,7 @@
         };
     }
 
-    async function submit() {
-        console.log("first submit() called", customerBooking);
+    function submitSuccessful() {
         successfulSubmition = true;
 
         if (timeoutId !== null) {
@@ -71,8 +72,6 @@
         // Call second function after 2 seconds
         timeoutId = setTimeout(resetBooking, 2000);
         console.log(timeoutId);
-
-
     }
 
     onDestroy(() => {
@@ -82,7 +81,6 @@
     });
 
     $: console.log("customerBooking", customerBooking);
-
 </script>
 
 {#if !successfulSubmition}
@@ -190,13 +188,11 @@
                     </div>
                 </div>
 
-                <!--Get customer phone number-->
-                <div class="h-full shadow overflow-y-auto flex flex-col p-1.5 w-full">
-                    <Button on:click={submit}>successfulSubmition</Button>
-                    <!--                <SubmitBooking-->
-                    <!--                        bind:successfulSubmition={successfulSubmition}-->
-                    <!--                        bind:customerBooking={customerBooking}-->
-                    <!--                />-->
+                <div class="h-full shadow overflow-y-auto">
+                    <SubmitBooking
+                            bind:customerBooking={customerBooking}
+                            submitSuccessful={submitSuccessful}
+                    />
                 </div>
             </div>
         </div>
@@ -214,6 +210,7 @@
         </h1>
     </div>
 {/if}
+
 <style>
     .new-guest {
         background: linear-gradient(0deg, #f0f0f0 0%, rgba(255, 255, 255, 0) 100%); /* Light gray to transparent */

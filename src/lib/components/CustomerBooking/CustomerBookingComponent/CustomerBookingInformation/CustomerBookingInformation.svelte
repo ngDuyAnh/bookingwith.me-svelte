@@ -19,14 +19,12 @@
         gotoCustomerIndividualBookingServiceSelect();
     }
 
-    function submitCallback(success, error) {
+    function submitCallback(success) {
         console.log("submitCallback()", customerBooking);
 
         if (success) {
             // Go to the success page
             gotoBookingSuccess();
-        } else if (error) {
-            alert(`Something went wrong, please contact the business at ${formatPhoneNumber(business.businessInfo.businessPhoneNumber)} to make your appointment!`);
         } else {
             alert("Booking time recently unavailable. Please pick a different time!");
         }
