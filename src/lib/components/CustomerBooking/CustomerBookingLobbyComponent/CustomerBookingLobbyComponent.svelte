@@ -153,8 +153,8 @@
                 </div>
 
                 <!--Date & Time select-->
-                <div class="h-full shadow overflow-y-auto flex flex-col items-center w-full">
-                    <div class="flex flex-row sm:justify-normal justify-center items-center pb-2">
+                <div class="h-full shadow overflow-y-auto flex flex-col items-center w-full stripeBG">
+                    <div class="flex flex-row sm:justify-normal justify-center items-center p-1 bg-white w-full">
                         <Button class="h-fit text-md mr-1" size="xs" color="light" on:click={()=>{selectToday()}}
                                 disabled={isToday(customerBooking.bookingDate)}>Today
                         </Button>
@@ -233,4 +233,8 @@
     }
 
 
+    .stripeBG {
+        background-image: linear-gradient(45deg, #ffffff 25%, #fffceb 25%, #fffceb 50%, #ffffff 50%, #ffffff 75%, #fffceb 75%, #fffceb 100%);
+        background-size: 36.77px 36.77px;
+    }
 </style>
