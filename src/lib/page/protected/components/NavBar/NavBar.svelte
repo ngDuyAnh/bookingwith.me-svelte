@@ -25,20 +25,22 @@
         CalendarMonthOutline,
         CalendarMonthSolid,
         CaretDownSolid,
+        ChartMixedOutline,
         ChevronDownOutline,
         ClockSolid,
         FlagSolid,
         GridPlusOutline,
         GridSolid,
         ListOutline,
+        PaperPlaneSolid,
         ReceiptOutline,
         StoreSolid,
         UserSettingsOutline,
-        UsersGroupSolid,
-        ChartMixedOutline
+        UsersGroupSolid
     } from "flowbite-svelte-icons";
     import {userProfile} from "$lib/page/stores/userProfile/userProfile.js";
     import {onMount} from "svelte";
+    import IconComponent from "$lib/page/protected/components/NavBar/IconComponent/IconComponent.svelte";
 
 
     export let tabs;
@@ -50,9 +52,9 @@
 
     let dropdownStates = {};
 
-    onMount(()=>{
+    onMount(() => {
 
-        if(dropdownOptions) {
+        if (dropdownOptions) {
             Object.keys(dropdownOptions).forEach(tab => {
                 dropdownStates[tab] = false; // Set each tab to false initially
             });
@@ -67,12 +69,12 @@
         selectedDropDownIndex = index;
     }
 
-    function openDropDown(tab){
-        dropdownStates[tab]=true;
+    function openDropDown(tab) {
+        dropdownStates[tab] = true;
     }
 
-    function closeDropDown(tab){
-        dropdownStates[tab]=false;
+    function closeDropDown(tab) {
+        dropdownStates[tab] = false;
     }
 
     // Mapping of tab names to icons
@@ -89,7 +91,8 @@
         "report": FlagSolid,
         "metrics": ChartMixedOutline,
         "service spotlight": ArrowRightAltOutline,
-        "billing": ReceiptOutline
+        "billing": ReceiptOutline,
+        "send review": PaperPlaneSolid
     };
 
     let navigateButtonHidden = true;
@@ -143,7 +146,8 @@
                                 <ChevronDownOutline
                                         class="text-black dark:text-white"/>
                             </span>
-                            <Dropdown classContainer="bg-blue-200" class="p-3 drop rounded-lg" on:click={()=>openDropDown(tab)} bind:open={dropdownStates[tab]}>
+                            <Dropdown classContainer="bg-blue-200" class="p-3 drop rounded-lg"
+                                      on:click={()=>openDropDown(tab)} bind:open={dropdownStates[tab]}>
 
                                 {#each Object.keys(dropdownOptions[tab]) as category}
 
@@ -169,7 +173,10 @@
                                     <CaretDownSolid size="xs"
                                                     class="absolute top-0 left-1/2 transform -translate-x-1/2"/>
                                 {/if}
-                                {tab}
+                                <div class="flex flex-row items-center">
+                                    <IconComponent icon={tabIcons[tab.toLowerCase()]}/>
+                                    {tab}
+                                </div>
                             </button>
                         {/if}
 
