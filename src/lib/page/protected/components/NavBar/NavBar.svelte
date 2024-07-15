@@ -142,7 +142,10 @@
                                     <CaretDownSolid size="xs"
                                                     class="absolute top-0 left-1/2 transform -translate-x-1/2"/>
                                 {/if}
-                                {tab}
+                                <div class="flex flex-row items-center">
+                                    <IconComponent icon={tabIcons[tab.toLowerCase()]}/>
+                                    {tab}
+                                </div>
                                 <ChevronDownOutline
                                         class="text-black dark:text-white"/>
                             </span>
