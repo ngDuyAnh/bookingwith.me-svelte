@@ -222,7 +222,7 @@
   bind:value={searchValue}
   size="md"
   class="rounded-none py-2.5"
-  placeholder="Search Booking Info"
+  placeholder="Search Time Info"
   maxlength="20"
 ></Search>
 
