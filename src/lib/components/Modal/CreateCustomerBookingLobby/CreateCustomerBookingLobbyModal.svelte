@@ -7,7 +7,7 @@
     import {
         modalCreateCustomerBookingLobby
     } from "$lib/components/Modal/CreateCustomerBookingLobby/stores/createCustomerBookingLobby.js";
-    import {Modal} from "flowbite-svelte";
+    import {Button, Checkbox, Modal} from "flowbite-svelte";
     import CustomerBookingLobbyComponent
         from "$lib/components/CustomerBooking/CustomerBookingLobbyComponent/CustomerBookingLobbyComponent.svelte";
     import {CalendarMonthOutline, CashSolid, UsersGroupSolid} from "flowbite-svelte-icons";
@@ -45,16 +45,11 @@
             });
         })
     }
-
-    $:console.log("submit??", successfulSubmition);
-let modalInstance=null;
-$:console.log("modalInstance",modalInstance);
 </script>
 
 
 <div class="absolute top-0 left-0 right-0 z-[2000]">
     <Modal bind:open={$modalCreateCustomerBookingLobby.open}
-           bind:this={modalInstance}
            classHeader="!p-1"
            classBody="p-4 md:p-5 space-y-0 flex-1 overflow-y-auto overscroll-contain"
            class="w-full h-[80vh] border-8"
@@ -74,10 +69,39 @@ $:console.log("modalInstance",modalInstance);
                 {/if}
             </div>
         </svelte:fragment>
+
+        <!--        body-->
         <CustomerBookingLobbyComponent
                 bookingChannel={CustomerBookingChannel.LOBBY}
                 bind:customerBooking={customerBooking}
                 bind:successfulSubmition={successfulSubmition}
         />
+
+        <svelte:fragment slot="footer">
+            <!--Optional actions-->
+            {#if !successfulSubmition}
+                <div class="w-full flex justify-end space-x-2">
+                    <div class="flex flex-row space-x-2">
+                        {#if $modalCreateCustomerBookingLobby.customerBookingInformationProps.showSendSms}
+                            <Checkbox
+                                    bind:checked={$modalCreateCustomerBookingLobby.customerBookingInformationProps.sendSmsFlag}>
+                                Send SMS
+                            </Checkbox>
+                        {/if}
+
+                        {#if $modalCreateCustomerBookingLobby.customerBookingInformationProps.showLobbyBookingState}
+                            <Checkbox
+                                    bind:checked={$modalCreateCustomerBookingLobby.customerBookingInformationProps.lobbyBookingStateFlag}>
+                                Lobby
+                            </Checkbox>
+                        {/if}
+                    </div>
+
+                    <Button form="bookingForm" type="submit" class="">
+                        Create
+                    </Button>
+                </div>
+            {/if}
+        </svelte:fragment>
     </Modal>
 </div>
