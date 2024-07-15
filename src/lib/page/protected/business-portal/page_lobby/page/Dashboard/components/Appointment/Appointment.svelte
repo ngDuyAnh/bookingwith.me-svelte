@@ -2,7 +2,7 @@
   import CustomerBookingList
     from "$lib/page/protected/business-portal/page_lobby/page/Dashboard/components/components/CustomerBookingList/CustomerBookingList.svelte";
   import {
-      handleNewCustomerBookingLobby
+      handleNewCustomerBookingInLobbyPageForAppointment
   } from "$lib/components/Modal/CreateCustomerBookingLobby/stores/createCustomerBookingLobby.js";
 
   export let customerBookingQueueList;
@@ -16,7 +16,7 @@
         <span class="text-sm">{customerBookingQueueList[0].length}</span>
 
         <button
-                on:click={handleNewCustomerBookingLobby}
+                on:click={handleNewCustomerBookingInLobbyPageForAppointment}
                 class="text-blue-500 hover:text-blue-700 focus:outline-none"
         >
             <svg

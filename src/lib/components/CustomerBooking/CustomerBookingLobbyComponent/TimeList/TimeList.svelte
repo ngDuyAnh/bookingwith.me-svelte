@@ -7,6 +7,16 @@
     import {normalizeSearchInput} from "$lib/application/NormalizeSearchInput.js";
     import {fly} from "svelte/transition";
     import {ExclamationCircleOutline, InfoCircleSolid} from "flowbite-svelte-icons";
+    import {
+        availabilityFetched,
+        modalCreateCustomerBookingLobby,
+        updateBookingTimePeriod,
+        updateCurrentTimeString
+    } from "$lib/components/Modal/CreateCustomerBookingLobby/stores/createCustomerBookingLobby.js";
+    import {nowTime} from "$lib/page/stores/now/now_dayjs_store.js";
+    import {
+        pleaseFetchAvailability
+    } from "$lib/components/Modal/CreateCustomerBookingLobby/stores/createCustomerBookingLobby.js";
 
     export let customerBooking;
 
@@ -33,7 +43,7 @@
 
             // If it is date change, automatically perform the availability search
             if (beforeSerializedBooking.bookingDate !== currentBeforeSerialized.bookingDate) {
-                getAvailabilities();
+                pleaseFetchAvailability();
             }
             // Reset
             else {
@@ -52,6 +62,11 @@
     let availabilityList = [];
     let selectedAvailability = undefined;
 
+    // Record the selected booking time period
+    // This is to make sure the consistency when submitting to the server
+    // That we can lock the time period for the customer booking
+    $: updateBookingTimePeriod(selectedAvailability?.timePeriod);
+
     // Array to store indices of bookings with empty service lists
     let emptyServiceBookingIndices = [];
 
@@ -60,6 +75,12 @@
     let showAlert = false;
     let alertMsg = '';
     let fetching = false;
+
+    $: if ($modalCreateCustomerBookingLobby.pleaseFetchAvailability)
+    {
+        getAvailabilities();
+        availabilityFetched();
+    }
 
     function getAvailabilities() {
         showAlert = false;
@@ -77,7 +98,13 @@
 
         // console.log("getAvailabilities customerBooking", customerBooking);
 
-        if (emptyServiceBookingIndices.length == 0) {
+        if (emptyServiceBookingIndices.length === 0) {
+
+            // Record current timestamp to submit the customer booking later based on it
+            // This will prevent conflict submit due to the time passing while the customer make the decision
+            updateCurrentTimeString(nowTime());
+
+            // Get the availabilities
             fetching = true;
             fetchAvailableTimeList(customerBooking, walkin)
                 .then((availabilities) => {
@@ -189,7 +216,7 @@
 
 
 {#if requiredAvailabilitiesSearch}
-    <Button on:click={getAvailabilities} class="mt-1">
+    <Button on:click={pleaseFetchAvailability} class="mt-1">
         Check Availability
     </Button>
 {:else}
