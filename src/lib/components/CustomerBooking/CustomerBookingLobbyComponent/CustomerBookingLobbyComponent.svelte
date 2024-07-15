@@ -2,21 +2,16 @@
     import {CustomerBooking, CustomerIndividualBooking} from "$lib/api/initialize_functions/CustomerBooking.js";
     import GuestSelectService
         from "$lib/components/CustomerBooking/CustomerBookingLobbyComponent/GuestSelectService/GuestSelectService.svelte";
-    import {Avatar, Button, Checkbox, Input, Label, Textarea} from "flowbite-svelte";
+    import {Avatar, Button} from "flowbite-svelte";
     import GuestList from "$lib/components/CustomerBooking/CustomerBookingLobbyComponent/GuestList/GuestList.svelte";
     import TimeList from "$lib/components/CustomerBooking/CustomerBookingLobbyComponent/TimeList/TimeList.svelte";
     import {isToday, today} from "$lib/page/stores/now/now_dayjs_store.js";
     import {ChevronLeftOutline, ChevronRightOutline} from "flowbite-svelte-icons";
     import dayjs from "dayjs";
     import {formatToDate} from "$lib/application/Formatter.js";
-    import {formatPhoneNumber, rawPhoneNumber} from "$lib/application/FormatPhoneNumber.js";
-    import {getCustomer} from "$lib/api/api_server/api_endpoints/customer-booking-portal/api.js";
-    import {business} from "$lib/page/stores/business/business.js";
-    import {submitCustomerBooking} from "$lib/api/api_server/functions.js";
-    import {
-        modalCreateCustomerBookingLobby, pleaseFetchAvailability
-    } from "$lib/components/Modal/CreateCustomerBookingLobby/stores/createCustomerBookingLobby.js";
-    import { onDestroy } from 'svelte';
+    import {onDestroy} from 'svelte';
+    import SubmitBooking
+        from "$lib/components/CustomerBooking/CustomerBookingLobbyComponent/SubmitBooking/SubmitBooking.svelte";
 
 
     export let customerBooking = {
@@ -66,55 +61,7 @@
         };
     }
 
-    $: console.log("customerBooking", customerBooking);
-
-    let totalServiceCost = 0;
-    let totalGuests = 0;
-
-    $:if (customerBooking) {
-        totalServiceCost = 0;
-        totalGuests = 0;
-
-        customerBooking.customerIndividualBookingList.forEach(individualBooking => {
-            totalGuests += 1;
-            individualBooking.customerIndividualServiceBookingList.forEach(booking => {
-                totalServiceCost += booking.service.serviceCost;
-            });
-        })
-    }
-
-    // Submit the customer booking
-    function submit()
-    {
-        if ($modalCreateCustomerBookingLobby.currentTimeString &&
-            $modalCreateCustomerBookingLobby.bookingTimePeriod)
-        {
-            submitCustomerBooking(
-                customerBooking,
-                $modalCreateCustomerBookingLobby.currentTimeString,
-                $modalCreateCustomerBookingLobby.bookingTimePeriod,
-                true,
-                $modalCreateCustomerBookingLobby.customerBookingInformationProps
-            )
-                .then(success => {
-                    if (success)
-                    {
-                        console.log("Show successful.")
-                    }
-                    else
-                    {
-                        pleaseFetchAvailability();
-                        alert("Booking time recently unavailable. Please pick a different time!");
-                    }
-                })
-        }
-        else
-        {
-            alert("Please select a booking time!");
-        }
-    }
-    async function submit() {
-        console.log("first submit() called", customerBooking);
+    function submitSuccessful() {
         successfulSubmition = true;
 
         if (timeoutId !== null) {
@@ -125,8 +72,6 @@
         // Call second function after 2 seconds
         timeoutId = setTimeout(resetBooking, 2000);
         console.log(timeoutId);
-
-
     }
 
     onDestroy(() => {
@@ -136,7 +81,6 @@
     });
 
     $: console.log("customerBooking", customerBooking);
-
 </script>
 
 {#if !successfulSubmition}
@@ -244,32 +188,11 @@
                     </div>
                 </div>
 
-                    <!--Optional actions-->
-                    <div>
-                        {#if $modalCreateCustomerBookingLobby.customerBookingInformationProps.showSendSms}
-                            <Checkbox bind:checked={$modalCreateCustomerBookingLobby.customerBookingInformationProps.sendSmsFlag}>
-                                Send SMS
-                            </Checkbox>
-                        {/if}
-
-                        {#if $modalCreateCustomerBookingLobby.customerBookingInformationProps.showLobbyBookingState}
-                            <Checkbox bind:checked={$modalCreateCustomerBookingLobby.customerBookingInformationProps.lobbyBookingStateFlag}>
-                                Lobby
-                            </Checkbox>
-                        {/if}
-                    </div>
-
-                    <Button type="submit" class="w-full">
-                        Submit
-                    </Button>
-                </form>
-                <!--Get customer phone number-->
-                <div class="h-full shadow overflow-y-auto flex flex-col p-1.5 w-full">
-                    <Button on:click={submit}>successfulSubmition</Button>
-                    <!--                <SubmitBooking-->
-                    <!--                        bind:successfulSubmition={successfulSubmition}-->
-                    <!--                        bind:customerBooking={customerBooking}-->
-                    <!--                />-->
+                <div class="h-full shadow overflow-y-auto">
+                    <SubmitBooking
+                            bind:customerBooking={customerBooking}
+                            submitSuccessful={submitSuccessful}
+                    />
                 </div>
             </div>
         </div>
@@ -287,6 +210,7 @@
         </h1>
     </div>
 {/if}
+
 <style>
     .new-guest {
         background: linear-gradient(0deg, #f0f0f0 0%, rgba(255, 255, 255, 0) 100%); /* Light gray to transparent */

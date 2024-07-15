@@ -1,24 +1,19 @@
 <script>
     import {CashSolid, UsersGroupSolid} from "flowbite-svelte-icons";
-    import {Button, Input, Label, Textarea} from "flowbite-svelte";
+    import {Button, Checkbox, Input, Label, Textarea} from "flowbite-svelte";
     import {formatPhoneNumber, rawPhoneNumber} from "$lib/application/FormatPhoneNumber.js";
     import {business} from "$lib/page/stores/business/business.js";
     import {
-        forceSubmitBooking,
-        getCustomer, initializeCustomerBooking,
-        submitBooking
+        getCustomer
     } from "$lib/api/api_server/api_endpoints/customer-booking-portal/api.js";
-    import {CustomerBookingState} from "$lib/api/initialize_functions/CustomerBooking.js";
-    import {isToday} from "$lib/page/stores/now/now_dayjs_store.js";
     import {
-        moveToAppointment,
-        moveToLobby
-    } from "$lib/components/Modal/CustomerBookingClickModal/handle_customer_booking_state.js";
-    import {sendSmsBookingReminder, sendSmsConfirmBookingSuccess} from "$lib/api/api_twilio/functions.js";
+        modalCreateCustomerBookingLobby,
+        pleaseFetchAvailability
+    } from "$lib/components/Modal/CreateCustomerBookingLobby/stores/createCustomerBookingLobby.js";
+    import {submitCustomerBooking} from "$lib/api/api_server/functions.js";
 
-    export let successfulSubmition;
     export let customerBooking;
-    export let customerBookingInformationProps;
+    export let submitSuccessful;
 
     let totalServiceCost = 0;
     let totalGuests = 0;
@@ -64,107 +59,34 @@
         }
     }
 
-    async function submit() {
-        console.log("submit()", customerBooking);
-
-        let success = false;
-        let error = false;
-
-        try {
-            let response = {};
-
-            // Initialize customer booking
-            // Keep the current booking state if it is not in schedule state
-            // The backend will handle walk-in flag on creating the customer booking
-            customerBooking.bookingState = (!customerBooking.bookingState || customerBooking.bookingState === CustomerBookingState.SCHEDULE)
-                ? CustomerBookingState.APPOINTMENT
-                : customerBooking.bookingState;
-            customerBooking.walkIn = false;
-
-            // Force submit if override is toggled
-            if (customerBookingInformationProps.overrideFlag) {
-                response = await forceSubmitBooking(
-                    businessInfo.businessID,
-                    currentTimeString,
-                    customerBooking
-                );
-            }
-            // Submit appointment
-            else {
-                // Asynchronous servicing
-                if (walkinAvailabilityFlag) {
-                    customerBooking.walkIn = true;
-                }
-
-                response = await submitBooking(
-                    businessInfo.businessID,
-                    currentTimeString,
-                    selectedAvailability.timePeriod,
-                    customerBooking
-                );
-            }
-
-            // Success
-            if (response.submitted) {
-                success = true;
-
-                // Move the customer booking state
-                if (isToday(customerBooking.bookingDate))
-                {
-                    if (customerBookingInformationProps.lobbyBookingStateFlag) {
-                        moveToLobby(response.customerBooking);
+    // Submit the customer booking
+    function submit()
+    {
+        if ($modalCreateCustomerBookingLobby.currentTimeString &&
+            $modalCreateCustomerBookingLobby.bookingTimePeriod)
+        {
+            submitCustomerBooking(
+                customerBooking,
+                $modalCreateCustomerBookingLobby.currentTimeString,
+                $modalCreateCustomerBookingLobby.bookingTimePeriod,
+                true,
+                $modalCreateCustomerBookingLobby.customerBookingInformationProps
+            )
+                .then(success => {
+                    if (success)
+                    {
+                        submitSuccessful();
                     }
-                    else if (customerBookingInformationProps.appointmentBookingStateFlag) {
-                        moveToAppointment(response.customerBooking);
+                    else
+                    {
+                        pleaseFetchAvailability();
+                        alert("Booking time recently unavailable. Please pick a different time!");
                     }
-                }
-
-                // Send SMS
-                if (customerBookingInformationProps.sendSmsFlag) {
-                    // Send SMS confirmation for the appointment
-                    sendSmsConfirmBookingSuccess(businessInfo.businessName, response.customerBooking)
-                        .then(async () => {
-                            console.log('Sent SMS appointment confirmation.');
-                            response.customerBooking.smsConfirmationSent = true;
-
-                            // Schedule SMS for reminder for the appointment
-                            await sendSmsBookingReminder(businessInfo.businessName, response.customerBooking)
-                                .then((scheduledReminderResponse) => {
-                                    console.log('Scheduled SMS appointment reminder.', scheduledReminderResponse);
-
-                                    // Record the SMS sid to the database
-                                    response.customerBooking.smsAppointmentReminderSid = scheduledReminderResponse.sid;
-                                })
-                                .catch(error => {
-                                    console.error('Error sending SMS appointment confirmation:', error);
-                                });
-
-                            // Save to the database
-                            initializeCustomerBooking(response.customerBooking)
-                                .then(() => {
-                                    console.log('Save appointment confirmation.');
-                                })
-                                .catch(error => {
-                                    console.error('Failed to save appointment confirmation:', error);
-                                });
-                        })
-                        .catch(error => {
-                            console.error('Failed to send appointment confirmation:', error);
-                        });
-                }
-            }
-            else
-            {
-                await fetchAvailableTimeList();
-            }
-        } catch (err) {
-            error = true;
-            console.error("Error submitting booking:", err);
+                })
         }
-
-        // Call the callback function for submit
-        if (submitCallback) {
-            submitCallback(success, error);
+        else
+        {
+            alert("Please select a booking time!");
         }
     }
 </script>
@@ -213,6 +135,21 @@
                 bind:value={customerBooking.message}
         />
     </Label>
+
+    <!--Optional actions-->
+    <div>
+        {#if $modalCreateCustomerBookingLobby.customerBookingInformationProps.showSendSms}
+            <Checkbox bind:checked={$modalCreateCustomerBookingLobby.customerBookingInformationProps.sendSmsFlag}>
+                Send SMS
+            </Checkbox>
+        {/if}
+
+        {#if $modalCreateCustomerBookingLobby.customerBookingInformationProps.showLobbyBookingState}
+            <Checkbox bind:checked={$modalCreateCustomerBookingLobby.customerBookingInformationProps.lobbyBookingStateFlag}>
+                Lobby
+            </Checkbox>
+        {/if}
+    </div>
 
     <Button type="submit" class="w-full">
         Submit
