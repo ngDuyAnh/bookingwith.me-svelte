@@ -338,8 +338,4 @@
     );
     background-size: 36.77px 36.77px;
   }
-
-  .sjhwj {
-    background: rgba(62, 255, 0, 0.58);
-  }
 </style>

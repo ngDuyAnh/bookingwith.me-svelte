@@ -10,6 +10,10 @@ export default defineConfig({
 		include: ['src/**/*.{test,spec}.{js,ts}']
 	},
 
+	build: {
+		chunkSizeWarningLimit: 1000,
+	},
+
 	resolve: {
 		alias: {
 			'$lib': path.resolve('./src/lib/')

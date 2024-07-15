@@ -1,5 +1,5 @@
 <script>
-    import {Button, Modal, Label, Input, Checkbox} from 'flowbite-svelte';
+    import {Button, Modal, Label, Input} from 'flowbite-svelte';
     import {
         getEmployeeWorkSchedule,
         initializeBusiness,
@@ -8,6 +8,11 @@
     import {business} from "$lib/page/stores/business/business.js";
     import {Employee} from "$lib/api/initialize_functions/Business.js";
     import {User} from "$lib/api/initialize_functions/User.js";
+    import EmployeeModal from "$lib/components/Modal/EmployeeModal/EmployeeModal.svelte";
+    import {
+        handleCreateNewEmployeeModal,
+        handleOpenEditEmployeeModal
+    } from "$lib/components/Modal/EmployeeModal/stores/employeeModal.js";
 
     let newEmployeeName = "";
     let newEmployeeEmail = "";
@@ -35,7 +40,37 @@
         formModalEditEmployee = true;
     }
 
-    async function openModalEditSchedule(employee)
+    async function openModalEditEmployeeWorkSchedule(employee)
+    {
+        editingEmployee = employee;
+        try
+        {
+            const scheduleData = await getEmployeeWorkSchedule(employee.id);
+
+            console.log("scheduleData", scheduleData)
+
+            // Extract the work schedule
+            editingEmployeeWorkSchedule = dayOfWeek.map(day => {
+                const dayToUpper = day.toUpperCase();
+                const activeDay = scheduleData.workScheduleList.find(d => d.dayOfWeek.toUpperCase() === dayToUpper);
+                return {
+                    dayOfWeek: day,
+                    startTime: activeDay ? activeDay.startTime : '',
+                    endTime: activeDay ? activeDay.endTime : '',
+                    isActive: !!activeDay
+                };
+            });
+        }
+        catch (error)
+        {
+            alert(error);
+        }
+
+        // Open the modal
+        formModalEditSchedule = true;
+    }
+
+    async function openModalEditEmployeeWorkScheduleException(employee)
     {
         editingEmployee = employee;
         try
@@ -73,22 +108,6 @@
         }
     }
 
-    async function handleEditEmployee()
-    {
-        console.log('Updating employee:', editingEmployee);
-
-        // Deep clone
-        Object.assign(editingEmployee, editingCloneEmployee);
-
-        // Request the server to update
-        const response = await initializeBusiness($business);
-        business.set(response);
-
-        // Reset the form fields and close the modal
-        editingEmployee = {};
-        editingCloneEmployee = {};
-    }
-
     async function handleEditEmployeeWorkSchedule()
     {
         console.log('Updating employee work schedule:', editingEmployeeWorkSchedule);
@@ -121,27 +140,6 @@
         editingCloneEmployee = {};
     }
 
-    async function handleDeleteEmployee()
-    {
-        console.log('Deleting service:', editingEmployee);
-
-        // Confirm deletion
-        if (!confirm('Are you sure you want to delete this service?')) {
-            return;
-        }
-
-        // Archive
-        editingEmployee.archive = true;
-
-        // Request the server to update asynchronously
-        const response = await initializeBusiness($business);
-        business.set(response);
-
-        // Close the modal and reset editing state
-        editingEmployee = {};
-        editingEmployeeWorkSchedule = [];
-    }
-
     async function handleAddEmployee()
     {
         console.log(`Adding new employee: ${newEmployeeName}`);
@@ -170,16 +168,15 @@
             <div class="flex items-center justify-between p-4 bg-white shadow hover:shadow-md transition-shadow duration-200 ease-in-out rounded-lg mb-2">
                 <span class="text-gray-800 font-medium">{employee.employeeName}</span>
                 <div class="flex items-center space-x-2">
-                    <Button class="bg-blue-500 hover:bg-blue-600 text-white py-2 px-4 rounded" on:click={() => openModalEditSchedule(employee)}>Schedule</Button>
-                    <Button class="bg-green-500 hover:bg-green-600 text-white py-2 px-4 rounded" on:click={() => openModalEditEmployee(employee)}>Edit</Button>
+                    <Button class="bg-blue-500 hover:bg-blue-600 text-white py-2 px-4 rounded" on:click={() => openModalEditEmployeeWorkSchedule(employee)}>Schedule</Button>
+                    <Button class="bg-green-500 hover:bg-green-600 text-white py-2 px-4 rounded" on:click={() => handleOpenEditEmployeeModal(employee)}>Edit</Button>
                 </div>
             </div>
         </li>
     {/each}
 </ul>
 
-
-<Button on:click={() => formModalAddEmployee = true}>Add Employee</Button>
+<Button on:click={() => handleCreateNewEmployeeModal()}>Add Employee</Button>
 
 <!-- Modal for editing employee work schedule -->
 <Modal bind:open={formModalEditSchedule} size="sm" autoclose outsideclose>
@@ -208,30 +205,9 @@
     </form>
 </Modal>
 
-<!-- Modal for editing employee -->
-<Modal bind:open={formModalEditEmployee} size="xs" autoclose outsideclose>
-    <form class="flex flex-col space-y-6" on:submit|preventDefault={() => {}}>
-        <h3 class="mb-4 text-xl font-medium text-gray-900 dark:text-white">Edit Service Group</h3>
-        <Label class="space-y-2">
-            <span>Employee Name</span>
-            <Input bind:value={editingCloneEmployee.employeeName} required />
-        </Label>
+<!-- Modal for creating or editing employee -->
+<EmployeeModal/>
 
-        <Label class="space-y-2">
-            <span>Employee Email:</span>
-            <Input bind:value={editingCloneEmployee.user.email} required />
-        </Label>
-
-        <Label class="space-y-2">
-            <Checkbox bind:checked={editingCloneEmployee.showOnlineBookingPage}>
-                Show on booking page
-            </Checkbox>
-        </Label>
-
-        <Button class="w-full" on:click={handleEditEmployee}>Update</Button>
-        <Button class="w-full" on:click={handleDeleteEmployee}>Delete</Button>
-    </form>
-</Modal>
 
 <!-- Modal for add employee -->
 <Modal bind:open={formModalAddEmployee} size="xs" autoclose outsideclose>

@@ -1,5 +1,4 @@
 <script>
-
     import {getCustomerBookingQueueList, getSchedule} from "$lib/api/api_server/api_endpoints/lobby-portal/api.js";
     import {business} from "$lib/page/stores/business/business.js";
     import {now} from "$lib/page/stores/now/now_dayjs_store.js";
@@ -420,8 +419,4 @@
             </TableBody>
         </Table>
     </div>
-
 </Modal>
-
-
-
