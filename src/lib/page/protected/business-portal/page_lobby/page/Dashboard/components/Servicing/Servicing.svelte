@@ -2,7 +2,13 @@
     import CustomerBookingList
         from "$lib/page/protected/business-portal/page_lobby/page/Dashboard/components/components/CustomerBookingList/CustomerBookingList.svelte";
 
+    export let flipDurationMs;
+    export let dragDisabled;
     export let customerBookingQueueList;
+    export let moveFinished;
+    export let droppedIntoID;
+    export let progress;
+
 </script>
 
 
@@ -12,4 +18,4 @@
     <span class="text-sm">{customerBookingQueueList[2].length}</span>
 </div>
 
-<CustomerBookingList columnID={2} customerBookingList={customerBookingQueueList[2]}/>
+<CustomerBookingList bind:progress={progress} bind:droppedIntoID={droppedIntoID} flipDurationMs={flipDurationMs} bind:moveFinished={moveFinished} bind:dragDisabled={dragDisabled} columnID={2} customerBookingList={customerBookingQueueList[2]}/>

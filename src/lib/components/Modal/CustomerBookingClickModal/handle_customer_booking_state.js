@@ -6,7 +6,7 @@ import {nowTime} from "$lib/page/stores/now/now_dayjs_store.js";
 import {timetableComponent} from "$lib/components/Timetable/stores/timetableComponent.js";
 import {get} from "svelte/store";
 
-export function moveToAppointment(customerBooking) {
+export async function moveToAppointment(customerBooking) {
     customerBooking.bookingState = CustomerBookingState.APPOINTMENT;
 
     // Reset the booking stats
@@ -22,7 +22,7 @@ export function moveToAppointment(customerBooking) {
     });
 
     // Save the customer booking change
-    initializeCustomerBookingAndBroadcast(customerBooking, nowTime())
+    await initializeCustomerBookingAndBroadcast(customerBooking, nowTime())
         .then(() => {
             console.log("Moved customer booking to appointment.");
         })
@@ -31,7 +31,7 @@ export function moveToAppointment(customerBooking) {
         });
 }
 
-export function moveToLobby(customerBooking) {
+export async function moveToLobby(customerBooking) {
     const currentTime = nowTime();
 
     customerBooking.bookingState = CustomerBookingState.LOBBY;
@@ -41,7 +41,7 @@ export function moveToLobby(customerBooking) {
     }
 
     // Save the customer booking change
-    initializeCustomerBookingAndBroadcast(customerBooking, currentTime)
+    await initializeCustomerBookingAndBroadcast(customerBooking, currentTime)
         .then(() => {
             console.log("Moved customer booking to lobby.");
         })
@@ -50,7 +50,7 @@ export function moveToLobby(customerBooking) {
         });
 }
 
-export function moveToServicing(customerBooking) {
+export async function moveToServicing(customerBooking) {
     const currentTime = nowTime();
     const timetableComponentValue = get(timetableComponent);
 
@@ -89,7 +89,7 @@ export function moveToServicing(customerBooking) {
     });
 
     // Save the customer booking change
-    initializeCustomerBookingAndBroadcast(customerBooking, currentTime)
+    await initializeCustomerBookingAndBroadcast(customerBooking, currentTime)
         .then(() => {
             console.log("Moved customer booking to servicing.");
         })
@@ -98,7 +98,7 @@ export function moveToServicing(customerBooking) {
         });
 }
 
-export function moveToCompleted(customerBooking) {
+export async function moveToCompleted(customerBooking) {
     const currentTime = nowTime();
 
     customerBooking.bookingState = CustomerBookingState.COMPLETED;
@@ -121,7 +121,7 @@ export function moveToCompleted(customerBooking) {
     });
 
     // Save the customer booking change
-    initializeCustomerBookingAndBroadcast(customerBooking, currentTime)
+    await initializeCustomerBookingAndBroadcast(customerBooking, currentTime)
         .then(() => {
             console.log("Moved customer booking to completed.");
         })

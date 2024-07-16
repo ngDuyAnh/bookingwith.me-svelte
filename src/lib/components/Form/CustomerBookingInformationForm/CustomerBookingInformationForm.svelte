@@ -13,13 +13,7 @@
     import {
         CustomerBookingState
     } from "$lib/api/initialize_functions/CustomerBooking.js";
-    import {sendSmsConfirmBookingSuccess} from "$lib/api/api_twilio/functions.js";
     import {rawPhoneNumber, formatPhoneNumber} from "$lib/application/FormatPhoneNumber.js";
-    import {sendSmsBookingReminder} from "$lib/api/api_twilio/functions.js";
-    import {
-        moveToAppointment,
-        moveToLobby
-    } from "$lib/components/Modal/CustomerBookingClickModal/handle_customer_booking_state.js";
     import {isToday} from "$lib/page/stores/now/now_dayjs_store.js";
     import {submitCustomerBooking} from "$lib/api/api_server/functions.js";
 
