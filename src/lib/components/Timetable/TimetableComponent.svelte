@@ -245,7 +245,7 @@
         eventDragStop: function () {
         },
         eventDrop: function (info) {
-            
+
             let assignedEmployeeID = null;
             let startTime = dayjs(info.event.start).format(formatToTime);
 

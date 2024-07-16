@@ -79,6 +79,7 @@
     onDestroy(() => {
         if (timeoutId !== null) {
             clearTimeout(timeoutId);
+            successfulSubmition=false;
         }
     });
 

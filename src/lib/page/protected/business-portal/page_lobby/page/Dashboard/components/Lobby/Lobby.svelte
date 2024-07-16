@@ -6,6 +6,10 @@
     } from "$lib/components/Modal/CreateCustomerBookingLobby/stores/createCustomerBookingLobby.js";
 
     export let customerBookingQueueList;
+    export let moveFinished;
+    export let droppedIntoID;
+    export let progress;
+
 </script>
 
 <!-- List Header -->
@@ -37,4 +41,4 @@
     </div>
 </div>
 
-<CustomerBookingList columnID={1} customerBookingList={customerBookingQueueList[1]}/>
+<CustomerBookingList bind:progress={progress} bind:droppedIntoID={droppedIntoID} flipDurationMs={flipDurationMs} bind:moveFinished={moveFinished} bind:dragDisabled={dragDisabled} columnID={1} customerBookingList={customerBookingQueueList[1]}/>

@@ -12,32 +12,50 @@
         moveToLobby,
         moveToServicing
     } from "$lib/components/Modal/CustomerBookingClickModal/handle_customer_booking_state.js";
+    import {Progressbar} from "flowbite-svelte";
 
-    const flipDurationMs = 200;
 
+    export let flipDurationMs;
     export let customerBookingList;
     export let columnID;
-
+    export let dragDisabled;
+    export let moveFinished;
+    export let droppedIntoID;
+    export let progress;
 
     function handleSort(id, e) {
         if (e.detail.info.trigger === "droppedIntoZone") {
 
+            dragDisabled = true;
+            droppedIntoID = columnID;
+
             const custBooking = e.detail.items.find(booking => booking.id === e.detail.info.id);
-            console.log("the customer booking", custBooking);
 
             if (custBooking) {
                 if (id === 0) {
-                    moveToAppointment(custBooking);
-
+                    (async () => {
+                        await moveToAppointment(custBooking).then(() => {
+                            moveFinished = true;
+                        });
+                    })();
                 } else if (id === 1) {
-                    moveToLobby(custBooking);
-
+                    (async () => {
+                        await moveToLobby(custBooking).then(() => {
+                            moveFinished = true;
+                        });
+                    })();
                 } else if (id === 2) {
-                    moveToServicing(custBooking);
-
+                    (async () => {
+                        await moveToServicing(custBooking).then(() => {
+                            moveFinished = true;
+                        });
+                    })();
                 } else if (id === 3) {
-                    moveToCompleted(custBooking);
-
+                    (async () => {
+                        await moveToCompleted(custBooking).then(() => {
+                            moveFinished = true;
+                        });
+                    })();
                 }
             } else {
                 console.log("Can't find booking");
@@ -49,23 +67,32 @@
 
 
 </script>
-
-<ul class="flex-grow px-4 py-1 shadow w-full overflow-y-auto space-y-2"
-    use:dndzone={{items:customerBookingList, flipDurationMs, type:'columns'}}
-    on:consider={(e) => handleSort(columnID, e)} on:finalize={(e) => handleSort(columnID, e)}>
-
-    {#each customerBookingList as customerBooking (customerBooking.id)}
-        <div
-                animate:flip={{duration:flipDurationMs}}>
-            <div class="border-b last:border-b-0">
-                <button
-                        class="p-4 {customerBooking.bookingState === 3? 'bg-gray-400':'bg-white'} rounded shadow select-none w-full text-left
-                        hover:bg-gray-300 transition-all duration-300 ease-in-out"
-                        on:click={() => handleCustomerBookingClick(customerBooking)}
-                >
-                    <CustomerBookingListItem {customerBooking}/>
-                </button>
+<div class="relative flex-grow">
+    {#if progress > 0 && droppedIntoID === columnID}
+        <div class="absolute h-full w-full bg-gray-100 bg-opacity-20">
+            <div class="absolute top-0 left-0 right-0 w-full">
+                <Progressbar progress={progress} class="h-2 bg-blue-500"/>
             </div>
         </div>
-    {/each}
-</ul>
+    {/if}
+    <ul class="h-full px-4 py-1 shadow w-full overflow-y-auto space-y-2"
+        use:dndzone={{items:customerBookingList, flipDurationMs, type:'columns', dragDisabled}}
+        on:consider={(e) => handleSort(columnID, e)} on:finalize={(e) => handleSort(columnID, e)}>
+
+        {#each customerBookingList as customerBooking (customerBooking.id)}
+            <div
+                    animate:flip={{duration:flipDurationMs}}
+            >
+                <div class="border-b last:border-b-0">
+                    <button
+                            class="p-4 {customerBooking.bookingState === 3? 'bg-gray-400':'bg-white'} rounded shadow select-none w-full text-left
+                        hover:bg-gray-300 transition-all duration-300 ease-in-out"
+                            on:click={() => handleCustomerBookingClick(customerBooking)}
+                    >
+                        <CustomerBookingListItem {customerBooking}/>
+                    </button>
+                </div>
+            </div>
+        {/each}
+    </ul>
+</div>
