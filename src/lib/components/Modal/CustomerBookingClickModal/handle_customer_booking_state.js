@@ -40,13 +40,6 @@ export function moveToLobby(customerBooking) {
         customerBooking.checkinTime = currentTime;
     }
 
-    // Reset the service booking start time
-    customerBooking.customerIndividualBookingList.forEach(individualBooking => {
-        individualBooking.customerIndividualServiceBookingList.forEach(serviceBooking => {
-            serviceBooking.startTime = null;
-        });
-    });
-
     // Save the customer booking change
     initializeCustomerBookingAndBroadcast(customerBooking, currentTime)
         .then(() => {
