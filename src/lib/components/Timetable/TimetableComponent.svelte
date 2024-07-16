@@ -67,7 +67,7 @@
             end: "",
         },
         resourceLabelContent: function (info) {
-            console.log("resourceLabelContent", info);
+            // console.log("resourceLabelContent", info);
 
             // Return HTML with a unique identifier, such as a data attribute
             return {
