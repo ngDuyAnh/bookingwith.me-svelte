@@ -61,6 +61,16 @@
             center: "",
             end: "",
         },
+        resourceLabelContent: function (info) {
+            console.log("resourceLabelContent", info);
+
+            // Return HTML with a unique identifier, such as a data attribute
+            return {
+                html: `<button id="resource-label-${info.resource.id}" class="resource-label flex flex-row items-center justify-center w-full">
+                  ${info.resource.title.html}
+               </button>`
+            };
+        },
         nowIndicator: isToday(selectedDate),
         dayMaxEvents: true,
         slotDuration: "00:05:00",
@@ -226,17 +236,11 @@
             element.forEach((element) => {
                 element.style.backgroundColor = "rgb(255,255,255) !important";
             });
-
-            // console.log("element is", element);
-
-            // dragStartTime = dayjs();
         },
         eventDragStop: function () {
         },
         eventDrop: function (info) {
-
-            console.log("info", info)
-
+            
             let assignedEmployeeID = null;
             let startTime = dayjs(info.event.start).format(formatToTime);
 
@@ -391,6 +395,16 @@
 
         todayElements.forEach((element) => {
             element.style.background = "rgba(0,0,0,0.1)";
+        });
+
+        const calendarContainer = document.getElementById('calendar'); // Adjust this ID to match your actual calendar container
+        calendarContainer.addEventListener('click', function (event) {
+            // Check if the clicked element or one of its parents has the class 'resource-label'
+            const resourceLabel = event.target.closest('.resource-label');
+            if (resourceLabel) {
+                const resourceId = resourceLabel.id.replace('resource-label-', ''); // Extract ID
+                clickedID=resourceId;
+            }
         });
     }
 
@@ -554,12 +568,14 @@
     let employeeWorkHourEvent = [];
     let resources = [];
     let clickedID = null;
-    $:console.log("clickedID",clickedID);
+    $:if (clickedID) {
+        console.log("clickedID", clickedID);
+    }
 
     async function updateCalendarEvents(employeeTimetableList) {
         // loading = true;
 
-        handleTimetableUpdateForServicingTicketClickModal(
+        await handleTimetableUpdateForServicingTicketClickModal(
             employeeTimetableList
         ).then(() => {
             //console.log("handleTimetableUpdateForServicingTicketClickModal() completed.");
@@ -587,11 +603,11 @@
                 id: employeeTable.employee.id,
                 title: {
                     html: employeeTable.employee.id
-                        ?`<button onclick="clickedID = '${employeeTable.employee.id}';" class="flex flex-row items-center justify-center w-full">               <svg class="w-6 h-6 text-gray-500 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" viewBox="0 0 24 24">
+                        ? `<span class="flex flex-row items-center justify-center w-full">               <svg class="w-6 h-6 text-gray-500 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" viewBox="0 0 24 24">
                    <path fill-rule="evenodd" d="M12 4a4 4 0 1 0 0 8 4 4 0 0 0 0-8Zm-2 9a4 4 0 0 0-4 4v1a2 2 0 0 0 2 2h8a2 2 0 0 0 2-2v-1a4 4 0 0 0-4-4h-4Z" clip-rule="evenodd"/>
                </svg>
                ${employeeTable.employee.employeeName}
-             </button>`
+             </span>`
                         : `<span class="flex flex-row items-center justify-center ${countOfNullResourceIds > 0 ? 'animate-pulse' : ''}">
                <svg class="w-5 h-5 text-red-400 dark:text-white"  fill="currentColor" width="24" height="24"  xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 512">
                    <path d="M38.8 5.1C28.4-3.1 13.3-1.2 5.1 9.2S-1.2 34.7 9.2 42.9l592 464c10.4 8.2 25.5 6.3 33.7-4.1s6.3-25.5-4.1-33.7L353.3 251.6C407.9 237 448 187.2 448 128C448 57.3 390.7 0 320 0C250.2 0 193.5 55.8 192 125.2L38.8 5.1zM264.3 304.3C170.5 309.4 96 387.2 96 482.3c0 16.4 13.3 29.7 29.7 29.7H514.3c3.9 0 7.6-.7 11-2.1l-261-205.6z"/>
@@ -750,7 +766,7 @@
             class="flex flex-col items-center justify-center w-4/5 h-auto mx-auto mb-2 overflow-x-auto"
     >
 
-        <div class="flex h-full mx-auto">
+        <div id="calendar" class="flex h-full mx-auto">
             <div class="relative w-full h-full max-h-[calc(100%-40px)] mx-auto">
                 <div class="absolute top-0 left-0 ml-8">
                     <InfoCircleSolid size="lg" id="b1"
