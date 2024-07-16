@@ -408,7 +408,7 @@
             const resourceLabel = event.target.closest('.resource-label');
             if (resourceLabel) {
                 const resourceId = resourceLabel.id.replace('resource-label-', ''); // Extract ID
-                clickedID=resourceId;
+                clickedID = resourceId;
             }
         });
     }
@@ -572,19 +572,27 @@
     let employeeEvents = [];
     let employeeWorkHourEvent = [];
     let resources = [];
+    let prevClickedID = undefined;
     let clickedID = undefined;
-    $:if (clickedID) {
-        console.log("clickedID", clickedID);
+    $:if (clickedID !== prevClickedID) {
 
         // Open the schedule exception modal
-        if (clickedID)
+        if (clickedID !== undefined)
         {
+            console.log("Timetable employee clickedID", clickedID);
+
             // Get the clicked employee
-            const clickedEmployee = findEmployeeFromBusinessUsingEmployeeID($business, clickedID);
+            let clickedEmployee = null;
+            if (clickedID)
+            {
+                clickedEmployee = findEmployeeFromBusinessUsingEmployeeID($business, clickedID);
+            }
 
             // Open the modal
             handleOpenEmployeeWorkScheduleExceptionModal(clickedEmployee, selectedDate);
 
+            // Reset
+            prevClickedID = undefined;
             clickedID = undefined;
         }
 
