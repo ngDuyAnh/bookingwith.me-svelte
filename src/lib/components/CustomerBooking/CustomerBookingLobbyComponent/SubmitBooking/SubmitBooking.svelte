@@ -15,21 +15,6 @@
     export let customerBooking;
     export let submitSuccessful;
 
-    let totalServiceCost = 0;
-    let totalGuests = 0;
-
-    $:if (customerBooking) {
-        totalServiceCost = 0;
-        totalGuests = 0;
-
-        customerBooking.customerIndividualBookingList.forEach(individualBooking => {
-            totalGuests += 1;
-            individualBooking.customerIndividualServiceBookingList.forEach(booking => {
-                totalServiceCost += booking.service.serviceCost;
-            });
-        })
-    }
-
     // Phone number
     let formattedPhoneNumber = formatPhoneNumber(customerBooking.customer.phoneNumber);
 
@@ -91,7 +76,7 @@
     }
 </script>
 
-<form on:submit|preventDefault={submit} class="space-y-4 h-full">
+<form id="bookingForm" on:submit|preventDefault={submit} class="space-y-4 h-full">
     <Label class="space-y-2">
         <span>Phone Number:</span>
         <Input
@@ -132,22 +117,7 @@
         />
     </Label>
 
-    <!--Optional actions-->
-    <div>
-        {#if $modalCreateCustomerBookingLobby.customerBookingInformationProps.showSendSms}
-            <Checkbox bind:checked={$modalCreateCustomerBookingLobby.customerBookingInformationProps.sendSmsFlag}>
-                Send SMS
-            </Checkbox>
-        {/if}
 
-        {#if $modalCreateCustomerBookingLobby.customerBookingInformationProps.showLobbyBookingState}
-            <Checkbox bind:checked={$modalCreateCustomerBookingLobby.customerBookingInformationProps.lobbyBookingStateFlag}>
-                Lobby
-            </Checkbox>
-        {/if}
-    </div>
 
-    <Button type="submit" class="w-full">
-        Submit
-    </Button>
+
 </form>

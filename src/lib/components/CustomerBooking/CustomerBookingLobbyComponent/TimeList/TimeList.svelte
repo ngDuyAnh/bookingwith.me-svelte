@@ -216,16 +216,6 @@
   }
 </script>
 
-<!--Maybe add loading here while getting the availabilities-->
-
-<Search
-  bind:value={searchValue}
-  size="md"
-  class="rounded-none py-2.5"
-  placeholder="Search Time Info"
-  maxlength="20"
-></Search>
-
 {#if requiredAvailabilitiesSearch}
   <button
     on:click={getAvailabilities}
@@ -284,7 +274,7 @@
 {:else if showAlert}
   <!--Alert for moving to customer booking information but at least a guest has not selected a service-->
   <Alert
-    class={showAlert ? "" : "hidden"}
+    class="{showAlert ? '' : 'hidden'} rounded-none w-full"
     dismissable={false}
     params={{ x: 200 }}
     transition={fly}
@@ -295,7 +285,15 @@
 {:else if fetching}
   <Spinner class="h-[100px] w-fit my-auto" />
 {:else if filteredAvailabilityList.length > 0}
-  <ul class="space-y-2 w-full overflow-x-hidden">
+  <Search
+          bind:value={searchValue}
+          size="md"
+          class="rounded-b-none py-2.5"
+          placeholder="Search Time Info"
+          maxlength="20"
+  ></Search>
+  <span class="font-semibold flex w-full items-center justify-center w-full bg-white border-[1px] border-[#d1d5db] rounded-b mb-1">Availability for {customerBooking.bookingDate}</span>
+  <ul class="space-y-2 w-full overflow-x-hidden justify-center">
     {#each filteredAvailabilityList as availability, index (index)}
       <li
         id={index}
@@ -316,6 +314,7 @@
       </li>{/each}
   </ul>
 {:else if !fetching}
+  <span class="font-semibold flex w-full items-center justify-center w-full bg-white border-[1px] border-[#d1d5db]">Availability for {customerBooking.bookingDate}</span>
   <p
     class="flex flex-row items-center select-none text-center text-lg py-4 text-gray-500"
   >
@@ -324,18 +323,4 @@
   </p>
 {/if}
 
-<style>
-  .stripeBG {
-    background-image: linear-gradient(
-      45deg,
-      #ebebeb 25%,
-      #ffffff 25%,
-      #ffffff 50%,
-      #ebebeb 50%,
-      #ebebeb 75%,
-      #ffffff 75%,
-      #ffffff 100%
-    );
-    background-size: 36.77px 36.77px;
-  }
-</style>
+
