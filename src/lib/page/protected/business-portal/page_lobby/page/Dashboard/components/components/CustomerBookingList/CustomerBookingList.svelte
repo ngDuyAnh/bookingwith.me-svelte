@@ -21,7 +21,6 @@
     export let dragDisabled;
     export let moveFinished;
     export let droppedIntoID;
-    export let progress;
 
     function handleSort(id, e) {
         if (e.detail.info.trigger === "droppedIntoZone") {
@@ -68,13 +67,6 @@
 
 </script>
 <div class="relative flex-grow">
-    {#if progress > 0 && droppedIntoID === columnID}
-        <div class="absolute h-full w-full bg-gray-100 bg-opacity-20">
-            <div class="absolute top-0 left-0 right-0 w-full">
-                <Progressbar progress={progress} class="h-2 bg-blue-500"/>
-            </div>
-        </div>
-    {/if}
     <ul class="h-full px-4 py-1 shadow w-full overflow-y-auto space-y-2"
         use:dndzone={{items:customerBookingList, flipDurationMs, type:'columns', dragDisabled}}
         on:consider={(e) => handleSort(columnID, e)} on:finalize={(e) => handleSort(columnID, e)}>

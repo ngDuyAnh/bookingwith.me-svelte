@@ -8,7 +8,7 @@
     import Completed
         from "$lib/page/protected/business-portal/page_lobby/page/Dashboard/components/Completed/Completed.svelte";
     import {customerBookingQueueList} from "$lib/page/protected/business-portal/page_lobby/stores/dashboard_store.js";
-    import {Button, Progressbar, Search, Spinner} from "flowbite-svelte";
+    import {Button, Search, Spinner} from "flowbite-svelte";
     import CustomerBookingClickModal
         from "$lib/components/Modal/CustomerBookingClickModal/CustomerBookingClickModal.svelte";
     import {SearchOutline} from 'flowbite-svelte-icons';
@@ -90,7 +90,6 @@
 
     // $: console.log("filteredBookingStateList", filteredBookingStateList);
 
-    let dragStartedID;
     let droppedIntoID;
     let dragDisabled = false;
     let moveFinished = false;
@@ -98,15 +97,12 @@
 
     let progressFinished = false;
 
-    let progress = 0; // Progress value starts at 0
-
-    $:if (dragDisabled == true) {
+    $:if (dragDisabled === true) {
         startProgress();
     }
 
     $:if (moveFinished && progressFinished) {
         dragDisabled = false;
-        progress = 0;
         moveFinished = false;
         progressFinished = false;
     }
@@ -117,11 +113,9 @@
 
         const interval = setInterval(() => {
             const elapsed = Date.now() - startTime; // Calculate elapsed time
-            progress = (elapsed / duration) * 100; // Calculate progress percentage
 
             if (elapsed >= duration) { // If 700ms or more has passed
                 clearInterval(interval); // Stop the interval
-                progress = 100; // Ensure progress is set to 100%
                 progressFinished = true;
             }
         }, 10); // Update every 10ms for a smoother progress bar
@@ -169,7 +163,6 @@
                             bind:dragDisabled={dragDisabled}
                             bind:droppedIntoID={droppedIntoID}
                             bind:customerBookingQueueList={filteredBookingStateList}
-                            bind:progress={progress}
                     />
                 {:else if index === 1}
                     <Lobby
@@ -178,7 +171,6 @@
                             bind:dragDisabled={dragDisabled}
                             bind:droppedIntoID={droppedIntoID}
                             bind:customerBookingQueueList={filteredBookingStateList}
-                            bind:progress={progress}
                     />
                 {:else if index === 2}
                     <Servicing
@@ -187,8 +179,6 @@
                             bind:dragDisabled={dragDisabled}
                             bind:droppedIntoID={droppedIntoID}
                             bind:customerBookingQueueList={filteredBookingStateList}
-                            bind:progress={progress}
-
                     />
                 {:else if index === 3}
                     <Completed
@@ -197,7 +187,6 @@
                             bind:dragDisabled={dragDisabled}
                             bind:droppedIntoID={droppedIntoID}
                             bind:customerBookingQueueList={filteredBookingStateList}
-                            bind:progress={progress}
                     />
                 {/if}
             </div>
