@@ -19,6 +19,8 @@
     import CustomerProfileModal from "$lib/components/Modal/CustomerProfileModal/CustomerProfileModal.svelte";
     import CreateCustomerBookingLobbyModal
         from "$lib/components/Modal/CreateCustomerBookingLobby/CreateCustomerBookingLobbyModal.svelte";
+    import EmployeeWorkScheduleExceptionModal
+        from "$lib/components/Modal/EmployeeWorkScheduleExceptionModal/EmployeeWorkScheduleExceptionModal.svelte";
 
     export let data;
     let loading = true;
@@ -77,3 +79,8 @@
 
 <!-- Modal for create customer booking in lobby -->
 <CreateCustomerBookingLobbyModal/>
+
+<!--Modal for edit employee work schedule exception-->
+<div style="z-index: 1006;">
+    <EmployeeWorkScheduleExceptionModal/>
+</div>

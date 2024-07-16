@@ -41,8 +41,8 @@ export async function handleOpenEmployeeWorkScheduleModal(employee)
             workSchedule: employeeWorkSchedule
         });
 
-        const employeeWorkScheduleModalValue = get(employeeWorkScheduleModal);
-        console.log("employeeWorkScheduleModalValue", employeeWorkScheduleModalValue);
+        // const employeeWorkScheduleModalValue = get(employeeWorkScheduleModal);
+        // console.log("employeeWorkScheduleModalValue", employeeWorkScheduleModalValue);
     }
     catch (error)
     {
@@ -98,7 +98,6 @@ export function handleSaveEmployeeWorkScheduleModal()
 export function handleToggleWorkScheduleDayEmployeeWorkScheduleModal(dayIndex) {
 
     const employeeWorkScheduleModalValue = get(employeeWorkScheduleModal);
-
 
     employeeWorkScheduleModalValue.workSchedule[dayIndex].isActive = !employeeWorkScheduleModalValue.workSchedule[dayIndex].isActive;
     if (!employeeWorkScheduleModalValue.workSchedule[dayIndex].isActive) {

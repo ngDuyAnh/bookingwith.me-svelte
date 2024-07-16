@@ -6,13 +6,13 @@
         handleToggleWorkScheduleDayEmployeeWorkScheduleModal
     } from "$lib/components/Modal/EmployeeWorkScheduleModal/stores/employeeWorkScheduleModal.js";
 
-    $: console.log("employeeWorkScheduleModal", employeeWorkScheduleModal);
+    // $: console.log("employeeWorkScheduleModal", employeeWorkScheduleModal);
 </script>
 
 <Modal bind:open={$employeeWorkScheduleModal.open} size="sm" autoclose outsideclose>
     <form class="flex flex-col space-y-4 p-4" on:submit|preventDefault={() => {}}>
 
-        <h3 class="text-xl font-semibold text-gray-900 dark:text-white mb-4">Edit Work Schedule for {$employeeWorkScheduleModal.employee.employeeName}</h3>
+        <h3 class="text-xl font-semibold text-gray-900 dark:text-white mb-4">Edit work schedule for {$employeeWorkScheduleModal.employee.employeeName}</h3>
 
         <!-- Day of week work schedule edit -->
         {#each $employeeWorkScheduleModal.workSchedule as schedule, index}

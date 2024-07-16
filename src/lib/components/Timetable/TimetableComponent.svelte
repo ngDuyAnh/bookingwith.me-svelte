@@ -38,6 +38,11 @@
     } from "$lib/api/api_server/api_endpoints/customer-booking-portal/api.js";
     import {getEmployee} from "$lib/page/stores/business/business.js";
     import {normalizeSearchInput} from "$lib/application/NormalizeSearchInput.js";
+    import {business} from "$lib/page/stores/business/business.js";
+    import {findEmployeeFromBusinessUsingEmployeeID} from "$lib/api/utilitiy_functions/Business.js";
+    import {
+        handleOpenEmployeeWorkScheduleExceptionModal
+    } from "$lib/components/Modal/EmployeeWorkScheduleExceptionModal/stores/employeeWorkScheduleExceptionModal.js";
 
     // Date select
     let selectedDate = today();
@@ -567,9 +572,22 @@
     let employeeEvents = [];
     let employeeWorkHourEvent = [];
     let resources = [];
-    let clickedID = null;
+    let clickedID = undefined;
     $:if (clickedID) {
         console.log("clickedID", clickedID);
+
+        // Open the schedule exception modal
+        if (clickedID)
+        {
+            // Get the clicked employee
+            const clickedEmployee = findEmployeeFromBusinessUsingEmployeeID($business, clickedID);
+
+            // Open the modal
+            handleOpenEmployeeWorkScheduleExceptionModal(clickedEmployee, selectedDate);
+
+            clickedID = undefined;
+        }
+
     }
 
     async function updateCalendarEvents(employeeTimetableList) {
@@ -800,6 +818,7 @@
         </div>
     </div>
 </div>
+
 <div style="z-index: 1006;">
     <ServicingTicketClickModal isToday={isToday(selectedDate)}/>
 </div>

@@ -84,6 +84,18 @@ export async function getEmployeeWorkSchedule(employeeId) {
     return await response.json();
 }
 
+export async function getEmployeeWorkScheduleException(employeeId, dateString) {
+    const FETCH_URL = `${API_URL}/get-employee-work-schedule-exception/${employeeId}?date=${dateString}`;
+
+    const response = await fetch(`${FETCH_URL}`);
+
+    if (!response.ok) {
+        throw new Error(`Failed to fetch. Status: ${response.status}`);
+    }
+
+    return await response.json();
+}
+
 export async function initializeEmployeeWorkSchedule(employeeWorkSchedule) {
     const FETCH_URL = `${API_URL}/initialize-employee-work-schedule`;
 
@@ -93,6 +105,24 @@ export async function initializeEmployeeWorkSchedule(employeeWorkSchedule) {
             'Content-Type': 'application/json'
         },
         body: JSON.stringify(employeeWorkSchedule)
+    });
+
+    if (!response.ok) {
+        throw new Error(`Failed to fetch. Status: ${response.status}`);
+    }
+
+    return await response.json();
+}
+
+export async function initializeEmployeeWorkScheduleException(employeeWorkScheduleException) {
+    const FETCH_URL = `${API_URL}/initialize-employee-work-schedule-exception`;
+
+    const response = await fetch(`${FETCH_URL}`, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(employeeWorkScheduleException)
     });
 
     if (!response.ok) {
