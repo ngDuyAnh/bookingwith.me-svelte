@@ -76,6 +76,17 @@ export async function sendSmsAppointment(businessName, customerBooking) {
     return await sendSms(formattedPhoneNumber, message);
 }
 
+export async function sendSmsLobby(businessName, customerBooking) {
+    // https://help.twilio.com/articles/223183008-Formatting-International-Phone-Numbers
+    let formattedPhoneNumber = "+1" + customerBooking.customer.phoneNumber;
+
+    // Build the SMS message
+    let message = `Hi, we are ready for you at ${businessName}.`;
+
+    // Send the SMS
+    return await sendSms(formattedPhoneNumber, message);
+}
+
 export async function sendSMSAskingForReview(businessName, customerBooking) {
     // https://help.twilio.com/articles/223183008-Formatting-International-Phone-Numbers
     let formattedPhoneNumber = "+1" + customerBooking.customer.phoneNumber;
