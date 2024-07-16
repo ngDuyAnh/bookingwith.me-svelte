@@ -3,9 +3,7 @@
     import {formatToDate, formatToTime, formatToTimeAM} from "$lib/application/Formatter.js";
     import {Button, Input, Label, Select, Textarea} from "flowbite-svelte";
     import {
-        availability,
-        forceSubmitBooking, initializeCustomerBooking,
-        submitBooking
+        availability
     } from "$lib/api/api_server/api_endpoints/customer-booking-portal/api.js";
     import dayjs from "dayjs";
     import {onMount} from "svelte";
@@ -246,7 +244,7 @@
         submitCustomerBooking(
             customerBooking,
             currentTimeString,
-            selectedAvailability.timePeriod,
+            selectedAvailability?.timePeriod,
             walkinAvailabilityFlag,
             customerBookingInformationProps
         )
