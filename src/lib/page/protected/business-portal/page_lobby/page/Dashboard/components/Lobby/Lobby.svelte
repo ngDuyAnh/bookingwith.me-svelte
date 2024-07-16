@@ -5,7 +5,9 @@
         handleNewCustomerBookingInLobbyPageForLobby
     } from "$lib/components/Modal/CreateCustomerBookingLobby/stores/createCustomerBookingLobby.js";
 
+    export let flipDurationMs;
     export let customerBookingQueueList;
+    export let dragDisabled;
     export let moveFinished;
     export let droppedIntoID;
     export let progress;
