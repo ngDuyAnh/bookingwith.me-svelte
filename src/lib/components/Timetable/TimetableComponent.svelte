@@ -2,6 +2,9 @@
     import {isPast, isToday, now, nowTime, today,} from "$lib/page/stores/now/now_dayjs_store.js";
     import {formatTimeAm, formatToDate, formatToTime} from "$lib/application/Formatter.js";
     import Calendar from "@event-calendar/core";
+    import {
+        handleNewCustomerBookingWalkin
+    } from "$lib/components/Modal/CreateCustomerBooking/stores/modalCreateCustomerBooking.js";
 
     import {
         ChevronLeftOutline,
@@ -800,8 +803,8 @@
                 <Button type="submit" class="!p-2.5 rounded-none">
                     <SearchOutline class="w-5 h-5"/>
                 </Button>
-                <Button color="dark" class="!p-2.5 rounded-s-none"
-                        on:click={() => {console.log("CLicked!")}}>
+                <Button color="blue" class="!p-2.5 rounded-s-none"
+                        on:click={handleNewCustomerBookingWalkin}>
                     <PlusOutline class="w-5 h-5"/>
                 </Button>
             </form>
