@@ -21,9 +21,6 @@
         handleTimetableUpdateForServicingTicketClickModal,
         servicingTicketClickModalOpenWithServicingTicketEventInfo,
     } from "$lib/components/Modal/ServicingTicketClickModal/stores/servicingTicketClickModal.js";
-    import {
-        handleNewCustomerBookingWalkin
-    } from "$lib/components/Modal/CreateCustomerBooking/stores/modalCreateCustomerBooking.js";
     import {fetchTimetable, timetableComponent} from "$lib/components/Timetable/stores/timetableComponent.js";
     import {onMount} from "svelte";
     import {Button, Popover, Search} from "flowbite-svelte";
@@ -41,8 +38,8 @@
     import {business} from "$lib/page/stores/business/business.js";
     import {findEmployeeFromBusinessUsingEmployeeID} from "$lib/api/utilitiy_functions/Business.js";
     import {
-        handleOpenEmployeeWorkScheduleExceptionModal
-    } from "$lib/components/Modal/EmployeeWorkScheduleExceptionModal/stores/employeeWorkScheduleExceptionModal.js";
+        handleOpenEmployeeTimetableModal
+    } from "$lib/components/Modal/EmployeeTimetableModal/stores/employeeTimetableModal.js";
 
     // Date select
     let selectedDate = today();
@@ -454,7 +451,7 @@
     export let restrictedPast = true;
 
     // $: console.log(`Now time ${$now.format(formatToTime)}`);
-    // $: console.log("$timetableComponent", $timetableComponent);
+    $: console.log("$timetableComponent", $timetableComponent);
 
     onMount(async () => {
         await fetchTimetable(selectedDate);
@@ -577,19 +574,17 @@
     $:if (clickedID !== prevClickedID) {
 
         // Open the schedule exception modal
-        if (clickedID !== undefined)
-        {
+        if (clickedID !== undefined) {
             console.log("Timetable employee clickedID", clickedID);
 
             // Get the clicked employee
             let clickedEmployee = null;
-            if (clickedID)
-            {
+            if (clickedID) {
                 clickedEmployee = findEmployeeFromBusinessUsingEmployeeID($business, clickedID);
             }
 
-            // Open the modal
-            handleOpenEmployeeWorkScheduleExceptionModal(clickedEmployee, selectedDate);
+            // Open the employee timetable modal
+            handleOpenEmployeeTimetableModal(clickedEmployee, selectedDate);
 
             // Reset
             prevClickedID = undefined;
@@ -699,7 +694,29 @@
     async function createEvents(employeeTimetableList) {
         const displayBookingIDList = getDisplayBookingIDList(employeeTimetableList);
 
-        return employeeTimetableList.flatMap((employeeTable) =>
+        // Events for block tickets
+        const blockEvents = employeeTimetableList.flatMap((employeeTable) =>
+            employeeTable.blockTicketList
+                .map((blockTicket) => {
+                    return {
+                        start: `${$now.format("YYYY-MM-DD")} ${blockTicket.timePeriod.startTime}`,
+                        end: `${$now.format("YYYY-MM-DD")} ${blockTicket.timePeriod.endTime}`,
+                        resourceId: employeeTable.employee.id,
+                        title: ` `,
+
+                        color: 'grey',  // Using grey to denote blocked times
+
+                        extendedProps: {
+                            employeeTimetable: employeeTable,
+                            blockTicket: blockTicket,
+                            description: `Reserved`,
+                        },
+                    };
+                })
+        );
+
+        // Events for servicing ticket
+        const servicingEvents = employeeTimetableList.flatMap((employeeTable) =>
             employeeTable.servicingTicketList
                 // Filter to only display the selected bookingID
                 .filter((servicingTicket) =>
@@ -731,6 +748,9 @@
                     };
                 })
         );
+
+        // Return
+        return [...blockEvents, ...servicingEvents];
     }
 
     function selectToday() {
@@ -777,12 +797,12 @@
                 <Button type="submit" class="!p-2.5 rounded-none">
                     <SearchOutline class="w-5 h-5"/>
                 </Button>
-                <Button color="blue" class="!p-2.5 rounded-s-none" on:click={handleNewCustomerBookingWalkin}>
+                <Button color="dark" class="!p-2.5 rounded-s-none"
+                        on:click={() => {console.log("CLicked!")}}>
                     <PlusOutline class="w-5 h-5"/>
                 </Button>
             </form>
         </div>
-
     </div>
     <div class="flex flex-col">
         <strong class="sm:my-0 mt-1 text-sm">{showSearchText}</strong>
