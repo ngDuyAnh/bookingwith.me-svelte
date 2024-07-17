@@ -77,7 +77,7 @@
 
             // Return HTML with a unique identifier, such as a data attribute
             return {
-                html: `<button id="resource-label-${info.resource.id}" class="resource-label flex flex-row items-center justify-center w-full">
+                html: `<button id="resource-label-${info.resource.id}" class="resource-label hoverable flex flex-row items-center justify-center w-full h-full">
                   ${info.resource.title.html}
                </button>`,
             };
@@ -1000,6 +1000,23 @@
                 linear-gradient(90deg, var(--dot-bg) calc(var(--dot-space) - var(--dot-size)), transparent 1%) center / var(--dot-space) var(--dot-space),
                 linear-gradient(var(--dot-bg) calc(var(--dot-space) - var(--dot-size)), transparent 1%) center / var(--dot-space) var(--dot-space),
                 var(--dot-color);
+    }
+
+    :global(.hoverable) {
+        border: 2px solid #c7c6c6;
+        background-color: white; /* Neutral background */
+        transition: border-color 0.3s ease, background-color 0.3s ease; /* Smooth transitions for both properties */
+    }
+
+    :global(.hoverable:hover) {
+        border-color: #393948;
+        background-color: #f0f0f0;
+    }
+
+    :global(.hoverable:active) {
+        border-color: orange;
+        border-width: 4px;
+        background-color: #e0e0e0;
     }
 
     /*:global(.ec-preview) {*/
