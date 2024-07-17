@@ -89,7 +89,8 @@ export function handleSaveEmployeeWorkScheduleExceptionModal()
 
     if (employeeWorkScheduleExceptionModalValue.employee &&
         employeeWorkScheduleExceptionModalValue.date &&
-        employeeWorkScheduleExceptionModalValue.workScheduleTimePeriod)
+        employeeWorkScheduleExceptionModalValue.workScheduleTimePeriod &&
+        employeeWorkScheduleExceptionModalValue.workScheduleTimePeriod.startTime < employeeWorkScheduleExceptionModalValue.workScheduleTimePeriod.endTime)
     {
         // Employee work schedule exception
         const employeeWorkSchedule = {
@@ -109,6 +110,6 @@ export function handleSaveEmployeeWorkScheduleExceptionModal()
     }
     else
     {
-        alert("Please ensure that employee, date, and time period are selected correctly!");
+        alert("Please ensure that employee and time period are selected correctly!");
     }
 }
