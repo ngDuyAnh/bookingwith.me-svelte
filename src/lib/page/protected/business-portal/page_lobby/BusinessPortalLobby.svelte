@@ -7,6 +7,7 @@
     import {business} from "$lib/page/stores/business/business.js";
     import {Spinner} from "flowbite-svelte";
     import {
+        customerBookingQueueList,
         fetchCustomerBookingQueueList
     } from "$lib/page/protected/business-portal/page_lobby/stores/dashboard_store.js";
     import {
@@ -143,6 +144,8 @@
         await fetchTimetable($timetableComponent.date);
     }
 
+
+
     async function handleCustomerBookingUpdate(eventData) {
         const customerBooking = eventData.data;
 
@@ -150,7 +153,28 @@
 
         // Dashboard
         if (isToday(customerBooking.bookingDate)) {
-            await fetchCustomerBookingQueueList();
+
+            let beforeTempQueueList = $customerBookingQueueList;
+            await fetchCustomerBookingQueueList().then(()=>{
+                let beforeCount= 0;
+                for(let i =0; i<beforeTempQueueList.length; i++)
+                {
+                    beforeCount+=beforeTempQueueList[i].length;
+                }
+
+                let afterCount= 0;
+
+                for(let i =0; i<$customerBookingQueueList.length; i++)
+                {
+                    afterCount+=$customerBookingQueueList[i].length;
+                }
+
+                if(afterCount>beforeCount)
+                {
+                    let audio = new Audio('/ping.mp3');
+                    audio.play();
+                }
+            });
         }
 
         // Timetable

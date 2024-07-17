@@ -121,6 +121,15 @@
         }, 10); // Update every 10ms for a smoother progress bar
     }
 
+    let audio = new Audio('/ping.mp3');
+
+    function playPing() {
+        console.log("playing");
+        audio.play().then(()=>{
+            console.log("played audio");
+        });
+    }
+
 </script>
 
 {#if loading}
@@ -149,6 +158,7 @@
         </div>
     </div>
 
+    <Button on:click={playPing}>play audio</Button>
 
     <div class="relative flex flex-row w-screen h-full justify-between 2xl:items-center 2xl:justify-center space-x-4 overflow-x-auto p-4">
 
