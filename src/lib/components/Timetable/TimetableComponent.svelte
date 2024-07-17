@@ -152,7 +152,7 @@
                     }
                 }
 
-                info.el.className += ` ${isReserved?'dottedBackground':'individual-${extendedProps.individualID}'}`;
+                info.el.className += ` ${isReserved?'dottedBackground':"individual-"+extendedProps.individualID} pop-out-no-border`;
                 // info.el.id = extendedProps.individualID;
 //                 const alertSVG=`<svg class="w-[20px] h-[20px] animate-spin text-red-900 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
 //   <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M12 8v4l3 3m6-3a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z"/>
@@ -182,10 +182,10 @@
                 if (!isReserved) {
                     let bookingID = extendedProps.servicingTicket.bookingID;
                     let individualID = extendedProps.servicingTicket.individualID;
-                    info.el.className = `ec-event individual-${individualID} border-4 border-green-500 border-dashed`;
+                    info.el.className = `ec-event pop-out-no-border individual-${individualID} border-4 border-green-500 border-dashed`;
                     highlightRelatedEvents(bookingID, individualID);
                 } else {
-                    info.el.className = `ec-event dottedBackground border-4 border-green-500 border-dashed`;
+                    info.el.className = `ec-event pop-out-no-border dottedBackground border-4 border-green-500 border-dashed`;
                 }
             } else {
                 // empty for now
@@ -201,9 +201,9 @@
                         info.event.extendedProps.servicingTicket.individualID;
                     resetHighlight(bookingID, individualID);
 
-                    info.el.className = `ec-event individual-${individualID} ${assignedEmployeeEvents[info.event.id] ? assignedEmployeeEvents[info.event.id] : ""} ${conflictEmployeeEvents[info.event.id] ? conflictEmployeeEvents[info.event.id] : ""}`;
+                    info.el.className = `ec-event pop-out-no-border individual-${individualID} ${assignedEmployeeEvents[info.event.id] ? assignedEmployeeEvents[info.event.id] : ""} ${conflictEmployeeEvents[info.event.id] ? conflictEmployeeEvents[info.event.id] : ""}`;
                 } else {
-                    info.el.className = `ec-event dottedBackground`;
+                    info.el.className = `ec-event pop-out-no-border dottedBackground`;
                 }
             }
         },
@@ -397,7 +397,7 @@
         const elements = document.querySelectorAll(`.individual-${individualID}`);
 
         elements.forEach((element) => {
-            element.className = `${element.className}`;
+            element.className = `${element.className} border-4 border-green-500 border-dashed`;
         });
     }
 
@@ -1003,21 +1003,42 @@
     }
 
     :global(.hoverable) {
-        border: 2px solid #c7c6c6;
-        background-color: white; /* Neutral background */
-        transition: border-color 0.3s ease, background-color 0.3s ease; /* Smooth transitions for both properties */
+        border: 2px solid transparent;
+        background-color: white;
+        transition: transform 0.3s ease, border-color 0.3s ease, background-color 0.3s ease;
+        transform-origin: center; /* Ensures scaling happens from the center */
+        box-shadow: 0 2px 5px rgba(0,0,0,0.2); /* Optional: adds a slight shadow for depth */
     }
 
     :global(.hoverable:hover) {
-        border-color: #393948;
+        transform: scale(1.05); /* Scales up the element by 5% */
+        border-left-width: 5px;
+        border-right-width: 5px;
+        border-color: #4075a6;
         background-color: #f0f0f0;
     }
 
     :global(.hoverable:active) {
         border-color: orange;
-        border-width: 4px;
+        border-left-width: 5px;
+        border-right-width: 5px;
         background-color: #e0e0e0;
     }
+
+    :global(.pop-out-no-border) {
+        transition: transform 0.3s ease, border-color 0.3s ease, background-color 0.3s ease;
+        transform-origin: center; /* Ensures scaling happens from the center */
+        box-shadow: 0 2px 5px rgba(0,0,0,0.2); /* Optional: adds a slight shadow for depth */
+    }
+
+    :global(.pop-out-no-border:hover) {
+        transform: scale(1.05); /* Scales up the element by 5% */
+    }
+
+    :global(.pop-out-no-border:active) {
+        background-color: #e0e0e0;
+    }
+
 
     /*:global(.ec-preview) {*/
     /*  background-color: rgba(255, 0, 0, 0.34) !important;*/
