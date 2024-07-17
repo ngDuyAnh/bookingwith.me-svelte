@@ -1,5 +1,5 @@
 import {get, writable} from "svelte/store";
-import {getEndTime, TimePeriod} from "$lib/api/initialize_functions/TimePeriod.js";
+import {getDurationInMinutes, getEndTime, TimePeriod} from "$lib/api/initialize_functions/TimePeriod.js";
 import {
     getEmployeeWorkScheduleException,
     initializeEmployeeWorkScheduleException
@@ -168,8 +168,11 @@ export function handleAddBlockTicket()
             ...EmployeeTimetableBlockTicket(),
             "employee": employeeTimetableModalValue.employee,
             "date": employeeTimetableModalValue.date,
-            "timePeriod": employeeTimetableModalValue.timePeriod
+            "startTime": employeeTimetableModalValue.timePeriod.startTime,
+            "duration": getDurationInMinutes(employeeTimetableModalValue.timePeriod)
         }
+
+        console.log("blockTicket", blockTicket);
 
         // Request the server to update
         initializeEmployeeTimetableBlockTicket(

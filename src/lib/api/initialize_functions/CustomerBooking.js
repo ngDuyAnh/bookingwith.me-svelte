@@ -140,6 +140,7 @@ export function EmployeeTimetableBlockTicket()
         "blockTicketID": -1,
         "employee": undefined,
         "date": today(),
-        "timePeriod": TimePeriod()
+        "startTime": "00:00",
+        "duration": 0
     };
 }

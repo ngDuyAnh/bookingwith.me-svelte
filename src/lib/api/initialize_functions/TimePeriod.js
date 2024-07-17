@@ -18,3 +18,12 @@ export function getEndTime(startTimeString, duration)
     // Return the end time string
     return endTime.format(formatToTime);
 }
+
+export function getDurationInMinutes(timePeriod) {
+    // Parse the start and end times using dayjs
+    const startTime = dayjs(timePeriod.startTime, formatToTime);
+    const endTime = dayjs(timePeriod.endTime, formatToTime);
+
+    // Calculate the difference in minutes
+    return endTime.diff(startTime, 'minute');
+}
