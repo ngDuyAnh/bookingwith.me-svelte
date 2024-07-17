@@ -163,7 +163,7 @@
                 let bookingID = info.event.extendedProps.servicingTicket.bookingID;
                 let individualID =
                     info.event.extendedProps.servicingTicket.individualID;
-                info.el.className = `ec-event individual-${individualID}`;
+                info.el.className = `ec-event individual-${individualID} border-green-500 border-dashed`;
 
                 highlightRelatedEvents(bookingID, individualID);
             } else {
@@ -317,7 +317,7 @@
         const elements = document.querySelectorAll(`.individual-${individualID}`);
 
         elements.forEach((element) => {
-            element.className = `${element.className} border-black border-2`;
+            element.className = `${element.className} border-4`;
         });
     }
 
@@ -339,8 +339,9 @@
 
         elements.forEach((element) => {
             element.className = element.className
-                .replace(" border-black", "")
-                .replace(" border-2", "")
+                .replace(" border-green-500", "")
+                .replace(" border-4", "")
+                .replace(" border-dashed", "")
                 .trim();
         });
     }
