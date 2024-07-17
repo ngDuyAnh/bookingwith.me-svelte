@@ -1,6 +1,6 @@
 <script>
     import {isPast, isToday, now, nowTime, today,} from "$lib/page/stores/now/now_dayjs_store.js";
-    import {formatTimeAm, formatToDate, formatToTime} from "$lib/application/Formatter.js";
+    import {formatTimeAm, formatToDate, formatToTime,} from "$lib/application/Formatter.js";
     import Calendar from "@event-calendar/core";
     import {
         handleNewCustomerBookingWalkin
@@ -11,7 +11,7 @@
         ChevronRightOutline,
         InfoCircleSolid,
         PlusOutline,
-        SearchOutline
+        SearchOutline,
     } from "flowbite-svelte-icons";
 
     import Interaction from "@event-calendar/interaction";
@@ -24,26 +24,30 @@
         handleTimetableUpdateForServicingTicketClickModal,
         servicingTicketClickModalOpenWithServicingTicketEventInfo,
     } from "$lib/components/Modal/ServicingTicketClickModal/stores/servicingTicketClickModal.js";
-    import {fetchTimetable, timetableComponent} from "$lib/components/Timetable/stores/timetableComponent.js";
+    import {fetchTimetable, timetableComponent,} from "$lib/components/Timetable/stores/timetableComponent.js";
     import {onMount} from "svelte";
     import {Button, Popover, Search} from "flowbite-svelte";
     import dayjs from "dayjs";
     import {findCustomerBookingById} from "$lib/page/protected/business-portal/page_lobby/stores/dashboard_store.js";
     import {
         findServiceBookingFromCustomerBooking,
-        shortCustomerBookingID
+        shortCustomerBookingID,
     } from "$lib/api/utilitiy_functions/CustomerBooking.js";
     import {
         initializeCustomerBookingAndBroadcast
     } from "$lib/api/api_server/api_endpoints/customer-booking-portal/api.js";
-    import {getEmployee} from "$lib/page/stores/business/business.js";
+    import {business, getEmployee} from "$lib/page/stores/business/business.js";
     import {normalizeSearchInput} from "$lib/application/NormalizeSearchInput.js";
-    import {business} from "$lib/page/stores/business/business.js";
     import {findEmployeeFromBusinessUsingEmployeeID} from "$lib/api/utilitiy_functions/Business.js";
     import {
         handleOpenEmployeeTimetableModal
     } from "$lib/components/Modal/EmployeeTimetableModal/stores/employeeTimetableModal.js";
     import EmployeeTimetableModal from "$lib/components/Modal/EmployeeTimetableModal/EmployeeTimetableModal.svelte";
+    import {
+        deleteEmployeeTimetableBlockTicket,
+        initializeEmployeeTimetableBlockTicket
+    } from "$lib/api/api_server/api_endpoints/lobby-portal/api.js";
+    import {getEndTime} from "$lib/api/initialize_functions/TimePeriod.js";
 
     // Date select
     let selectedDate = today();
@@ -75,10 +79,10 @@
             return {
                 html: `<button id="resource-label-${info.resource.id}" class="resource-label flex flex-row items-center justify-center w-full">
                   ${info.resource.title.html}
-               </button>`
+               </button>`,
             };
         },
-        height: 'auto',
+        height: "auto",
         nowIndicator: isToday(selectedDate),
         dayMaxEvents: true,
         slotDuration: "00:05:00",
@@ -89,13 +93,14 @@
         events: [],
         resources: [],
         eventLongPressDelay: 500,
+        slotEventOverlap: false,
         slotLabelFormat: function (time) {
             // Extract hours and minutes using getHours() and getMinutes()
             let hours = time.getHours();
             let minutes = time.getMinutes();
 
             // Determine AM or PM
-            let ampm = hours >= 12 ? 'PM' : 'AM';
+            let ampm = hours >= 12 ? "PM" : "AM";
             // Convert 24-hour time to 12-hour format
             hours = hours % 12;
             hours = hours ? hours : 12; // the hour '0' should be '12'
@@ -103,18 +108,18 @@
             // Format for Full Hours
             if (minutes === 0) {
                 return {
-                    html: `<span class="font-extrabold text-sm">${hours}:00 ${ampm}</span>`
+                    html: `<span class="font-extrabold text-sm">${hours}:00 ${ampm}</span>`,
                 };
                 // Format for Half Hours
             } else if (minutes === 30) {
                 return {
-                    html: `<span class="text-sm">${hours}:30 ${ampm}</span>`
+                    html: `<span class="text-sm">${hours}:30 ${ampm}</span>`,
                 };
                 // Format for Other Times
             } else {
-                let minutesFormatted = minutes < 10 ? '0' + minutes : minutes;
+                let minutesFormatted = minutes < 10 ? "0" + minutes : minutes;
                 return {
-                    html: `<span class="text-xs" >${hours}:${minutesFormatted} ${ampm}</span>`
+                    html: `<span class="text-xs" >${hours}:${minutesFormatted} ${ampm}</span>`,
                 };
             }
         },
@@ -125,26 +130,35 @@
             if (info.event.title !== "") {
                 // console.log("mounted");
                 let extendedProps = info.event.extendedProps;
-                let employeeID = extendedProps.employeeTimetable.employee.id;
-                let bookedEmployee =
-                    extendedProps.servicingTicket.servicingTicketInfo.bookedEmployee;
+                let isReserved = extendedProps.description == "Reserved";
+
                 let conflicted = false;
-                if (bookedEmployee !== null && bookedEmployee.id !== employeeID) {
-                    conflicted = true;
-                    conflictEmployeeEvents[info.event.id] = "border-4 border-red-600";
-                    info.el.className = `ec-event border-4 border-red-600`;
-                } else if (
-                    bookedEmployee !== null &&
-                    bookedEmployee.id === employeeID
-                ) {
-                    info.el.className = `ec-event border-4 border-black`;
-                    assignedEmployeeEvents[info.event.id] = "border-4 border-black";
+
+                if (!isReserved) {
+                    let employeeID = extendedProps.employeeTimetable.employee.id;
+                    let bookedEmployee =
+                        extendedProps.servicingTicket.servicingTicketInfo.bookedEmployee;
+
+                    if (bookedEmployee !== null && bookedEmployee.id !== employeeID) {
+                        conflicted = true;
+                        conflictEmployeeEvents[info.event.id] = "border-4 border-red-600";
+                        info.el.className = `ec-event border-4 border-red-600`;
+                    } else if (
+                        bookedEmployee !== null &&
+                        bookedEmployee.id === employeeID
+                    ) {
+                        info.el.className = `ec-event border-4 border-black`;
+                        assignedEmployeeEvents[info.event.id] = "border-4 border-black";
+                    }
                 }
 
-                info.el.className += ` individual-${extendedProps.individualID}`;
+                info.el.className += ` ${isReserved?'dottedBackground':'individual-${extendedProps.individualID}'}`;
                 // info.el.id = extendedProps.individualID;
+//                 const alertSVG=`<svg class="w-[20px] h-[20px] animate-spin text-red-900 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
+//   <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M12 8v4l3 3m6-3a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z"/>
+// </svg>`
 
-                const timeDiv = `<div class="text-sm font-semibold">${extendedProps.time}</div>`;
+                const timeDiv = `<div class="text-sm font-semibold flex flex-row">${extendedProps.time}</div>`;
                 const descriptionDiv = `<div class="text-sm text-ellipsis overflow-hidden ... whitespace-pre-line">${extendedProps.description}</div>`;
 
                 const tempDiv = document.createElement("div"); // Create a temporary DIV
@@ -163,24 +177,34 @@
         eventMouseEnter: function (info) {
             //if infinite hover bug appears again, might have to refer to old commits and bring bag the horrible fixes for it.
             if (info.event.title !== "") {
-                let bookingID = info.event.extendedProps.servicingTicket.bookingID;
-                let individualID =
-                    info.event.extendedProps.servicingTicket.individualID;
-                info.el.className = `ec-event individual-${individualID} border-green-500 border-dashed`;
-
-                highlightRelatedEvents(bookingID, individualID);
+                let extendedProps = info.event.extendedProps;
+                let isReserved = extendedProps.description == "Reserved";
+                if (!isReserved) {
+                    let bookingID = extendedProps.servicingTicket.bookingID;
+                    let individualID = extendedProps.servicingTicket.individualID;
+                    info.el.className = `ec-event individual-${individualID} border-4 border-green-500 border-dashed`;
+                    highlightRelatedEvents(bookingID, individualID);
+                } else {
+                    info.el.className = `ec-event dottedBackground border-4 border-green-500 border-dashed`;
+                }
             } else {
                 // empty for now
             }
         },
         eventMouseLeave: function (info) {
             if (info.event.title !== "") {
-                let bookingID = info.event.extendedProps.servicingTicket.bookingID;
-                let individualID =
-                    info.event.extendedProps.servicingTicket.individualID;
-                resetHighlight(bookingID, individualID);
+                let extendedProps = info.event.extendedProps;
+                let isReserved = extendedProps.description == "Reserved";
+                if (!isReserved) {
+                    let bookingID = info.event.extendedProps.servicingTicket.bookingID;
+                    let individualID =
+                        info.event.extendedProps.servicingTicket.individualID;
+                    resetHighlight(bookingID, individualID);
 
-                info.el.className = `ec-event individual-${individualID} ${assignedEmployeeEvents[info.event.id] ? assignedEmployeeEvents[info.event.id] : ""} ${conflictEmployeeEvents[info.event.id] ? conflictEmployeeEvents[info.event.id] : ""}`;
+                    info.el.className = `ec-event individual-${individualID} ${assignedEmployeeEvents[info.event.id] ? assignedEmployeeEvents[info.event.id] : ""} ${conflictEmployeeEvents[info.event.id] ? conflictEmployeeEvents[info.event.id] : ""}`;
+                } else {
+                    info.el.className = `ec-event dottedBackground`;
+                }
             }
         },
         eventResize: function (info) {
@@ -189,51 +213,66 @@
 
             let totalDuration = endTime.diff(startTime, "minute");
 
-            let currTicketID = info.event.extendedProps.servicingTicket.ticketID;
-            let currServiceBookingID =
-                info.event.extendedProps.servicingTicket.serviceBookingID;
+            let extendedProps = info.event.extendedProps;
+            let isReserved = extendedProps.description == "Reserved";
+            console.log("isReserved", isReserved);
+            if (!isReserved) {
+                let currTicketID = info.event.extendedProps.servicingTicket.ticketID;
+                let currServiceBookingID =
+                    info.event.extendedProps.servicingTicket.serviceBookingID;
 
-            // Get the customer booking instance
-            let customerBookingId =
-                info.event.extendedProps.servicingTicket.servicingTicketInfo.id;
-            let customerBooking = findCustomerBookingById(customerBookingId);
+                // Get the customer booking instance
+                let customerBookingId =
+                    info.event.extendedProps.servicingTicket.servicingTicketInfo.id;
+                let customerBooking = findCustomerBookingById(customerBookingId);
 
-            // Allow edit of service booking duration
-            // The customer booking state is not completed
-            // Servicing ticket is not completed
-            if (
-                info.event.extendedProps.servicingTicket.servicingTicketInfo
-                    .bookingState !== CustomerBookingState.COMPLETED ||
-                !info.event.extendedProps.servicingTicket.isCompleted
-            ) {
-                const allEvents = calendarInstance.getEvents();
-                allEvents.forEach((event) => {
-                    if (
-                        event.extendedProps.servicingTicket &&
-                        event.extendedProps.servicingTicket.ticketID !== currTicketID &&
-                        event.extendedProps.servicingTicket.serviceBookingID ===
-                        currServiceBookingID
-                    ) {
-                        startTime = dayjs(event.start);
-                        endTime = dayjs(event.end);
-                        totalDuration += endTime.diff(startTime, "minute");
+                // Allow edit of service booking duration
+                // The customer booking state is not completed
+                // Servicing ticket is not completed
+                if (
+                    info.event.extendedProps.servicingTicket.servicingTicketInfo
+                        .bookingState !== CustomerBookingState.COMPLETED ||
+                    !info.event.extendedProps.servicingTicket.isCompleted
+                ) {
+                    const allEvents = calendarInstance.getEvents();
+                    allEvents.forEach((event) => {
+                        if (
+                            event.extendedProps.servicingTicket &&
+                            event.extendedProps.servicingTicket.ticketID !== currTicketID &&
+                            event.extendedProps.servicingTicket.serviceBookingID ===
+                            currServiceBookingID
+                        ) {
+                            startTime = dayjs(event.start);
+                            endTime = dayjs(event.end);
+                            totalDuration += endTime.diff(startTime, "minute");
+                        }
+                    });
+
+                    // Initialize the duration change for service booking
+                    let serviceBooking = undefined;
+                    if (customerBooking) {
+                        serviceBooking = findServiceBookingFromCustomerBooking(
+                            customerBooking,
+                            currServiceBookingID
+                        );
+
+                        serviceBooking.servicingDuration = totalDuration;
                     }
-                });
-
-                // Initialize the duration change for service booking
-                let serviceBooking = undefined;
-                if (customerBooking) {
-                    serviceBooking = findServiceBookingFromCustomerBooking(
-                        customerBooking,
-                        currServiceBookingID
-                    );
-
-                    serviceBooking.servicingDuration = totalDuration;
                 }
-            }
 
-            // Submit the change to database
-            initializeCustomerBookingAndBroadcast(customerBooking, nowTime());
+                // Submit the change to database
+                initializeCustomerBookingAndBroadcast(customerBooking, nowTime());
+            } else {
+
+                let blockTicket = extendedProps.blockTicket;
+                blockTicket.duration = totalDuration;
+
+                // Submit the change to database
+                initializeEmployeeTimetableBlockTicket(
+                    $business.businessInfo.businessID,
+                    blockTicket
+                );
+            }
         },
         eventDragStart: function () {
             // console.log("eventDragStart, info", info);
@@ -248,60 +287,98 @@
         eventDragStop: function () {
         },
         eventDrop: function (info) {
-
             let assignedEmployeeID = null;
             let startTime = dayjs(info.event.start).format(formatToTime);
 
-            // Get the customer booking and service booking instances
-            let customerBookingId =
-                info.event.extendedProps.servicingTicket.servicingTicketInfo.id;
-            let serviceBookingID =
-                info.event.extendedProps.servicingTicket.serviceBookingID;
-            let customerBooking = findCustomerBookingById(customerBookingId);
-            let serviceBooking = undefined;
-            if (customerBooking) {
-                serviceBooking = findServiceBookingFromCustomerBooking(
-                    customerBooking,
-                    serviceBookingID
-                );
-            }
+            let extendedProps = info.event.extendedProps;
+            let isReserved = extendedProps.description == "Reserved";
+            console.log("isReserved", isReserved);
+            if (!isReserved) {
+                // Get the customer booking and service booking instances
+                let customerBookingId =
+                    extendedProps.servicingTicket.servicingTicketInfo.id;
+                let serviceBookingID = extendedProps.servicingTicket.serviceBookingID;
+                let customerBooking = findCustomerBookingById(customerBookingId);
+                let serviceBooking = undefined;
+                if (customerBooking) {
+                    serviceBooking = findServiceBookingFromCustomerBooking(
+                        customerBooking,
+                        serviceBookingID
+                    );
+                }
 
-            // Drag between employee timetable
-            if (info.newResource && info.oldResource) {
+                // Drag between employee timetable
+                if (info.newResource && info.oldResource) {
+                    // Assign employee working on the service
+                    // Cannot assign when the booking state is completed
+                    if (customerBooking.bookingState !== CustomerBookingState.COMPLETED) {
+                        if (info.newResource.id !== "null") {
+                            assignedEmployeeID = parseInt(info.newResource.id, 10);
+                        }
+                    }
 
-                // Assign employee working on the service
-                // Cannot assign when the booking state is completed
-                if (customerBooking.bookingState !== CustomerBookingState.COMPLETED) {
-                    if (info.newResource.id !== "null") {
-                        assignedEmployeeID = parseInt(info.newResource.id, 10);
+                    // Only set the start time if the customer booking is SERVICING
+                    if (customerBooking.bookingState === CustomerBookingState.SERVICING) {
+                        startTime = dayjs(info.event.start).format(formatToTime);
+                    }
+                }
+                // Same employee timetable
+                else {
+                    let employeeID = info.event.resourceIds[0];
+                    if (employeeID !== "null") {
+                        assignedEmployeeID = parseInt(employeeID, 10);
                     }
                 }
 
+                // Assign the employee to the service
+                serviceBooking.assignedEmployee = getEmployee(assignedEmployeeID);
+
                 // Only set the start time if the customer booking is SERVICING
                 if (customerBooking.bookingState === CustomerBookingState.SERVICING) {
+                    serviceBooking.startTime = startTime;
+                }
+
+                // Submit to the database
+                initializeCustomerBookingAndBroadcast(customerBooking, nowTime());
+                console.log("not extended drops", extendedProps);
+            } else {
+                // Drag between employee timetable
+                if(info.newResource && info.newResource.id == "null")
+                {
+                    console.log("deleting block ticket");
+                    let blockTicket = extendedProps.blockTicket;
+                    deleteEmployeeTimetableBlockTicket($business.businessInfo.businessID,blockTicket);
+                    return;
+                }else if (info.newResource && info.oldResource) {
+                    // Assign employee working on the service
+                    // Cannot assign when the booking state is completed
+                    console.log("info.newResource",info.newResource);
+                    assignedEmployeeID = parseInt(info.newResource.id, 10);
+
                     startTime = dayjs(info.event.start).format(formatToTime);
                 }
-            }
-            // Same employee timetable
-            else {
-                let employeeID = info.event.resourceIds[0];
-                if (employeeID !== "null") {
-                    assignedEmployeeID = parseInt(employeeID, 10);
+                // Same employee timetable
+                else {
+                    let employeeID = info.event.resourceIds[0];
+                    if (employeeID !== "null") {
+                        assignedEmployeeID = parseInt(employeeID, 10);
+                    }
                 }
+
+                // Assign the employee to the service
+                let assignedEmployee = getEmployee(assignedEmployeeID);
+
+                let blockTicket = extendedProps.blockTicket;
+                blockTicket.employee = assignedEmployee;
+                blockTicket.startTime = startTime;
+
+                // Submit to the database
+                initializeEmployeeTimetableBlockTicket(
+                    $business.businessInfo.businessID,
+                    blockTicket
+                );
             }
-
-            // Assign the employee to the service
-            serviceBooking.assignedEmployee = getEmployee(assignedEmployeeID);
-
-            // Only set the start time if the customer booking is SERVICING
-            if (customerBooking.bookingState === CustomerBookingState.SERVICING) {
-                serviceBooking.startTime = startTime;
-            }
-
-            // Submit to the database
-            initializeCustomerBookingAndBroadcast(customerBooking, nowTime());
-        }
-        ,
+        },
     };
 
     function highlightRelatedEvents(bookingID, individualID) {
@@ -320,7 +397,7 @@
         const elements = document.querySelectorAll(`.individual-${individualID}`);
 
         elements.forEach((element) => {
-            element.className = `${element.className} border-4`;
+            element.className = `${element.className}`;
         });
     }
 
@@ -350,20 +427,20 @@
     }
 
     /* function resetIndividualHighlight(serviceBookingID) {
-          const allEvents = calendarInstance.getEvents();
-          allEvents.forEach((event) => {
-              if (
-                  event.extendedProps.servicingTicket &&
-                  event.extendedProps.servicingTicket.serviceBookingID ===
-                  serviceBookingID
-              ) {
-                  event.backgroundColor = bookingStateColour(
-                      event.extendedProps.servicingTicket
-                  );
-                  calendarInstance.updateEvent(event);
-              }
-          });
-      }*/
+            const allEvents = calendarInstance.getEvents();
+            allEvents.forEach((event) => {
+                if (
+                    event.extendedProps.servicingTicket &&
+                    event.extendedProps.servicingTicket.serviceBookingID ===
+                    serviceBookingID
+                ) {
+                    event.backgroundColor = bookingStateColour(
+                        event.extendedProps.servicingTicket
+                    );
+                    calendarInstance.updateEvent(event);
+                }
+            });
+        }*/
 
     function findECBody() {
         const element = document.querySelector(".ec-body");
@@ -406,12 +483,12 @@
             element.style.background = "rgba(0,0,0,0.1)";
         });
 
-        const calendarContainer = document.getElementById('calendar'); // Adjust this ID to match your actual calendar container
-        calendarContainer.addEventListener('click', function (event) {
+        const calendarContainer = document.getElementById("calendar"); // Adjust this ID to match your actual calendar container
+        calendarContainer.addEventListener("click", function (event) {
             // Check if the clicked element or one of its parents has the class 'resource-label'
-            const resourceLabel = event.target.closest('.resource-label');
+            const resourceLabel = event.target.closest(".resource-label");
             if (resourceLabel) {
-                const resourceId = resourceLabel.id.replace('resource-label-', ''); // Extract ID
+                const resourceId = resourceLabel.id.replace("resource-label-", ""); // Extract ID
                 clickedID = resourceId;
             }
         });
@@ -507,7 +584,6 @@
             filteredEmployeeTimetableList = $timetableComponent.employeeTimetableList;
             showSearchText = "";
         } else {
-
             // Keep track of autoscroll for later when the search box is empty
             autoScroll = true;
 
@@ -517,15 +593,15 @@
                         ...employeeTimetable,
                         servicingTicketList: employeeTimetable.servicingTicketList.filter(
                             (ticket) =>
-                                normalizeSearchInput(ticket.servicingTicketInfo.phoneNumber).includes(
-                                    normalizedSearchValue
-                                ) ||
-                                normalizeSearchInput(ticket.servicingTicketInfo.customerName).includes(
-                                    normalizedSearchValue
-                                ) ||
-                                normalizeSearchInput(shortCustomerBookingID(ticket.servicingTicketInfo.id)).includes(
-                                    normalizedSearchValue
-                                )
+                                normalizeSearchInput(
+                                    ticket.servicingTicketInfo.phoneNumber
+                                ).includes(normalizedSearchValue) ||
+                                normalizeSearchInput(
+                                    ticket.servicingTicketInfo.customerName
+                                ).includes(normalizedSearchValue) ||
+                                normalizeSearchInput(
+                                    shortCustomerBookingID(ticket.servicingTicketInfo.id)
+                                ).includes(normalizedSearchValue)
                         ),
                     };
                 })
@@ -578,8 +654,7 @@
     let resources = [];
     let prevClickedID = undefined;
     let clickedID = undefined;
-    $:if (clickedID !== prevClickedID) {
-
+    $: if (clickedID !== prevClickedID) {
         // Open the schedule exception modal
         if (clickedID !== undefined) {
             console.log("Timetable employee clickedID", clickedID);
@@ -587,7 +662,10 @@
             // Get the clicked employee
             let clickedEmployee = null;
             if (clickedID) {
-                clickedEmployee = findEmployeeFromBusinessUsingEmployeeID($business, clickedID);
+                clickedEmployee = findEmployeeFromBusinessUsingEmployeeID(
+                    $business,
+                    clickedID
+                );
             }
 
             // Open the employee timetable modal
@@ -597,7 +675,6 @@
             prevClickedID = undefined;
             clickedID = undefined;
         }
-
     }
 
     async function updateCalendarEvents(employeeTimetableList) {
@@ -625,7 +702,9 @@
                 end: `${$now.format("YYYY-MM-DD")} ${employeeTable.timePeriod.endTime}`,
                 display: "background",
             });
-            let countOfNullResourceIds = employeeEvents.filter(event => event.resourceId === null).length;
+            let countOfNullResourceIds = employeeEvents.filter(
+                (event) => event.resourceId === null
+            ).length;
 
             return {
                 id: employeeTable.employee.id,
@@ -636,16 +715,15 @@
                </svg>
                ${employeeTable.employee.employeeName}
              </span>`
-                        : `<span class="flex flex-row items-center justify-center ${countOfNullResourceIds > 0 ? 'animate-pulse' : ''}">
+                        : `<span class="flex flex-row items-center justify-center ${countOfNullResourceIds > 0 ? "animate-pulse" : ""}">
                <svg class="w-5 h-5 text-red-400 dark:text-white"  fill="currentColor" width="24" height="24"  xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 512">
                    <path d="M38.8 5.1C28.4-3.1 13.3-1.2 5.1 9.2S-1.2 34.7 9.2 42.9l592 464c10.4 8.2 25.5 6.3 33.7-4.1s6.3-25.5-4.1-33.7L353.3 251.6C407.9 237 448 187.2 448 128C448 57.3 390.7 0 320 0C250.2 0 193.5 55.8 192 125.2L38.8 5.1zM264.3 304.3C170.5 309.4 96 387.2 96 482.3c0 16.4 13.3 29.7 29.7 29.7H514.3c3.9 0 7.6-.7 11-2.1l-261-205.6z"/>
                </svg>
                ${employeeTable.employee.employeeName} - ${countOfNullResourceIds}
-             </span>`
-                }
+             </span>`,
+                },
             };
         });
-
 
         options.resources = resources;
         options.events = employeeWorkHourEvent.concat(employeeEvents);
@@ -703,23 +781,24 @@
 
         // Events for block tickets
         const blockEvents = employeeTimetableList.flatMap((employeeTable) =>
-            employeeTable.blockTicketList
-                .map((blockTicket) => {
-                    return {
-                        start: `${$now.format("YYYY-MM-DD")} ${blockTicket.timePeriod.startTime}`,
-                        end: `${$now.format("YYYY-MM-DD")} ${blockTicket.timePeriod.endTime}`,
-                        resourceId: employeeTable.employee.id,
-                        title: ` `,
+            employeeTable.blockTicketList.map((blockTicket) => {
+                console.log("blockTicket",blockTicket);
 
-                        color: 'grey',  // Using grey to denote blocked times
+                return {
+                    start: `${$now.format("YYYY-MM-DD")} ${blockTicket.startTime}`,
+                    end: `${$now.format("YYYY-MM-DD")} ${getEndTime(blockTicket.startTime, blockTicket.duration)}`,
+                    resourceId: employeeTable.employee.id,
+                    title: ` `,
+                    color: "grey", // Using grey to denote blocked times
 
-                        extendedProps: {
-                            employeeTimetable: employeeTable,
-                            blockTicket: blockTicket,
-                            description: `Reserved`,
-                        },
-                    };
-                })
+                    extendedProps: {
+                        employeeTimetable: employeeTable,
+                        time: `${formatTimeAm(blockTicket.startTime)} - ${formatTimeAm(getEndTime(blockTicket.startTime, blockTicket.duration))}`,
+                        blockTicket: blockTicket,
+                        description: `Reserved`,
+                    },
+                };
+            })
         );
 
         // Events for servicing ticket
@@ -765,26 +844,55 @@
     }
 
     function selectTomorrow() {
-        selectedDate = dayjs(selectedDate).add(1, 'day').format(formatToDate);
+        selectedDate = dayjs(selectedDate).add(1, "day").format(formatToDate);
     }
 
     function selectYesterday() {
-        selectedDate = dayjs(selectedDate).subtract(1, 'day').format(formatToDate);
+        selectedDate = dayjs(selectedDate).subtract(1, "day").format(formatToDate);
     }
 </script>
 
-<div class="relative flex flex-col items-center justify-center w-5/6 h-auto mx-auto my-2 overflow-x-auto space-y-1">
-    <div class="flex sm:flex-row flex-col left-0 inline-block h-fit sm:space-y-0 space-y-1 items-center justify-evenly w-full">
+<div
+        class="relative flex flex-col items-center justify-center w-5/6 h-auto mx-auto my-2 overflow-x-auto space-y-1"
+>
+    <div
+            class="flex sm:flex-row flex-col left-0 inline-block h-fit sm:space-y-0 space-y-1 items-center justify-evenly w-full"
+    >
         <div class="flex flex-row sm:justify-normal justify-center items-center">
-            <Button class="h-fit text-md mr-1" size="xs" color="light" on:click={()=>{selectToday()}}
-                    disabled={isToday(selectedDate)}>Today
+            <Button
+                    class="h-fit text-md mr-1"
+                    size="xs"
+                    color="light"
+                    on:click={() => {
+          selectToday();
+        }}
+                    disabled={isToday(selectedDate)}
+            >Today
             </Button>
             <div class="flex items-center">
-                <Button class="rounded-r-none h-fit" size="xs" color="light" on:click={()=>{selectYesterday()}}>
+                <Button
+                        class="rounded-r-none h-fit"
+                        size="xs"
+                        color="light"
+                        on:click={() => {
+            selectYesterday();
+          }}
+                >
                     <ChevronLeftOutline class="w-6 h-6"/>
                 </Button>
-                <input class="border-gray-300 w-[8rem]" bind:value={selectedDate} type="date"/>
-                <Button class="rounded-l-none h-fit" size="xs" color="light" on:click={()=>{selectTomorrow()}}>
+                <input
+                        class="border-gray-300 w-[8rem]"
+                        bind:value={selectedDate}
+                        type="date"
+                />
+                <Button
+                        class="rounded-l-none h-fit"
+                        size="xs"
+                        color="light"
+                        on:click={() => {
+            selectTomorrow();
+          }}
+                >
                     <ChevronRightOutline class="w-6 h-6"/>
                 </Button>
             </div>
@@ -793,7 +901,10 @@
         <div
                 class="flex flex-row sm:justify-normal justify-center items-center m-0"
         >
-            <form class="flex flex-row max-w-xs justify-center items-center" on:submit={searchBookings}>
+            <form
+                    class="flex flex-row max-w-xs justify-center items-center"
+                    on:submit={searchBookings}
+            >
                 <Search
                         bind:value={searchValue}
                         size="md"
@@ -804,8 +915,11 @@
                 <Button type="submit" class="!p-2.5 rounded-none">
                     <SearchOutline class="w-5 h-5"/>
                 </Button>
-                <Button color="blue" class="!p-2.5 rounded-s-none"
-                        on:click={handleNewCustomerBookingWalkin}>
+                <Button
+                        color="blue"
+                        class="!p-2.5 rounded-s-none"
+                        on:click={handleNewCustomerBookingWalkin}
+                >
                     <PlusOutline class="w-5 h-5"/>
                 </Button>
             </form>
@@ -816,19 +930,22 @@
     </div>
 
     <div
-            class="flex flex-col items-center justify-center w-full max-w-fit  h-full mx-auto mb-2 overflow-x-auto overflow-visible border-2 border-gray-300 rounded"
+            class="flex flex-col items-center justify-center w-full max-w-fit h-full mx-auto mb-2 overflow-x-auto overflow-visible border-2 border-gray-300 rounded"
     >
-
-        <div id="calendar" class="flex h-full mx-auto max-w-[4/5] ">
+        <div id="calendar" class="flex h-full mx-auto max-w-[4/5]">
             <div class="relative w-full h-full max-h-[calc(100%-40px)] mx-auto">
                 <div class="absolute top-0 left-0 ml-8">
-                    <InfoCircleSolid size="lg" id="b1"
-                                     class="text-gray-400 hover:text-gray-900 dark:hover:text-white cursor-pointer ms-1"/>
-                    <Popover placement='right' triggeredBy="#b1"
-                             class="text-sm text-gray-500 bg-white border border-gray-200 rounded-lg shadow-sm w-72 dark:bg-gray-800 dark:border-gray-600 dark:text-gray-400 z-[1050]">
-                        <div
-                                class="flex-col justify-start"
-                        >
+                    <InfoCircleSolid
+                            size="lg"
+                            id="b1"
+                            class="text-gray-400 hover:text-gray-900 dark:hover:text-white cursor-pointer ms-1"
+                    />
+                    <Popover
+                            placement="right"
+                            triggeredBy="#b1"
+                            class="text-sm text-gray-500 bg-white border border-gray-200 rounded-lg shadow-sm w-72 dark:bg-gray-800 dark:border-gray-600 dark:text-gray-400 z-[1050]"
+                    >
+                        <div class="flex-col justify-start">
                             <div class="flex items-center">
                                 <span class="block w-4 h-4 bg-blue-500 mr-2"></span>
                                 <span class="text-sm">Appointment (Light Blue)</span>
@@ -874,7 +991,18 @@
         z-index: 1049;
     }
 
+    :global(.dottedBackground){
+        --dot-bg: #5d5d5d;
+        --dot-color: white;
+        --dot-size: 2px;
+        --dot-space: 22px;
+        background:
+                linear-gradient(90deg, var(--dot-bg) calc(var(--dot-space) - var(--dot-size)), transparent 1%) center / var(--dot-space) var(--dot-space),
+                linear-gradient(var(--dot-bg) calc(var(--dot-space) - var(--dot-size)), transparent 1%) center / var(--dot-space) var(--dot-space),
+                var(--dot-color);
+    }
+
     /*:global(.ec-preview) {*/
-    /*  background-color: rgba(255, 255, 255, 0.34) !important;*/
+    /*  background-color: rgba(255, 0, 0, 0.34) !important;*/
     /*}*/
 </style>
