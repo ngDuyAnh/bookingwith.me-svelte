@@ -64,6 +64,7 @@ export function Employee() {
     return {
         "id": -1,
         "employeeName": "",
+        "phoneNumber": "",
         "user": User(),
 
         "showOnlineBookingPage": true,

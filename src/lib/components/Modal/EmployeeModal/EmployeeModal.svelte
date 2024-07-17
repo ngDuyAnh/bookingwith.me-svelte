@@ -17,16 +17,28 @@
 
         <Label class="space-y-2">
             <span>Employee Name</span>
-            <Input bind:value={$employeeModal.clonedEmployee.employeeName} required />
+            <Input bind:value={$employeeModal.employee.employeeName} required />
+        </Label>
+
+        <Label class="space-y-2">
+            <span>Phone Number:</span>
+            <Input
+                    id="phoneNumber"
+                    type="tel"
+                    placeholder="1234567890"
+                    bind:value={$employeeModal.employee.phoneNumber}
+                    pattern="\d\d\d\d\d\d\d\d\d\d"
+                    title="Phone number must be 10 numbers in the format: 1234567890"
+            />
         </Label>
 
         <Label class="space-y-2">
             <span>Employee Email:</span>
-            <Input bind:value={$employeeModal.clonedEmployee.user.email} required />
+            <Input bind:value={$employeeModal.employee.user.email}/>
         </Label>
 
         <Label class="space-y-2">
-            <Checkbox bind:checked={$employeeModal.clonedEmployee.showOnlineBookingPage}>
+            <Checkbox bind:checked={$employeeModal.employee.showOnlineBookingPage}>
                 Show on booking page
             </Checkbox>
         </Label>

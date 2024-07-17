@@ -8,7 +8,7 @@ import {Employee} from "$lib/api/initialize_functions/Business.js";
 export const employeeModal = writable({
     open: false,
     createEmployeeFlag: true,
-    clonedEmployee: Employee()
+    employee: Employee()
 });
 
 export function handleOpenCreateNewEmployeeModal()
@@ -16,18 +16,20 @@ export function handleOpenCreateNewEmployeeModal()
     employeeModal.set({
         open: true,
         createEmployeeFlag: true,
-        clonedEmployee: Employee()
+        employee: Employee()
     });
 }
 
 export function handleOpenEditEmployeeModal(employee)
 {
+    console.log("edit", employee)
+
     // Clone the employee
     // User is null, initialize it
     employeeModal.set({
         open: true,
         createEmployeeFlag: false,
-        clonedEmployee: {
+        employee: {
             ...JSON.parse(JSON.stringify(employee)),
             user: employee.user !== null ? employee.user : User()
         }
@@ -39,7 +41,7 @@ export function handleCloseEditEmployeeModal()
     employeeModal.set({
         open: false,
         createEmployeeFlag: true,
-        clonedEmployee: Employee()
+        employee: Employee()
     });
 }
 
@@ -48,27 +50,27 @@ export function handleSaveEditEmployeeModal()
     const businessValue = get(business);
     const employeeModalValue = get(employeeModal);
 
-    console.log('Updating employee:', employeeModalValue.clonedEmployee);
+    console.log('Updating employee:', employeeModalValue.employee);
 
     // Create new employee
     if (employeeModalValue.createEmployeeFlag)
     {
         // Add the new employee to the business
         businessValue.employeeList.push(
-            employeeModalValue.clonedEmployee
+            employeeModalValue.employee
         );
     }
     else
     {
         // Get the employee instance from the business
         const employee = findEmployeeFromBusiness(
-            businessValue, employeeModalValue.clonedEmployee
+            businessValue, employeeModalValue.employee
         );
 
         // Deep copy to the employee instance from the business
         Object.assign(
             employee,
-            employeeModalValue.clonedEmployee
+            employeeModalValue.employee
         );
 
     }
@@ -88,13 +90,13 @@ export function handleDeleteEditEmployeeModal()
     const businessValue = get(business);
     const editEmployeeModalValue = get(employeeModal);
 
-    console.log('Deleting service:', editEmployeeModalValue.clonedEmployee);
+    console.log('Deleting service:', editEmployeeModalValue.employee);
 
     // Confirm deletion
     if (confirm('Are you sure you want to delete this service?')) {
         // Get the employee instance from the business
         const employee = findEmployeeFromBusiness(
-            businessValue, editEmployeeModalValue.clonedEmployee
+            businessValue, editEmployeeModalValue.employee
         );
 
         // Set the employee as archive
