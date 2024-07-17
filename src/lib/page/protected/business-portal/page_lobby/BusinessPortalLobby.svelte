@@ -26,6 +26,7 @@
         bookingList,
         fetchAppointmentCustomerBookingList,
     } from "$lib/page/protected/business-portal/page_lobby/page/BookingList/stores/bookingList.js";
+    import {CustomerBookingChannel} from "$lib/api/initialize_functions/CustomerBooking.js";
 
     let tabs = ["Dashboard", "Timetable", "List", "Send review"];
     let selectedIndex = 0;
@@ -155,18 +156,26 @@
         if (isToday(customerBooking.bookingDate)) {
 
             let beforeTempQueueList = $customerBookingQueueList;
+            console.log("$customerBookingQueueList",$customerBookingQueueList);
             await fetchCustomerBookingQueueList().then(()=>{
                 let beforeCount= 0;
-                for(let i =0; i<beforeTempQueueList.length; i++)
+
+                for(let i =0; i<beforeTempQueueList[i].length; i++)
                 {
-                    beforeCount+=beforeTempQueueList[i].length;
+                    if(beforeTempQueueList[i].bookingChannel==CustomerBookingChannel.ONLINE)
+                    {
+                        beforeCount++;
+                    }
                 }
 
                 let afterCount= 0;
 
-                for(let i =0; i<$customerBookingQueueList.length; i++)
+                for(let i =0; i<$customerBookingQueueList[i].length; i++)
                 {
-                    afterCount+=$customerBookingQueueList[i].length;
+                    if($customerBookingQueueList[i].bookingChannel==CustomerBookingChannel.ONLINE)
+                    {
+                        afterCount++;
+                    }
                 }
 
                 if(afterCount>beforeCount)
