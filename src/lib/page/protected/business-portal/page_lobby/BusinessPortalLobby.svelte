@@ -160,28 +160,30 @@
             await fetchCustomerBookingQueueList().then(()=>{
                 let beforeCount= 0;
 
-                for(let i =0; i<beforeTempQueueList[0].length; i++)
+                for(let i =0; i<beforeTempQueueList.length; i++)
                 {
-                    if(beforeTempQueueList[0][i].bookingChannel==CustomerBookingChannel.ONLINE)
+                    for(let j =0; j<beforeTempQueueList[i].length; j++)
                     {
-                        beforeCount++;
+                        if(beforeTempQueueList[i][j].bookingChannel==CustomerBookingChannel.ONLINE)
+                        {
+                            beforeCount++;
+                        }
                     }
                 }
-
-                console.log("beforeCount",beforeCount);
-
+                
                 let afterCount= 0;
 
-                for(let i =0; i<$customerBookingQueueList[0].length; i++)
+                for(let i =0; i<$customerBookingQueueList.length; i++)
                 {
-                    if($customerBookingQueueList[0][i].bookingChannel==CustomerBookingChannel.ONLINE)
+                    for(let j =0; j<$customerBookingQueueList[i].length; j++)
                     {
-                        afterCount++;
+                        if($customerBookingQueueList[i][j].bookingChannel==CustomerBookingChannel.ONLINE)
+                        {
+                            afterCount++;
+                        }
                     }
+
                 }
-
-                console.log("afterCount",afterCount);
-
 
                 if(afterCount>beforeCount)
                 {
