@@ -149,7 +149,6 @@
         </div>
     </div>
 
-
     <div class="relative flex flex-row w-screen h-full justify-between 2xl:items-center 2xl:justify-center space-x-4 overflow-x-auto p-4">
 
         {#each columns as column, index (column.id)}

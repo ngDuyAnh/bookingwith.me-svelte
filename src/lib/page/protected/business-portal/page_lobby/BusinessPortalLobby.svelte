@@ -7,6 +7,7 @@
     import {business} from "$lib/page/stores/business/business.js";
     import {Spinner} from "flowbite-svelte";
     import {
+        customerBookingQueueList,
         fetchCustomerBookingQueueList
     } from "$lib/page/protected/business-portal/page_lobby/stores/dashboard_store.js";
     import {
@@ -25,6 +26,7 @@
         bookingList,
         fetchAppointmentCustomerBookingList,
     } from "$lib/page/protected/business-portal/page_lobby/page/BookingList/stores/bookingList.js";
+    import {CustomerBookingChannel} from "$lib/api/initialize_functions/CustomerBooking.js";
 
     let tabs = ["Dashboard", "Timetable", "List", "Send review"];
     let selectedIndex = 0;
@@ -143,6 +145,8 @@
         await fetchTimetable($timetableComponent.date);
     }
 
+
+
     async function handleCustomerBookingUpdate(eventData) {
         const customerBooking = eventData.data;
 
@@ -150,7 +154,43 @@
 
         // Dashboard
         if (isToday(customerBooking.bookingDate)) {
-            await fetchCustomerBookingQueueList();
+
+            let beforeTempQueueList = $customerBookingQueueList;
+            console.log("$customerBookingQueueList",$customerBookingQueueList);
+            await fetchCustomerBookingQueueList().then(()=>{
+                let beforeCount= 0;
+
+                for(let i =0; i<beforeTempQueueList.length; i++)
+                {
+                    for(let j =0; j<beforeTempQueueList[i].length; j++)
+                    {
+                        if(beforeTempQueueList[i][j].bookingChannel==CustomerBookingChannel.ONLINE)
+                        {
+                            beforeCount++;
+                        }
+                    }
+                }
+                
+                let afterCount= 0;
+
+                for(let i =0; i<$customerBookingQueueList.length; i++)
+                {
+                    for(let j =0; j<$customerBookingQueueList[i].length; j++)
+                    {
+                        if($customerBookingQueueList[i][j].bookingChannel==CustomerBookingChannel.ONLINE)
+                        {
+                            afterCount++;
+                        }
+                    }
+
+                }
+
+                if(afterCount>beforeCount)
+                {
+                    let audio = new Audio('/ping.mp3');
+                    audio.play();
+                }
+            });
         }
 
         // Timetable

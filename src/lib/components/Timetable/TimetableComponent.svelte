@@ -58,6 +58,7 @@
         view: "resourceTimeGridDay",
         selectable: true,
         allDaySlot: false,
+        dayMinWidth: 150, // will cause horizontal scrollbars
         headerToolbar: {
             start: "",
             center: "",
@@ -73,6 +74,7 @@
                </button>`
             };
         },
+        height: 'auto',
         nowIndicator: isToday(selectedDate),
         dayMaxEvents: true,
         slotDuration: "00:05:00",
@@ -160,7 +162,7 @@
                 let bookingID = info.event.extendedProps.servicingTicket.bookingID;
                 let individualID =
                     info.event.extendedProps.servicingTicket.individualID;
-                info.el.className = `ec-event individual-${individualID}`;
+                info.el.className = `ec-event individual-${individualID} border-green-500 border-dashed`;
 
                 highlightRelatedEvents(bookingID, individualID);
             } else {
@@ -314,7 +316,7 @@
         const elements = document.querySelectorAll(`.individual-${individualID}`);
 
         elements.forEach((element) => {
-            element.className = `${element.className} border-black border-2`;
+            element.className = `${element.className} border-4`;
         });
     }
 
@@ -336,8 +338,9 @@
 
         elements.forEach((element) => {
             element.className = element.className
-                .replace(" border-black", "")
-                .replace(" border-2", "")
+                .replace(" border-green-500", "")
+                .replace(" border-4", "")
+                .replace(" border-dashed", "")
                 .trim();
         });
     }
@@ -809,10 +812,10 @@
     </div>
 
     <div
-            class="flex flex-col items-center justify-center w-4/5 h-auto mx-auto mb-2 overflow-x-auto"
+            class="flex flex-col items-center justify-center w-full max-w-fit  h-full mx-auto mb-2 overflow-x-auto overflow-visible border-2 border-gray-300 rounded"
     >
 
-        <div id="calendar" class="flex h-full mx-auto">
+        <div id="calendar" class="flex h-full mx-auto max-w-[4/5] ">
             <div class="relative w-full h-full max-h-[calc(100%-40px)] mx-auto">
                 <div class="absolute top-0 left-0 ml-8">
                     <InfoCircleSolid size="lg" id="b1"
