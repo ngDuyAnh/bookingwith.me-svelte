@@ -19,7 +19,6 @@
     import CustomerProfileModal from "$lib/components/Modal/CustomerProfileModal/CustomerProfileModal.svelte";
     import CreateCustomerBookingLobbyModal
         from "$lib/components/Modal/CreateCustomerBookingLobby/CreateCustomerBookingLobbyModal.svelte";
-    import EmployeeTimetableModal from "$lib/components/Modal/EmployeeTimetableModal/EmployeeTimetableModal.svelte";
 
     export let data;
     let loading = true;
@@ -38,7 +37,7 @@
     loading = false;
 
     //$: console.log("userProfile", $userProfile);
-    //$: console.log("business", $business);
+    // $: console.log("business", $business);
 </script>
 
 <div class="min-h-screen w-full bg-[#F6F5F2]">
@@ -78,8 +77,3 @@
 
 <!-- Modal for create customer booking in lobby -->
 <CreateCustomerBookingLobbyModal/>
-
-<!--Modal for edit employee work schedule exception-->
-<div style="z-index: 1006;">
-    <EmployeeTimetableModal/>
-</div>

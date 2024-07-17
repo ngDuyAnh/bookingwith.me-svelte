@@ -43,6 +43,7 @@
     import {
         handleOpenEmployeeTimetableModal
     } from "$lib/components/Modal/EmployeeTimetableModal/stores/employeeTimetableModal.js";
+    import EmployeeTimetableModal from "$lib/components/Modal/EmployeeTimetableModal/EmployeeTimetableModal.svelte";
 
     // Date select
     let selectedDate = today();
@@ -855,6 +856,9 @@
 
 <div style="z-index: 1006;">
     <ServicingTicketClickModal isToday={isToday(selectedDate)}/>
+
+    <!--Modal for edit employee timetable work hour and block ticket-->
+    <EmployeeTimetableModal/>
 </div>
 
 <style>
