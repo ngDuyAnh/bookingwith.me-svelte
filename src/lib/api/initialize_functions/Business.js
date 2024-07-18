@@ -79,8 +79,11 @@ export function Service() {
         "serviceCost": "",
         "serviceTimeLength": null,
         "description": "",
+
         "showPlus": false,
         "showOnlineBookingPage": true,
+
+        "highlight": false,
 
         "archive": false,
         "employeeList": [],

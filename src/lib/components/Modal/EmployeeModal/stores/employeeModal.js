@@ -22,8 +22,6 @@ export function handleOpenCreateNewEmployeeModal()
 
 export function handleOpenEditEmployeeModal(employee)
 {
-    console.log("edit", employee)
-
     // Clone the employee
     // User is null, initialize it
     employeeModal.set({
@@ -60,6 +58,7 @@ export function handleSaveEditEmployeeModal()
             employeeModalValue.employee
         );
     }
+    // Existing
     else
     {
         // Get the employee instance from the business
@@ -72,7 +71,6 @@ export function handleSaveEditEmployeeModal()
             employee,
             employeeModalValue.employee
         );
-
     }
 
     // Submit the business update to the server
@@ -90,10 +88,10 @@ export function handleDeleteEditEmployeeModal()
     const businessValue = get(business);
     const editEmployeeModalValue = get(employeeModal);
 
-    console.log('Deleting service:', editEmployeeModalValue.employee);
+    console.log('Deleting employee:', editEmployeeModalValue.employee);
 
     // Confirm deletion
-    if (confirm('Are you sure you want to delete this service?')) {
+    if (confirm('Are you sure you want to delete this employee?')) {
         // Get the employee instance from the business
         const employee = findEmployeeFromBusiness(
             businessValue, editEmployeeModalValue.employee
