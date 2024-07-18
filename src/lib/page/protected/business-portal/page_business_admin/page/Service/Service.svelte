@@ -9,6 +9,11 @@
         from "$lib/page/protected/business-portal/page_business_admin/page/Service/components/CreateServiceModal/CreateServiceModal.svelte";
     import EditServiceModal
         from "$lib/page/protected/business-portal/page_business_admin/page/Service/components/EditServiceModal/EditServiceModal.svelte";
+    import {
+        handleOpenCreateNewServiceModal,
+        handleOpenEditServiceModal
+    } from "$lib/components/Modal/ServiceModal/stores/serviceModal.js";
+    import ServiceModal from "$lib/components/Modal/ServiceModal/ServiceModal.svelte";
 
     let openCreateServiceGroupModal = false;
     let openEditServiceGroupModal = false;
@@ -22,18 +27,6 @@
         editingServiceGroup = serviceGroup;
         openEditServiceGroupModal = true;
     }
-
-    function handleOpenCreateServiceModal(serviceGroup)
-    {
-        editingServiceGroup = serviceGroup;
-        openCreateServiceModal = true;
-    }
-
-    function handleOpenEditServiceModal(serviceGroup, service) {
-        editingServiceGroup = serviceGroup;
-        editingService = service;
-        openEditServiceModal = true;
-    }
 </script>
 
 <Accordion class="bg-white">
@@ -43,7 +36,7 @@
                 <div class="flex flex-col sm:flex-row justify-between w-full items-center text-center sm:text-left">
                     <span class="font-semibold mb-2 sm:mb-0 sm:mr-3">{serviceGroup.serviceGroupName}</span>
                     <span class="mr-4 text-sm text-gray-500 flex-1">{serviceGroup.description}</span>
-                    <Button class="mr-4" on:click={() => handleOpenCreateServiceModal(serviceGroup)}>Add new service</Button>
+                    <Button class="mr-4" on:click={() => handleOpenCreateNewServiceModal(serviceGroup)}>Add new service</Button>
                     <Button class="mr-4" on:click={() => handleOpenEditServiceGroupModal(serviceGroup)}>Edit</Button>
                 </div>
             </div>
@@ -63,7 +56,7 @@
                             No employees assigned
                         {/if}
                     </p>
-                    <Button on:click={() => handleOpenEditServiceModal(serviceGroup, service)}>Edit</Button>
+                    <Button on:click={() => handleOpenEditServiceModal(service)}>Edit</Button>
                 </div>
             {/each}
         </AccordionItem>
@@ -74,23 +67,5 @@
     <Button on:click={() => openCreateServiceGroupModal = true}>Add New Service Group</Button>
 </div>
 
-<!-- Modal for adding new service group -->
-<CreateServiceGroupModal bind:open={openCreateServiceGroupModal}/>
-
-<!-- Modal for editing service group -->
-<EditServiceGroupModal
-        bind:open={openEditServiceGroupModal}
-        {editingServiceGroup}
-/>
-
-<!-- Modal for adding new service -->
-<CreateServiceModal
-        bind:open={openCreateServiceModal}
-        serviceGroup={editingServiceGroup}
-/>
-
-<!-- Modal for editing service -->
-<EditServiceModal
-        bind:open={openEditServiceModal}
-        {editingService}
-/>
+<!--Modal create or edit service-->
+<ServiceModal/>

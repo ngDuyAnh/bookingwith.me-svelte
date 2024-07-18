@@ -51,7 +51,7 @@
             };
 
             socket.onclose = function () {
-                // console.log("Disconnected from WebSocket. Trying to reconnect.");
+                console.log("Disconnected from WebSocket. Trying to reconnect.");
                 if (socket) {
                     socket.close();
                     socket = undefined;
@@ -61,7 +61,7 @@
             };
 
             socket.onerror = function (error) {
-                // console.error("Socket error. Trying to reconnect.", error);
+                console.error("Socket error. Trying to reconnect.", error);
                 if (socket) {
                     socket.close();
                     socket = undefined;

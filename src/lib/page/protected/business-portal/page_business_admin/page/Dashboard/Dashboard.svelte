@@ -96,7 +96,7 @@
     let totalCompletedEarnings = 0;
     let totalUncompletedEarnings = 0;
 
-    $: console.log("reactive $customerBookingQueueList",$customerBookingQueueList);
+    // $: console.log("reactive $customerBookingQueueList",$customerBookingQueueList);
     $: {
         if($customerBookingQueueList)
         {
@@ -112,12 +112,11 @@
         const response = await getCustomerBookingQueueList($business.businessInfo.businessID, $now.format(formatToDate));
         customerBookingQueueList.set(response.customerBookingQueueList);
 
-        console.log("customerBookingQueueList", $customerBookingQueueList);
+        // console.log("customerBookingQueueList", $customerBookingQueueList);
         totalCompletedEarnings = calculateCompletedServiceCostEarnings($customerBookingQueueList[3]);
         totalUncompletedEarnings = calculateUnCompletedServiceCostEarnings($customerBookingQueueList);
-        console.log("Total Service Cost for Completed Bookings: ", totalCompletedEarnings);
-        console.log("Total Service Cost for UnCompleted Bookings: ", totalUncompletedEarnings);
-
+        // console.log("Total Service Cost for Completed Bookings: ", totalCompletedEarnings);
+        // console.log("Total Service Cost for UnCompleted Bookings: ", totalUncompletedEarnings);
     }
 
     function calculateUnCompletedServiceCostEarnings(bookingStateList) {
@@ -153,7 +152,7 @@
     onMount(async () => {
         loading = true;
         try {
-            console.log("$customerBookingQueueList", $customerBookingQueueList);
+            // console.log("$customerBookingQueueList", $customerBookingQueueList);
             await fetchCustomerBookingList().finally(async () => {
                 await updateDashBoardData();
             });
@@ -166,7 +165,7 @@
 
     async function updateDashBoardData()
     {
-        console.log("calling update to dashboard")
+        // console.log("calling update to dashboard")
 
         todaysProgress["toDo"] = $customerBookingQueueList[0].length + $customerBookingQueueList[1].length;
         todaysProgress["inProgress"] = $customerBookingQueueList[2].length;
@@ -185,13 +184,13 @@
         selectedDropDownIndex = dropdownOptions["Metrics"]["Service"].indexOf("Usage Information");
         selectedIndex = tabs.indexOf("Metrics");
 
-        console.log(selectedDropDownIndex, selectedIndex);
+        // console.log(selectedDropDownIndex, selectedIndex);
     }
 
     function selectServicesTab() {
         selectedIndex = tabs.indexOf("Service");
 
-        console.log(selectedDropDownIndex, selectedIndex);
+        // console.log(selectedDropDownIndex, selectedIndex);
     }
 
     let employeesWorkingToday = [];
@@ -204,7 +203,7 @@
             let selectedDate = $now.format(formatToDate);
             let currentTimeString = $now.format(formatToTime);
 
-            console.log("selectedDate", selectedDate)
+            // console.log("selectedDate", selectedDate)
 
             const {employeeTimetableList} = await getSchedule(
                 $business.businessInfo.businessID,
@@ -214,7 +213,7 @@
 
             employeesWorkingToday = employeeTimetableList;
 
-            console.log("employeeTimetableList", employeeTimetableList);
+            // console.log("employeeTimetableList", employeeTimetableList);
         } catch (error) {
             console.error("Failed to  fetch tasks", error);
         }
