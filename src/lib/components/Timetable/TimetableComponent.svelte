@@ -971,12 +971,12 @@
     </div>
 </div>
 
-<div style="z-index: 1006;">
-    <ServicingTicketClickModal isToday={isToday(selectedDate)}/>
+<!--Modal for servicing ticket-->
+<ServicingTicketClickModal isToday={isToday(selectedDate)}/>
 
-    <!--Modal for edit employee timetable work hour and block ticket-->
-    <EmployeeTimetableModal/>
-</div>
+<!--Modal for edit employee timetable work hour and block ticket-->
+<EmployeeTimetableModal/>
+
 
 <style>
     :global(.ec-event-time) {
