@@ -2,7 +2,7 @@
     import {Button, Checkbox, Input, Label, Modal} from "flowbite-svelte";
     import {
         employeeModal, handleDeleteEditEmployeeModal,
-        handleSaveEditEmployeeModal
+        handleSaveEmployeeModal
     } from "$lib/components/Modal/EmployeeModal/stores/employeeModal.js";
 </script>
 
@@ -44,9 +44,9 @@
         </Label>
 
         {#if $employeeModal.createEmployeeFlag}
-            <Button class="w-full" on:click={handleSaveEditEmployeeModal}>Add</Button>
+            <Button class="w-full" on:click={handleSaveEmployeeModal}>Add</Button>
         {:else}
-            <Button class="w-full" on:click={handleSaveEditEmployeeModal}>Update</Button>
+            <Button class="w-full" on:click={handleSaveEmployeeModal}>Update</Button>
             <Button class="w-full" on:click={handleDeleteEditEmployeeModal}>Delete</Button>
         {/if}
     </form>

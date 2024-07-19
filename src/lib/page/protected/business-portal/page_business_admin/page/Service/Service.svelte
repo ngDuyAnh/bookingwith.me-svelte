@@ -1,32 +1,16 @@
 <script>
     import {Accordion, AccordionItem, Button} from 'flowbite-svelte';
     import {business} from "$lib/page/stores/business/business.js";
-    import CreateServiceGroupModal
-        from "$lib/page/protected/business-portal/page_business_admin/page/Service/components/CreateServiceGroupModal/CreateServiceGroupModal.svelte";
-    import EditServiceGroupModal
-        from "$lib/page/protected/business-portal/page_business_admin/page/Service/components/EditServiceGroupModal/EditServiceGroupModal.svelte";
-    import CreateServiceModal
-        from "$lib/page/protected/business-portal/page_business_admin/page/Service/components/CreateServiceModal/CreateServiceModal.svelte";
-    import EditServiceModal
-        from "$lib/page/protected/business-portal/page_business_admin/page/Service/components/EditServiceModal/EditServiceModal.svelte";
     import {
         handleOpenCreateNewServiceModal,
         handleOpenEditServiceModal
     } from "$lib/components/Modal/ServiceModal/stores/serviceModal.js";
     import ServiceModal from "$lib/components/Modal/ServiceModal/ServiceModal.svelte";
-
-    let openCreateServiceGroupModal = false;
-    let openEditServiceGroupModal = false;
-    let editingServiceGroup = {};
-
-    let openCreateServiceModal = false;
-    let openEditServiceModal = false;
-    let editingService = {};
-
-    function handleOpenEditServiceGroupModal(serviceGroup) {
-        editingServiceGroup = serviceGroup;
-        openEditServiceGroupModal = true;
-    }
+    import ServiceGroupModal from "$lib/components/Modal/ServiceGroupModal/ServiceGroupModal.svelte";
+    import {
+        handleOpenCreateNewServiceGroupModal,
+        handleOpenEditServiceGroupModal
+    } from "$lib/components/Modal/ServiceGroupModal/stores/serviceGroupModal.js";
 </script>
 
 <Accordion class="bg-white">
@@ -64,8 +48,11 @@
 </Accordion>
 
 <div class="mt-4">
-    <Button on:click={() => openCreateServiceGroupModal = true}>Add New Service Group</Button>
+    <Button on:click={handleOpenCreateNewServiceGroupModal}>Add New Service Group</Button>
 </div>
+
+<!--Modal create or edit service group-->
+<ServiceGroupModal/>
 
 <!--Modal create or edit service-->
 <ServiceModal/>

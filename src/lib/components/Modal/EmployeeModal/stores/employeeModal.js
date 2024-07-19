@@ -34,7 +34,7 @@ export function handleOpenEditEmployeeModal(employee)
     });
 }
 
-export function handleCloseEditEmployeeModal()
+export function handleCloseEmployeeModal()
 {
     employeeModal.set({
         open: false,
@@ -43,7 +43,7 @@ export function handleCloseEditEmployeeModal()
     });
 }
 
-export function handleSaveEditEmployeeModal()
+export function handleSaveEmployeeModal()
 {
     const businessValue = get(business);
     const employeeModalValue = get(employeeModal);
@@ -80,7 +80,7 @@ export function handleSaveEditEmployeeModal()
         });
 
     // Close the modal
-    handleCloseEditEmployeeModal();
+    handleCloseEmployeeModal();
 }
 
 export function handleDeleteEditEmployeeModal()
@@ -107,6 +107,6 @@ export function handleDeleteEditEmployeeModal()
             })
 
         // Close the modal
-        handleCloseEditEmployeeModal();
+        handleCloseEmployeeModal();
     }
 }
