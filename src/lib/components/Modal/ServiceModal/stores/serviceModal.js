@@ -50,7 +50,7 @@ export function handleSaveServiceModal()
     const businessValue = get(business);
     const serviceModalValue = get(serviceModal);
 
-    console.log('Updating service:', serviceModalValue.service);
+    console.log('Updating service:', serviceModalValue);
 
     // Create new service
     if (serviceModalValue.createServiceForServiceGroupID)
@@ -71,6 +71,8 @@ export function handleSaveServiceModal()
             businessValue, serviceModalValue.service
         );
 
+        console.log("service",service);
+        console.log("serviceModalValue",serviceModalValue);
         // Deep copy
         Object.assign(
             service,

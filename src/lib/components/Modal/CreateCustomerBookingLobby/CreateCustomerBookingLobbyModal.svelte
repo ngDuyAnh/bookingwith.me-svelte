@@ -7,7 +7,7 @@
     import {
         modalCreateCustomerBookingLobby
     } from "$lib/components/Modal/CreateCustomerBookingLobby/stores/createCustomerBookingLobby.js";
-    import {Button, Checkbox, Modal} from "flowbite-svelte";
+    import {Badge, Button, Checkbox, Modal} from "flowbite-svelte";
     import CustomerBookingLobbyComponent
         from "$lib/components/CustomerBooking/CustomerBookingLobbyComponent/CustomerBookingLobbyComponent.svelte";
     import {CalendarMonthOutline, CashSolid, UsersGroupSolid} from "flowbite-svelte-icons";
@@ -56,19 +56,41 @@
            classBackdrop="fixed inset-0 z-50 bg-gray-900 bg-opacity-90 dark:bg-opacity-80"
            size='xl'>
         <svelte:fragment slot="header">
-            <div class="flex sm:flex-row flex-col justify-evenly items-center w-full">
-                <h1 class="select-none whitespace-nowrap text-2xl text-gray-700 font-bold flex flex-row">
-                    <CalendarMonthOutline size="xl"/>
-                    Create Booking
-                </h1>
+            <div class="flex sm:flex-row flex-col sm:justify-between justify-center items-center w-full">
+                <div class="w-1/2 flex sm:justify-start justify-center">
+                    <h1 class="select-none whitespace-nowrap text-2xl text-gray-700 font-bold flex flex-row">
+                        <CalendarMonthOutline size="xl"/>
+                        Create Booking
+                    </h1>
+                </div>
                 {#if !successfulSubmition}
-                    <div class="flex flex-row items-center justify-start space-x-2">
-                        <span class="flex flex-row"><UsersGroupSolid/> Guest(s):  {totalGuests}</span>
-                        <span class="flex flex-row"><CashSolid/> Total: ${totalServiceCost}</span>
+                    <div class="w-1/2 flex justify-center">
+                        <div class="flex flex-row items-center space-x-2">
+                            <Badge color="dark" class="space-x-2" large>
+                                <span class="flex flex-row"><UsersGroupSolid/> Guest(s):  {totalGuests}</span>
+                                <span class="flex flex-row"><CashSolid/> Total: ${totalServiceCost}</span>
+                            </Badge>
+                        </div>
                     </div>
                 {/if}
             </div>
         </svelte:fragment>
+
+
+        <!--        <svelte:fragment slot="header">-->
+        <!--            <div class="flex sm:flex-row flex-col justify-evenly items-center w-full">-->
+        <!--                <h1 class="select-none whitespace-nowrap text-2xl text-gray-700 font-bold flex flex-row">-->
+        <!--                    <CalendarMonthOutline size="xl"/>-->
+        <!--                    Create Booking-->
+        <!--                </h1>-->
+        <!--                {#if !successfulSubmition}-->
+        <!--                    <div class="flex flex-row items-center justify-start space-x-2">-->
+        <!--                        <span class="flex flex-row"><UsersGroupSolid/> Guest(s):  {totalGuests}</span>-->
+        <!--                        <span class="flex flex-row"><CashSolid/> Total: ${totalServiceCost}</span>-->
+        <!--                    </div>-->
+        <!--                {/if}-->
+        <!--            </div>-->
+        <!--        </svelte:fragment>-->
 
         <!--        body-->
         <CustomerBookingLobbyComponent
