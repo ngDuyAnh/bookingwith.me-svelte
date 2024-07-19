@@ -12,7 +12,12 @@
             class="flex flex-col space-y-2"
             on:submit|preventDefault={handleSaveServiceGroupModal}
     >
-        <h3 class="mb-4 text-xl font-medium text-gray-900 dark:text-white">Edit Service Group</h3>
+        {#if $serviceGroupModal.createServiceGroupFlag}
+            <h3 class="mb-4 text-xl font-medium text-gray-900 dark:text-white">Create service group</h3>
+        {:else}
+            <h3 class="mb-4 text-xl font-medium text-gray-900 dark:text-white">Edit service group</h3>
+        {/if}
+
         <Label>
             <span>Service Group Name</span>
             <Input bind:value={$serviceGroupModal.serviceGroup.serviceGroupName} required />
