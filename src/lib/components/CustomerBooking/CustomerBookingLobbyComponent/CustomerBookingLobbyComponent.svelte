@@ -72,7 +72,7 @@
         }
 
         // Call second function after 2 seconds
-        timeoutId = setTimeout(resetBooking, 2000);
+        timeoutId = setTimeout(resetBooking, 1000);
         console.log(timeoutId);
     }
 
