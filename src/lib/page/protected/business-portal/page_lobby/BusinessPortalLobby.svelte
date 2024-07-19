@@ -156,7 +156,7 @@
         if (isToday(customerBooking.bookingDate)) {
 
             let beforeTempQueueList = $customerBookingQueueList;
-            console.log("$customerBookingQueueList",$customerBookingQueueList);
+            // console.log("$customerBookingQueueList",$customerBookingQueueList);
             await fetchCustomerBookingQueueList().then(()=>{
                 let beforeCount= 0;
 

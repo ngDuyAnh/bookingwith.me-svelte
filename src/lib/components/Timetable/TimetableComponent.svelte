@@ -24,12 +24,17 @@
         handleTimetableUpdateForServicingTicketClickModal,
         servicingTicketClickModalOpenWithServicingTicketEventInfo,
     } from "$lib/components/Modal/ServicingTicketClickModal/stores/servicingTicketClickModal.js";
-    import {fetchTimetable, timetableComponent,} from "$lib/components/Timetable/stores/timetableComponent.js";
+    import {
+        fetchTimetable,
+        findServicingTicketByIndividualID,
+        timetableComponent, timetableSortServiceBookingList
+    } from "$lib/components/Timetable/stores/timetableComponent.js";
     import {onMount} from "svelte";
     import {Button, Popover, Search} from "flowbite-svelte";
     import dayjs from "dayjs";
     import {findCustomerBookingById} from "$lib/page/protected/business-portal/page_lobby/stores/dashboard_store.js";
     import {
+        findIndividualBookingFromCustomerBooking,
         findServiceBookingFromCustomerBooking,
         shortCustomerBookingID,
     } from "$lib/api/utilitiy_functions/CustomerBooking.js";
@@ -40,6 +45,7 @@
     import {normalizeSearchInput} from "$lib/application/NormalizeSearchInput.js";
     import {findEmployeeFromBusinessUsingEmployeeID} from "$lib/api/utilitiy_functions/Business.js";
     import {
+        employeeTimetableModal,
         handleOpenEmployeeTimetableModal
     } from "$lib/components/Modal/EmployeeTimetableModal/stores/employeeTimetableModal.js";
     import EmployeeTimetableModal from "$lib/components/Modal/EmployeeTimetableModal/EmployeeTimetableModal.svelte";
@@ -287,27 +293,39 @@
         eventDragStop: function () {
         },
         eventDrop: function (info) {
+
+            // The employee and start time that the event was dragged to
             let assignedEmployeeID = null;
             let startTime = dayjs(info.event.start).format(formatToTime);
 
             let extendedProps = info.event.extendedProps;
-            let isReserved = extendedProps.description == "Reserved";
+            let isReserved = extendedProps.description === "Reserved";
+
+            console.log("info.event.start", info.event.start);
+            console.log("eventDrop extendedProps", extendedProps);
             console.log("isReserved", isReserved);
+
+            // Servicing ticket
             if (!isReserved) {
                 // Get the customer booking and service booking instances
-                let customerBookingId =
+                const customerBookingId =
                     extendedProps.servicingTicket.servicingTicketInfo.id;
-                let serviceBookingID = extendedProps.servicingTicket.serviceBookingID;
-                let customerBooking = findCustomerBookingById(customerBookingId);
+                const individualID = extendedProps.individualID;
+                const serviceBookingID = extendedProps.servicingTicket.serviceBookingID;
+
+                // Get the instance
+                const customerBooking = findCustomerBookingById(customerBookingId);
+                let individual = undefined;
                 let serviceBooking = undefined;
                 if (customerBooking) {
+                    individual = findIndividualBookingFromCustomerBooking(customerBooking, individualID);
                     serviceBooking = findServiceBookingFromCustomerBooking(
                         customerBooking,
                         serviceBookingID
                     );
                 }
 
-                // Drag between employee timetable
+                // Drag between employee timetable will set the assigned employee for the service booking
                 if (info.newResource && info.oldResource) {
                     // Assign employee working on the service
                     // Cannot assign when the booking state is completed
@@ -316,18 +334,22 @@
                             assignedEmployeeID = parseInt(info.newResource.id, 10);
                         }
                     }
-
-                    // Only set the start time if the customer booking is SERVICING
-                    if (customerBooking.bookingState === CustomerBookingState.SERVICING) {
-                        startTime = dayjs(info.event.start).format(formatToTime);
-                    }
                 }
                 // Same employee timetable
+                // Need to handle this differently because there is no oldResource
                 else {
                     let employeeID = info.event.resourceIds[0];
                     if (employeeID !== "null") {
                         assignedEmployeeID = parseInt(employeeID, 10);
                     }
+                }
+
+                // Adjust the service booking servicing order
+                // Only in appointment and lobby state
+                if (customerBooking.bookingState === CustomerBookingState.APPOINTMENT ||
+                    customerBooking.bookingState === CustomerBookingState.LOBBY)
+                {
+                    timetableSortServiceBookingList(individual, serviceBookingID, startTime);
                 }
 
                 // Assign the employee to the service
@@ -341,7 +363,9 @@
                 // Submit to the database
                 initializeCustomerBookingAndBroadcast(customerBooking, nowTime());
                 console.log("not extended drops", extendedProps);
-            } else {
+            }
+            // Block ticket, employee reserve time period
+            else {
                 // Drag between employee timetable
                 if(info.newResource && info.newResource.id == "null")
                 {
@@ -535,7 +559,7 @@
     export let restrictedPast = true;
 
     // $: console.log(`Now time ${$now.format(formatToTime)}`);
-    $: console.log("$timetableComponent", $timetableComponent);
+    // $: console.log("$timetableComponent", $timetableComponent);
 
     onMount(async () => {
         await fetchTimetable(selectedDate);
@@ -652,9 +676,8 @@
     let employeeEvents = [];
     let employeeWorkHourEvent = [];
     let resources = [];
-    let prevClickedID = undefined;
     let clickedID = undefined;
-    $: if (clickedID !== prevClickedID) {
+    $: if (clickedID) {
         // Open the schedule exception modal
         if (clickedID !== undefined) {
             console.log("Timetable employee clickedID", clickedID);
@@ -672,7 +695,6 @@
             handleOpenEmployeeTimetableModal(clickedEmployee, selectedDate);
 
             // Reset
-            prevClickedID = undefined;
             clickedID = undefined;
         }
     }
