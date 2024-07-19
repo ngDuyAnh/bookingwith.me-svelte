@@ -9,7 +9,6 @@
     import {
         employeeToSelectOption
     } from "$lib/components/CustomerBooking/CustomerBookingComponent/components/ServiceOption/functions.js";
-    import {onMount} from "svelte";
 
     // Create the employee option for selection
     let employeeSelectOptions = [];
@@ -17,25 +16,10 @@
         employeeSelectOptions = $business.employeeList.map(employee => employeeToSelectOption(employee));
     }
 
-    // Employee selection
-
-   /* $: if ($serviceModal.open && !wasOpen)
-    {
-        editingServiceSelectedEmployees = employeeSelectOptions
-            .filter(option => $serviceModal.service.employeeList.some(employee => employee.id === option.data.id))
-            .map(option => option.value);
-    }
-    else if (!$serviceModal.open)
-    {
-        wasOpen = false;
-        editingServiceSelectedEmployees = [];
-    }*/
-
-    // Update the service employee list whenever the selected employees change
+    // Initialize the selection
     let wasOpen = false;
     let editingServiceSelectedEmployees = [];
 
-    // Initialize the selection
     $: if ($serviceModal.open && !wasOpen) {
 
         wasOpen = true;
@@ -136,13 +120,20 @@
             />
         </Label>
 
-        <Button
-                class="w-full"
-                type="submit"
-        >
-            Save
-        </Button>
-        {#if !$serviceModal.createServiceForServiceGroupID}
+        {#if $serviceModal.createServiceForServiceGroupID}
+            <Button
+                    class="w-full"
+                    type="submit"
+            >
+                Add
+            </Button>
+        {:else}
+            <Button
+                    class="w-full"
+                    type="submit"
+            >
+                Save
+            </Button>
             <Button class="w-full" on:click={handleDeleteServiceModal}>Delete</Button>
         {/if}
     </form>

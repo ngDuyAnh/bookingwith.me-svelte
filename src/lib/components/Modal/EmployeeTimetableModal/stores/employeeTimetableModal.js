@@ -21,6 +21,8 @@ export const employeeTimetableModal = writable({
 
 export async function handleOpenEmployeeTimetableModal(employee, date)
 {
+    console.log("here handleOpenEmployeeTimetableModal");
+
     try
     {
         // Get the employee work schedule
@@ -38,7 +40,7 @@ export async function handleOpenEmployeeTimetableModal(employee, date)
 
         // If it is today
         let timePeriod = TimePeriod();
-        if (isToday())
+        if (isToday(date))
         {
             // The current time is before the working time
             // Most likely the user want to edit the employee work schedule
@@ -49,9 +51,10 @@ export async function handleOpenEmployeeTimetableModal(employee, date)
             // Otherwise most likely the user want to add block ticket
             else
             {
+                const nowTimeValue = nowTime();
                 timePeriod = {
-                    startTime: nowTime(),
-                    endTime: getEndTime(timePeriod.startTime, DEFAULT_DURATION)
+                    startTime: nowTimeValue,
+                    endTime: getEndTime(nowTimeValue, DEFAULT_DURATION)
                 }
             }
         }
