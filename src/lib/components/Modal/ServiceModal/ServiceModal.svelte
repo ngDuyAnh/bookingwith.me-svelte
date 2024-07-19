@@ -67,6 +67,7 @@
             <span>Cost</span>
             <Input
                     type="number"
+                    step="0.01"
                     bind:value={$serviceModal.service.serviceCost}
                     required
             />
