@@ -2,7 +2,6 @@ import {get, writable} from "svelte/store";
 import {ServiceGroup} from "$lib/api/initialize_functions/Business.js";
 import {business} from "$lib/page/stores/business/business.js";
 import {
-    findServiceFromBusiness,
     findServiceGroupFromBusiness
 } from "$lib/api/utilitiy_functions/Business.js";
 import {initializeBusiness} from "$lib/api/api_server/api_endpoints/business-portal/api.js";
@@ -25,7 +24,7 @@ export function handleOpenEditServiceGroupModal(serviceGroup)
 {
     serviceGroupModal.set({
         open: true,
-        createServiceGroupFlag: true,
+        createServiceGroupFlag: false,
         serviceGroup: JSON.parse(JSON.stringify(serviceGroup))
     });
 }
@@ -56,14 +55,14 @@ export function handleSaveServiceGroupModal()
     else
     {
         // Get the service instance from the business
-        const serviceGroup = findServiceFromBusiness(
+        const serviceGroup = findServiceGroupFromBusiness(
             businessValue, serviceGroupModalValue.serviceGroup
         );
 
         // Deep copy
         Object.assign(
             serviceGroup,
-            serviceGroupModalValue.service
+            serviceGroupModalValue.serviceGroup
         );
     }
 

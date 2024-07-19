@@ -20,12 +20,15 @@
 
         <Label>
             <span>Service Group Name</span>
-            <Input bind:value={$serviceGroupModal.serviceGroup.serviceGroupName} required />
+            <Input
+                    bind:value={$serviceGroupModal.serviceGroup.serviceGroupName}
+                    required
+            />
         </Label>
 
         <Label>
             <span>Description</span>
-            <Input bind:value={$serviceGroupModal.serviceGroup.description} required />
+            <Input bind:value={$serviceGroupModal.serviceGroup.description}/>
         </Label>
 
         <Label class="inline-flex items-center cursor-pointer">
