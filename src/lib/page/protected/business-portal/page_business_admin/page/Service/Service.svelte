@@ -9,31 +9,17 @@
     import ServiceList from "$lib/components/Service/ServiceList/ServiceList.svelte";
     import ServiceGroupModal from "$lib/components/Modal/ServiceGroupModal/ServiceGroupModal.svelte";
     import {
-        handleOpenCreateNewServiceGroupModal,
+        handleOpenCreateNewServiceGroupModal, handleOpenEditServiceGroupModal,
     } from "$lib/components/Modal/ServiceGroupModal/stores/serviceGroupModal.js";
 
     const flipDurationMs = 200;
 
-    let openCreateServiceGroupModal = false;
-    let openEditServiceGroupModal = false;
-    let editingServiceGroup = {};
-
-    let openCreateServiceModal = false;
-    let openEditServiceModal = false;
-    let editingService = {};
-
-    function handleOpenEditServiceGroupModal(serviceGroup) {
-        editingServiceGroup = serviceGroup;
-        openEditServiceGroupModal = true;
-    }
 
     let loading = true;
 
     onMount(() => {
         loading = false;
     });
-
-    let refresh = true;
 
     function handleSort(e) {
         business.update((business) => {
