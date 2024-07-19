@@ -76,23 +76,7 @@
             </div>
         </svelte:fragment>
 
-
-        <!--        <svelte:fragment slot="header">-->
-        <!--            <div class="flex sm:flex-row flex-col justify-evenly items-center w-full">-->
-        <!--                <h1 class="select-none whitespace-nowrap text-2xl text-gray-700 font-bold flex flex-row">-->
-        <!--                    <CalendarMonthOutline size="xl"/>-->
-        <!--                    Create Booking-->
-        <!--                </h1>-->
-        <!--                {#if !successfulSubmition}-->
-        <!--                    <div class="flex flex-row items-center justify-start space-x-2">-->
-        <!--                        <span class="flex flex-row"><UsersGroupSolid/> Guest(s):  {totalGuests}</span>-->
-        <!--                        <span class="flex flex-row"><CashSolid/> Total: ${totalServiceCost}</span>-->
-        <!--                    </div>-->
-        <!--                {/if}-->
-        <!--            </div>-->
-        <!--        </svelte:fragment>-->
-
-        <!--        body-->
+        <!--body-->
         <CustomerBookingLobbyComponent
                 bookingChannel={CustomerBookingChannel.LOBBY}
                 bind:customerBooking={customerBooking}
