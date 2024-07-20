@@ -26,7 +26,8 @@
     } from "$lib/components/Modal/ServicingTicketClickModal/stores/servicingTicketClickModal.js";
     import {
         fetchTimetable,
-        timetableComponent, timetableSortServiceBookingList
+        timetableComponent,
+        timetableSortServiceBookingList
     } from "$lib/components/Timetable/stores/timetableComponent.js";
     import {onMount} from "svelte";
     import {Button, Popover, Search} from "flowbite-svelte";
@@ -38,6 +39,7 @@
         shortCustomerBookingID,
     } from "$lib/api/utilitiy_functions/CustomerBooking.js";
     import {
+        getCustomerBooking,
         initializeCustomerBookingAndBroadcast
     } from "$lib/api/api_server/api_endpoints/customer-booking-portal/api.js";
     import {business, getEmployee} from "$lib/page/stores/business/business.js";
@@ -52,7 +54,6 @@
         initializeEmployeeTimetableBlockTicket
     } from "$lib/api/api_server/api_endpoints/lobby-portal/api.js";
     import {getEndTime} from "$lib/api/initialize_functions/TimePeriod.js";
-    import {getCustomerBooking} from "$lib/api/api_server/api_endpoints/customer-booking-portal/api.js";
 
     // Date select
     let selectedDate = today();
@@ -131,18 +132,51 @@
         eventAllUpdated: function () {
             findECBody();
         },
-        eventDidMount: function (info) {
+        eventDidMount: async function (info) {
             if (info.event.title !== "") {
+
+                let iconCombination = ``;
+                const employeeAssignedSVG = `<div class="tooltip-container">
+                                            <svg xmlns="http://www.w3.org/2000/svg" class="w-[15px] h-[15px] text-blue-800" viewBox="0 0 640 512"><!--!Font Awesome Free 6.6.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free Copyright 2024 Fonticons, Inc.-->
+                                                                                        <path fill="currentColor" d="M96 128a128 128 0 1 1 256 0A128 128 0 1 1 96 128zM0 482.3C0 383.8 79.8 304 178.3 304l91.4 0C368.2 304 448 383.8 448 482.3c0 16.4-13.3 29.7-29.7 29.7L29.7 512C13.3 512 0 498.7 0 482.3zM625 177L497 305c-9.4 9.4-24.6 9.4-33.9 0l-64-64c-9.4-9.4-9.4-24.6 0-33.9s24.6-9.4 33.9 0l47 47L591 143c9.4-9.4 24.6-9.4 33.9 0s9.4 24.6 0 33.9z"/>
+                                                                                        </svg>
+                                                                                         <span class="tooltip">Employee assigned</span>
+                                            </div>`;
+                const employeeNotAssignedSVG = `<div class="tooltip-container">
+                                               <svg xmlns="http://www.w3.org/2000/svg" class="w-[15px] h-[15px] text-red-500" fill="currentColor" viewBox="0 0 640 512">
+                                                 <path fill="currentColor" d="M96 128a128 128 0 1 1 256 0A128 128 0 1 1 96 128zM0 482.3C0 383.8 79.8 304 178.3 304l91.4 0C368.2 304 448 383.8 448 482.3c0 16.4-13.3 29.7-29.7 29.7L29.7 512C13.3 512 0 498.7 0 482.3zM471 143c9.4-9.4 24.6-9.4 33.9 0l47 47 47-47c9.4-9.4 24.6-9.4 33.9 0s9.4 24.6 0 33.9l-47 47 47 47c9.4 9.4 9.4 24.6 0 33.9s-24.6 9.4-33.9 0l-47-47-47 47c-9.4 9.4-24.6 9.4-33.9 0s-9.4-24.6 0-33.9l47-47-47-47c-9.4-9.4-9.4-24.6 0-33.9z"/>
+                                               </svg>
+                                               <span class="tooltip">No employee assigned</span>
+                                             </div>`;
                 // console.log("mounted");
                 let extendedProps = info.event.extendedProps;
                 let isReserved = extendedProps.description == "Reserved";
 
+                let highlight=false;
+
                 let conflicted = false;
+                // console.log("assigned employee", info.event);
 
                 if (!isReserved) {
                     let employeeID = extendedProps.employeeTimetable.employee.id;
                     let bookedEmployee =
                         extendedProps.servicingTicket.servicingTicketInfo.bookedEmployee;
+
+                    const customerBookingId =
+                        extendedProps.servicingTicket.servicingTicketInfo.id;
+                    const customerBookingBookingID = extendedProps.servicingTicket.bookingID;
+                    const serviceBookingID = extendedProps.servicingTicket.serviceBookingID;
+
+
+                    // Get the customer booking instance
+                    // If it is today, can get it from queue list from dashboard
+                    // Otherwise has to fetch from the backend
+                    let customerBooking = undefined;
+                    if (isToday(selectedDate)) {
+                        customerBooking = findCustomerBookingById(customerBookingId);
+                    } else {
+                        customerBooking = await getCustomerBooking(customerBookingBookingID);
+                    }
 
                     if (bookedEmployee !== null && bookedEmployee.id !== employeeID) {
                         conflicted = true;
@@ -155,15 +189,31 @@
                         info.el.className = `ec-event border-4 border-black`;
                         assignedEmployeeEvents[info.event.id] = "border-4 border-black";
                     }
+
+                    // Submit the changes to the backend
+                    if (customerBooking) {
+                        // Get the individual and service booking instance from the customer booking
+                        let serviceBooking = findServiceBookingFromCustomerBooking(
+                            customerBooking,
+                            serviceBookingID
+                        );
+
+
+                        if(serviceBooking && serviceBooking.assignedEmployee)
+                        {
+                            iconCombination+=employeeAssignedSVG;
+                        }
+                        else {
+                            iconCombination+=employeeNotAssignedSVG;
+                        }
+
+                        highlight=serviceBooking.service.highlight;
+                    }
                 }
 
-                info.el.className += ` ${isReserved ? 'dottedBackground' : "individual-" + extendedProps.individualID} pop-out-no-border`;
-                // info.el.id = extendedProps.individualID;
-//                 const alertSVG=`<svg class="w-[20px] h-[20px] animate-spin text-red-900 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
-//   <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M12 8v4l3 3m6-3a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z"/>
-// </svg>`
+                info.el.className += ` ${isReserved ? 'dottedBackground' : "individual-" + extendedProps.individualID} pop-out-no-border ${highlight?'glowing-border':''}`;
 
-                const timeDiv = `<div class="text-sm font-semibold flex flex-row">${extendedProps.time}</div>`;
+                const timeDiv = `<div class="text-sm font-semibold flex flex-row">${iconCombination}${extendedProps.time}</div>`;
                 const descriptionDiv = `<div class="text-sm text-ellipsis overflow-hidden ... whitespace-pre-line">${extendedProps.description}</div>`;
 
                 const tempDiv = document.createElement("div"); // Create a temporary DIV
@@ -187,7 +237,8 @@
                 if (!isReserved) {
                     let bookingID = extendedProps.servicingTicket.bookingID;
                     let individualID = extendedProps.servicingTicket.individualID;
-                    info.el.className = `ec-event pop-out-no-border individual-${individualID} border-4 border-green-500 border-dashed`;
+                    let highlight = extendedProps.servicingTicket.servicingTicketInfo.service.highlight;
+                    info.el.className = `ec-event ${highlight?'glowing-border':''} pop-out-no-border individual-${individualID} border-4 border-green-500 border-dashed`;
                     highlightRelatedEvents(bookingID, individualID);
                 } else {
                     info.el.className = `ec-event pop-out-no-border dottedBackground border-4 border-green-500 border-dashed`;
@@ -205,8 +256,9 @@
                     let individualID =
                         info.event.extendedProps.servicingTicket.individualID;
                     resetHighlight(bookingID, individualID);
+                    let highlight = extendedProps.servicingTicket.servicingTicketInfo.service.highlight;
 
-                    info.el.className = `ec-event pop-out-no-border individual-${individualID} ${assignedEmployeeEvents[info.event.id] ? assignedEmployeeEvents[info.event.id] : ""} ${conflictEmployeeEvents[info.event.id] ? conflictEmployeeEvents[info.event.id] : ""}`;
+                    info.el.className = `ec-event ${highlight?'glowing-border':''} pop-out-no-border individual-${individualID} ${assignedEmployeeEvents[info.event.id] ? assignedEmployeeEvents[info.event.id] : ""} ${conflictEmployeeEvents[info.event.id] ? conflictEmployeeEvents[info.event.id] : ""}`;
                 } else {
                     info.el.className = `ec-event pop-out-no-border dottedBackground`;
                 }
@@ -220,7 +272,7 @@
 
             let extendedProps = info.event.extendedProps;
             let isReserved = extendedProps.description == "Reserved";
-            console.log("isReserved", isReserved);
+            // console.log("isReserved", isReserved);
             if (!isReserved) {
                 let currTicketID = info.event.extendedProps.servicingTicket.ticketID;
                 let currServiceBookingID =
@@ -367,7 +419,9 @@
                     }
 
                     // Submit to the database
-                    await initializeCustomerBookingAndBroadcast(customerBooking, nowTime());
+                    await initializeCustomerBookingAndBroadcast(customerBooking, nowTime()).finally(()=>{console.log("serviceBooking",serviceBooking);});
+
+
                 }
             }
             // Block ticket, employee reserve time period
@@ -457,22 +511,6 @@
                 .trim();
         });
     }
-
-    /* function resetIndividualHighlight(serviceBookingID) {
-            const allEvents = calendarInstance.getEvents();
-            allEvents.forEach((event) => {
-                if (
-                    event.extendedProps.servicingTicket &&
-                    event.extendedProps.servicingTicket.serviceBookingID ===
-                    serviceBookingID
-                ) {
-                    event.backgroundColor = bookingStateColour(
-                        event.extendedProps.servicingTicket
-                    );
-                    calendarInstance.updateEvent(event);
-                }
-            });
-        }*/
 
     function findECBody() {
         const element = document.querySelector(".ec-body");
@@ -812,7 +850,7 @@
         // Events for block tickets
         const blockEvents = employeeTimetableList.flatMap((employeeTable) =>
             employeeTable.blockTicketList.map((blockTicket) => {
-                console.log("blockTicket", blockTicket);
+                // console.log("blockTicket", blockTicket);
 
                 return {
                     start: `${$now.format("YYYY-MM-DD")} ${blockTicket.startTime}`,
@@ -880,6 +918,7 @@
     function selectYesterday() {
         selectedDate = dayjs(selectedDate).subtract(1, "day").format(formatToDate);
     }
+
 </script>
 
 <div
@@ -1068,6 +1107,43 @@
         background-color: #e0e0e0;
     }
 
+    :global(.tooltip-container) {
+        position: relative;
+        display: block;
+    }
+
+    :global(.tooltip) {
+        visibility: hidden;
+        background-color: #4f4d4d;
+        width: auto; /* Adjust width dynamically */
+        max-width: 200px; /* Maximum width to prevent excessively long tooltips */
+        color: white;
+        text-align: center;
+        border-radius: 6px;
+        padding: 5px 10px; /* Added horizontal padding */
+        position: absolute;
+        z-index: 2000;
+        top: 100%; /* Position below the icon */
+        left: 50%;
+        transform: translateX(-50%);
+        margin-top: 5px; /* Space between icon and tooltip */
+        font-size: 11px; /* Smaller text size */
+        opacity: 0;
+        transition: opacity 0.3s;
+        white-space: nowrap; /* Prevent text from wrapping */
+        overflow: hidden; /* Hide text that overflows the max-width */
+        text-overflow: ellipsis; /* Add ellipsis if text overflows */
+    }
+
+
+    :global(.tooltip-container:hover .tooltip) {
+        visibility: visible;
+        opacity: 1;
+    }
+
+    :global(.glowing-border) {
+        box-shadow: inset 0 0 20px #000000;
+    }
 
     /*:global(.ec-preview) {*/
     /*  background-color: rgba(255, 0, 0, 0.34) !important;*/
