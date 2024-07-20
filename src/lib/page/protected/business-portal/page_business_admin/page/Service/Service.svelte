@@ -1,96 +1,114 @@
 <script>
-    import {Accordion, AccordionItem, Button} from 'flowbite-svelte';
+    import {Accordion, AccordionItem, Button, Spinner} from "flowbite-svelte";
     import {business} from "$lib/page/stores/business/business.js";
-    import CreateServiceGroupModal
-        from "$lib/page/protected/business-portal/page_business_admin/page/Service/components/CreateServiceGroupModal/CreateServiceGroupModal.svelte";
-    import EditServiceGroupModal
-        from "$lib/page/protected/business-portal/page_business_admin/page/Service/components/EditServiceGroupModal/EditServiceGroupModal.svelte";
-    import CreateServiceModal
-        from "$lib/page/protected/business-portal/page_business_admin/page/Service/components/CreateServiceModal/CreateServiceModal.svelte";
-    import EditServiceModal
-        from "$lib/page/protected/business-portal/page_business_admin/page/Service/components/EditServiceModal/EditServiceModal.svelte";
+    import {handleOpenCreateNewServiceModal} from "$lib/components/Modal/ServiceModal/stores/serviceModal.js";
+    import ServiceModal from "$lib/components/Modal/ServiceModal/ServiceModal.svelte";
+    import {onMount} from "svelte";
+    import {dragHandle, dragHandleZone} from "svelte-dnd-action";
+    import {initializeBusiness} from "$lib/api/api_server/api_endpoints/business-portal/api.js";
+    import ServiceList from "$lib/components/Service/ServiceList/ServiceList.svelte";
+    import ServiceGroupModal from "$lib/components/Modal/ServiceGroupModal/ServiceGroupModal.svelte";
+    import {
+        handleOpenCreateNewServiceGroupModal, handleOpenEditServiceGroupModal,
+    } from "$lib/components/Modal/ServiceGroupModal/stores/serviceGroupModal.js";
 
-    let openCreateServiceGroupModal = false;
-    let openEditServiceGroupModal = false;
-    let editingServiceGroup = {};
+    const flipDurationMs = 200;
 
-    let openCreateServiceModal = false;
-    let openEditServiceModal = false;
-    let editingService = {};
 
-    function handleOpenEditServiceGroupModal(serviceGroup) {
-        editingServiceGroup = serviceGroup;
-        openEditServiceGroupModal = true;
+    let loading = true;
+
+    onMount(() => {
+        loading = false;
+    });
+
+    function handleSort(e) {
+        business.update((business) => {
+            return {...business, serviceGroupList: e.detail.items};
+        });
+        // serviceList = e.detail.items;
     }
 
-    function handleOpenCreateServiceModal(serviceGroup)
-    {
-        editingServiceGroup = serviceGroup;
-        openCreateServiceModal = true;
+    function handleFinalize(e) {
+        business.update((business) => {
+            return {...business, serviceGroupList: e.detail.items};
+        });
+
+        initializeBusiness($business);
     }
 
-    function handleOpenEditServiceModal(serviceGroup, service) {
-        editingServiceGroup = serviceGroup;
-        editingService = service;
-        openEditServiceModal = true;
-    }
+    $: console.log("business", $business);
 </script>
 
-<Accordion class="bg-white">
-    {#each $business.serviceGroupList as serviceGroup, index}
-        <AccordionItem open={index === 0}>
-            <div slot="header" class="flex items-center w-full">
-                <div class="flex flex-col sm:flex-row justify-between w-full items-center text-center sm:text-left">
-                    <span class="font-semibold mb-2 sm:mb-0 sm:mr-3">{serviceGroup.serviceGroupName}</span>
-                    <span class="mr-4 text-sm text-gray-500 flex-1">{serviceGroup.description}</span>
-                    <Button class="mr-4" on:click={() => handleOpenCreateServiceModal(serviceGroup)}>Add new service</Button>
-                    <Button class="mr-4" on:click={() => handleOpenEditServiceGroupModal(serviceGroup)}>Edit</Button>
-                </div>
-            </div>
+{#if loading}
+    <div class="flex items-center justify-center w-full h-full">
+        <Spinner/>
+    </div>
+{:else}
+    <Accordion class="bg-white">
+        <ul
+                class="h-full px-4 shadow w-full overflow-y-auto"
+                use:dragHandleZone={{ items: $business.serviceGroupList, flipDurationMs }}
+                on:consider={(e) => handleSort(e)}
+                on:finalize={(e) => handleFinalize(e)}
+        >
+            {#each $business.serviceGroupList as serviceGroup, index (serviceGroup.id)}
+                <AccordionItem>
+                    <div slot="header" class="flex items-center w-full relative">
+                        <div
+                                use:dragHandle
+                                aria-label="drag-handle for {index}"
+                                class="absolute left-0 text-green-400"
+                        >
+                            <svg
+                                    xmlns="http://www.w3.org/2000/svg"
+                                    width="40px"
+                                    height="40px"
+                                    viewBox="0 0 24 24"
+                                    fill="current"
+                            >
+                                <path
+                                        d="M15 13a1 1 0 1 0 0-2 1 1 0 0 0 0 2ZM15 19a1 1 0 1 0 0-2 1 1 0 0 0 0 2ZM15 7a1 1 0 1 0 0-2 1 1 0 0 0 0 2ZM9 13a1 1 0 1 0 0-2 1 1 0 0 0 0 2ZM9 19a1 1 0 1 0 0-2 1 1 0 0 0 0 2ZM9 7a1 1 0 1 0 0-2 1 1 0 0 0 0 2Z"
+                                        stroke="#8a8a8a"
+                                        stroke-width="1"
+                                        stroke-miterlimit="10"
+                                />
+                            </svg>
+                        </div>
+                        <div
+                                class="flex flex-col sm:flex-row justify-between w-full items-center text-center sm:text-left ml-[40px]"
+                        >
+              <span class="font-semibold mb-2 sm:mb-0 sm:mr-3"
+              >{serviceGroup.serviceGroupName}</span
+              >
+                            <span class="mr-4 text-sm text-gray-500 flex-1"
+                            >{serviceGroup.description}</span
+                            >
+                            <Button
+                                    class="mr-4"
+                                    on:click={() => handleOpenCreateNewServiceModal(serviceGroup)}
+                            >Add new service
+                            </Button>
+                            <Button
+                                    class="mr-4"
+                                    on:click={() => handleOpenEditServiceGroupModal(serviceGroup)}
+                            >Edit
+                            </Button>
+                        </div>
+                    </div>
 
-            {#each serviceGroup.serviceList as service}
-                <div class="mb-4">
-                    <h3 class="font-bold">{service.serviceName}</h3>
-                    <p>
-                        Cost: ${service.serviceCost.toFixed(2)}{service.showPlus ? '+' : ''}
-                    </p>
-                    <p>Duration: {service.serviceTimeLength} minutes</p>
-                    <p>Description: {service.description}</p>
-                    <p>Available with:
-                        {#if service.employeeList && service.employeeList.length > 0}
-                            {service.employeeList.map(employee => employee.employeeName).join(', ')}
-                        {:else}
-                            No employees assigned
-                        {/if}
-                    </p>
-                    <Button on:click={() => handleOpenEditServiceModal(serviceGroup, service)}>Edit</Button>
-                </div>
+                    <ServiceList bind:serviceList={serviceGroup.serviceList}/>
+                </AccordionItem>
             {/each}
-        </AccordionItem>
-    {/each}
-</Accordion>
+        </ul>
+    </Accordion>
+{/if}
 
 <div class="mt-4">
-    <Button on:click={() => openCreateServiceGroupModal = true}>Add New Service Group</Button>
+    <Button on:click={handleOpenCreateNewServiceGroupModal}>Add New Service Group</Button>
 </div>
 
-<!-- Modal for adding new service group -->
-<CreateServiceGroupModal bind:open={openCreateServiceGroupModal}/>
+<!--Modal create or edit service group-->
+<ServiceGroupModal/>
 
-<!-- Modal for editing service group -->
-<EditServiceGroupModal
-        bind:open={openEditServiceGroupModal}
-        {editingServiceGroup}
-/>
-
-<!-- Modal for adding new service -->
-<CreateServiceModal
-        bind:open={openCreateServiceModal}
-        serviceGroup={editingServiceGroup}
-/>
-
-<!-- Modal for editing service -->
-<EditServiceModal
-        bind:open={openEditServiceModal}
-        {editingService}
-/>
+<!--Modal create or edit service-->
+<ServiceModal/>

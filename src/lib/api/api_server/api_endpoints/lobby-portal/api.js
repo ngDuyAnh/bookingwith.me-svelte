@@ -66,3 +66,41 @@ export async function checkAbleToSendReviewReminderPhoneNumber(businessID, phone
 
     return await response.json();
 }
+
+export async function initializeEmployeeTimetableBlockTicket(businessID, blockTicket)
+{
+    const FETCH_URL = `${API_URL}/initialize-employee-timetable-block-ticket/${businessID}`;
+
+    const response = await fetch(`${FETCH_URL}`, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(blockTicket)
+    });
+
+    if (!response.ok) {
+        throw new Error(`Failed to fetch. Status: ${response.status}`);
+    }
+
+    return await response.json();
+}
+
+export async function deleteEmployeeTimetableBlockTicket(businessID, blockTicket)
+{
+    const FETCH_URL = `${API_URL}/delete-employee-timetable-block-ticket/${businessID}`;
+
+    const response = await fetch(`${FETCH_URL}`, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(blockTicket)
+    });
+
+    if (!response.ok) {
+        throw new Error(`Failed to fetch. Status: ${response.status}`);
+    }
+
+    return await response.json();
+}

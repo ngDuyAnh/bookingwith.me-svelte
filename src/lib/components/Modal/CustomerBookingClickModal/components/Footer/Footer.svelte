@@ -4,7 +4,7 @@
     } from "$lib/components/Modal/EditCustomerBooking/modalEditCustomerBooking.js";
     import {business} from "$lib/page/stores/business/business.js";
     import {Button, Tooltip} from "flowbite-svelte";
-    import {sendSmsAppointment, sendSMSAskingForReview} from "$lib/api/api_twilio/functions.js";
+    import {sendSmsAppointment, sendSMSAskingForReview, sendSmsLobby} from "$lib/api/api_twilio/functions.js";
     import {
         moveToCompleted,
         moveToLobby,
@@ -69,6 +69,27 @@
                 .catch(error => {
                     sendingAppointmentReminder = false;
                     console.error('Failed to send SMS appointment ready soon reminder:', error);
+                });
+        }
+    }
+
+    let sendingLobbyReminder = false;
+    async function handleSendSmsLobby() {
+        if (!customerBooking.smsAppointmentSent) {
+
+            sendingLobbyReminder = true;
+
+            sendSmsLobby($business.businessInfo.businessName, customerBooking)
+                .then(() => {
+                    console.log('Sent SMS appointment ready soon reminder.');
+
+                    // Record appointment SMS to the database
+                    customerBooking.smsLobbySent = true;
+                    initializeCustomerBooking(customerBooking);
+                })
+                .catch(error => {
+                    sendingLobbyReminder = false;
+                    console.error('Failed to send SMS lobby ready reminder:', error);
                 });
         }
     }
@@ -178,6 +199,24 @@
             </Button>
             {#if !customerBooking.smsAppointmentSent}
                 <Tooltip>Send SMS ready soon</Tooltip>
+            {:else}
+                <Tooltip>Reminder already sent</Tooltip>
+            {/if}
+        {:else if customerBooking.bookingState === CustomerBookingState.LOBBY}
+            <!--Send SMS lobby ready-->
+            <Button disabled={sendingLobbyReminder || customerBooking.smsLobbySent}
+                    id="show-tooltip"
+                    color="light" outline
+                    on:click={handleSendSmsLobby}
+            >
+                <svg class="w-6 h-6 text-gray-800 dark:text-white" aria-hidden="true"
+                     xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor"
+                     viewBox="0 0 24 24">
+                    <path d="M17.133 12.632v-1.8a5.406 5.406 0 0 0-4.154-5.262.955.955 0 0 0 .021-.106V3.1a1 1 0 0 0-2 0v2.364a.955.955 0 0 0 .021.106 5.406 5.406 0 0 0-4.154 5.262v1.8C6.867 15.018 5 15.614 5 16.807 5 17.4 5 18 5.538 18h12.924C19 18 19 17.4 19 16.807c0-1.193-1.867-1.789-1.867-4.175ZM6 6a1 1 0 0 1-.707-.293l-1-1a1 1 0 0 1 1.414-1.414l1 1A1 1 0 0 1 6 6Zm-2 4H3a1 1 0 0 1 0-2h1a1 1 0 1 1 0 2Zm14-4a1 1 0 0 1-.707-1.707l1-1a1 1 0 1 1 1.414 1.414l-1 1A1 1 0 0 1 18 6Zm3 4h-1a1 1 0 1 1 0-2h1a1 1 0 1 1 0 2ZM8.823 19a3.453 3.453 0 0 0 6.354 0H8.823Z"/>
+                </svg>
+            </Button>
+            {#if !customerBooking.smsAppointmentSent}
+                <Tooltip>Send SMS ready</Tooltip>
             {:else}
                 <Tooltip>Reminder already sent</Tooltip>
             {/if}

@@ -3,9 +3,7 @@
     import {formatToDate, formatToTime, formatToTimeAM} from "$lib/application/Formatter.js";
     import {Button, Input, Label, Select, Textarea} from "flowbite-svelte";
     import {
-        availability,
-        forceSubmitBooking, initializeCustomerBooking,
-        submitBooking
+        availability
     } from "$lib/api/api_server/api_endpoints/customer-booking-portal/api.js";
     import dayjs from "dayjs";
     import {onMount} from "svelte";
@@ -13,14 +11,9 @@
     import {
         CustomerBookingState
     } from "$lib/api/initialize_functions/CustomerBooking.js";
-    import {sendSmsConfirmBookingSuccess} from "$lib/api/api_twilio/functions.js";
     import {rawPhoneNumber, formatPhoneNumber} from "$lib/application/FormatPhoneNumber.js";
-    import {sendSmsBookingReminder} from "$lib/api/api_twilio/functions.js";
-    import {
-        moveToAppointment,
-        moveToLobby
-    } from "$lib/components/Modal/CustomerBookingClickModal/handle_customer_booking_state.js";
     import {isToday} from "$lib/page/stores/now/now_dayjs_store.js";
+    import {submitCustomerBooking} from "$lib/api/api_server/functions.js";
 
     export let customerBookingInformationFormProps;
 
@@ -247,108 +240,20 @@
         }
     }
 
-    async function submit() {
-        console.log("submit()", customerBooking);
-
-        let success = false;
-        let error = false;
-
-        try {
-            let response = {};
-
-            // Initialize customer booking
-            // Keep the current booking state if it is not in schedule state
-            // The backend will handle walk-in flag on creating the customer booking
-            customerBooking.bookingState = (!customerBooking.bookingState || customerBooking.bookingState === CustomerBookingState.SCHEDULE)
-                ? CustomerBookingState.APPOINTMENT
-                : customerBooking.bookingState;
-            customerBooking.walkIn = false;
-
-            // Force submit if override is toggled
-            if (customerBookingInformationProps.overrideFlag) {
-                response = await forceSubmitBooking(
-                    businessInfo.businessID,
-                    currentTimeString,
-                    customerBooking
-                );
-            }
-            // Submit appointment
-            else {
-                // Asynchronous servicing
-                if (walkinAvailabilityFlag) {
-                    customerBooking.walkIn = true;
+    function submit() {
+        submitCustomerBooking(
+            customerBooking,
+            currentTimeString,
+            selectedAvailability?.timePeriod,
+            walkinAvailabilityFlag,
+            customerBookingInformationProps
+        )
+            .then(success => {
+                // Call the callback function for submit
+                if (submitCallback) {
+                    submitCallback(success);
                 }
-
-                response = await submitBooking(
-                    businessInfo.businessID,
-                    currentTimeString,
-                    selectedAvailability.timePeriod,
-                    customerBooking
-                );
-            }
-
-            // Success
-            if (response.submitted) {
-                success = true;
-
-                // Move the customer booking state
-                if (isToday(customerBooking.bookingDate))
-                {
-                    if (customerBookingInformationProps.lobbyBookingStateFlag) {
-                        moveToLobby(response.customerBooking);
-                    }
-                    else if (customerBookingInformationProps.appointmentBookingStateFlag) {
-                        moveToAppointment(response.customerBooking);
-                    }
-                }
-
-                // Send SMS
-                if (customerBookingInformationProps.sendSmsFlag) {
-                    // Send SMS confirmation for the appointment
-                    sendSmsConfirmBookingSuccess(businessInfo.businessName, response.customerBooking)
-                        .then(async () => {
-                            console.log('Sent SMS appointment confirmation.');
-                            response.customerBooking.smsConfirmationSent = true;
-
-                            // Schedule SMS for reminder for the appointment
-                            await sendSmsBookingReminder(businessInfo.businessName, response.customerBooking)
-                                .then((scheduledReminderResponse) => {
-                                    console.log('Scheduled SMS appointment reminder.', scheduledReminderResponse);
-
-                                    // Record the SMS sid to the database
-                                    response.customerBooking.smsAppointmentReminderSid = scheduledReminderResponse.sid;
-                                })
-                                .catch(error => {
-                                    console.error('Error sending SMS appointment confirmation:', error);
-                                });
-
-                            // Save to the database
-                            initializeCustomerBooking(response.customerBooking)
-                                .then(() => {
-                                    console.log('Save appointment confirmation.');
-                                })
-                                .catch(error => {
-                                    console.error('Failed to save appointment confirmation:', error);
-                                });
-                        })
-                        .catch(error => {
-                            console.error('Failed to send appointment confirmation:', error);
-                        });
-                }
-            }
-            else
-            {
-                await fetchAvailableTimeList();
-            }
-        } catch (err) {
-            error = true;
-            console.error("Error submitting booking:", err);
-        }
-
-        // Call the callback function for submit
-        if (submitCallback) {
-            submitCallback(success, error);
-        }
+            })
     }
 
     let isConsentChecked = false;

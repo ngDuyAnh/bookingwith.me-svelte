@@ -64,6 +64,7 @@ export function Employee() {
     return {
         "id": -1,
         "employeeName": "",
+        "phoneNumber": "",
         "user": User(),
 
         "showOnlineBookingPage": true,
@@ -78,8 +79,11 @@ export function Service() {
         "serviceCost": "",
         "serviceTimeLength": null,
         "description": "",
+
         "showPlus": false,
         "showOnlineBookingPage": true,
+
+        "highlight": false,
 
         "archive": false,
         "employeeList": [],

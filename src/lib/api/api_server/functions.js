@@ -1,10 +1,25 @@
 import dayjs from "dayjs";
 import {formatToDate} from "$lib/application/Formatter.js";
 import {CustomerBookingState} from "$lib/api/initialize_functions/CustomerBooking.js";
-import {availability} from "$lib/api/api_server/api_endpoints/customer-booking-portal/api.js";
+import {
+    availability,
+    forceSubmitBooking, initializeCustomerBooking,
+    submitBooking
+} from "$lib/api/api_server/api_endpoints/customer-booking-portal/api.js";
 import {isPast, isToday, nowTime} from "$lib/page/stores/now/now_dayjs_store.js";
 import {getBusinessID} from "$lib/page/stores/business/business.js";
 import {sanitizeCustomerBooking} from "$lib/api/utilitiy_functions/CustomerBooking.js";
+import {
+    moveToAppointment,
+    moveToLobby
+} from "$lib/components/Modal/CustomerBookingClickModal/handle_customer_booking_state.js";
+import {
+    sendSmsBookingReminder,
+    sendSmsConfirmBookingSuccess, sendSmsEditBookedEmployee,
+    sendSmsNewBookedEmployee
+} from "$lib/api/api_twilio/functions.js";
+import {get} from 'svelte/store';
+import {business} from "$lib/page/stores/business/business.js";
 
 export function checkAbleToSendSmsReviewReminder(checkAbleToSendresponse) {
     const {allowToSendReviewReminderSMS, mostRecentDateReviewReminderSent} = checkAbleToSendresponse;
@@ -56,4 +71,163 @@ export async function fetchAvailableTimeList(customerBooking, isWalkIn) {
 
     // Return
     return availabilityList;
+}
+
+export async function submitCustomerBooking(
+    cb,
+    currentTimeString, bookingTimePeriod,
+    walkinAvailabilityFlag,
+    customerBookingInformationProps) {
+
+    const businessValue = get(business);
+
+    console.log("submitCustomerBooking()", cb);
+
+    let success = false;
+
+    try {
+        // Cloned
+        const customerBooking = sanitizeCustomerBooking(
+            JSON.parse(JSON.stringify(cb))
+        );
+
+        // Keep the current booking state if it is not in schedule state
+        if (customerBooking.bookingState === CustomerBookingState.SCHEDULE) {
+            customerBooking.bookingState = CustomerBookingState.APPOINTMENT;
+        }
+
+        // Default the walk-in flag to false
+        // The backend will check and handle on creating the customer booking
+        customerBooking.walkIn = false;
+
+        // Force submit if override is toggled
+        let response = {};
+        if (customerBookingInformationProps.overrideFlag) {
+            response = await forceSubmitBooking(
+                businessValue.businessInfo.businessID,
+                currentTimeString,
+                customerBooking
+            );
+        }
+        // Submit appointment
+        else {
+            // Asynchronous servicing
+            if (walkinAvailabilityFlag) {
+                customerBooking.walkIn = true;
+            }
+
+            response = await submitBooking(
+                businessValue.businessInfo.businessID,
+                currentTimeString,
+                bookingTimePeriod,
+                customerBooking
+            );
+        }
+
+        // Success
+        if (response.submitted) {
+            success = true;
+
+            // Handle SMS and moving the customer booking to lobby
+            handleCustomerBooking(
+                businessValue,
+                response.customerBooking,
+                customerBookingInformationProps,
+                (customerBooking.id === -1)
+            )
+                .then(() => {
+                    console.log("Done handling SMS and booking state move.");
+                });
+        } else {
+            await fetchAvailableTimeList();
+        }
+    } catch (err) {
+        console.error("Error submitting booking:", err);
+    }
+
+    // Return
+    return success;
+}
+
+async function handleCustomerBooking(
+    businessValue,
+    customerBooking,
+    customerBookingInformationProps,
+    isNewCustomerBooking)
+{
+    // Send SMS
+    if (customerBookingInformationProps.sendSmsFlag) {
+        try {
+            // Send SMS confirmation for the appointment
+            await sendSmsConfirmBookingSuccess(
+                businessValue.businessInfo.businessName, customerBooking
+            );
+            customerBooking.smsConfirmationSent = true;
+            console.log('Sent SMS appointment confirmation.');
+
+            // Schedule SMS for reminder for the appointment
+            try
+            {
+                const scheduledReminderResponse = sendSmsBookingReminder(
+                    businessValue.businessInfo.businessName,
+                    customerBooking);
+                customerBooking.smsAppointmentReminderSid = scheduledReminderResponse.sid;
+                console.log('Scheduled a SMS reminder for the appointment.');
+            }
+            catch(error)
+            {
+                console.error('Error sending SMS appointment confirmation:', error);
+            }
+
+            // Save to the database
+            try
+            {
+                await initializeCustomerBooking(customerBooking);
+                console.log('Recorded the SMS sending to the database.');
+            }
+            catch(error)
+            {
+                console.error('Error recording the SMS sending to the database:', error);
+            }
+        } catch (error) {
+            console.error('Failed to send appointment confirmation:', error);
+        }
+    }
+
+    // Send the SMS notification for the employee
+    // New customer booking
+    if (isNewCustomerBooking)
+    {
+        sendSmsNewBookedEmployee(
+            businessValue.businessInfo.businessName, customerBooking
+        )
+            .then(() => {
+                console.log("New customer booking SMS notification to the employees.");
+            });
+    }
+    // Edit customer booking
+    else
+    {
+        sendSmsEditBookedEmployee(
+            businessValue.businessInfo.businessName, customerBooking
+        )
+            .then(() => {
+                console.log("Edit customer booking SMS notification to the employees.");
+            });
+    }
+
+    // Move the customer booking state
+    if (isToday(customerBooking.bookingDate)) {
+        if (customerBookingInformationProps.lobbyBookingStateFlag) {
+            moveToLobby(customerBooking)
+                .then(() => {
+                    console.log("Moved the customer booking to lobby.")
+                });
+        } else if (customerBookingInformationProps.appointmentBookingStateFlag) {
+            moveToAppointment(customerBooking)
+                .then(() => {
+                    console.log("Moved the customer booking to appointment.")
+                });
+        }
+    }
 }

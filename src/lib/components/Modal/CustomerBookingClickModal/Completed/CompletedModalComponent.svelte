@@ -38,7 +38,7 @@
                     {#each individualBooking.customerIndividualServiceBookingList as serviceBooking}
                         <div class="mt-1 p-1">
                             <p>{serviceBooking.service.serviceName}
-                                ({serviceBooking.employee?.employeeName || 'Any employee'})</p>
+                                ({serviceBooking.bookedEmployee?.employeeName || 'Any employee'})</p>
                         </div>
                     {/each}
                 </div>

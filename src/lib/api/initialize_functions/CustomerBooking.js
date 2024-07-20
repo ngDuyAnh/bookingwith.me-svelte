@@ -1,5 +1,6 @@
 import { TimePeriod } from "$lib/api/initialize_functions/TimePeriod.js";
 import { today } from "$lib/page/stores/now/now_dayjs_store.js";
+import {Employee} from "$lib/api/initialize_functions/Business.js";
 
 export const CustomerBookingState = {
     APPOINTMENT: 0,
@@ -130,5 +131,16 @@ export function ServicingTicket() {
         "isFiller": false,
         "isOngoing": false,
         "isCompleted": false
+    };
+}
+
+export function EmployeeTimetableBlockTicket()
+{
+    return {
+        "blockTicketID": -1,
+        "employee": undefined,
+        "date": today(),
+        "startTime": "00:00",
+        "duration": 0
     };
 }

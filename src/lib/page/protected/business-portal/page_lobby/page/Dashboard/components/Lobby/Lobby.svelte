@@ -2,10 +2,16 @@
     import CustomerBookingList
         from "$lib/page/protected/business-portal/page_lobby/page/Dashboard/components/components/CustomerBookingList/CustomerBookingList.svelte";
     import {
-        handleNewCustomerBookingWalkin
-    } from "$lib/components/Modal/CreateCustomerBooking/stores/modalCreateCustomerBooking.js";
+        handleNewCustomerBookingInLobbyPageForLobby
+    } from "$lib/components/Modal/CreateCustomerBookingLobby/stores/createCustomerBookingLobby.js";
 
+    export let flipDurationMs;
     export let customerBookingQueueList;
+    export let dragDisabled;
+    export let moveFinished;
+    export let droppedIntoID;
+    export let progress;
+
 </script>
 
 <!-- List Header -->
@@ -16,7 +22,7 @@
         <span class="text-sm">{customerBookingQueueList[1].length}</span>
 
         <button
-                on:click={handleNewCustomerBookingWalkin}
+                on:click={handleNewCustomerBookingInLobbyPageForLobby}
                 class="text-blue-500 hover:text-blue-700 focus:outline-none"
         >
             <svg
@@ -37,4 +43,4 @@
     </div>
 </div>
 
-<CustomerBookingList columnID={1} customerBookingList={customerBookingQueueList[1]}/>
+<CustomerBookingList bind:progress={progress} bind:droppedIntoID={droppedIntoID} flipDurationMs={flipDurationMs} bind:moveFinished={moveFinished} bind:dragDisabled={dragDisabled} columnID={1} customerBookingList={customerBookingQueueList[1]}/>

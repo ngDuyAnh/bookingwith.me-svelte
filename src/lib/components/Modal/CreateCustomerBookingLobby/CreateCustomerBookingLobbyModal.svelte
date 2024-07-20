@@ -7,24 +7,14 @@
     import {
         modalCreateCustomerBookingLobby
     } from "$lib/components/Modal/CreateCustomerBookingLobby/stores/createCustomerBookingLobby.js";
-    import {Modal, Toggle, Tooltip} from "flowbite-svelte";
+    import {Badge, Button, Checkbox, Modal} from "flowbite-svelte";
     import CustomerBookingLobbyComponent
         from "$lib/components/CustomerBooking/CustomerBookingLobbyComponent/CustomerBookingLobbyComponent.svelte";
-    import {isToday} from "$lib/page/stores/now/now_dayjs_store.js";
+    import {CalendarMonthOutline, CashSolid, UsersGroupSolid} from "flowbite-svelte-icons";
 
     export let customerBooking = {
         ...CustomerBooking(),
         customerIndividualBookingList: [CustomerIndividualBooking()]
-    };
-
-    export let customerBookingInformationProps = {
-        showOverride: false,
-        showSendSms: false,
-        showLobbyBookingState: false,
-
-        overrideFlag: false,
-        sendSmsFlag: true,
-        lobbyBookingStateFlag: false,
     };
 
     // Reset
@@ -40,61 +30,84 @@
         wasOpen = false;
     }
 
+    let successfulSubmition;
+    let totalServiceCost = 0;
+    let totalGuests = 0;
+
+    $:if (customerBooking) {
+        totalServiceCost = 0;
+        totalGuests = 0;
+
+        customerBooking.customerIndividualBookingList.forEach(individualBooking => {
+            totalGuests += 1;
+            individualBooking.customerIndividualServiceBookingList.forEach(booking => {
+                totalServiceCost += booking.service.serviceCost;
+            });
+        })
+    }
 </script>
 
 
 <div class="absolute top-0 left-0 right-0 z-[2000]">
     <Modal bind:open={$modalCreateCustomerBookingLobby.open}
-           bodyClass="p-4 md:p-5 space-y-0 flex-1 overflow-y-auto overscroll-contain"
+           classHeader="!p-1"
+           classBody="p-4 md:p-5 space-y-0 flex-1 overflow-y-auto overscroll-contain"
            class="w-full h-[80vh] border-8"
            classBackdrop="fixed inset-0 z-50 bg-gray-900 bg-opacity-90 dark:bg-opacity-80"
            size='xl'>
         <svelte:fragment slot="header">
-            <h1 class="select-none whitespace-nowrap text-2xl text-gray-700 font-bold">
-                New Booking
-            </h1>
-
-            <div class="mt-4 flex flex-wrap justify-center items-center w-full space-x-4">
-                {#if customerBookingInformationProps.showOverride}
-                    <div class="flex items-center">
-                        <Toggle bind:checked={customerBookingInformationProps.overrideFlag}>Override
-                        </Toggle>
-                        <Tooltip>Override booking time</Tooltip>
-                    </div>
-                {/if}
-
-                {#if customerBookingInformationProps.showSendSms}
-                    <div class="flex items-center">
-                        <Toggle bind:checked={customerBookingInformationProps.sendSmsFlag} class="toggle">SMS</Toggle>
-                        <Tooltip>Notify customer through SMS</Tooltip>
-                    </div>
-                {/if}
-
-                {#if customerBookingInformationProps.showAppointmentBookingState}
-                    <div class="flex items-center {isToday(customerBooking.bookingDate) ? '' : 'hidden'}">
-                        <Toggle
-                                bind:checked={customerBookingInformationProps.appointmentBookingStateFlag}>
-                            Appointment
-                        </Toggle>
-                        <Tooltip>Move booking to appointment</Tooltip>
-                    </div>
-                {/if}
-
-                {#if customerBookingInformationProps.showLobbyBookingState}
-                    <div class="flex items-center {isToday(customerBooking.bookingDate) ? '' : 'hidden'}">
-                        <Toggle
-                                bind:checked={customerBookingInformationProps.lobbyBookingStateFlag}>
-                            Lobby
-                        </Toggle>
-                        <Tooltip>Move booking to lobby</Tooltip>
+            <div class="flex sm:flex-row flex-col sm:justify-between justify-center items-center w-full">
+                <div class="w-1/2 flex sm:justify-start justify-center">
+                    <h1 class="select-none whitespace-nowrap text-2xl text-gray-700 font-bold flex flex-row">
+                        <CalendarMonthOutline size="xl"/>
+                        Create Booking
+                    </h1>
+                </div>
+                {#if !successfulSubmition}
+                    <div class="w-1/2 flex justify-center">
+                        <div class="flex flex-row items-center space-x-2">
+                            <Badge color="dark" class="space-x-2" large>
+                                <span class="flex flex-row"><UsersGroupSolid/> Guest(s):  {totalGuests}</span>
+                                <span class="flex flex-row"><CashSolid/> Total: ${totalServiceCost}</span>
+                            </Badge>
+                        </div>
                     </div>
                 {/if}
             </div>
         </svelte:fragment>
+
+        <!--body-->
         <CustomerBookingLobbyComponent
                 bookingChannel={CustomerBookingChannel.LOBBY}
-
-                {customerBooking}
+                bind:customerBooking={customerBooking}
+                bind:successfulSubmition={successfulSubmition}
         />
+
+        <svelte:fragment slot="footer">
+            <!--Optional actions-->
+            {#if !successfulSubmition}
+                <div class="w-full flex justify-end space-x-2">
+                    <div class="flex flex-row space-x-2">
+                        {#if $modalCreateCustomerBookingLobby.customerBookingInformationProps.showSendSms}
+                            <Checkbox
+                                    bind:checked={$modalCreateCustomerBookingLobby.customerBookingInformationProps.sendSmsFlag}>
+                                Send SMS
+                            </Checkbox>
+                        {/if}
+
+                        {#if $modalCreateCustomerBookingLobby.customerBookingInformationProps.showLobbyBookingState}
+                            <Checkbox
+                                    bind:checked={$modalCreateCustomerBookingLobby.customerBookingInformationProps.lobbyBookingStateFlag}>
+                                Lobby
+                            </Checkbox>
+                        {/if}
+                    </div>
+
+                    <Button form="bookingForm" type="submit" class="">
+                        Create
+                    </Button>
+                </div>
+            {/if}
+        </svelte:fragment>
     </Modal>
 </div>

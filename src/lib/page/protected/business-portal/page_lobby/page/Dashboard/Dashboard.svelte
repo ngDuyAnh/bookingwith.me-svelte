@@ -9,7 +9,8 @@
         from "$lib/page/protected/business-portal/page_lobby/page/Dashboard/components/Completed/Completed.svelte";
     import {customerBookingQueueList} from "$lib/page/protected/business-portal/page_lobby/stores/dashboard_store.js";
     import {Button, Search, Spinner} from "flowbite-svelte";
-    import CustomerBookingClickModal from "$lib/components/Modal/CustomerBookingClickModal/CustomerBookingClickModal.svelte";
+    import CustomerBookingClickModal
+        from "$lib/components/Modal/CustomerBookingClickModal/CustomerBookingClickModal.svelte";
     import {SearchOutline} from 'flowbite-svelte-icons';
     import {handleOpenCustomerProfileModal} from "$lib/components/Modal/CustomerProfileModal/customerProfileModal.js";
     import {normalizeSearchInput} from "$lib/application/NormalizeSearchInput.js";
@@ -33,7 +34,6 @@
             name: "Completed"
         }
     ];
-
 
 
     let searchValue = '';
@@ -60,14 +60,12 @@
         }
     }
 
-    function handleSearchClick()
-    {
+    function handleSearchClick() {
         const normalizedSearchValue = normalizeSearchInput(searchValue);
 
         // Customer profile
         const phonePattern1 = /^\d{10}$/;
-        if (phonePattern1.test(normalizedSearchValue))
-        {
+        if (phonePattern1.test(normalizedSearchValue)) {
             console.log("Opening customer profile...")
             handleOpenCustomerProfileModal(normalizedSearchValue);
 
@@ -92,10 +90,37 @@
 
     // $: console.log("filteredBookingStateList", filteredBookingStateList);
 
-    let dragStartedID;
     let droppedIntoID;
+    let dragDisabled = false;
+    let moveFinished = false;
+    const flipDurationMs = 200;
 
-    // $:console.log("droppedIntoID ",droppedIntoID," from ",dragStartedID);
+    let progressFinished = false;
+
+    $:if (dragDisabled === true) {
+        startProgress();
+    }
+
+    $:if (moveFinished && progressFinished) {
+        dragDisabled = false;
+        moveFinished = false;
+        progressFinished = false;
+    }
+
+    function startProgress() {
+        const startTime = Date.now(); // Record the start time
+        const duration = flipDurationMs; // Duration of 700ms
+
+        const interval = setInterval(() => {
+            const elapsed = Date.now() - startTime; // Calculate elapsed time
+
+            if (elapsed >= duration) { // If 700ms or more has passed
+                clearInterval(interval); // Stop the interval
+                progressFinished = true;
+            }
+        }, 10); // Update every 10ms for a smoother progress bar
+    }
+
 </script>
 
 {#if loading}
@@ -124,32 +149,41 @@
         </div>
     </div>
 
-    <div class="flex flex-row w-screen h-full justify-between 2xl:items-center 2xl:justify-center space-x-4 overflow-x-auto p-4">
+    <div class="relative flex flex-row w-screen h-full justify-between 2xl:items-center 2xl:justify-center space-x-4 overflow-x-auto p-4">
+
         {#each columns as column, index (column.id)}
             <div
                     class="flex flex-col min-w-[348.4px] h-full bg-gray-100 rounded shadow overflow-y-auto border border-sky-200"
             >
                 {#if index === 0}
                     <Appointment
-                            bind:dragStartedID={dragStartedID}
+                            flipDurationMs={flipDurationMs}
+                            bind:moveFinished={moveFinished}
+                            bind:dragDisabled={dragDisabled}
                             bind:droppedIntoID={droppedIntoID}
                             bind:customerBookingQueueList={filteredBookingStateList}
                     />
                 {:else if index === 1}
                     <Lobby
-                            bind:dragStartedID={dragStartedID}
+                            flipDurationMs={flipDurationMs}
+                            bind:moveFinished={moveFinished}
+                            bind:dragDisabled={dragDisabled}
                             bind:droppedIntoID={droppedIntoID}
                             bind:customerBookingQueueList={filteredBookingStateList}
                     />
                 {:else if index === 2}
                     <Servicing
-                            bind:dragStartedID={dragStartedID}
+                            flipDurationMs={flipDurationMs}
+                            bind:moveFinished={moveFinished}
+                            bind:dragDisabled={dragDisabled}
                             bind:droppedIntoID={droppedIntoID}
                             bind:customerBookingQueueList={filteredBookingStateList}
                     />
                 {:else if index === 3}
                     <Completed
-                            bind:dragStartedID={dragStartedID}
+                            flipDurationMs={flipDurationMs}
+                            bind:moveFinished={moveFinished}
+                            bind:dragDisabled={dragDisabled}
                             bind:droppedIntoID={droppedIntoID}
                             bind:customerBookingQueueList={filteredBookingStateList}
                     />

@@ -2,6 +2,8 @@
     import SelectServiceBooking
         from "$lib/components/CustomerBooking/CustomerBookingLobbyComponent/GuestSelectService/components/SelectServiceBooking/SelectServiceBooking.svelte";
     import {UserSolid} from "flowbite-svelte-icons";
+    import ServiceBooking
+        from "$lib/components/CustomerBooking/CustomerBookingLobbyComponent/GuestSelectService/components/ServiceBooking/ServiceBooking.svelte";
 
     export let customerBooking;
     export let individualBookingIndex;
@@ -21,9 +23,6 @@
             totalServiceTimeLength += booking.service.serviceTimeLength;
         });
     }
-
-
-
 </script>
 
 <!--List of service booking from the guest-->
@@ -39,17 +38,11 @@
         </div>
 
         {#each individualBooking.customerIndividualServiceBookingList as serviceBooking, index (serviceBooking)}
-            <div class="relative bg-gray-100 border border-gray-300 p-4 mb-2 rounded">
-                <span class="absolute top-0 left-1">{index+1}.</span>
-                <SelectServiceBooking
-                        bind:individualBooking={individualBooking}
-                        serviceBookingIndex={index}
-                />
-                <div class="mt-2 text-xs text-gray-700">
-                    <span class="font-semibold">Cost:</span> ${serviceBooking.service.serviceCost}
-                    <span class="font-semibold ml-4">~Length:</span> {serviceBooking.service.serviceTimeLength} minutes
-                </div>
-            </div>
+            <ServiceBooking
+                    bind:individualBooking={individualBooking}
+                    serviceBookingIndex={index}
+                    bind:serviceBooking={serviceBooking}
+            />
         {/each}
 
         <!-- Section for adding a new service booking -->
