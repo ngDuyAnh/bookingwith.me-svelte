@@ -128,7 +128,6 @@ export function timetableSortServiceBookingList(individual, serviceBookingID, ne
     // Find the clicked serviceBooking and adjust the start time
     serviceBookingIdList = serviceBookingIdList.map(item => {
         if (item.serviceBookingID === serviceBookingID) {
-            // Add 1 minute to handle the sorting
             // When drag to same time as another service booking, do not change the order
             return {
                 ...item,
@@ -138,13 +137,49 @@ export function timetableSortServiceBookingList(individual, serviceBookingID, ne
         return item;
     });
 
+    // console.log("initialize time serviceBookingIdList", serviceBookingIdList)
+
     // Sort the list based on the start time, using originalIndex as a tiebreaker for stability
     serviceBookingIdList.sort((a, b) => {
         // Primary sort by startTime
-        const timeCompare = a.startTime.localeCompare(b.startTime);
-        // If start times are the same, use the original indices to maintain the original order
-        return timeCompare === 0 ? a.originalIndex - b.originalIndex : timeCompare;
+        let order = a.startTime.localeCompare(b.startTime);
+
+        // If the start times are the same
+        // Custom handle if one of the item is serviceBookingID
+        if (order === 0)
+        {
+            // Maintain order with original indices
+            order = a.originalIndex - b.originalIndex;
+
+            // If a is the target serviceBookingID
+            if (a.serviceBookingID === serviceBookingID) {
+                // If originalIndex of a is less than originalIndex of b, place a before b
+                if (a.originalIndex < b.originalIndex) {
+                    order = 1;
+                }
+                // Otherwise, place a after b
+                else {
+                    order = -1;
+                }
+            }
+            // If b is the target serviceBookingID
+            else if (b.serviceBookingID === serviceBookingID) {
+                // If originalIndex of b is less than originalIndex of a, place b before a
+                if (b.originalIndex < a.originalIndex) {
+                    return 1;
+                }
+                // Otherwise, place b after a
+                else {
+                    order = -1;
+                }
+            }
+        }
+
+        // Return
+        return order;
     });
+
+    // console.log("sort serviceBookingIdList", serviceBookingIdList);
 
     // Create a map where each serviceBookingID is mapped to its sort order index
     const sortOrderMap =
@@ -160,4 +195,6 @@ export function timetableSortServiceBookingList(individual, serviceBookingID, ne
         // Sort by the retrieved indexes
         return indexA - indexB;
     });
+
+    // console.log("individual.customerIndividualServiceBookingList", individual.customerIndividualServiceBookingList);
 }
