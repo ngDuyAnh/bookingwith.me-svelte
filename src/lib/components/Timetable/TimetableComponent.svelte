@@ -394,7 +394,7 @@
                             }
                         }
                     }
-                        // Same employee timetable
+                    // Same employee timetable
                     // Need to handle this differently because there is no oldResource
                     else {
                         let employeeID = info.event.resourceIds[0];
@@ -403,25 +403,79 @@
                         }
                     }
 
-                    // Adjust the service booking servicing order
-                    // Only in appointment and lobby state
-                    if (customerBooking.bookingState === CustomerBookingState.APPOINTMENT ||
-                        customerBooking.bookingState === CustomerBookingState.LOBBY) {
-                        timetableSortServiceBookingList(individual, serviceBookingID, startTime);
-                    }
+                    // Handling the drag and drop
+                    // Do not make changes if the booking state is in COMPLETED
+                    if (customerBooking.bookingState !== CustomerBookingState.COMPLETED) {
+                        // Dragged to conflicted
+                        // Reset the assigned employee and start time
+                        if (assignedEmployeeID === null)
+                        {
+                            serviceBooking.assignedEmployee = null;
 
-                    // Assign the employee to the service
-                    serviceBooking.assignedEmployee = getEmployee(assignedEmployeeID);
+                            // Adjust the service booking servicing order
+                            timetableSortServiceBookingList(individual, serviceBookingID, startTime);
 
-                    // Only set the start time if the customer booking is SERVICING
-                    if (customerBooking.bookingState === CustomerBookingState.SERVICING) {
-                        serviceBooking.startTime = startTime;
+                            // Reset the start time if booking state in APPOINTMENT or LOBBY
+                            // Because ticket get automatically schedule
+                            if (customerBooking.bookingState === CustomerBookingState.APPOINTMENT ||
+                                customerBooking.bookingState === CustomerBookingState.LOBBY)
+                            {
+                                // If it is the selected is the first service booking, then reset all the start time
+                                if (individual.customerIndividualServiceBookingList[0].serviceBookingID === serviceBookingID)
+                                {
+                                    console.log("Here in reset all")
+
+                                    // Initialize the rest of the start times to follow after the pin
+                                    for (let i = 0; i < individual.customerIndividualServiceBookingList.length; i++) {
+                                        individual.customerIndividualServiceBookingList[i].startTime = null;
+                                    }
+                                }
+                                // Only reset the start time of the service booking
+                                else
+                                {
+                                    console.log("Here in reset one")
+
+                                    serviceBooking.startTime = null;
+                                }
+                            }
+                        }
+                        // Dragged to employee
+                        else
+                        {
+                            serviceBooking.assignedEmployee = getEmployee(assignedEmployeeID);
+
+                            // If the first service booking is the selected service booking
+                            // Ignore the order adjustment
+                            // This is to make easier to adjust the servicing time up and down
+                            if (individual.customerIndividualServiceBookingList[0].serviceBookingID !== serviceBookingID)
+                            {
+                                timetableSortServiceBookingList(individual, serviceBookingID, startTime);
+                            }
+
+                            // Always set the start time if the customer booking is SERVICING
+                            // This will allow the ticket to freely move in the timetable
+                            if (customerBooking.bookingState === CustomerBookingState.SERVICING) {
+                                serviceBooking.startTime = startTime;
+                            }
+                            // Appointment and lobby
+                            // Always set the start time for all service booking for automatic scheduling
+                            else if (customerBooking.bookingState === CustomerBookingState.APPOINTMENT ||
+                                customerBooking.bookingState === CustomerBookingState.LOBBY) {
+
+                                // Pin the individual tickets to the new start time
+                                if (individual.customerIndividualServiceBookingList[0].serviceBookingID === serviceBookingID)
+                                {
+                                    // Initialize the rest of the start times to follow after the pin
+                                    for (let i = 0; i < individual.customerIndividualServiceBookingList.length; i++) {
+                                        individual.customerIndividualServiceBookingList[i].startTime = startTime;
+                                    }
+                                }
+                            }
+                        }
                     }
 
                     // Submit to the database
                     await initializeCustomerBookingAndBroadcast(customerBooking, nowTime()).finally(()=>{console.log("serviceBooking",serviceBooking);});
-
-
                 }
             }
             // Block ticket, employee reserve time period
