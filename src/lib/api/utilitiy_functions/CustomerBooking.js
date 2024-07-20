@@ -45,3 +45,43 @@ export function findServiceBookingFromCustomerBooking(customerBooking, serviceBo
     }
     return null;
 }
+
+export function getServiceBookingListFromCustomerBooking(customerBooking) {
+    // Initialize an empty array to hold all service bookings
+    let allServiceBookings = [];
+
+    // Loop through each individual booking in the customer booking
+    customerBooking.customerIndividualBookingList.forEach(individualBooking => {
+        // Add all service bookings from the individual booking to the overall list
+        allServiceBookings = allServiceBookings.concat(individualBooking.customerIndividualServiceBookingList);
+    });
+
+    // Return the array of all service bookings
+    return allServiceBookings;
+}
+
+export function getServiceBookingListWithBookedEmployeeFromCustomerBooking(customerBooking)
+{
+    // Get the service booking list
+    let serviceBookingList = getServiceBookingListFromCustomerBooking(customerBooking);
+
+    // Filter the list to only include service bookings with a bookedEmployee
+    return serviceBookingList.filter(serviceBooking => serviceBooking.bookedEmployee);
+}
+
+export function groupServiceBookingsByEmployee(serviceBookingList) {
+    const groupedBookings = {};
+
+    serviceBookingList.forEach(booking => {
+        // Assume each booking has a bookedEmployee object with an id and other details
+        const employeeId = booking.bookedEmployee?.id;
+        if (employeeId) {
+            if (!groupedBookings[employeeId]) {
+                groupedBookings[employeeId] = [];  // Initialize the array if not already initialized
+            }
+            groupedBookings[employeeId].push(booking);  // Add the booking to the correct group
+        }
+    });
+
+    return groupedBookings;
+}

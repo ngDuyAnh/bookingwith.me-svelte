@@ -13,7 +13,11 @@ import {
     moveToAppointment,
     moveToLobby
 } from "$lib/components/Modal/CustomerBookingClickModal/handle_customer_booking_state.js";
-import {sendSmsBookingReminder, sendSmsConfirmBookingSuccess} from "$lib/api/api_twilio/functions.js";
+import {
+    sendSmsBookingReminder,
+    sendSmsConfirmBookingSuccess, sendSmsEditBookedEmployee,
+    sendSmsNewBookedEmployee
+} from "$lib/api/api_twilio/functions.js";
 import {get} from 'svelte/store';
 import {business} from "$lib/page/stores/business/business.js";
 
@@ -128,7 +132,8 @@ export async function submitCustomerBooking(
             handleCustomerBooking(
                 businessValue,
                 response.customerBooking,
-                customerBookingInformationProps
+                customerBookingInformationProps,
+                (customerBooking.id === -1)
             )
                 .then(() => {
                     console.log("Done handling SMS and booking state move.");
@@ -144,8 +149,12 @@ export async function submitCustomerBooking(
     return success;
 }
 
-async function handleCustomerBooking(businessValue, customerBooking, customerBookingInformationProps) {
-
+async function handleCustomerBooking(
+    businessValue,
+    customerBooking,
+    customerBookingInformationProps,
+    isNewCustomerBooking)
+{
     // Send SMS
     if (customerBookingInformationProps.sendSmsFlag) {
         try {
@@ -185,12 +194,40 @@ async function handleCustomerBooking(businessValue, customerBooking, customerBoo
         }
     }
 
+    // Send the SMS notification for the employee
+    // New customer booking
+    if (isNewCustomerBooking)
+    {
+        sendSmsNewBookedEmployee(
+            businessValue.businessInfo.businessName, customerBooking
+        )
+            .then(() => {
+                console.log("New customer booking SMS notification to the employees.");
+            });
+    }
+    // Edit customer booking
+    else
+    {
+        sendSmsEditBookedEmployee(
+            businessValue.businessInfo.businessName, customerBooking
+        )
+            .then(() => {
+                console.log("Edit customer booking SMS notification to the employees.");
+            });
+    }
+
     // Move the customer booking state
     if (isToday(customerBooking.bookingDate)) {
         if (customerBookingInformationProps.lobbyBookingStateFlag) {
-            moveToLobby(customerBooking);
+            moveToLobby(customerBooking)
+                .then(() => {
+                    console.log("Moved the customer booking to lobby.")
+                });
         } else if (customerBookingInformationProps.appointmentBookingStateFlag) {
-            moveToAppointment(customerBooking);
+            moveToAppointment(customerBooking)
+                .then(() => {
+                    console.log("Moved the customer booking to appointment.")
+                });
         }
     }
 }

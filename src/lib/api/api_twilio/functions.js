@@ -5,16 +5,19 @@ import {
     scheduleSendSms, cancelScheduledSms
 } from "$lib/api/api_twilio/twilio_endpoints/twilio_endpoints.js";
 import {get} from "svelte/store";
-import {now} from "$lib/page/stores/now/now_dayjs_store.js";
-
-const WEB_PAGE_URL = "https://app.bookingwith.me";
+import {isToday, now} from "$lib/page/stores/now/now_dayjs_store.js";
+import {
+    getServiceBookingListWithBookedEmployeeFromCustomerBooking,
+    groupServiceBookingsByEmployee, shortCustomerBookingID
+} from "$lib/api/utilitiy_functions/CustomerBooking.js";
+import {PUBLIC_ORIGIN} from "$env/static/public";
 
 export async function sendSmsConfirmBookingSuccess(businessName, customerBooking) {
     // https://help.twilio.com/articles/223183008-Formatting-International-Phone-Numbers
     let formattedPhoneNumber = "+1" + customerBooking.customer.phoneNumber;
 
     // Information for the message
-    let customerBookingURL = `${WEB_PAGE_URL}/customer-booking-portal/get/${customerBooking.bookingID}`;
+    let customerBookingURL = `${PUBLIC_ORIGIN}/customer-booking-portal/get/${customerBooking.bookingID}`;
     let formattedDate = dayjs(customerBooking.bookingDate).format('dddd, MMMM D');
     let formattedTime = dayjs(customerBooking.bookingTime, formatToTime).format(formatToTimeAm);
 
@@ -92,7 +95,7 @@ export async function sendSMSAskingForReview(businessName, customerBooking) {
     let formattedPhoneNumber = "+1" + customerBooking.customer.phoneNumber;
 
     // Information for the message
-    let customerBookingURL = `${WEB_PAGE_URL}/customer-booking-portal/get/${customerBooking.bookingID}`;
+    let customerBookingURL = `${PUBLIC_ORIGIN}/customer-booking-portal/get/${customerBooking.bookingID}`;
 
     // Build the SMS message
     let message = `Thank you for visiting ${businessName}! How did we do today? Please let us know using this link: ${customerBookingURL}`;
@@ -109,5 +112,55 @@ export function cancelScheduledReminderSms(customerBooking) {
     // Cancel the current scheduled
     if (customerBooking && customerBooking.smsAppointmentReminderSid) {
         return cancelScheduledSms(customerBooking.smsAppointmentReminderSid)
+    }
+}
+
+export async function sendSmsNewBookedEmployee(businessName, customerBooking) {
+    return sendSmsToBookedEmployees(businessName, customerBooking, 'New');
+}
+
+export async function sendSmsEditBookedEmployee(businessName, customerBooking) {
+    return sendSmsToBookedEmployees(businessName, customerBooking, 'Edit');
+}
+
+async function sendSmsToBookedEmployees(businessName, customerBooking, actionType) {
+    // Get the service booking list with booked employee
+    let serviceBookingWithBookedEmployeeList = getServiceBookingListWithBookedEmployeeFromCustomerBooking(customerBooking);
+
+    // Group the service bookings by employee
+    let groupedServiceBookings = groupServiceBookingsByEmployee(serviceBookingWithBookedEmployeeList);
+
+    // Message information
+    let formattedDate = dayjs(customerBooking.bookingDate).format('dddd, MMMM D');
+    let formattedTime = dayjs(customerBooking.bookingTime, formatToTime).format(formatToTimeAm);
+
+    // Iterate over each employee and send the SMS notification
+    for (let employeeId in groupedServiceBookings) {
+        if (Object.hasOwnProperty.call(groupedServiceBookings, employeeId)) {
+            let employeeBookings = groupedServiceBookings[employeeId];
+
+            // Get the employee phone number
+            let bookedEmployee = employeeBookings[0].bookedEmployee;
+            let employeePhoneNumber = bookedEmployee.phoneNumber;
+
+            // Create and send the service booking notification to the employee
+            if (employeePhoneNumber) {
+                // https://help.twilio.com/articles/223183008-Formatting-International-Phone-Numbers
+                let formattedPhoneNumber = "+1" + employeePhoneNumber;
+
+                // Create the message
+                let message = `${businessName}: ${actionType} booking.\n`;
+                message += `${isToday(customerBooking.bookingDate) ? "Today" : formattedDate}\n`;
+                message += `At ${formattedTime}\n`;
+                message += `By (${customerBooking.customer.customerName}) (${shortCustomerBookingID(customerBooking.id)})\n`;
+                employeeBookings.forEach((serviceBooking, index) => {
+                    message += ` ${index + 1}. ${serviceBooking.service.serviceName}\n`;
+                });
+
+                // Send the SMS
+                await sendSms(formattedPhoneNumber, message);
+                console.log(`Sent SMS notification to employee ${bookedEmployee.employeeName}`);
+            }
+        }
     }
 }

@@ -68,12 +68,12 @@
 
         if (timeoutId !== null) {
             clearTimeout(timeoutId);
-            console.log('Existing timeout cleared');
+            // console.log('Existing timeout cleared');
         }
 
         // Call second function after 2 seconds
         timeoutId = setTimeout(resetBooking, 1000);
-        console.log(timeoutId);
+        // console.log(timeoutId);
     }
 
     onDestroy(() => {

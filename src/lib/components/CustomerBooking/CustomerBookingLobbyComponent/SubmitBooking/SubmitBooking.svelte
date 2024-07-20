@@ -11,6 +11,11 @@
         pleaseFetchAvailability
     } from "$lib/components/Modal/CreateCustomerBookingLobby/stores/createCustomerBookingLobby.js";
     import {submitCustomerBooking} from "$lib/api/api_server/functions.js";
+    import {
+        getServiceBookingListFromCustomerBooking,
+        getServiceBookingListWithBookedEmployeeFromCustomerBooking
+    } from "$lib/api/utilitiy_functions/CustomerBooking.js";
+    import {sendSmsNewBookedEmployee} from "$lib/api/api_twilio/functions.js";
 
     export let customerBooking;
     export let submitSuccessful;
@@ -60,6 +65,7 @@
                 .then(success => {
                     if (success)
                     {
+                        // Show the successful page
                         submitSuccessful();
                     }
                     else
