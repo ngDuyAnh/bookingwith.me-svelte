@@ -423,8 +423,6 @@
                                 // If it is the selected is the first service booking, then reset all the start time
                                 if (individual.customerIndividualServiceBookingList[0].serviceBookingID === serviceBookingID)
                                 {
-                                    console.log("Here in reset all")
-
                                     // Initialize the rest of the start times to follow after the pin
                                     for (let i = 0; i < individual.customerIndividualServiceBookingList.length; i++) {
                                         individual.customerIndividualServiceBookingList[i].startTime = null;
@@ -433,8 +431,6 @@
                                 // Only reset the start time of the service booking
                                 else
                                 {
-                                    console.log("Here in reset one")
-
                                     serviceBooking.startTime = null;
                                 }
                             }

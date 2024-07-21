@@ -1,6 +1,6 @@
 <script>
     import {Accordion, AccordionItem, Button, Spinner} from "flowbite-svelte";
-    import {business} from "$lib/page/stores/business/business.js";
+    import {business, importNailSalonServices} from "$lib/page/stores/business/business.js";
     import {handleOpenCreateNewServiceModal} from "$lib/components/Modal/ServiceModal/stores/serviceModal.js";
     import ServiceModal from "$lib/components/Modal/ServiceModal/ServiceModal.svelte";
     import {onMount} from "svelte";
@@ -103,8 +103,12 @@
     </Accordion>
 {/if}
 
-<div class="mt-4">
+<div class="mt-4 space-x-2">
     <Button on:click={handleOpenCreateNewServiceGroupModal}>Add New Service Group</Button>
+
+    {#if $business.serviceGroupList.length === 0}
+        <Button on:click={importNailSalonServices}>Import nail salon services</Button>
+    {/if}
 </div>
 
 <!--Modal create or edit service group-->

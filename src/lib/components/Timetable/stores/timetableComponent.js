@@ -179,7 +179,7 @@ export function timetableSortServiceBookingList(individual, serviceBookingID, ne
         return order;
     });
 
-    // console.log("sort serviceBookingIdList", serviceBookingIdList)
+    // console.log("sort serviceBookingIdList", serviceBookingIdList);
 
     // Create a map where each serviceBookingID is mapped to its sort order index
     const sortOrderMap =
@@ -195,4 +195,6 @@ export function timetableSortServiceBookingList(individual, serviceBookingID, ne
         // Sort by the retrieved indexes
         return indexA - indexB;
     });
+
+    // console.log("individual.customerIndividualServiceBookingList", individual.customerIndividualServiceBookingList);
 }
