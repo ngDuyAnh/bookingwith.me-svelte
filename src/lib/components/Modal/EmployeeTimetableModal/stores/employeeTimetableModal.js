@@ -104,7 +104,7 @@ export function handleSaveEmployeeWorkScheduleException()
     if (employeeTimetableModalValue.employee &&
         employeeTimetableModalValue.date &&
         employeeTimetableModalValue.timePeriod &&
-        employeeTimetableModalValue.timePeriod.startTime < employeeTimetableModalValue.timePeriod.endTime &&
+        employeeTimetableModalValue.timePeriod.startTime <= employeeTimetableModalValue.timePeriod.endTime &&
         confirm(`Confirm changing ${employeeTimetableModalValue.employee.employeeName} work schedule on ${employeeTimetableModalValue.date}?`))
     {
         // Employee work schedule exception
