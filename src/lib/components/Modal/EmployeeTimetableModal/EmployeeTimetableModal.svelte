@@ -10,6 +10,7 @@
         handleAddBlockTicket,
         handleSaveEmployeeWorkScheduleException
     } from "$lib/components/Modal/EmployeeTimetableModal/stores/employeeTimetableModal.js";
+    import GetManagerPasswordModal from "$lib/components/Modal/GetManagerPasswordModal/GetManagerPasswordModal.svelte";
 
     const employeeSelectOptions = $business.employeeList.map(employee => ({
         label: employee.employeeName,
@@ -40,7 +41,7 @@
 </script>
 
 <div class="absolute top-0 left-0 right-0 z-[2000]">
-    <Modal bind:open={$employeeTimetableModal.open} size="sm" autoclose outsideclose>
+    <Modal bind:open={$employeeTimetableModal.open} size="sm" outsideclose>
         <form class="flex flex-col space-y-4 p-4" on:submit|preventDefault={() => {}}>
 
             <h3 class="text-xl font-semibold text-gray-900 dark:text-white mb-4">
