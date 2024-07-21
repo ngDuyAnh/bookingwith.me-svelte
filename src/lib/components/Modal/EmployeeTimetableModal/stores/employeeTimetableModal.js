@@ -16,16 +16,18 @@ export const employeeTimetableModal = writable({
     open: false,
     employee: Employee(),
     date: today(),
-    timePeriod: TimePeriod()
+    showWorkSchedule: true,
+    workScheduleTimePeriod: TimePeriod(),
+    showBlockTimePeriod: true,
+    blockTimePeriod: TimePeriod()
 });
 
 export async function handleOpenEmployeeTimetableModal(employee, date)
 {
-    console.log("here handleOpenEmployeeTimetableModal");
-
     try
     {
         // Get the employee work schedule
+        let showWorkSchedule = false;
         let workSchedule = {
             employee: employee,
             date: date,
@@ -33,36 +35,27 @@ export async function handleOpenEmployeeTimetableModal(employee, date)
         }
         if (employee)
         {
-            // Get the employee work schedule data
+            showWorkSchedule = true;
             workSchedule = await getEmployeeWorkScheduleException(
                 employee.id, date);
         }
 
-        // If it is today
-        let timePeriod = TimePeriod();
-        if (isToday(date))
+        // Get the block time period
+        // If it is today, initialize the time based on the current time
+        let showBlockTimePeriod = false;
+        let blockTimePeriod = {
+            startTime: null,
+            endTime: null
+        };
+        if (isToday(date) && getDurationInMinutes(workSchedule.timePeriod))
         {
-            // The current time is before the working time
-            // Most likely the user want to edit the employee work schedule
-            if (nowTime() < workSchedule.timePeriod.startTime)
-            {
-                timePeriod = workSchedule.timePeriod;
+            showBlockTimePeriod = true;
+
+            const nowTimeValue = nowTime();
+            blockTimePeriod = {
+                startTime: nowTimeValue,
+                endTime: getEndTime(nowTimeValue, DEFAULT_DURATION)
             }
-            // Otherwise most likely the user want to add block ticket
-            else
-            {
-                const nowTimeValue = nowTime();
-                timePeriod = {
-                    startTime: nowTimeValue,
-                    endTime: getEndTime(nowTimeValue, DEFAULT_DURATION)
-                }
-            }
-        }
-        // Not today
-        // Default to work schedule
-        else
-        {
-            timePeriod = workSchedule.timePeriod;
         }
 
         // Open the modal
@@ -70,8 +63,14 @@ export async function handleOpenEmployeeTimetableModal(employee, date)
             open: true,
             employee: employee,
             date: date,
-            timePeriod: timePeriod
+            showWorkSchedule: showWorkSchedule,
+            workScheduleTimePeriod: workSchedule.timePeriod,
+            showBlockTimePeriod: showBlockTimePeriod,
+            blockTimePeriod: blockTimePeriod
         });
+
+        const employeeTimetableModalValue = get(employeeTimetableModal);
+        console.log("employeeTimetableModalValue", employeeTimetableModalValue);
     }
     catch (error)
     {
@@ -85,7 +84,10 @@ export function handleCloseEmployeeTimetableModal()
         open: false,
         employee: Employee(),
         date: today(),
-        timePeriod: TimePeriod()
+        showWorkSchedule: true,
+        workScheduleTimePeriod: TimePeriod(),
+        showBlockTimePeriod: true,
+        blockTimePeriod: TimePeriod()
     });
 }
 
@@ -94,7 +96,9 @@ export function handleSelectEmployeeForEmployeeTimetableModal(employee)
     const employeeTimetableModalValue = get(employeeTimetableModal);
 
     handleOpenEmployeeTimetableModal(employee, employeeTimetableModalValue.date)
-        .then(() => {});
+        .then(() => {
+            console.log("handleSelectEmployeeForEmployeeTimetableModal", employee);
+        });
 }
 
 export function handleSaveEmployeeWorkScheduleException()
@@ -103,15 +107,15 @@ export function handleSaveEmployeeWorkScheduleException()
 
     if (employeeTimetableModalValue.employee &&
         employeeTimetableModalValue.date &&
-        employeeTimetableModalValue.timePeriod &&
-        employeeTimetableModalValue.timePeriod.startTime <= employeeTimetableModalValue.timePeriod.endTime &&
+        employeeTimetableModalValue.workScheduleTimePeriod &&
+        employeeTimetableModalValue.workScheduleTimePeriod.startTime <= employeeTimetableModalValue.workScheduleTimePeriod.endTime &&
         confirm(`Confirm changing ${employeeTimetableModalValue.employee.employeeName} work schedule on ${employeeTimetableModalValue.date}?`))
     {
         // Employee work schedule exception
         const employeeWorkSchedule = {
             "employee": employeeTimetableModalValue.employee,
             "date": employeeTimetableModalValue.date,
-            "timePeriod": employeeTimetableModalValue.timePeriod
+            "timePeriod": employeeTimetableModalValue.workScheduleTimePeriod
         }
 
         // Request the server to update
@@ -129,13 +133,13 @@ export function handleSaveEmployeeWorkScheduleException()
     }
 }
 
-export function handleStartTimeChangeForEmployeeTimetableModal(startTime)
+export function handleStartTimeChangeForBlockTimePeriodEmployeeTimetableModal(startTime)
 {
     const employeeTimetableModalValue = get(employeeTimetableModal);
 
     employeeTimetableModal.set({
         ...employeeTimetableModalValue,
-        timePeriod: {
+        blockTimePeriod: {
             startTime: startTime,
             endTime: getEndTime(startTime, DEFAULT_DURATION)
         }
@@ -148,8 +152,8 @@ export function handleEndTimeChangeForEmployeeTimetableModal(endTime)
 
     employeeTimetableModal.set({
         ...employeeTimetableModalValue,
-        timePeriod: {
-            startTime: employeeTimetableModalValue.timePeriod.startTime,
+        blockTimePeriod: {
+            startTime: employeeTimetableModalValue.blockTimePeriod.startTime,
             endTime: endTime
         }
     });
@@ -161,8 +165,8 @@ export function handleAddBlockTicket()
 
     if (employeeTimetableModalValue.employee &&
         employeeTimetableModalValue.date &&
-        employeeTimetableModalValue.timePeriod &&
-        employeeTimetableModalValue.timePeriod.startTime < employeeTimetableModalValue.timePeriod.endTime)
+        employeeTimetableModalValue.blockTimePeriod &&
+        employeeTimetableModalValue.blockTimePeriod.startTime < employeeTimetableModalValue.blockTimePeriod.endTime)
     {
         const businessValue = get(business);
 
@@ -171,11 +175,9 @@ export function handleAddBlockTicket()
             ...EmployeeTimetableBlockTicket(),
             "employee": employeeTimetableModalValue.employee,
             "date": employeeTimetableModalValue.date,
-            "startTime": employeeTimetableModalValue.timePeriod.startTime,
-            "duration": getDurationInMinutes(employeeTimetableModalValue.timePeriod)
+            "startTime": employeeTimetableModalValue.blockTimePeriod.startTime,
+            "duration": getDurationInMinutes(employeeTimetableModalValue.blockTimePeriod)
         }
-
-        console.log("blockTicket", blockTicket);
 
         // Request the server to update
         initializeEmployeeTimetableBlockTicket(
@@ -192,5 +194,3 @@ export function handleAddBlockTicket()
         alert("Please ensure that employee and time period are selected correctly!");
     }
 }
-
-
