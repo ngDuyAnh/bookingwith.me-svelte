@@ -273,62 +273,67 @@
             let extendedProps = info.event.extendedProps;
             let isReserved = extendedProps.description == "Reserved";
             // console.log("isReserved", isReserved);
-            if (!isReserved) {
-                let currTicketID = info.event.extendedProps.servicingTicket.ticketID;
-                let currServiceBookingID =
-                    info.event.extendedProps.servicingTicket.serviceBookingID;
 
-                // Get the customer booking instance
-                let customerBookingId =
-                    info.event.extendedProps.servicingTicket.servicingTicketInfo.id;
-                let customerBooking = findCustomerBookingById(customerBookingId);
+            // Only continue to process if it is not the past
+            if (!isPast(selectedDate))
+            {
+                if (!isReserved) {
+                    let currTicketID = info.event.extendedProps.servicingTicket.ticketID;
+                    let currServiceBookingID =
+                        info.event.extendedProps.servicingTicket.serviceBookingID;
 
-                // Allow edit of service booking duration
-                // The customer booking state is not completed
-                // Servicing ticket is not completed
-                if (
-                    info.event.extendedProps.servicingTicket.servicingTicketInfo
-                        .bookingState !== CustomerBookingState.COMPLETED ||
-                    !info.event.extendedProps.servicingTicket.isCompleted
-                ) {
-                    const allEvents = calendarInstance.getEvents();
-                    allEvents.forEach((event) => {
-                        if (
-                            event.extendedProps.servicingTicket &&
-                            event.extendedProps.servicingTicket.ticketID !== currTicketID &&
-                            event.extendedProps.servicingTicket.serviceBookingID ===
-                            currServiceBookingID
-                        ) {
-                            startTime = dayjs(event.start);
-                            endTime = dayjs(event.end);
-                            totalDuration += endTime.diff(startTime, "minute");
+                    // Get the customer booking instance
+                    let customerBookingId =
+                        info.event.extendedProps.servicingTicket.servicingTicketInfo.id;
+                    let customerBooking = findCustomerBookingById(customerBookingId);
+
+                    // Allow edit of service booking duration
+                    // The customer booking state is not completed
+                    // Servicing ticket is not completed
+                    if (
+                        info.event.extendedProps.servicingTicket.servicingTicketInfo
+                            .bookingState !== CustomerBookingState.COMPLETED ||
+                        !info.event.extendedProps.servicingTicket.isCompleted
+                    ) {
+                        const allEvents = calendarInstance.getEvents();
+                        allEvents.forEach((event) => {
+                            if (
+                                event.extendedProps.servicingTicket &&
+                                event.extendedProps.servicingTicket.ticketID !== currTicketID &&
+                                event.extendedProps.servicingTicket.serviceBookingID ===
+                                currServiceBookingID
+                            ) {
+                                startTime = dayjs(event.start);
+                                endTime = dayjs(event.end);
+                                totalDuration += endTime.diff(startTime, "minute");
+                            }
+                        });
+
+                        // Initialize the duration change for service booking
+                        let serviceBooking = undefined;
+                        if (customerBooking) {
+                            serviceBooking = findServiceBookingFromCustomerBooking(
+                                customerBooking,
+                                currServiceBookingID
+                            );
+
+                            serviceBooking.servicingDuration = totalDuration;
                         }
-                    });
-
-                    // Initialize the duration change for service booking
-                    let serviceBooking = undefined;
-                    if (customerBooking) {
-                        serviceBooking = findServiceBookingFromCustomerBooking(
-                            customerBooking,
-                            currServiceBookingID
-                        );
-
-                        serviceBooking.servicingDuration = totalDuration;
                     }
+
+                    // Submit the change to database
+                    initializeCustomerBookingAndBroadcast(customerBooking, nowTime());
+                } else {
+
+                    let blockTicket = extendedProps.blockTicket;
+                    blockTicket.duration = totalDuration;
+
+                    // Submit the change to database
+                    initializeEmployeeTimetableBlockTicket(
+                        $business.businessInfo.businessID,
+                        blockTicket
+                    );
                 }
-
-                // Submit the change to database
-                initializeCustomerBookingAndBroadcast(customerBooking, nowTime());
-            } else {
-
-                let blockTicket = extendedProps.blockTicket;
-                blockTicket.duration = totalDuration;
-
-                // Submit the change to database
-                initializeEmployeeTimetableBlockTicket(
-                    $business.businessInfo.businessID,
-                    blockTicket
-                );
             }
         },
         eventDragStart: function () {
@@ -356,162 +361,166 @@
             console.log("extendedProps.servicingTicket", extendedProps.servicingTicket);
             console.log("isReserved", isReserved);
 
-            // Servicing ticket
-            if (!isReserved) {
-                // Get the customer booking and service booking instances
-                const customerBookingId =
-                    extendedProps.servicingTicket.servicingTicketInfo.id;
-                const customerBookingBookingID = extendedProps.servicingTicket.bookingID;
-                const individualID = extendedProps.individualID;
-                const serviceBookingID = extendedProps.servicingTicket.serviceBookingID;
+            // Only continue to process if it is not the past
+            if (!isPast(selectedDate))
+            {
+                // Servicing ticket
+                if (!isReserved) {
+                    // Get the customer booking and service booking instances
+                    const customerBookingId =
+                        extendedProps.servicingTicket.servicingTicketInfo.id;
+                    const customerBookingBookingID = extendedProps.servicingTicket.bookingID;
+                    const individualID = extendedProps.individualID;
+                    const serviceBookingID = extendedProps.servicingTicket.serviceBookingID;
 
-                // Get the customer booking instance
-                // If it is today, can get it from queue list from dashboard
-                // Otherwise has to fetch from the backend
-                let customerBooking = undefined;
-                if (isToday(selectedDate)) {
-                    customerBooking = findCustomerBookingById(customerBookingId);
-                } else {
-                    customerBooking = await getCustomerBooking(customerBookingBookingID);
-                }
+                    // Get the customer booking instance
+                    // If it is today, can get it from queue list from dashboard
+                    // Otherwise has to fetch from the backend
+                    let customerBooking = undefined;
+                    if (isToday(selectedDate)) {
+                        customerBooking = findCustomerBookingById(customerBookingId);
+                    } else {
+                        customerBooking = await getCustomerBooking(customerBookingBookingID);
+                    }
 
-                // Submit the changes to the backend
-                if (customerBooking) {
-                    // Get the individual and service booking instance from the customer booking
-                    let individual = findIndividualBookingFromCustomerBooking(customerBooking, individualID);
-                    let serviceBooking = findServiceBookingFromCustomerBooking(
-                        customerBooking,
-                        serviceBookingID
-                    );
+                    // Submit the changes to the backend
+                    if (customerBooking) {
+                        // Get the individual and service booking instance from the customer booking
+                        let individual = findIndividualBookingFromCustomerBooking(customerBooking, individualID);
+                        let serviceBooking = findServiceBookingFromCustomerBooking(
+                            customerBooking,
+                            serviceBookingID
+                        );
 
-                    // Drag between employee timetable will set the assigned employee for the service booking
-                    if (info.newResource && info.oldResource) {
-                        // Assign employee working on the service
-                        // Cannot assign when the booking state is completed
+                        // Drag between employee timetable will set the assigned employee for the service booking
+                        if (info.newResource && info.oldResource) {
+                            // Assign employee working on the service
+                            // Cannot assign when the booking state is completed
+                            if (customerBooking.bookingState !== CustomerBookingState.COMPLETED) {
+                                if (info.newResource.id !== "null") {
+                                    assignedEmployeeID = parseInt(info.newResource.id, 10);
+                                }
+                            }
+                        }
+                            // Same employee timetable
+                        // Need to handle this differently because there is no oldResource
+                        else {
+                            let employeeID = info.event.resourceIds[0];
+                            if (employeeID !== "null") {
+                                assignedEmployeeID = parseInt(employeeID, 10);
+                            }
+                        }
+
+                        // Handling the drag and drop
+                        // Do not make changes if the booking state is in COMPLETED
                         if (customerBooking.bookingState !== CustomerBookingState.COMPLETED) {
-                            if (info.newResource.id !== "null") {
-                                assignedEmployeeID = parseInt(info.newResource.id, 10);
-                            }
-                        }
-                    }
-                    // Same employee timetable
-                    // Need to handle this differently because there is no oldResource
-                    else {
-                        let employeeID = info.event.resourceIds[0];
-                        if (employeeID !== "null") {
-                            assignedEmployeeID = parseInt(employeeID, 10);
-                        }
-                    }
-
-                    // Handling the drag and drop
-                    // Do not make changes if the booking state is in COMPLETED
-                    if (customerBooking.bookingState !== CustomerBookingState.COMPLETED) {
-                        // Dragged to conflicted
-                        // Reset the assigned employee and start time
-                        if (assignedEmployeeID === null)
-                        {
-                            serviceBooking.assignedEmployee = null;
-
-                            // Adjust the service booking servicing order
-                            timetableSortServiceBookingList(individual, serviceBookingID, startTime);
-
-                            // Reset the start time if booking state in APPOINTMENT or LOBBY
-                            // Because ticket get automatically schedule
-                            if (customerBooking.bookingState === CustomerBookingState.APPOINTMENT ||
-                                customerBooking.bookingState === CustomerBookingState.LOBBY)
+                            // Dragged to conflicted
+                            // Reset the assigned employee and start time
+                            if (assignedEmployeeID === null)
                             {
-                                // If it is the selected is the first service booking, then reset all the start time
-                                if (individual.customerIndividualServiceBookingList[0].serviceBookingID === serviceBookingID)
-                                {
-                                    // Initialize the rest of the start times to follow after the pin
-                                    for (let i = 0; i < individual.customerIndividualServiceBookingList.length; i++) {
-                                        individual.customerIndividualServiceBookingList[i].startTime = null;
-                                    }
-                                }
-                                // Only reset the start time of the service booking
-                                else
-                                {
-                                    serviceBooking.startTime = null;
-                                }
-                            }
-                        }
-                        // Dragged to employee
-                        else
-                        {
-                            serviceBooking.assignedEmployee = getEmployee(assignedEmployeeID);
+                                serviceBooking.assignedEmployee = null;
 
-                            // If the first service booking is the selected service booking
-                            // Ignore the order adjustment
-                            // This is to make easier to adjust the servicing time up and down
-                            if (individual.customerIndividualServiceBookingList[0].serviceBookingID !== serviceBookingID)
-                            {
+                                // Adjust the service booking servicing order
                                 timetableSortServiceBookingList(individual, serviceBookingID, startTime);
-                            }
 
-                            // Always set the start time if the customer booking is SERVICING
-                            // This will allow the ticket to freely move in the timetable
-                            if (customerBooking.bookingState === CustomerBookingState.SERVICING) {
-                                serviceBooking.startTime = startTime;
-                            }
-                            // Appointment and lobby
-                            // Always set the start time for all service booking for automatic scheduling
-                            else if (customerBooking.bookingState === CustomerBookingState.APPOINTMENT ||
-                                customerBooking.bookingState === CustomerBookingState.LOBBY) {
-
-                                // Pin the individual tickets to the new start time
-                                if (individual.customerIndividualServiceBookingList[0].serviceBookingID === serviceBookingID)
+                                // Reset the start time if booking state in APPOINTMENT or LOBBY
+                                // Because ticket get automatically schedule
+                                if (customerBooking.bookingState === CustomerBookingState.APPOINTMENT ||
+                                    customerBooking.bookingState === CustomerBookingState.LOBBY)
                                 {
-                                    // Initialize the rest of the start times to follow after the pin
-                                    for (let i = 0; i < individual.customerIndividualServiceBookingList.length; i++) {
-                                        individual.customerIndividualServiceBookingList[i].startTime = startTime;
+                                    // If it is the selected is the first service booking, then reset all the start time
+                                    if (individual.customerIndividualServiceBookingList[0].serviceBookingID === serviceBookingID)
+                                    {
+                                        // Initialize the rest of the start times to follow after the pin
+                                        for (let i = 0; i < individual.customerIndividualServiceBookingList.length; i++) {
+                                            individual.customerIndividualServiceBookingList[i].startTime = null;
+                                        }
+                                    }
+                                    // Only reset the start time of the service booking
+                                    else
+                                    {
+                                        serviceBooking.startTime = null;
+                                    }
+                                }
+                            }
+                            // Dragged to employee
+                            else
+                            {
+                                serviceBooking.assignedEmployee = getEmployee(assignedEmployeeID);
+
+                                // If the first service booking is the selected service booking
+                                // Ignore the order adjustment
+                                // This is to make easier to adjust the servicing time up and down
+                                if (individual.customerIndividualServiceBookingList[0].serviceBookingID !== serviceBookingID)
+                                {
+                                    timetableSortServiceBookingList(individual, serviceBookingID, startTime);
+                                }
+
+                                // Always set the start time if the customer booking is SERVICING
+                                // This will allow the ticket to freely move in the timetable
+                                if (customerBooking.bookingState === CustomerBookingState.SERVICING) {
+                                    serviceBooking.startTime = startTime;
+                                }
+                                    // Appointment and lobby
+                                // Always set the start time for all service booking for automatic scheduling
+                                else if (customerBooking.bookingState === CustomerBookingState.APPOINTMENT ||
+                                    customerBooking.bookingState === CustomerBookingState.LOBBY) {
+
+                                    // Pin the individual tickets to the new start time
+                                    if (individual.customerIndividualServiceBookingList[0].serviceBookingID === serviceBookingID)
+                                    {
+                                        // Initialize the rest of the start times to follow after the pin
+                                        for (let i = 0; i < individual.customerIndividualServiceBookingList.length; i++) {
+                                            individual.customerIndividualServiceBookingList[i].startTime = startTime;
+                                        }
                                     }
                                 }
                             }
                         }
-                    }
 
-                    // Submit to the database
-                    await initializeCustomerBookingAndBroadcast(customerBooking, nowTime()).finally(()=>{console.log("serviceBooking",serviceBooking);});
+                        // Submit to the database
+                        await initializeCustomerBookingAndBroadcast(customerBooking, nowTime()).finally(()=>{console.log("serviceBooking",serviceBooking);});
+                    }
                 }
-            }
-            // Block ticket, employee reserve time period
-            else {
-                // Drag to conflicted, delete the block ticket
-                if (info.newResource && info.newResource.id === "null") {
-                    console.log("deleting block ticket");
-                    let blockTicket = extendedProps.blockTicket;
-                    await deleteEmployeeTimetableBlockTicket($business.businessInfo.businessID, blockTicket);
-                }
-                // Edit the block ticket
+                // Block ticket, employee reserve time period
                 else {
-                    // Change the employee
-                    if (info.newResource && info.oldResource) {
-                        // Assign employee working on the service
-                        // Cannot assign when the booking state is completed
-                        console.log("info.newResource", info.newResource);
-                        assignedEmployeeID = parseInt(info.newResource.id, 10);
+                    // Drag to conflicted, delete the block ticket
+                    if (info.newResource && info.newResource.id === "null") {
+                        console.log("deleting block ticket");
+                        let blockTicket = extendedProps.blockTicket;
+                        await deleteEmployeeTimetableBlockTicket($business.businessInfo.businessID, blockTicket);
                     }
-                    // Same employee timetable
+                    // Edit the block ticket
                     else {
-                        let employeeID = info.event.resourceIds[0];
-                        if (employeeID !== "null") {
-                            assignedEmployeeID = parseInt(employeeID, 10);
+                        // Change the employee
+                        if (info.newResource && info.oldResource) {
+                            // Assign employee working on the service
+                            // Cannot assign when the booking state is completed
+                            console.log("info.newResource", info.newResource);
+                            assignedEmployeeID = parseInt(info.newResource.id, 10);
                         }
+                        // Same employee timetable
+                        else {
+                            let employeeID = info.event.resourceIds[0];
+                            if (employeeID !== "null") {
+                                assignedEmployeeID = parseInt(employeeID, 10);
+                            }
+                        }
+
+                        // Assign the employee to the service
+                        let assignedEmployee = getEmployee(assignedEmployeeID);
+
+                        // Initialize the block ticket
+                        let blockTicket = extendedProps.blockTicket;
+                        blockTicket.employee = assignedEmployee;
+                        blockTicket.startTime = startTime;
+
+                        // Submit to the database
+                        await initializeEmployeeTimetableBlockTicket(
+                            $business.businessInfo.businessID,
+                            blockTicket
+                        );
                     }
-
-                    // Assign the employee to the service
-                    let assignedEmployee = getEmployee(assignedEmployeeID);
-
-                    // Initialize the block ticket
-                    let blockTicket = extendedProps.blockTicket;
-                    blockTicket.employee = assignedEmployee;
-                    blockTicket.startTime = startTime;
-
-                    // Submit to the database
-                    await initializeEmployeeTimetableBlockTicket(
-                        $business.businessInfo.businessID,
-                        blockTicket
-                    );
                 }
             }
         },
@@ -855,7 +864,7 @@
         }
     }
 
-    export function getDisplayBookingIDList(employeeTimetableList) {
+    function getDisplayBookingIDList(employeeTimetableList) {
         const uniqueBookingIDs = new Set();
 
         employeeTimetableList.forEach((employeeTable) => {
