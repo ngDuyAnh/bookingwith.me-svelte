@@ -54,6 +54,7 @@
         initializeEmployeeTimetableBlockTicket
     } from "$lib/api/api_server/api_endpoints/lobby-portal/api.js";
     import {getEndTime} from "$lib/api/initialize_functions/TimePeriod.js";
+    import {moveToServicing} from "$lib/components/Modal/CustomerBookingClickModal/handle_customer_booking_state.js";
 
     // Date select
     let selectedDate = today();
@@ -96,7 +97,9 @@
         slotDuration: "00:05:00",
         scrollTime: $now.format("HH:mm:ss"),
         eventClick: (info) => {
-            servicingTicketClickModalOpenWithServicingTicketEventInfo(info);
+            if(info.event && info.event.extendedProps?.description !== "Reserved") {
+                servicingTicketClickModalOpenWithServicingTicketEventInfo(info);
+            }
         },
         events: [],
         resources: [],
@@ -787,27 +790,22 @@
     // Clicked employee for employee timetable modal
     export let ableToChangePastWorkSchedule = false;
     let clickedID = undefined;
-    $: if (clickedID) {
-        // Not the past
-        // Open the schedule exception modal
-        if ((ableToChangePastWorkSchedule || !isPast(selectedDate)) && clickedID !== undefined) {
-            console.log("Timetable employee clickedID", clickedID);
+    // Clicked employee for employee timetable modal
+    // Not the past
+    // Open the schedule exception modal
+    $: if (clickedID && (ableToChangePastWorkSchedule || !isPast(selectedDate))) {
+        console.log("Timetable employee clickedID", clickedID);
 
-            // Get the clicked employee
-            let clickedEmployee = null;
-            if (clickedID) {
-                clickedEmployee = findEmployeeFromBusinessUsingEmployeeID(
-                    $business,
-                    clickedID
-                );
-            }
+        // Get the clicked employee
+        const clickedEmployee = findEmployeeFromBusinessUsingEmployeeID($business, clickedID);
 
-            // Open the employee timetable modal
-            handleOpenEmployeeTimetableModal(clickedEmployee, selectedDate);
+        // Open the employee timetable modal
+        (async () => {
+            await handleOpenEmployeeTimetableModal(clickedEmployee, selectedDate).finally(() => {
+                clickedID = undefined;
+            });
+        })();
 
-            // Reset
-            clickedID = undefined;
-        }
     }
 
     async function updateCalendarEvents(employeeTimetableList) {
