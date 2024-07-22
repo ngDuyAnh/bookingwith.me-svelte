@@ -146,19 +146,6 @@ export function handleStartTimeChangeForBlockTimePeriodEmployeeTimetableModal(st
     });
 }
 
-export function handleEndTimeChangeForEmployeeTimetableModal(endTime)
-{
-    const employeeTimetableModalValue = get(employeeTimetableModal);
-
-    employeeTimetableModal.set({
-        ...employeeTimetableModalValue,
-        blockTimePeriod: {
-            startTime: employeeTimetableModalValue.blockTimePeriod.startTime,
-            endTime: endTime
-        }
-    });
-}
-
 export function handleAddBlockTicket()
 {
     const employeeTimetableModalValue = get(employeeTimetableModal);

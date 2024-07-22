@@ -6,7 +6,6 @@
         employeeTimetableModal,
         handleSelectEmployeeForEmployeeTimetableModal,
         handleStartTimeChangeForBlockTimePeriodEmployeeTimetableModal,
-        handleEndTimeChangeForEmployeeTimetableModal,
         handleAddBlockTicket,
         handleSaveEmployeeWorkScheduleException
     } from "$lib/components/Modal/EmployeeTimetableModal/stores/employeeTimetableModal.js";
@@ -24,16 +23,6 @@
     function handleEmployeeSelect(event) {
         let newEmployee = event.detail.value;
         handleSelectEmployeeForEmployeeTimetableModal(newEmployee);
-    }
-
-    function handleStartTimeChange(event) {
-        const newStartTime = event.target.value;
-        handleStartTimeChangeForBlockTimePeriodEmployeeTimetableModal(newStartTime);
-    }
-
-    function handleEndTimeChange(event) {
-        const newEndTime = event.target.value;
-        handleEndTimeChangeForEmployeeTimetableModal(newEndTime);
     }
 
     // $: console.log("$employeeTimetableModal", $employeeTimetableModal);
@@ -75,12 +64,10 @@
                             <Input type="time"
                                    class="border border-gray-300 rounded-md p-2 text-gray-700"
                                    bind:value={$employeeTimetableModal.workScheduleTimePeriod.startTime}
-                                   on:change={handleStartTimeChange}
                                    placeholder="Start Time"/>
                             <Input type="time"
                                    class="border border-gray-300 rounded-md p-2 text-gray-700"
                                    bind:value={$employeeTimetableModal.workScheduleTimePeriod.endTime}
-                                   on:change={handleEndTimeChange}
                                    placeholder="End Time"/>
                         </div>
 
@@ -102,12 +89,11 @@
                             <Input type="time"
                                    class="border border-gray-300 rounded-md p-2 text-gray-700"
                                    bind:value={$employeeTimetableModal.blockTimePeriod.startTime}
-                                   on:change={handleStartTimeChange}
+                                   on:change={handleStartTimeChangeForBlockTimePeriodEmployeeTimetableModal}
                                    placeholder="Start Time"/>
                             <Input type="time"
                                    class="border border-gray-300 rounded-md p-2 text-gray-700"
                                    bind:value={$employeeTimetableModal.blockTimePeriod.endTime}
-                                   on:change={handleEndTimeChange}
                                    placeholder="End Time"/>
                         </div>
 
