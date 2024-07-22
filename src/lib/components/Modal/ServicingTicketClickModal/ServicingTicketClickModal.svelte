@@ -61,7 +61,7 @@
 
 {#if customerBooking && individualBooking && serviceBooking}
     {#if !nonModal}
-        <div class="absolute top-0 left-0 right-0">
+        <div class="absolute top-0 left-0 right-0 z-[2000]">
 
             <Modal bind:open={$servicingTicketClickModal.open} size="md" outsideclose={!nonModal}
                    dismissable={!nonModal}
