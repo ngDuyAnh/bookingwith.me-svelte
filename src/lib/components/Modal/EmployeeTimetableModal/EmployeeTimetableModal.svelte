@@ -1,5 +1,5 @@
 <script>
-    import {Button, Input, Modal} from "flowbite-svelte";
+    import {Button, DropdownDivider, Input, Modal} from "flowbite-svelte";
     import Select from "svelte-select";
     import {business} from "$lib/page/stores/business/business.js";
     import {
@@ -11,6 +11,7 @@
     } from "$lib/components/Modal/EmployeeTimetableModal/stores/employeeTimetableModal.js";
 
     export let allowWorkScheduleChange = true;
+    export let selectedDate = undefined;
 
     const employeeSelectOptions = $business.employeeList.map(employee => ({
         label: employee.employeeName,
@@ -32,17 +33,25 @@
     <Modal bind:open={$employeeTimetableModal.open} size="sm" outsideclose>
         <form class="flex flex-col space-y-4 p-4" on:submit|preventDefault={() => {}}>
 
-            <h3 class="text-xl font-semibold text-gray-900 dark:text-white mb-4">
-                Edit timetable
+            <div class="mb-2">
+            <h3 class="text-xl font-semibold text-gray-900 dark:text-white ">
+                Edit timetable for {selectedDate}
+                <!--{#if $employeeTimetableModal.employee?.employeeName}-->
+                <!--    Employee for {$employeeTimetableModal.employee.employeeName}-->
+                <!--{/if}-->
+            </h3>
+            <h3 class="text-md text-gray-900 dark:text-white">
                 {#if $employeeTimetableModal.employee?.employeeName}
-                    for {$employeeTimetableModal.employee.employeeName}
+                    Employee: {$employeeTimetableModal.employee.employeeName}
                 {/if}
             </h3>
+            </div>
 
             <div class="space-y-2">
 
                 <!--Get the employee-->
                 <Select
+                        placeholder="Please select employee"
                         --font-size="0.9rem"
                         floatingConfig={{strategy: 'fixed',}}
                         --multi-max-width="fit"
@@ -57,7 +66,7 @@
 
                 <!--Work schedule-->
                 {#if allowWorkScheduleChange && $employeeTimetableModal.showWorkSchedule}
-                    <div class="flex items-center space-x-2">
+                    <div class="flex sm:items-center sm:space-x-2 sm:space-y-0 space-y-1 sm:flex-row flex-col">
                         <!-- Container for inputs to ensure they split space evenly -->
                         <div class="flex flex-1 space-x-2">
                             <!-- Get the work schedule time -->
@@ -78,11 +87,15 @@
                             </Button>
                         </div>
                     </div>
+
+                    <hr/>
                 {/if}
+
+
 
                 <!--Block time period-->
                 {#if $employeeTimetableModal.showBlockTimePeriod}
-                    <div class="flex flow-row items-center space-x-2">
+                    <div class="flex sm:items-center sm:space-x-2 sm:space-y-0 space-y-1 sm:flex-row flex-col">
                         <!-- Container for inputs to ensure they split space evenly -->
                         <div class="flex flex-1 space-x-2">
                             <!--Get the time period-->
@@ -110,3 +123,15 @@
         </form>
     </Modal>
 </div>
+
+<style>
+    hr {
+        display: block;
+        height: 1px;
+        border: 0;
+        border: 1px solid #ccc;
+        border-radius: 5px;
+        margin: 1em 0;
+        padding: 0;
+    }
+</style>
