@@ -29,6 +29,7 @@
     import {
         fetchCustomerBookingEstimate
     } from "$lib/page/customer-booking-portal/get/stores/customerBookingEstimate.js";
+    import Completed from "$lib/page/customer-booking-portal/get/page/Today/components/Completed/Completed.svelte";
 
     export let data;
     let loading = true;
@@ -191,13 +192,15 @@
         </div>
     {:else}
         <div class="flex flex-col text-gray-900 h-full w-full">
-            {#if $customerBooking.noShow}
+            <!--When customer booking is deleted, still allow review-->
+            {#if $customerBooking.deleted}
+                <Completed/>
+            {:else if $customerBooking.noShow}
                 <NoShow/>
             {:else if relativeDate > 0}
                 <Future/>
             {:else if relativeDate === 0 ||
-                    $customerBooking.bookingState === CustomerBookingState.COMPLETED ||
-                    $customerBooking.deleted}
+                    $customerBooking.bookingState === CustomerBookingState.COMPLETED}
                 <Today/>
             {:else}
                 <Past/>
