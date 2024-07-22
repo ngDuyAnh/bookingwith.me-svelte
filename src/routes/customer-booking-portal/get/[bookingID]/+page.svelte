@@ -191,14 +191,13 @@
         </div>
     {:else}
         <div class="flex flex-col text-gray-900 h-full w-full">
-            {#if $customerBooking.deleted}
-                <Deleted/>
-            {:else if $customerBooking.noShow}
+            {#if $customerBooking.noShow}
                 <NoShow/>
             {:else if relativeDate > 0}
                 <Future/>
             {:else if relativeDate === 0 ||
-                    $customerBooking.bookingState === CustomerBookingState.COMPLETED}
+                    $customerBooking.bookingState === CustomerBookingState.COMPLETED ||
+                    $customerBooking.deleted}
                 <Today/>
             {:else}
                 <Past/>

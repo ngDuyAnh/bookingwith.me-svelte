@@ -16,7 +16,10 @@
     import {customerBooking} from "$lib/page/customer-booking-portal/get/stores/customerBookingEstimate.js";
 </script>
 
-{#if $customerBooking.bookingState === CustomerBookingState.APPOINTMENT}
+<!--When customer booking is deleted, still allow review-->
+{#if $customerBooking.deleted}
+    <Completed/>
+{:else if $customerBooking.bookingState === CustomerBookingState.APPOINTMENT}
     {#if $business.businessInfo.scheduleManagement === BusinessScheduleManagement.NONE}
         <AppointmentNoneScheduleManagement/>
     {:else}
