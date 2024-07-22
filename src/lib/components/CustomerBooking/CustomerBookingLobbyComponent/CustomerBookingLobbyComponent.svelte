@@ -24,8 +24,6 @@
         customerBooking.bookingChannel = bookingChannel;
     }
 
-    // export let submitSuccessful;
-
     let selectedIndividualBookingIndex = 0;
 
     // Function to handle the creation of a new individual booking
@@ -57,6 +55,7 @@
     // Second function to be called after a delay
     function resetBooking() {
         successfulSubmition = false;
+        selectedIndividualBookingIndex = 0;
         customerBooking = {
             ...CustomerBooking(),
             customerIndividualBookingList: [CustomerIndividualBooking()]
