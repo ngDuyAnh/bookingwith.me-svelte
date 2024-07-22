@@ -20,8 +20,9 @@
     import {
         fetchCustomerBookingQueueList
     } from "$lib/page/protected/business-portal/page_lobby/stores/dashboard_store.js";
+    import TimetableComponent from "$lib/components/Timetable/TimetableComponent.svelte";
 
-    let tabs = ["Dashboard", "Metrics", "Employee", "Service"];
+    let tabs = ["Dashboard", "Metrics", "Timetable", "Employee", "Service"];
 
     let dropdownOptions = {
         Metrics: {
@@ -162,8 +163,14 @@
         {:else if selectedIndex === 1}
             <Metrics bind:selectedDropDownIndex/>
         {:else if selectedIndex === 2}
-            <Employee/>
+            <TimetableComponent
+                    ableToChangePastWorkSchedule={true}
+                    limitShowEvents={false}
+                    restrictedPast={false}
+            />
         {:else if selectedIndex === 3}
+            <Employee/>
+        {:else if selectedIndex === 4}
             <Service/>
         {/if}
     </div>

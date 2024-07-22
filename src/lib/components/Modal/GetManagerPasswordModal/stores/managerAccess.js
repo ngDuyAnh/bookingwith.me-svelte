@@ -1,6 +1,9 @@
 import {get, writable} from "svelte/store";
 import {business} from "$lib/page/stores/business/business.js";
 import {validateManagerAccess} from "$lib/api/api_server/api_endpoints/business-portal/api.js";
+import {
+    handleCloseGetManagerPasswordModal
+} from "$lib/components/Modal/GetManagerPasswordModal/stores/getManagerPasswordModal.js";
 
 export const managerAccess = writable(false);
 
@@ -20,6 +23,9 @@ export async function grantManagerAccess(managerPassword)
         setTimeout(() => {
             managerAccess.set(false);
         }, 30000);
+
+        // Close the modal
+        handleCloseGetManagerPasswordModal();
     }
     catch (error)
     {

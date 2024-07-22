@@ -7,21 +7,23 @@
     import {
         disableManagerAccess,
         managerAccess
-    } from "$lib/components/Modal/CustomerBookingClickModal/stores/managerAccess.js";
+    } from "$lib/components/Modal/GetManagerPasswordModal/stores/managerAccess.js";
     import GetManagerPasswordModal from "$lib/components/Modal/GetManagerPasswordModal/GetManagerPasswordModal.svelte";
+    import {
+        handleOpenGetManagerPasswordModal
+    } from "$lib/components/Modal/GetManagerPasswordModal/stores/getManagerPasswordModal.js";
 
     // Computed to mask/unmask phone number based on visibility state
     $: maskedPhoneNumber = $managerAccess
         ? formatPhoneNumber($customerBookingClickModal.customerBooking.customer.phoneNumber)
         : '(xxx) xxx-' + $customerBookingClickModal.customerBooking.customer.phoneNumber.slice(6);
 
-    let openManagerAccessModal = false;
     function handleManagerAccess()
     {
         // Request manager access
         if (!$managerAccess)
         {
-            openManagerAccessModal = true;
+            handleOpenGetManagerPasswordModal();
         }
         // Disable manager access
         else
@@ -42,6 +44,4 @@
 </p>
 
 <!--Grant manager access-->
-<div class="absolute top-0 left-0">
-    <GetManagerPasswordModal bind:open={openManagerAccessModal}/>
-</div>
+<GetManagerPasswordModal/>
