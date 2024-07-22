@@ -110,8 +110,8 @@
         const tokens = tokenize(filterText);
         const labelTokens = tokenize(label);
 
-        // All the tokens to match at least one
-        return tokens.every(token => labelTokens.some(labelToken => labelToken.includes(token)));
+        // All tokens must match the start of at least one label token
+        return tokens.every(token => labelTokens.some(labelToken => labelToken.startsWith(token)));
     }
 </script>
 
