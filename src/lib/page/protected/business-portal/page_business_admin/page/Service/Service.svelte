@@ -1,6 +1,6 @@
 <script>
     import {Accordion, AccordionItem, Button, Spinner} from "flowbite-svelte";
-    import {business, importNailSalonServices} from "$lib/page/stores/business/business.js";
+    import {business, importHairSalonServices, importNailSalonServices} from "$lib/page/stores/business/business.js";
     import {handleOpenCreateNewServiceModal} from "$lib/components/Modal/ServiceModal/stores/serviceModal.js";
     import ServiceModal from "$lib/components/Modal/ServiceModal/ServiceModal.svelte";
     import {onMount} from "svelte";
@@ -108,6 +108,7 @@
 
     {#if $business.serviceGroupList.length === 0}
         <Button on:click={importNailSalonServices}>Import nail salon services</Button>
+        <Button on:click={importHairSalonServices}>Import hair salon services</Button>
     {/if}
 </div>
 

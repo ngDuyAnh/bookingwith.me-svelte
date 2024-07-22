@@ -534,3 +534,301 @@ export function importNailSalonServices()
             console.error('Failed to update the business:', error);
         });
 }
+
+export function importHairSalonServices()
+{
+    let importServiceGroupList = [
+        {
+            ...ServiceGroup(),
+            serviceGroupName: "Haircut",
+            description: "Offering a range of essential grooming services, ensuring you look your best with every visit.",
+            multiselect: false,
+            showOnlineBookingPage: true,
+            serviceList: [
+                {
+                    ...Service(),
+                    serviceName: "Men",
+                    serviceCost: 21,
+                    serviceTimeLength: 30,
+                    description: "From maintaining a clean and straightforward style, to a customized approach or traditional haircuts.",
+
+                    showPlus: true,
+                    showOnlineBookingPage: true
+                },
+
+                {
+                    ...Service(),
+                    serviceName: "Women",
+                    serviceCost: 25,
+                    serviceTimeLength: 30,
+                    description: "",
+
+                    showPlus: true,
+                    showOnlineBookingPage: true
+                },
+
+                {
+                    ...Service(),
+                    serviceName: "Children",
+                    serviceCost: 20,
+                    serviceTimeLength: 30,
+                    description: "(Age 12 & under)",
+
+                    showPlus: true,
+                    showOnlineBookingPage: true
+                }
+            ]
+        },
+
+        {
+            ...ServiceGroup(),
+            serviceGroupName: "Styling",
+            description: "",
+            multiselect: false,
+            showOnlineBookingPage: true,
+            serviceList: [
+                {
+                    ...Service(),
+                    serviceName: "Blow dry",
+                    serviceCost: 10,
+                    serviceTimeLength: 20,
+                    description: "",
+
+                    showPlus: true,
+                    showOnlineBookingPage: true
+                },
+
+                {
+                    ...Service(),
+                    serviceName: "Round brush",
+                    serviceCost: 20,
+                    serviceTimeLength: 20,
+                    description: "",
+
+                    showPlus: true,
+                    showOnlineBookingPage: true
+                },
+
+                {
+                    ...Service(),
+                    serviceName: "Straight",
+                    serviceCost: 30,
+                    serviceTimeLength: 20,
+                    description: "",
+
+                    showPlus: true,
+                    showOnlineBookingPage: true
+                },
+
+                {
+                    ...Service(),
+                    serviceName: "Curl",
+                    serviceCost: 35,
+                    serviceTimeLength: 20,
+                    description: "",
+
+                    showPlus: true,
+                    showOnlineBookingPage: true
+                }
+            ]
+        },
+
+        {
+            ...ServiceGroup(),
+            serviceGroupName: "Shampoo",
+            description: "",
+            multiselect: false,
+            showOnlineBookingPage: true,
+            serviceList: [
+                {
+                    ...Service(),
+                    serviceName: "Short hair",
+                    serviceCost: 6,
+                    serviceTimeLength: 15,
+                    description: "",
+
+                    showPlus: true,
+                    showOnlineBookingPage: true
+                },
+
+                {
+                    ...Service(),
+                    serviceName: "Medium & long hair",
+                    serviceCost: 12,
+                    serviceTimeLength: 15,
+                    description: "",
+
+                    showPlus: true,
+                    showOnlineBookingPage: true
+                },
+
+                {
+                    ...Service(),
+                    serviceName: "Deep conditioning treatment",
+                    serviceCost: 45,
+                    serviceTimeLength: 120,
+                    description: "",
+
+                    showPlus: true,
+                    showOnlineBookingPage: true
+                }
+            ]
+        },
+
+        {
+            ...ServiceGroup(),
+            serviceGroupName: "Colour",
+            description: "",
+            multiselect: false,
+            showOnlineBookingPage: true,
+            serviceList: [
+                {
+                    ...Service(),
+                    serviceName: "Retouch",
+                    serviceCost: 85,
+                    serviceTimeLength: 120,
+                    description: "",
+
+                    showPlus: true,
+                    showOnlineBookingPage: true,
+
+                    highlight: true
+                },
+
+                {
+                    ...Service(),
+                    serviceName: "Solid colour",
+                    serviceCost: 100,
+                    serviceTimeLength: 180,
+                    description: "",
+
+                    showPlus: true,
+                    showOnlineBookingPage: true,
+
+                    highlight: true
+                },
+
+                {
+                    ...Service(),
+                    serviceName: "Highlight",
+                    serviceCost: 120,
+                    serviceTimeLength: 210,
+                    description: "",
+
+                    showPlus: true,
+                    showOnlineBookingPage: true,
+
+                    highlight: true
+                }
+            ]
+        },
+
+        {
+            ...ServiceGroup(),
+            serviceGroupName: "Perm",
+            description: "",
+            multiselect: false,
+            showOnlineBookingPage: true,
+            serviceList: [
+                {
+                    ...Service(),
+                    serviceName: "Partial perm",
+                    serviceCost: 85,
+                    serviceTimeLength: 120,
+                    description: "",
+
+                    showPlus: true,
+                    showOnlineBookingPage: true,
+
+                    highlight: true
+                },
+
+                {
+                    ...Service(),
+                    serviceName: "Basic perm",
+                    serviceCost: 110,
+                    serviceTimeLength: 120,
+                    description: "",
+
+                    showPlus: true,
+                    showOnlineBookingPage: true,
+
+                    highlight: true
+                },
+
+                {
+                    ...Service(),
+                    serviceName: "Spiral perm",
+                    serviceCost: 130,
+                    serviceTimeLength: 120,
+                    description: "",
+
+                    showPlus: true,
+                    showOnlineBookingPage: true,
+
+                    highlight: true
+                },
+
+                {
+                    ...Service(),
+                    serviceName: "Partial straighten",
+                    serviceCost: 100,
+                    serviceTimeLength: 180,
+                    description: "",
+
+                    showPlus: true,
+                    showOnlineBookingPage: true,
+
+                    highlight: true
+                },
+
+                {
+                    ...Service(),
+                    serviceName: "Full head straighten",
+                    serviceCost: 210,
+                    serviceTimeLength: 240,
+                    description: "",
+
+                    showPlus: true,
+                    showOnlineBookingPage: true,
+
+                    highlight: true
+                }
+            ]
+        },
+
+        {
+            ...ServiceGroup(),
+            serviceGroupName: "Waxing",
+            description: "",
+            multiselect: true,
+            showOnlineBookingPage: true,
+            serviceList: [
+                {
+                    ...Service(),
+                    serviceName: "Eyebrow",
+                    serviceCost: 12,
+                    serviceTimeLength: 15,
+                    description: "",
+
+                    showPlus: true,
+                    showOnlineBookingPage: true
+                }
+            ]
+        }
+    ];
+
+    // Add the serviceGroupList to the business and submit the changes to the backend
+    const businessValue = get(business);
+    businessValue.serviceGroupList =
+        [...businessValue.serviceGroupList, ...importServiceGroupList];
+
+    // Request the server to update
+    initializeBusiness(businessValue)
+        .then(response => {
+            business.set(response);
+        })
+        .catch(error => {
+            console.error('Failed to update the business:', error);
+        });
+}
