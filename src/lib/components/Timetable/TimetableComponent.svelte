@@ -781,10 +781,14 @@
     let employeeEvents = [];
     let employeeWorkHourEvent = [];
     let resources = [];
+
+    // Clicked employee for employee timetable modal
+    export let ableToChangePastWorkSchedule = false;
     let clickedID = undefined;
     $: if (clickedID) {
+        // Not the past
         // Open the schedule exception modal
-        if (clickedID !== undefined) {
+        if ((ableToChangePastWorkSchedule || !isPast(selectedDate)) && clickedID !== undefined) {
             console.log("Timetable employee clickedID", clickedID);
 
             // Get the clicked employee
