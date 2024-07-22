@@ -101,6 +101,48 @@ export function importNailSalonServices()
 
                 {
                     ...Service(),
+                    serviceName: "Fingernail trim",
+                    serviceCost: 10,
+                    serviceTimeLength: 10,
+                    description: "Keep your fingernails neat and tidy with a professional trim. Includes trimming, shaping, buffing for a polished look.",
+
+                    showPlus: false,
+                    showOnlineBookingPage: false
+                },
+
+                {
+                    ...Service(),
+                    serviceName: "Regular polish change hands",
+                    serviceCost: 15,
+                    serviceTimeLength: 15,
+                    description: "Nail care like fingernail trim and a regular color finish.",
+
+                    showPlus: false,
+                    showOnlineBookingPage: false
+                },
+
+                {
+                    ...Service(),
+                    serviceName: "Shellac polish change hands",
+                    serviceCost: 25,
+                    serviceTimeLength: 30,
+                    description: "Nail care like fingernail trim, but enhanced with a selection of shellac colours that are UV-cured for quick drying and lasting durability.",
+
+                    showPlus: false,
+                    showOnlineBookingPage: false
+                }
+            ]
+        },
+
+        {
+            ...ServiceGroup(),
+            serviceGroupName: "Nail Extensions",
+            description: "Extend and shape your nails for a stylish and durable finish.",
+            multiselect: false,
+            showOnlineBookingPage: true,
+            serviceList: [
+                {
+                    ...Service(),
                     serviceName: "Fill for nail extensions",
                     serviceCost: 50,
                     serviceTimeLength: 75,
@@ -149,39 +191,6 @@ export function importNailSalonServices()
                     showOnlineBookingPage: true,
 
                     highlight: true
-                },
-
-                {
-                    ...Service(),
-                    serviceName: "Fingernail trim",
-                    serviceCost: 10,
-                    serviceTimeLength: 10,
-                    description: "Keep your fingernails neat and tidy with a professional trim. Includes trimming, shaping, buffing for a polished look.",
-
-                    showPlus: false,
-                    showOnlineBookingPage: false
-                },
-
-                {
-                    ...Service(),
-                    serviceName: "Regular polish change hands",
-                    serviceCost: 15,
-                    serviceTimeLength: 15,
-                    description: "Nail care like fingernail trim and a regular color finish.",
-
-                    showPlus: false,
-                    showOnlineBookingPage: false
-                },
-
-                {
-                    ...Service(),
-                    serviceName: "Shellac polish change hands",
-                    serviceCost: 25,
-                    serviceTimeLength: 30,
-                    description: "Nail care like fingernail trim, but enhanced with a selection of shellac colours that are UV-cured for quick drying and lasting durability.",
-
-                    showPlus: false,
-                    showOnlineBookingPage: false
                 }
             ]
         },
