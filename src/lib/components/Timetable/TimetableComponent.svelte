@@ -65,10 +65,12 @@
 
     let plugins = [ResourceTimeGrid, Interaction];
 
+    export let editable = true;
+
     let options = {
-        editable: true,
-        eventStartEditable: true,
-        eventDurationEditable: true,
+        editable: editable,
+        eventStartEditable: editable,
+        eventDurationEditable: editable,
         view: "resourceTimeGridDay",
         selectable: true,
         allDaySlot: false,

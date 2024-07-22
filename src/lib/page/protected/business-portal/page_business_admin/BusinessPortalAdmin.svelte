@@ -164,6 +164,7 @@
             <Metrics bind:selectedDropDownIndex/>
         {:else if selectedIndex === 2}
             <TimetableComponent
+                    editable={false}
                     ableToChangePastWorkSchedule={true}
                     limitShowEvents={false}
                     restrictedPast={false}
