@@ -7,6 +7,9 @@
     import {findPreselectEmployeeID} from "$lib/components/Modal/ServicingTicketClickModal/functions.js";
     import CustomerIndividualServiceBookingComponent
         from "$lib/components/Modal/CustomerBookingClickModal/Servicing/components/CustomerIndivdualBookingComponent/CustomerIndividualServiceBookingComponent/CustomerIndividualServiceBookingComponent.svelte";
+    import {
+        customerBookingClickModal
+    } from "$lib/components/Modal/CustomerBookingClickModal/stores/customerBookingClickModal.js";
     export let customerBooking;
     export let individualBooking;
     export let serviceBooking;
@@ -14,7 +17,7 @@
 </script>
 
 <div>
-    <p><strong>Customer name:</strong> {customerBooking.customer.customerName}</p>
+    <p><strong>Customer name:</strong> {customerBooking.customer.customerName} ({(customerBooking.id % 1000).toString().padStart(3, '0')})</p>
     <p><strong>Booking
         time:</strong> {dayjs(customerBooking.bookingTime, formatToTime).format(formatToTimeAm)}
     </p>

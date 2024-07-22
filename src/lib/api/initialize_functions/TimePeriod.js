@@ -20,10 +20,16 @@ export function getEndTime(startTimeString, duration)
 }
 
 export function getDurationInMinutes(timePeriod) {
-    // Parse the start and end times using dayjs
-    const startTime = dayjs(timePeriod.startTime, formatToTime);
-    const endTime = dayjs(timePeriod.endTime, formatToTime);
 
-    // Calculate the difference in minutes
-    return endTime.diff(startTime, 'minute');
+    let duration = 0;
+    if (timePeriod && timePeriod.startTime && timePeriod.endTime)
+    {
+        // Parse the start and end times using dayjs
+        const startTime = dayjs(timePeriod.startTime, formatToTime);
+        const endTime = dayjs(timePeriod.endTime, formatToTime);
+        duration = endTime.diff(startTime, 'minute');
+    }
+
+    // Return
+    return duration;
 }

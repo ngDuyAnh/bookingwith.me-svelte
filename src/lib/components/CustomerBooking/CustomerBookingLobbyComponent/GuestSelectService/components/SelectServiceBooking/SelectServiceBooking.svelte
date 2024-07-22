@@ -101,6 +101,18 @@
         }
     }
 
+    // Custom search filter
+    function tokenize(str) {
+        return str.toLowerCase().split(/\s+/);
+    }
+
+    function customFilter(label, filterText, option) {
+        const tokens = tokenize(filterText);
+        const labelTokens = tokenize(label);
+
+        // All the tokens to match at least one
+        return tokens.every(token => labelTokens.some(labelToken => labelToken.includes(token)));
+    }
 </script>
 
 <div class="max-w-[250px]">
@@ -115,7 +127,10 @@
             items={serviceSelectOptions} groupBy={(item) => item.group}
             value={selectedService}
             on:change={handleServiceBookingSelect}
-            on:clear={handleDeleteServiceBooking}>
+            on:clear={handleDeleteServiceBooking}
+
+            itemFilter={customFilter}
+    >
         <svelte:fragment slot="item" let:item>
             <div class="flex flex-col">
                 {#if item.groupHeader}
