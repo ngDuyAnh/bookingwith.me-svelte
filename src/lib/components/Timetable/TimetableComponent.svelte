@@ -30,7 +30,7 @@
         timetableSortServiceBookingList
     } from "$lib/components/Timetable/stores/timetableComponent.js";
     import {onMount} from "svelte";
-    import {Button, Popover, Search} from "flowbite-svelte";
+    import {Button, DropdownDivider, Popover, Search} from "flowbite-svelte";
     import dayjs from "dayjs";
     import {findCustomerBookingById} from "$lib/page/protected/business-portal/page_lobby/stores/dashboard_store.js";
     import {
@@ -97,7 +97,7 @@
         slotDuration: "00:05:00",
         scrollTime: $now.format("HH:mm:ss"),
         eventClick: (info) => {
-            if(info.event && info.event.extendedProps?.description !== "Reserved") {
+            if(info.event && info.event.extendedProps?.description !== "Blocked") {
                 servicingTicketClickModalOpenWithServicingTicketEventInfo(info);
             }
         },
@@ -155,14 +155,14 @@
                                              </div>`;
                 // console.log("mounted");
                 let extendedProps = info.event.extendedProps;
-                let isReserved = extendedProps.description == "Reserved";
+                let isBlocked = extendedProps.description == "Blocked";
 
                 let highlight=false;
 
                 let conflicted = false;
                 // console.log("assigned employee", info.event);
 
-                if (!isReserved) {
+                if (!isBlocked) {
                     let employeeID = extendedProps.employeeTimetable.employee.id;
                     let bookedEmployee =
                         extendedProps.servicingTicket.servicingTicketInfo.bookedEmployee;
@@ -216,7 +216,7 @@
                     }
                 }
 
-                info.el.className += ` ${isReserved ? 'dottedBackground' : "individual-" + extendedProps.individualID} pop-out-no-border ${highlight?'glowing-border':''}`;
+                info.el.className += ` ${isBlocked ? 'dottedBackground' : "individual-" + extendedProps.individualID} pop-out-no-border ${highlight?'glowing-border':''}`;
 
                 const timeDiv = `<div class="text-sm font-semibold flex flex-row">${iconCombination}${extendedProps.time}</div>`;
                 const descriptionDiv = `<div class="text-sm text-ellipsis overflow-hidden ... whitespace-pre-line">${extendedProps.description}</div>`;
@@ -238,8 +238,8 @@
             //if infinite hover bug appears again, might have to refer to old commits and bring bag the horrible fixes for it.
             if (info.event.title !== "") {
                 let extendedProps = info.event.extendedProps;
-                let isReserved = extendedProps.description == "Reserved";
-                if (!isReserved) {
+                let isBlocked = extendedProps.description == "Blocked";
+                if (!isBlocked) {
                     let bookingID = extendedProps.servicingTicket.bookingID;
                     let individualID = extendedProps.servicingTicket.individualID;
                     let highlight = extendedProps.servicingTicket.servicingTicketInfo.service.highlight;
@@ -255,8 +255,8 @@
         eventMouseLeave: function (info) {
             if (info.event.title !== "") {
                 let extendedProps = info.event.extendedProps;
-                let isReserved = extendedProps.description == "Reserved";
-                if (!isReserved) {
+                let isBlocked = extendedProps.description == "Blocked";
+                if (!isBlocked) {
                     let bookingID = info.event.extendedProps.servicingTicket.bookingID;
                     let individualID =
                         info.event.extendedProps.servicingTicket.individualID;
@@ -276,13 +276,13 @@
             let totalDuration = endTime.diff(startTime, "minute");
 
             let extendedProps = info.event.extendedProps;
-            let isReserved = extendedProps.description == "Reserved";
-            // console.log("isReserved", isReserved);
+            let isBlocked = extendedProps.description == "Blocked";
+            // console.log("isBlocked", isBlocked);
 
             // Only continue to process if it is not the past
             if (!isPast(selectedDate))
             {
-                if (!isReserved) {
+                if (!isBlocked) {
                     let currTicketID = info.event.extendedProps.servicingTicket.ticketID;
                     let currServiceBookingID =
                         info.event.extendedProps.servicingTicket.serviceBookingID;
@@ -360,17 +360,17 @@
             let startTime = dayjs(info.event.start).format(formatToTime);
 
             let extendedProps = info.event.extendedProps;
-            let isReserved = extendedProps.description === "Reserved";
+            let isBlocked = extendedProps.description === "Blocked";
 
             console.log("eventDrop extendedProps", extendedProps);
             console.log("extendedProps.servicingTicket", extendedProps.servicingTicket);
-            console.log("isReserved", isReserved);
+            console.log("isBlocked", isBlocked);
 
             // Only continue to process if it is not the past
             if (!isPast(selectedDate))
             {
                 // Servicing ticket
-                if (!isReserved) {
+                if (!isBlocked) {
                     // Get the customer booking and service booking instances
                     const customerBookingId =
                         extendedProps.servicingTicket.servicingTicketInfo.id;
@@ -926,7 +926,7 @@
                         employeeTimetable: employeeTable,
                         time: `${formatTimeAm(blockTicket.startTime)} - ${formatTimeAm(getEndTime(blockTicket.startTime, blockTicket.duration))}`,
                         blockTicket: blockTicket,
-                        description: `Reserved`,
+                        description: `Blocked`,
                     },
                 };
             })
@@ -1073,10 +1073,12 @@
                             class="text-gray-400 hover:text-gray-900 dark:hover:text-white cursor-pointer ms-1"
                     />
                     <Popover
-                            placement="right"
+                            title="TimeTable ToolTip"
+                            placement="bottom-end"
                             triggeredBy="#b1"
                             class="text-sm text-gray-500 bg-white border border-gray-200 rounded-lg shadow-sm w-72 dark:bg-gray-800 dark:border-gray-600 dark:text-gray-400 z-[1050]"
                     >
+
                         <div class="flex-col justify-start">
                             <div class="flex items-center">
                                 <span class="block w-4 h-4 bg-blue-500 mr-2"></span>
@@ -1095,6 +1097,23 @@
                                 <span class="text-sm">Completed (Gray)</span>
                             </div>
                         </div>
+                        
+                        <DropdownDivider/>
+
+                        <div class="flex-col justify-start">
+
+                            <div class="flex items-center">
+                                <div class="flex-col bg-gray-500 bg-opacity-10 rounded-lg items-center">
+                                <svg class="w-6 h-6 text-gray-500 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" viewBox="0 0 24 24">
+                                    <path fill-rule="evenodd" d="M12 4a4 4 0 1 0 0 8 4 4 0 0 0 0-8Zm-2 9a4 4 0 0 0-4 4v1a2 2 0 0 0 2 2h8a2 2 0 0 0 2-2v-1a4 4 0 0 0-4-4h-4Z" clip-rule="evenodd"/>
+                                </svg>
+                                <svg class="w-5 h-5 text-red-400 dark:text-white"  fill="currentColor" width="24" height="24"  xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 512">
+                                    <path d="M38.8 5.1C28.4-3.1 13.3-1.2 5.1 9.2S-1.2 34.7 9.2 42.9l592 464c10.4 8.2 25.5 6.3 33.7-4.1s6.3-25.5-4.1-33.7L353.3 251.6C407.9 237 448 187.2 448 128C448 57.3 390.7 0 320 0C250.2 0 193.5 55.8 192 125.2L38.8 5.1zM264.3 304.3C170.5 309.4 96 387.2 96 482.3c0 16.4 13.3 29.7 29.7 29.7H514.3c3.9 0 7.6-.7 11-2.1l-261-205.6z"/>
+                                </svg>
+                                </div>
+                                <span class="text-sm">Select to edit employee timetable for specific date</span>
+                            </div>
+                        </div>
                     </Popover>
                 </div>
             </div>
@@ -1107,7 +1126,7 @@
 <ServicingTicketClickModal isToday={isToday(selectedDate)}/>
 
 <!--Modal for edit employee timetable work hour and block ticket-->
-<EmployeeTimetableModal/>
+<EmployeeTimetableModal bind:selectedDate={selectedDate}/>
 
 
 <style>
