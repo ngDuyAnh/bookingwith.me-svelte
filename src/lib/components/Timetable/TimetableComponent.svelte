@@ -96,7 +96,9 @@
         slotDuration: "00:05:00",
         scrollTime: $now.format("HH:mm:ss"),
         eventClick: (info) => {
-            servicingTicketClickModalOpenWithServicingTicketEventInfo(info);
+            if(info.event && info.event.extendedProps?.description !== "Reserved") {
+                servicingTicketClickModalOpenWithServicingTicketEventInfo(info);
+            }
         },
         events: [],
         resources: [],
