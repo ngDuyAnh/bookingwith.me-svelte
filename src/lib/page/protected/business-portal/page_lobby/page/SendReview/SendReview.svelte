@@ -1,30 +1,33 @@
 <script>
-    import {Button, Input, Label} from "flowbite-svelte";
+    import {Alert, Button, DeviceMockup, Input, Label} from "flowbite-svelte";
     import {
+        Customer,
         CustomerBooking,
-        CustomerBookingState,
-        CustomerBookingChannel
+        CustomerBookingChannel,
+        CustomerBookingState
     } from "$lib/api/initialize_functions/CustomerBooking.js";
     import {
         forceSubmitBooking,
         initializeCustomerBooking
     } from "$lib/api/api_server/api_endpoints/customer-booking-portal/api.js";
     import {formatPhoneNumber, rawPhoneNumber} from "$lib/application/FormatPhoneNumber.js";
-    import {
-        checkAbleToSendReviewReminderPhoneNumber
-    } from "$lib/api/api_server/api_endpoints/lobby-portal/api.js";
+    import {checkAbleToSendReviewReminderPhoneNumber} from "$lib/api/api_server/api_endpoints/lobby-portal/api.js";
     import {checkAbleToSendSmsReviewReminder} from "$lib/api/api_server/functions.js";
     import {business} from "$lib/page/stores/business/business.js";
     import {sendSMSAskingForReview} from "$lib/api/api_twilio/functions.js";
-    import {Customer} from "$lib/api/initialize_functions/CustomerBooking.js";
     import {nowTime} from "$lib/page/stores/now/now_dayjs_store.js";
+    import {fly} from "svelte/transition";
+    import {InfoCircleSolid} from "flowbite-svelte-icons";
 
     let completedPhoneNumber = false;
     let phoneNumber = "";
     let formattedPhoneNumber = "";
     let ableToSendSmsReviewReminder = false;
 
+    let alertMsg="";
+
     function handleBusinessPhoneNumberInput(event) {
+        alertMsg="";
         const input = event.target.value;
 
         // Update the raw customer phone number
@@ -42,9 +45,13 @@
                 .then(response => {
                     ableToSendSmsReviewReminder = checkAbleToSendSmsReviewReminder(response);
 
-                    // console.log(`ableToSendSmsReviewReminder ${ableToSendSmsReviewReminder}`)
+                    // console.log(`ableToSendSmsReviewReminder ${ableToSendSmsReviewReminder}`);
+                    if (!ableToSendSmsReviewReminder) {
+                        alertMsg = `Review reminder already sent to this number.`;
+                    }
                 })
                 .catch(error => {
+                    alertMsg=`Something went wrong, try again.`;
                     console.error('Failed at checkAbleToSendReviewReminder():', error);
                 });
         } else {
@@ -57,7 +64,6 @@
         if (ableToSendSmsReviewReminder) {
             // Sent
             ableToSendSmsReviewReminder = false;
-
             try {
                 // Create the filler customer booking
                 let customerBooking = {
@@ -90,31 +96,49 @@
             }
         }
     }
+
+    $:        console.log("ableToSendSmsReviewReminder",ableToSendSmsReviewReminder);
 </script>
 
-<form on:submit|preventDefault={send} class="space-y-4">
-    <Label class="space-y-2">
-        <span>Phone Number:</span>
-        <Input
-                id="phoneNumber"
-                type="tel"
-                placeholder="(123) 456-7890"
-                bind:value={formattedPhoneNumber}
-                on:input={handleBusinessPhoneNumberInput}
-                required
-                pattern="\(\d\d\d\) \d\d\d-\d\d\d\d"
-                title="Phone number must be in the format: (123) 456-7890"
-        />
-    </Label>
+<div class="my-auto justify-center">
+    <DeviceMockup >
+        <form on:submit|preventDefault={send} class="flex flex-col justify-center h-full space-y-4 p-3">
+            <Label class="space-y-2">
+                <span>Phone Number:</span>
+                <Alert class="{alertMsg!== '' ?'':'hidden'} bg-none mb-4" params={{ x: 200 }} transition={fly}>
+                    <InfoCircleSolid class="w-5 h-5 ripple" slot="icon"/>
+                    <span>{alertMsg}</span>
+                </Alert>
+                <Input
+                        id="phoneNumber"
+                        type="tel"
+                        placeholder="(123) 456-7890"
+                        bind:value={formattedPhoneNumber}
+                        on:input={handleBusinessPhoneNumberInput}
+                        required
+                        pattern="\(\d\d\d\) \d\d\d-\d\d\d\d"
+                        title="Phone number must be in the format: (123) 456-7890"
+                />
+            </Label>
 
-    <Button
-            id="show-tooltip"
-            class={`w-full py-2 px-4 rounded-lg text-white font-semibold
+
+
+            <Button
+                    id="show-tooltip"
+                    class={`w-full py-2 px-4 rounded-lg text-white font-semibold
             ${completedPhoneNumber ? "bg-green-500 hover:bg-green-600" : "bg-red-500 hover:bg-red-600"}
             ${completedPhoneNumber && ableToSendSmsReviewReminder ? "" : "cursor-not-allowed opacity-50"}`}
-            disabled={!completedPhoneNumber || !ableToSendSmsReviewReminder}
-            type="submit"
-    >
-        Send
-    </Button>
-</form>
+                    disabled={!completedPhoneNumber || !ableToSendSmsReviewReminder}
+                    type="submit"
+            >
+                Send
+            </Button>
+
+
+        </form>
+
+    </DeviceMockup>
+
+</div>
+
+
