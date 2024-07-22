@@ -10,7 +10,7 @@
 <div class="flex flex-col space-y-4">
     <div class="flex flex-col space-y-2">
         <div>
-            <p><strong>Customer name:</strong> {$customerBookingClickModal.customerBooking.customer.customerName}</p>
+            <p><strong>Customer name:</strong> {$customerBookingClickModal.customerBooking.customer.customerName} ({($customerBookingClickModal.customerBooking.id % 1000).toString().padStart(3, '0')})</p>
             <PhoneNumber/>
             <p><strong>Booking
                 time:</strong> {dayjs($customerBookingClickModal.customerBooking.bookingTime, formatToTime).format(formatToTimeAm)}
