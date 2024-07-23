@@ -7,4 +7,6 @@
 
 <TimetableComponent
         getSchedule={getEmployeeSchedule}
+
+        ableToChangeEmployeeWorkSchedule={false}
 />

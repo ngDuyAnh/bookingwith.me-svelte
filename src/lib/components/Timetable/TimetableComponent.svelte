@@ -66,6 +66,7 @@
 
     let plugins = [ResourceTimeGrid, Interaction];
 
+    // Allow to edit the timetable
     export let editable = true;
 
     let options = {
@@ -665,6 +666,7 @@
         return servicingTicketColor;
     }
 
+    // Event parameters
     export let limitShowEvents = true;
     export let restrictedPast = true;
 
@@ -788,12 +790,13 @@
     let resources = [];
 
     // Clicked employee for employee timetable modal
-    export let ableToChangePastWorkSchedule = false;
+    export let showPastEmployeeWorkScheduleModal = false;
+    export let ableToChangeEmployeeWorkSchedule = true;
     let clickedID = undefined;
     // Clicked employee for employee timetable modal
     // Not the past
     // Open the schedule exception modal
-    $: if (clickedID && (ableToChangePastWorkSchedule || !isPast(selectedDate))) {
+    $: if (clickedID && (showPastEmployeeWorkScheduleModal || !isPast(selectedDate))) {
         console.log("Timetable employee clickedID", clickedID);
 
         // Get the clicked employee
@@ -1126,7 +1129,10 @@
 <ServicingTicketClickModal isToday={isToday(selectedDate)}/>
 
 <!--Modal for edit employee timetable work hour and block ticket-->
-<EmployeeTimetableModal bind:selectedDate={selectedDate}/>
+<EmployeeTimetableModal
+        bind:selectedDate={selectedDate}
+        {ableToChangeEmployeeWorkSchedule}
+/>
 
 
 <style>

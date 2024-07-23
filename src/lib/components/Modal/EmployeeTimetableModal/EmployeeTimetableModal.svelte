@@ -1,5 +1,5 @@
 <script>
-    import {Button, DropdownDivider, Input, Modal} from "flowbite-svelte";
+    import {Button, Input, Modal} from "flowbite-svelte";
     import Select from "svelte-select";
     import {business} from "$lib/page/stores/business/business.js";
     import {
@@ -10,8 +10,8 @@
         handleSaveEmployeeWorkScheduleException
     } from "$lib/components/Modal/EmployeeTimetableModal/stores/employeeTimetableModal.js";
 
-    export let allowWorkScheduleChange = true;
-    export let selectedDate = undefined;
+    export let selectedDate;
+    export let ableToChangeEmployeeWorkSchedule = true;
 
     const employeeSelectOptions = $business.employeeList.map(employee => ({
         label: employee.employeeName,
@@ -26,7 +26,7 @@
         handleSelectEmployeeForEmployeeTimetableModal(newEmployee);
     }
 
-    // $: console.log("$employeeTimetableModal", $employeeTimetableModal);
+    $: console.log(`$employeeTimetableModal ableToChangeEmployeeWorkSchedule ${ableToChangeEmployeeWorkSchedule}`, $employeeTimetableModal);
 </script>
 
 <div class="absolute top-0 left-0 right-0 z-[2000]">
@@ -65,7 +65,7 @@
                 />
 
                 <!--Work schedule-->
-                {#if allowWorkScheduleChange && $employeeTimetableModal.showWorkSchedule}
+                {#if ableToChangeEmployeeWorkSchedule}
                     <div class="flex sm:items-center sm:space-x-2 sm:space-y-0 space-y-1 sm:flex-row flex-col">
                         <!-- Container for inputs to ensure they split space evenly -->
                         <div class="flex flex-1 space-x-2">
