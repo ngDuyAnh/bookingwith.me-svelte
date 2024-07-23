@@ -165,9 +165,10 @@
         {:else if selectedIndex === 2}
             <TimetableComponent
                     editable={false}
-                    ableToChangePastWorkSchedule={true}
                     limitShowEvents={false}
                     restrictedPast={false}
+                    showPastEmployeeWorkScheduleModal={true}
+                    ableToChangeEmployeeWorkSchedule={true}
             />
         {:else if selectedIndex === 3}
             <Employee/>

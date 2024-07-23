@@ -16,7 +16,6 @@ export const employeeTimetableModal = writable({
     open: false,
     employee: Employee(),
     date: today(),
-    showWorkSchedule: true,
     workScheduleTimePeriod: TimePeriod(),
     showBlockTimePeriod: true,
     blockTimePeriod: TimePeriod()
@@ -27,7 +26,6 @@ export async function handleOpenEmployeeTimetableModal(employee, date)
     try
     {
         // Get the employee work schedule
-        let showWorkSchedule = false;
         let workSchedule = {
             employee: employee,
             date: date,
@@ -35,7 +33,6 @@ export async function handleOpenEmployeeTimetableModal(employee, date)
         }
         if (employee)
         {
-            showWorkSchedule = true;
             workSchedule = await getEmployeeWorkScheduleException(
                 employee.id, date);
         }
@@ -63,14 +60,13 @@ export async function handleOpenEmployeeTimetableModal(employee, date)
             open: true,
             employee: employee,
             date: date,
-            showWorkSchedule: showWorkSchedule,
             workScheduleTimePeriod: workSchedule.timePeriod,
             showBlockTimePeriod: showBlockTimePeriod,
             blockTimePeriod: blockTimePeriod
         });
 
-        const employeeTimetableModalValue = get(employeeTimetableModal);
-        console.log("employeeTimetableModalValue", employeeTimetableModalValue);
+        // const employeeTimetableModalValue = get(employeeTimetableModal);
+        // console.log("employeeTimetableModalValue", employeeTimetableModalValue);
     }
     catch (error)
     {
@@ -84,7 +80,6 @@ export function handleCloseEmployeeTimetableModal()
         open: false,
         employee: Employee(),
         date: today(),
-        showWorkSchedule: true,
         workScheduleTimePeriod: TimePeriod(),
         showBlockTimePeriod: true,
         blockTimePeriod: TimePeriod()
