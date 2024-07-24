@@ -11,6 +11,7 @@
     import {
         handleOpenCreateNewServiceGroupModal, handleOpenEditServiceGroupModal,
     } from "$lib/components/Modal/ServiceGroupModal/stores/serviceGroupModal.js";
+    import ServiceBreakRuleModal from "$lib/components/Modal/ServiceBreakRuleModal/ServiceBreakRuleModal.svelte";
 
     const flipDurationMs = 200;
 
@@ -117,3 +118,6 @@
 
 <!--Modal create or edit service-->
 <ServiceModal/>
+
+<!--Modal for service break rules-->
+<ServiceBreakRuleModal/>
