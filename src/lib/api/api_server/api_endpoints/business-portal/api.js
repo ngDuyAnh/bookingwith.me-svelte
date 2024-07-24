@@ -143,3 +143,35 @@ export async function getCustomerBookingList(businessID, startDate, endDate) {
 
     return await response.json();
 }
+
+export async function getServiceBreakRuleList(serviceID) {
+    const FETCH_URL = `${API_URL}/get-service-break-rule-list/${serviceID}`;
+
+    const response = await fetch(`${FETCH_URL}`);
+
+    if (!response.ok) {
+        throw new Error(`Failed to fetch. Status: ${response.status}`);
+    }
+
+    return await response.json();
+}
+
+export async function initializeServiceBreakRuleList(serviceID, serviceBreakRuleList) {
+    const FETCH_URL = `${API_URL}/initialize-service-break-rule-list/${serviceID}`;
+
+    const response = await fetch(`${FETCH_URL}`, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+            serviceBreakRuleList: serviceBreakRuleList
+        })
+    });
+
+    if (!response.ok) {
+        throw new Error(`Failed to fetch. Status: ${response.status}`);
+    }
+
+    return await response.json();
+}

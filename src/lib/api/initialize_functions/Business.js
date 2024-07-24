@@ -72,6 +72,14 @@ export function Employee() {
     };
 }
 
+export function ServiceBreakRule()
+{
+    return {
+        "workingDuration": 0,
+        "freeDuration": 0
+    };
+}
+
 export function Service() {
     return {
         "id": -1,
