@@ -13,18 +13,15 @@
     import {isToday} from "$lib/page/stores/now/now_dayjs_store.js";
     import {fetchTimetable, timetableComponent} from "$lib/components/Timetable/stores/timetableComponent.js";
     import {
-        bookingList,
-        fetchAppointmentCustomerBookingList
+        bookingList
     } from "$lib/page/protected/business-portal/page_lobby/page/BookingList/stores/bookingList.js";
     import {onMount} from "svelte";
     import {Spinner} from "flowbite-svelte";
     import {
-        customerBookingQueueList,
         fetchCustomerBookingQueueList
     } from "$lib/page/protected/business-portal/page_lobby/stores/dashboard_store.js";
-    import {CustomerBookingChannel} from "$lib/api/initialize_functions/CustomerBooking.js";
 
-    let tabs = ["Service Spotlight", "My Timetable"];
+    let tabs = ["My Timetable", "Service Spotlight"];
     let selectedIndex = 0;
 
     let loading = true;
@@ -76,7 +73,7 @@
 
                 const eventData = JSON.parse(event.data);
 
-                console.log("eventData", eventData);
+                // console.log("eventData", eventData);
 
                 // EVENT_REQUEST
                 // eventData = { type, event, requestId }
@@ -128,6 +125,7 @@
         connectWebSocket();
 
         fetchCustomerBookingQueueList();
+        fetchTimetable($timetableComponent.date);
 
         loading = false;
 
@@ -147,6 +145,9 @@
 
         // Timetable
         if ($timetableComponent.date === customerBooking.bookingDate) {
+
+            console.log("Updating timetable")
+
             await fetchTimetable($timetableComponent.date);
         }
     }
@@ -161,9 +162,9 @@
         <NavBar bind:selectedIndex bind:tabs/>
 
         {#if selectedIndex === 0}
-            <UpcomingService/>
-        {:else if selectedIndex === 1}
             <MyTimetable/>
+        {:else if selectedIndex === 1}
+            <UpcomingService/>
         {/if}
     </div>
 {/if}

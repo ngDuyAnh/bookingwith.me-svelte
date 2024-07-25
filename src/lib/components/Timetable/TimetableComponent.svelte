@@ -25,7 +25,7 @@
         servicingTicketClickModalOpenWithServicingTicketEventInfo,
     } from "$lib/components/Modal/ServicingTicketClickModal/stores/servicingTicketClickModal.js";
     import {
-        fetchTimetable,
+        fetchTimetable, findEmployeeTimetable,
         timetableComponent,
         timetableSortServiceBookingList
     } from "$lib/components/Timetable/stores/timetableComponent.js";
@@ -681,9 +681,7 @@
     export let user = undefined;
     $: if (user && user.email && $timetableComponent.employeeTimetableList)
     {
-        const specificEmployeeTimetable = $timetableComponent.employeeTimetableList.find(
-            timetable => timetable.employee.user && timetable.employee.user.email === user.email
-        );
+        const specificEmployeeTimetable = findEmployeeTimetable(user);
 
         if (specificEmployeeTimetable) {
             timetableComponent.set({

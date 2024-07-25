@@ -25,8 +25,6 @@
         let newEmployee = event.detail.value;
         handleSelectEmployeeForEmployeeTimetableModal(newEmployee);
     }
-
-    $: console.log(`$employeeTimetableModal ableToChangeEmployeeWorkSchedule ${ableToChangeEmployeeWorkSchedule}`, $employeeTimetableModal);
 </script>
 
 <div class="absolute top-0 left-0 right-0 z-[2000]">
