@@ -1,12 +1,9 @@
 <script>
     import TimetableComponent from "$lib/components/Timetable/TimetableComponent.svelte";
-    import {
-        getEmployeeSchedule
-    } from "$lib/page/protected/business-portal/page_employee/page/MyTimetable/MyTimeTable.js";
+    import {userProfile} from "$lib/page/stores/userProfile/userProfile.js";
 </script>
 
 <TimetableComponent
-        getSchedule={getEmployeeSchedule}
-
+        bind:user={$userProfile.user}
         ableToChangeEmployeeWorkSchedule={false}
 />
