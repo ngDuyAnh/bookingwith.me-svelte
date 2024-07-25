@@ -25,7 +25,7 @@
         servicingTicketClickModalOpenWithServicingTicketEventInfo,
     } from "$lib/components/Modal/ServicingTicketClickModal/stores/servicingTicketClickModal.js";
     import {
-        fetchTimetable,
+        fetchTimetable, findEmployeeTimetable,
         timetableComponent,
         timetableSortServiceBookingList
     } from "$lib/components/Timetable/stores/timetableComponent.js";
@@ -54,7 +54,6 @@
         initializeEmployeeTimetableBlockTicket
     } from "$lib/api/api_server/api_endpoints/lobby-portal/api.js";
     import {getEndTime} from "$lib/api/initialize_functions/TimePeriod.js";
-    import {moveToServicing} from "$lib/components/Modal/CustomerBookingClickModal/handle_customer_booking_state.js";
 
     // Date select
     let selectedDate = today();
@@ -677,6 +676,25 @@
         await fetchTimetable(selectedDate);
     });
 
+    // Employee user
+    // Filter the timetable to only show the employee
+    export let user = undefined;
+    $: if (user && user.email && $timetableComponent.employeeTimetableList)
+    {
+        const specificEmployeeTimetable = findEmployeeTimetable(user);
+
+        if (specificEmployeeTimetable) {
+            timetableComponent.set({
+                ...$timetableComponent,
+                employeeTimetableList: [
+                    {
+                        ...specificEmployeeTimetable
+                    }
+                ]
+            })
+        }
+    }
+
     // Date select change
     // Or current time change if it is today
     $: if (
@@ -984,7 +1002,6 @@
     function selectYesterday() {
         selectedDate = dayjs(selectedDate).subtract(1, "day").format(formatToDate);
     }
-
 </script>
 
 <div

@@ -61,6 +61,15 @@ export async function handleScheduleUpdate(eventData) {
 }
 */
 
+export function findEmployeeTimetable(user)
+{
+    const timetableComponentValue = get(timetableComponent);
+
+    return timetableComponentValue.employeeTimetableList.find(
+        timetable => timetable.employee.user && timetable.employee.user.email === user.email
+    );
+}
+
 export function findServicingTicketByIndividualID(individualID)
 {
     const timetableComponentValue = get(timetableComponent);
