@@ -7,9 +7,7 @@
     import {findPreselectEmployeeID} from "$lib/components/Modal/ServicingTicketClickModal/functions.js";
     import CustomerIndividualServiceBookingComponent
         from "$lib/components/Modal/CustomerBookingClickModal/Servicing/components/CustomerIndivdualBookingComponent/CustomerIndividualServiceBookingComponent/CustomerIndividualServiceBookingComponent.svelte";
-    import {
-        customerBookingClickModal
-    } from "$lib/components/Modal/CustomerBookingClickModal/stores/customerBookingClickModal.js";
+
     export let customerBooking;
     export let individualBooking;
     export let serviceBooking;

@@ -77,7 +77,7 @@
                 <div id="footer" slot="footer" class="w-full
                     {isToday ? '':'hidden'}">
                     <Footer
-                            customerBooking={$servicingTicketClickModal.customerBooking}
+                            customerBooking={customerBooking}
                             {indicateSendToCompleted}
                     />
                 </div>
