@@ -2,6 +2,7 @@
     import {Tooltip} from "flowbite-svelte";
     import {UserOutline, UserSolid} from "flowbite-svelte-icons";
 
+    export let nextCol;
     export let customerBooking;
     export let selectedIndividualBookingIndex;
 
@@ -29,7 +30,7 @@
         <li id={index}
             class="flex justify-between items-center {selectedIndividualBookingIndex === index ? 'bg-blue-50 py-2 border-[1px] border-blue-700':'bg-gray-100 py-1'} px-1 rounded-md shadow-sm ">
             <button
-                    on:click={() => {selectedIndividualBookingIndex = index}}
+                    on:click={() => {selectedIndividualBookingIndex = index; nextCol();}}
                     class="flex-1 text-left cursor-pointer"
             >
                 <span class="flex items-center text-gray-950">
