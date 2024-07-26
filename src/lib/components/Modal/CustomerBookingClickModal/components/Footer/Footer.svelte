@@ -1,7 +1,4 @@
 <script>
-    import {
-        handleLobbyPortalEditCustomerBooking
-    } from "$lib/components/Modal/EditCustomerBooking/modalEditCustomerBooking.js";
     import {business} from "$lib/page/stores/business/business.js";
     import {Button, Tooltip} from "flowbite-svelte";
     import {sendSmsAppointment, sendSMSAskingForReview, sendSmsLobby} from "$lib/api/api_twilio/functions.js";
@@ -21,6 +18,9 @@
         bookingList,
         fetchAppointmentCustomerBookingList
     } from "$lib/page/protected/business-portal/page_lobby/page/BookingList/stores/bookingList.js";
+    import {
+        handleEditCustomerBookingLobbyModal
+    } from "$lib/components/Modal/CustomerBookingLobbyModal/stores/customerBookingLobbyModal.js";
 
     export let customerBooking;
 
@@ -152,7 +152,7 @@
             <Button
                     color="light"
                     outline
-                    on:click={() => handleLobbyPortalEditCustomerBooking(customerBooking)}
+                    on:click={() => handleEditCustomerBookingLobbyModal(customerBooking)}
             >
                 <svg class="w-6 h-6 text-gray-800 dark:text-white" aria-hidden="true"
                      xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">

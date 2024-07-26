@@ -12,8 +12,6 @@
         moveToLobby,
         moveToServicing
     } from "$lib/components/Modal/CustomerBookingClickModal/handle_customer_booking_state.js";
-    import {Progressbar} from "flowbite-svelte";
-
 
     export let flipDurationMs;
     export let customerBookingList;

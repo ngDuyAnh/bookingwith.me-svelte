@@ -9,10 +9,19 @@
     import {ChevronLeftOutline, ChevronRightOutline} from "flowbite-svelte-icons";
     import dayjs from "dayjs";
     import {formatToDate} from "$lib/application/Formatter.js";
-    import {onDestroy} from 'svelte';
     import SubmitBooking
         from "$lib/components/CustomerBooking/CustomerBookingLobbyComponent/SubmitBooking/SubmitBooking.svelte";
+    import {
+        customerBookingLobbyComponent, handleNewCustomerBookingLobbyComponent
+    } from "$lib/components/CustomerBooking/CustomerBookingLobbyComponent/store/customerBookingLobbyComponent.js";
 
+    export let options = {
+        showSendSms: true,
+        showLobbyBookingState: true,
+
+        sendSmsFlag: true,
+        lobbyBookingStateFlag: false
+    };
 
     export let customerBooking = {
         ...CustomerBooking(),
@@ -36,25 +45,59 @@
     }
 
     function selectToday() {
-        customerBooking.bookingDate = today();
+        $customerBookingLobbyComponent.bookingDate = today();
     }
 
     function selectTomorrow() {
-        customerBooking.bookingDate = dayjs(customerBooking.bookingDate).add(1, 'day').format(formatToDate);
+        $customerBookingLobbyComponent.bookingDate = dayjs($customerBookingLobbyComponent.bookingDate).add(1, 'day').format(formatToDate);
     }
 
     function selectYesterday() {
-        customerBooking.bookingDate = dayjs(customerBooking.bookingDate).subtract(1, 'day').format(formatToDate);
+        $customerBookingLobbyComponent.bookingDate = dayjs($customerBookingLobbyComponent.bookingDate).subtract(1, 'day').format(formatToDate);
     }
 
-    export let successfulSubmition = false;
+
+    export let submitCallback;
+    let successfulSubmit = false;
 
     let timeoutId = null;
+    function submitSuccessful() {
 
+        successfulSubmit = true;
 
-    // Second function to be called after a delay
+        // Hide the modal header and footer
+        if (submitCallback)
+        {
+            submitCallback(successfulSubmit);
+        }
+
+        console.log("submitSuccessful()", customerBooking)
+
+        // If it is not edit customer booking
+        // Reset back to create new customer booking
+        handleNewCustomerBookingLobbyComponent();
+        if (customerBooking.id === -1)
+        {
+            if (timeoutId !== null) {
+                clearTimeout(timeoutId);
+            }
+
+            // Call second function after 2 seconds
+            timeoutId = setTimeout(resetBooking, 1000);
+        }
+    }
+
+    // Second function to be called after a delay to get back to the create page
     function resetBooking() {
-        successfulSubmition = false;
+
+        successfulSubmit = false;
+
+        // Show the modal header and footer
+        if (submitCallback)
+        {
+            submitCallback(successfulSubmit);
+        }
+
         selectedIndividualBookingIndex = 0;
         customerBooking = {
             ...CustomerBooking(),
@@ -62,32 +105,10 @@
         };
     }
 
-    function submitSuccessful() {
-        successfulSubmition = true;
-
-        if (timeoutId !== null) {
-            clearTimeout(timeoutId);
-            // console.log('Existing timeout cleared');
-        }
-
-        // Call second function after 2 seconds
-        timeoutId = setTimeout(resetBooking, 1000);
-        // console.log(timeoutId);
-    }
-
-    onDestroy(() => {
-        if (timeoutId !== null) {
-            clearTimeout(timeoutId);
-            successfulSubmition=false;
-        }
-    });
-
-    $: console.log("customerBooking", customerBooking);
-
     const hoverDiv = "border-2 border-transparent hover:border-gray-300 transition-colors duration-300 rounded"
 </script>
 
-{#if !successfulSubmition}
+{#if !successfulSubmit}
     <div class="flex space-x-4 h-full">
         <!--Guest column-->
         <div class="flex flex-col h-full">
@@ -158,14 +179,14 @@
                 <div class="h-full shadow overflow-y-auto flex flex-col items-center w-full stripeBG {hoverDiv}">
                     <div class="flex flex-row sm:justify-normal justify-center items-center p-1 bg-white w-full">
                         <Button class="h-fit text-md mr-1" size="xs" color="light" on:click={()=>{selectToday()}}
-                                disabled={isToday(customerBooking.bookingDate)}>Today
+                                disabled={isToday($customerBookingLobbyComponent.bookingDate)}>Today
                         </Button>
                         <div class="flex items-center">
                             <Button class="rounded-r-none h-fit" size="xs" color="light"
                                     on:click={()=>{selectYesterday()}}>
                                 <ChevronLeftOutline class="w-6 h-6"/>
                             </Button>
-                            <input class="border-gray-300 w-[8rem]" bind:value={customerBooking.bookingDate}
+                            <input class="border-gray-300 w-[8rem]" bind:value={$customerBookingLobbyComponent.bookingDate}
                                    type="date"/>
                             <Button class="rounded-l-none h-fit" size="xs" color="light"
                                     on:click={()=>{selectTomorrow()}}>
@@ -196,6 +217,7 @@
                     <SubmitBooking
                             bind:customerBooking={customerBooking}
                             submitSuccessful={submitSuccessful}
+                            options={options}
                     />
                 </div>
             </div>

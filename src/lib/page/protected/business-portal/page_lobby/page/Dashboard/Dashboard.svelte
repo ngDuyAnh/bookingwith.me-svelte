@@ -121,6 +121,7 @@
         }, 10); // Update every 10ms for a smoother progress bar
     }
 
+    // $: console.log("Queue", $customerBookingQueueList);
 </script>
 
 {#if loading}

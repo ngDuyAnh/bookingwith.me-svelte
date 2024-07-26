@@ -42,7 +42,7 @@ export async function fetchAvailableTimeList(customerBooking, isWalkIn) {
     if (isToday(customerBooking.bookingDate)) {
         currentTimeString = nowTime();
     }
-        // Invalid, the date selected is before today
+    // Invalid, the date selected is before today
     // Set it to the end of the day for no availability
     else if (isPast(customerBooking.bookingDate)) {
         currentTimeString = "23:59";
@@ -75,7 +75,7 @@ export async function fetchAvailableTimeList(customerBooking, isWalkIn) {
 
 export async function submitCustomerBooking(
     cb,
-    currentTimeString, bookingTimePeriod,
+    bookingDate, currentTimeString, bookingTime, bookingTimePeriod,
     walkinAvailabilityFlag,
     customerBookingInformationProps) {
 
@@ -90,6 +90,10 @@ export async function submitCustomerBooking(
         const customerBooking = sanitizeCustomerBooking(
             JSON.parse(JSON.stringify(cb))
         );
+
+        // Set the booking date and time for submit
+        customerBooking.bookingDate = bookingDate;
+        customerBooking.bookingTime = bookingTime;
 
         // Keep the current booking state if it is not in schedule state
         if (customerBooking.bookingState === CustomerBookingState.SCHEDULE) {
@@ -168,7 +172,7 @@ async function handleCustomerBooking(
             // Schedule SMS for reminder for the appointment
             try
             {
-                const scheduledReminderResponse = sendSmsBookingReminder(
+                const scheduledReminderResponse = await sendSmsBookingReminder(
                     businessValue.businessInfo.businessName,
                     customerBooking);
                 customerBooking.smsAppointmentReminderSid = scheduledReminderResponse.sid;
