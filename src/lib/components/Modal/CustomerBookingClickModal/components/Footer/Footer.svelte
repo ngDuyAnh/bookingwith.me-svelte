@@ -114,9 +114,9 @@
         }
     }
 
-    function handleCompleteClick() {
+    async function handleCompleteClick() {
         if (confirm("Are you sure you want to mark this as complete?")) {
-            moveToCompleted(customerBooking);
+            await moveToCompleted(customerBooking);
         }
     }
 
@@ -135,10 +135,10 @@
         }
     }
 
-    function handleNoShowClick() {
+    async function handleNoShowClick() {
         if (confirm("Are you sure you want to mark this as no show?")) {
             customerBooking.noShow = true;
-            moveToCompleted(customerBooking);
+            await moveToCompleted(customerBooking);
         }
     }
 </script>

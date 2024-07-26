@@ -138,10 +138,8 @@ export async function submitCustomerBooking(
                 response.customerBooking,
                 customerBookingInformationProps,
                 (customerBooking.id === -1)
-            )
-                .then(() => {
-                    console.log("Done handling SMS and booking state move.");
-                });
+            );
+            console.log("Done handling SMS and booking state move.");
         } else {
             await fetchAvailableTimeList();
         }
@@ -202,36 +200,28 @@ async function handleCustomerBooking(
     // New customer booking
     if (isNewCustomerBooking)
     {
-        sendSmsNewBookedEmployee(
+        await sendSmsNewBookedEmployee(
             businessValue.businessInfo.businessName, customerBooking
-        )
-            .then(() => {
-                console.log("New customer booking SMS notification to the employees.");
-            });
+        );
+        console.log("New customer booking SMS notification to the employees.");;
     }
     // Edit customer booking
     else
     {
-        sendSmsEditBookedEmployee(
+        await sendSmsEditBookedEmployee(
             businessValue.businessInfo.businessName, customerBooking
-        )
-            .then(() => {
-                console.log("Edit customer booking SMS notification to the employees.");
-            });
+        );
+        console.log("Edit customer booking SMS notification to the employees.");
     }
 
     // Move the customer booking state
     if (isToday(customerBooking.bookingDate)) {
         if (customerBookingInformationProps.lobbyBookingStateFlag) {
-            moveToLobby(customerBooking)
-                .then(() => {
-                    console.log("Moved the customer booking to lobby.")
-                });
+            await moveToLobby(customerBooking);
+            console.log("Moved the customer booking to lobby.");
         } else if (customerBookingInformationProps.appointmentBookingStateFlag) {
-            moveToAppointment(customerBooking)
-                .then(() => {
-                    console.log("Moved the customer booking to appointment.")
-                });
+            await moveToAppointment(customerBooking);
+            console.log("Moved the customer booking to appointment.");
         }
     }
 }

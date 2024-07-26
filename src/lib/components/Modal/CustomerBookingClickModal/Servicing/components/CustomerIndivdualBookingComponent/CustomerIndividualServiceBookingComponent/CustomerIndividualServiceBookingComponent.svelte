@@ -45,7 +45,7 @@
         console.log('Start servicing:', serviceBooking, selectedEmployeeID);
 
         // Service the customer booking
-        moveToServicing(customerBooking);
+        await moveToServicing(customerBooking);
 
         // Reset the selected employee after starting servicing
         selectedEmployeeID = null;

@@ -53,9 +53,10 @@
     <Modal bind:open={$customerBookingLobbyModal.open}
            classHeader="!p-1"
            classBody="p-4 md:p-5 space-y-0 flex-1 overflow-y-auto overscroll-contain"
-           class="w-full h-[80vh] border-8"
+           class="xl:w-full sm:w-9/12 w-full h-[80vh] border-8"
            classBackdrop="fixed inset-0 z-50 bg-gray-900 bg-opacity-90 dark:bg-opacity-80"
-           size='xl'>
+           size="xl"
+           >
         <svelte:fragment slot="header">
             <div class="flex sm:flex-row flex-col sm:justify-between justify-center items-center w-full">
                 <div class="w-1/2 flex sm:justify-start justify-center">

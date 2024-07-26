@@ -22,13 +22,8 @@ export async function moveToAppointment(customerBooking) {
     });
 
     // Save the customer booking change
-    await initializeCustomerBookingAndBroadcast(customerBooking, nowTime())
-        .then(() => {
-            console.log("Moved customer booking to appointment.");
-        })
-        .catch(error => {
-            console.error('Error moving customer booking to appointment:', error);
-        });
+    await initializeCustomerBookingAndBroadcast(customerBooking, nowTime());
+    console.log("Moved customer booking to appointment.");
 }
 
 export async function moveToLobby(customerBooking) {
@@ -41,13 +36,8 @@ export async function moveToLobby(customerBooking) {
     }
 
     // Save the customer booking change
-    await initializeCustomerBookingAndBroadcast(customerBooking, currentTime)
-        .then(() => {
-            console.log("Moved customer booking to lobby.");
-        })
-        .catch(error => {
-            console.error('Error moving customer booking to lobby:', error);
-        });
+    await initializeCustomerBookingAndBroadcast(customerBooking, currentTime);
+    console.log("Moved customer booking to lobby.");
 }
 
 export async function moveToServicing(customerBooking) {
@@ -89,13 +79,8 @@ export async function moveToServicing(customerBooking) {
     });
 
     // Save the customer booking change
-    await initializeCustomerBookingAndBroadcast(customerBooking, currentTime)
-        .then(() => {
-            console.log("Moved customer booking to servicing.");
-        })
-        .catch(error => {
-            console.error('Error moving customer booking to servicing:', error);
-        });
+    await initializeCustomerBookingAndBroadcast(customerBooking, currentTime);
+    console.log("Moved customer booking to servicing.");
 }
 
 export async function moveToCompleted(customerBooking) {
@@ -121,11 +106,6 @@ export async function moveToCompleted(customerBooking) {
     });
 
     // Save the customer booking change
-    await initializeCustomerBookingAndBroadcast(customerBooking, currentTime)
-        .then(() => {
-            console.log("Moved customer booking to completed.");
-        })
-        .catch(error => {
-            console.error('Error moving customer booking to completed:', error);
-        });
+    await initializeCustomerBookingAndBroadcast(customerBooking, currentTime);
+    console.log("Moved customer booking to completed.");
 }
