@@ -247,7 +247,7 @@
                 viewBox="0 0 25 25"
                 style="enable-background:new 0 0 25 25;"
                 xml:space="preserve"
-                class=" fill-current text-black hover:text-blue-500 w-5/6"
+                class=" fill-current text-black hover:text-blue-500 w-3/6 h-5/6"
         >
       <path
               stroke-width="0.01"
@@ -264,24 +264,6 @@
                     stroke="currentColor"
                     d="M21.594,20.887c0.678-0.834,1.102-1.883,1.102-3.039c0-2.673-2.175-4.848-4.848-4.848S13,15.175,13,17.848  s2.175,4.848,4.848,4.848c1.156,0,2.205-0.424,3.039-1.102l2.26,2.26C23.244,23.951,23.372,24,23.5,24s0.256-0.049,0.354-0.146  c0.195-0.195,0.195-0.512,0-0.707L21.594,20.887z M17.848,21.696c-2.122,0-3.848-1.726-3.848-3.848S15.726,14,17.848,14  s3.848,1.726,3.848,3.848C21.695,19.97,19.97,21.696,17.848,21.696z"
             />
-            <text
-                    x="0"
-                    y="39"
-                    fill="#000000"
-                    font-size="5px"
-                    font-weight="bold"
-                    font-family="'Helvetica Neue', Helvetica, Arial-Unicode, Arial, Sans-serif"
-            >Created by Royyan Wijaya</text
-            >
-            <text
-                    x="0"
-                    y="44"
-                    fill="#000000"
-                    font-size="5px"
-                    font-weight="bold"
-                    font-family="'Helvetica Neue', Helvetica, Arial-Unicode, Arial, Sans-serif"
-            >from the Noun Project</text
-            >
     </svg>
 
         <span class=" animate-pulse font-bold text-black text-xl">
@@ -291,7 +273,7 @@
 {:else if showAlert}
     <!--Alert for moving to customer booking information but at least a guest has not selected a service-->
     <Alert
-            class="{showAlert ? '' : 'hidden'} rounded-none w-full"
+            class="{showAlert ? '' : 'hidden'} rounded-none w-full flex justify-center"
             dismissable={false}
             params={{ x: 200 }}
             transition={fly}

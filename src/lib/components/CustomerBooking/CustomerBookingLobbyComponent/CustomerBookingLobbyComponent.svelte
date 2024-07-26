@@ -6,13 +6,15 @@
     import GuestList from "$lib/components/CustomerBooking/CustomerBookingLobbyComponent/GuestList/GuestList.svelte";
     import TimeList from "$lib/components/CustomerBooking/CustomerBookingLobbyComponent/TimeList/TimeList.svelte";
     import {isToday, today} from "$lib/page/stores/now/now_dayjs_store.js";
-    import {ChevronLeftOutline, ChevronRightOutline} from "flowbite-svelte-icons";
+    import {ArrowLeftOutline, ArrowRightOutline, ChevronLeftOutline, ChevronRightOutline} from "flowbite-svelte-icons";
     import dayjs from "dayjs";
     import {formatToDate} from "$lib/application/Formatter.js";
     import SubmitBooking
         from "$lib/components/CustomerBooking/CustomerBookingLobbyComponent/SubmitBooking/SubmitBooking.svelte";
     import {
-        customerBookingLobbyComponent, handleNewCustomerBookingLobbyComponent
+        customerBookingLobbyComponent,
+        handleNewCustomerBookingLobbyComponent,
+        pleaseFetchAvailability
     } from "$lib/components/CustomerBooking/CustomerBookingLobbyComponent/store/customerBookingLobbyComponent.js";
 
     export let options = {
@@ -61,13 +63,13 @@
     let successfulSubmit = false;
 
     let timeoutId = null;
+
     function submitSuccessful() {
 
         successfulSubmit = true;
 
         // Hide the modal header and footer
-        if (submitCallback)
-        {
+        if (submitCallback) {
             submitCallback(successfulSubmit);
         }
 
@@ -76,8 +78,7 @@
         // If it is not edit customer booking
         // Reset back to create new customer booking
         handleNewCustomerBookingLobbyComponent();
-        if (customerBooking.id === -1)
-        {
+        if (customerBooking.id === -1) {
             if (timeoutId !== null) {
                 clearTimeout(timeoutId);
             }
@@ -93,8 +94,7 @@
         successfulSubmit = false;
 
         // Show the modal header and footer
-        if (submitCallback)
-        {
+        if (submitCallback) {
             submitCallback(successfulSubmit);
         }
 
@@ -106,119 +106,177 @@
     }
 
     const hoverDiv = "border-2 border-transparent hover:border-gray-300 transition-colors duration-300 rounded"
+
+    let focusColumnIndex = 1;
+
+    function nextCol() {
+        if (focusColumnIndex !== 4)
+            focusColumnIndex++;
+    }
+
+    function prevCol() {
+        if (focusColumnIndex !== 0)
+            focusColumnIndex--;
+    }
+
 </script>
 
 {#if !successfulSubmit}
-    <div class="flex space-x-4 h-full">
-        <!--Guest column-->
-        <div class="flex flex-col h-full">
+    <div class="flex flex-col h-full">
+        <div class=" relative flex items-center justify-center px-6 pb-2 w-full xl:hidden z-10">
+            <!-- Container for the Previous Button -->
+            <div class="flex-1 z-10">
+                <Button class={`disable-double-tap-zoom !p-2 ${focusColumnIndex === 1 ? 'hidden' : ''}`}
+                        on:click={prevCol}>
+                    <ArrowLeftOutline class="w-4 h-4"/>
+                </Button>
+            </div>
+            <div class="absolute border-2 border-gray-200 h-1 w-[75%] rounded-lg"></div>
+
             <div class="relative flex flex-row flex-grow items-center justify-center mb-2">
-                <div class="absolute border-2 border-gray-200 h-1 w-full rounded-lg"></div>
+                <!--                <div class="absolute border-2 border-gray-200 h-1 w-full rounded-lg"></div>-->
                 <div class="flex flex-row bg-white z-10 space-x-1 px-1">
-                    <Avatar size="xs" class="flex justify-center items-center">1</Avatar>
-                    <span class="font-bold">Guest</span>
+                    <Avatar size="xs" class="flex justify-center items-center">{focusColumnIndex}</Avatar>
+                    <span class="font-bold">
+                        {#if focusColumnIndex === 1}
+                            Guest
+                        {:else if focusColumnIndex == 2}
+                            Service
+                        {:else if focusColumnIndex == 3}
+                            Date & Time
+                        {:else if focusColumnIndex == 4}
+                            Customer
+                        {/if}
+                    </span>
                 </div>
             </div>
-            <div class="w-[230px] h-full shadow overflow-y-auto {hoverDiv}">
-                <!--Create a new guest-->
-                <div class="flex justify-end">
-                    <button
-                            on:click={createNewGuest}
-                            class="new-guest select-none text-center cursor-pointer text-white px-2 py-2 flex flex-row justify-center items-center space-x-1"
-                    >
-                        <svg class="w-6 h-6 text-gray-800 dark:text-white" aria-hidden="true" fill="currentColor"
-                             viewBox="0 0 24 24">
-                            <path fill-rule="evenodd"
-                                  d="M9 4a4 4 0 1 0 0 8 4 4 0 0 0 0-8Zm-2 9a4 4 0 0 0-4 4v1a2 2 0 0 0 2 2h8a2 2 0 0 0 2-2v-1a4 4 0 0 0-4-4H7Zm8-1a1 1 0 0 1 1-1h1v-1a1 1 0 1 1 2 0v1h1a1 1 0 1 1 0 2h-1v1a1 1 0 1 1-2 0v-1h-1a1 1 0 0 1-1-1Z"
-                                  clip-rule="evenodd"/>
-                        </svg>
-                        <span class="text-black text-sm">Add Guest</span>
-                    </button>
-                </div>
 
-                <GuestList
-                        bind:customerBooking={customerBooking}
-                        bind:selectedIndividualBookingIndex={selectedIndividualBookingIndex}
-                />
-
+            <!-- Container for the Next Button -->
+            <div class="flex-1 text-right z-10">
+                <Button class={`disable-double-tap-zoom !p-2 ${focusColumnIndex === 4 ? 'hidden' : ''}`}
+                        on:click={()=>{nextCol(); pleaseFetchAvailability();}}>
+                    <ArrowRightOutline class="w-4 h-4"/>
+                </Button>
             </div>
         </div>
+        <div class="flex flex-grow flex-row xl:space-x-4">
 
-        <!--Service selection for guest column-->
-        <div class="flex-1 flex flex-col ">
-            <div class="flex flex-col h-full">
-                <div class="relative flex flex-row flex-grow items-center justify-center mb-2">
-                    <div class="absolute border-2 border-gray-200 h-1 w-full rounded-lg"></div>
-                    <div class="flex flex-row bg-white z-10 space-x-1 px-1">
-                        <Avatar size="xs" class="flex justify-center items-center">2</Avatar>
-                        <span class="font-bold">Service</span>
+            <!--Guest column-->
+            <div class="flex-1 flex flex-col xl:min-w-[230px] min-w-[100%] xl:block {focusColumnIndex===1?'block':'hidden'}">
+                <div class="flex flex-col h-full">
+                    <div class="relative flex flex-row flex-grow items-center justify-center mb-2 xl:flex hidden">
+                        <div class="absolute border-2 border-gray-200 h-1 w-full rounded-lg"></div>
+                        <div class="flex flex-row bg-white z-10 space-x-1 px-1">
+                            <Avatar size="xs" class="flex justify-center items-center">1</Avatar>
+                            <span class="font-bold">Guest</span>
+                        </div>
                     </div>
-                </div>
+                    <div class="h-full shadow overflow-y-auto {hoverDiv}">
+                        <!--Create a new guest-->
+                        <div class="flex justify-end">
+                            <button
+                                    on:click={createNewGuest}
+                                    class="new-guest select-none text-center cursor-pointer text-white px-2 py-2 flex flex-row justify-center items-center space-x-1"
+                            >
+                                <svg class="w-6 h-6 text-gray-800 dark:text-white" aria-hidden="true"
+                                     fill="currentColor"
+                                     viewBox="0 0 24 24">
+                                    <path fill-rule="evenodd"
+                                          d="M9 4a4 4 0 1 0 0 8 4 4 0 0 0 0-8Zm-2 9a4 4 0 0 0-4 4v1a2 2 0 0 0 2 2h8a2 2 0 0 0 2-2v-1a4 4 0 0 0-4-4H7Zm8-1a1 1 0 0 1 1-1h1v-1a1 1 0 1 1 2 0v1h1a1 1 0 1 1 0 2h-1v1a1 1 0 1 1-2 0v-1h-1a1 1 0 0 1-1-1Z"
+                                          clip-rule="evenodd"/>
+                                </svg>
+                                <span class="text-black text-sm">Add Guest</span>
+                            </button>
+                        </div>
 
-                <div class="h-full shadow overflow-y-auto {hoverDiv}">
-                    <GuestSelectService
-                            bind:customerBooking={customerBooking}
-                            individualBookingIndex={selectedIndividualBookingIndex}
-                    />
+                        <GuestList
+                                {nextCol}
+                                bind:customerBooking={customerBooking}
+                                bind:selectedIndividualBookingIndex={selectedIndividualBookingIndex}
+                        />
+
+                    </div>
                 </div>
             </div>
-        </div>
 
-        <!--Booking time-->
-        <div class="flex-1 flex flex-col">
-            <div class="flex flex-col h-full">
-                <div class="relative flex flex-row flex-grow items-center justify-center mb-2">
-                    <div class="absolute border-2 border-gray-200 h-1 w-full rounded-lg"></div>
-                    <div class="flex flex-row bg-white z-10 space-x-1 px-1">
-                        <Avatar size="xs" class="flex justify-center items-center">3</Avatar>
-                        <span class="font-bold">Date & Time</span>
-                    </div>
-                </div>
-
-                <!--Date & Time select-->
-                <div class="h-full shadow overflow-y-auto flex flex-col items-center w-full stripeBG {hoverDiv}">
-                    <div class="flex flex-row sm:justify-normal justify-center items-center p-1 bg-white w-full">
-                        <Button class="h-fit text-md mr-1" size="xs" color="light" on:click={()=>{selectToday()}}
-                                disabled={isToday($customerBookingLobbyComponent.bookingDate)}>Today
-                        </Button>
-                        <div class="flex items-center">
-                            <Button class="rounded-r-none h-fit" size="xs" color="light"
-                                    on:click={()=>{selectYesterday()}}>
-                                <ChevronLeftOutline class="w-6 h-6"/>
-                            </Button>
-                            <input class="border-gray-300 w-[8rem]" bind:value={$customerBookingLobbyComponent.bookingDate}
-                                   type="date"/>
-                            <Button class="rounded-l-none h-fit" size="xs" color="light"
-                                    on:click={()=>{selectTomorrow()}}>
-                                <ChevronRightOutline class="w-6 h-6"/>
-                            </Button>
+            <!--Service selection for guest column-->
+            <div class="flex-1 flex flex-col xl:min-w-[230px] min-w-[100%] xl:block {focusColumnIndex===2?'block':'hidden'}">
+                <div class="flex flex-col h-full">
+                    <div class="relative flex flex-row flex-grow items-center justify-center mb-2 xl:flex hidden">
+                        <div class="absolute border-2 border-gray-200 h-1 w-full rounded-lg"></div>
+                        <div class="flex flex-row bg-white z-10 space-x-1 px-1">
+                            <Avatar size="xs" class="flex justify-center items-center">2</Avatar>
+                            <span class="font-bold">Service</span>
                         </div>
                     </div>
 
-                    <TimeList
-                            bind:customerBooking={customerBooking}
-                    />
-                </div>
-            </div>
-        </div>
-
-        <!--Customer profile-->
-        <div class="flex-1 flex flex-col">
-            <div class="flex flex-col h-full">
-                <div class="relative flex flex-row flex-grow items-center justify-center mb-2">
-                    <div class="absolute border-2 border-gray-200 h-1 w-full rounded-lg"></div>
-                    <div class="flex flex-row bg-white z-10 space-x-1 px-1">
-                        <Avatar size="xs" class="flex justify-center items-center">4</Avatar>
-                        <span class="font-bold">Customer</span>
+                    <div class="h-full shadow overflow-y-auto {hoverDiv}">
+                        <GuestSelectService
+                                bind:customerBooking={customerBooking}
+                                individualBookingIndex={selectedIndividualBookingIndex}
+                        />
                     </div>
                 </div>
+            </div>
 
-                <div class="h-full shadow overflow-y-auto {hoverDiv}">
-                    <SubmitBooking
-                            bind:customerBooking={customerBooking}
-                            submitSuccessful={submitSuccessful}
-                            options={options}
-                    />
+            <!--Booking time-->
+            <div class="flex-1 flex flex-col xl:min-w-[310px] min-w-[100%] xl:block {focusColumnIndex===3?'block':'hidden'}">
+                <div class="flex flex-col h-full">
+                    <div class="relative flex flex-row flex-grow items-center justify-center mb-2 xl:flex hidden">
+                        <div class="absolute border-2 border-gray-200 h-1 w-full rounded-lg"></div>
+                        <div class="flex flex-row bg-white z-10 space-x-1 px-1">
+                            <Avatar size="xs" class="flex justify-center items-center">3</Avatar>
+                            <span class="font-bold">Date & Time</span>
+                        </div>
+                    </div>
+
+                    <!--Date & Time select-->
+                    <div class="h-full shadow overflow-y-auto flex flex-col items-center w-full stripeBG {hoverDiv}">
+                        <div class="flex flex-row sm:justify-normal justify-center items-center p-1 bg-white w-full">
+                            <Button class="h-fit text-md mr-1" size="xs" color="light"
+                                    on:click={()=>{selectToday()}}
+                                    disabled={isToday($customerBookingLobbyComponent.bookingDate)}>Today
+                            </Button>
+                            <div class="flex items-center">
+                                <Button class="rounded-r-none h-fit" size="xs" color="light"
+                                        on:click={()=>{selectYesterday()}}>
+                                    <ChevronLeftOutline class="w-6 h-6"/>
+                                </Button>
+                                <input class="border-gray-300 w-[8rem]"
+                                       bind:value={$customerBookingLobbyComponent.bookingDate}
+                                       type="date"/>
+                                <Button class="rounded-l-none h-fit" size="xs" color="light"
+                                        on:click={()=>{selectTomorrow()}}>
+                                    <ChevronRightOutline class="w-6 h-6"/>
+                                </Button>
+                            </div>
+                        </div>
+
+                        <TimeList
+                                bind:customerBooking={customerBooking}
+                        />
+                    </div>
+                </div>
+            </div>
+
+            <!--Customer profile-->
+            <div class="flex-1 flex flex-col xl:min-w-[230px] min-w-[100%] xl:block {focusColumnIndex===4?'block':'hidden'}">
+                <div class="flex flex-col h-full">
+                    <div class="relative flex flex-row flex-grow items-center justify-center mb-2 xl:flex hidden">
+                        <div class="absolute border-2 border-gray-200 h-1 w-full rounded-lg"></div>
+                        <div class="flex flex-row bg-white z-10 space-x-1 px-1">
+                            <Avatar size="xs" class="flex justify-center items-center">4</Avatar>
+                            <span class="font-bold">Customer</span>
+                        </div>
+                    </div>
+
+                    <div class="h-full shadow overflow-y-auto {hoverDiv}">
+                        <SubmitBooking
+                                bind:customerBooking={customerBooking}
+                                submitSuccessful={submitSuccessful}
+                                options={options}
+                        />
+                    </div>
                 </div>
             </div>
         </div>
