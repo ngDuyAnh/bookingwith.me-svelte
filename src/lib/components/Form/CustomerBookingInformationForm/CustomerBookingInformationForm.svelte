@@ -243,7 +243,9 @@
     function submit() {
         submitCustomerBooking(
             customerBooking,
+            customerBooking.bookingDate,
             currentTimeString,
+            customerBooking.bookingTime,
             selectedAvailability?.timePeriod,
             walkinAvailabilityFlag,
             customerBookingInformationProps

@@ -7,7 +7,6 @@
     export let dragDisabled;
     export let moveFinished;
     export let droppedIntoID;
-    export let progress;
 
 </script>
 
@@ -17,4 +16,4 @@
     <span class="text-sm">{customerBookingQueueList[3].length}</span>
 </div>
 
-<CustomerBookingList bind:progress={progress} bind:droppedIntoID={droppedIntoID} flipDurationMs={flipDurationMs} bind:moveFinished={moveFinished} bind:dragDisabled={dragDisabled} columnID={3} customerBookingList={customerBookingQueueList[3]}/>
+<CustomerBookingList bind:droppedIntoID={droppedIntoID} flipDurationMs={flipDurationMs} bind:moveFinished={moveFinished} bind:dragDisabled={dragDisabled} columnID={3} customerBookingList={customerBookingQueueList[3]}/>

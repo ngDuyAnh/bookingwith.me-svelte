@@ -10,31 +10,32 @@
         InfoCircleSolid,
     } from "flowbite-svelte-icons";
     import {
-        availabilityFetched,
-        modalCreateCustomerBookingLobby,
-        updateBookingTimePeriod,
-        updateCurrentTimeString,
-    } from "$lib/components/Modal/CreateCustomerBookingLobby/stores/createCustomerBookingLobby.js";
+        availabilityFetched, selectAvailability
+    } from "$lib/components/CustomerBooking/CustomerBookingLobbyComponent/store/customerBookingLobbyComponent.js";
+    import {
+        updateCurrentTime
+    } from "$lib/components/CustomerBooking/CustomerBookingLobbyComponent/store/customerBookingLobbyComponent.js";
     import {nowTime} from "$lib/page/stores/now/now_dayjs_store.js";
     import {
         pleaseFetchAvailability
-    } from "$lib/components/Modal/CreateCustomerBookingLobby/stores/createCustomerBookingLobby.js";
+    } from "$lib/components/CustomerBooking/CustomerBookingLobbyComponent/store/customerBookingLobbyComponent.js";
+    import {
+        customerBookingLobbyComponent
+    } from "$lib/components/CustomerBooking/CustomerBookingLobbyComponent/store/customerBookingLobbyComponent.js";
 
     export let customerBooking;
 
     // Serialize to track deep changes in nested structures
     let requiredAvailabilitiesSearch = true;
     let beforeSerializedBooking = {
-        bookingDate: customerBooking.bookingDate,
-        customerIndividualBookingList:
-        customerBooking.customerIndividualBookingList,
+        bookingDate: $customerBookingLobbyComponent.bookingDate,
+        customerIndividualBookingList: customerBooking.customerIndividualBookingList
     };
     let serializedBooking = JSON.stringify(beforeSerializedBooking);
     $: {
         const currentBeforeSerialized = {
-            bookingDate: customerBooking.bookingDate,
-            customerIndividualBookingList:
-            customerBooking.customerIndividualBookingList,
+            bookingDate: $customerBookingLobbyComponent.bookingDate,
+            customerIndividualBookingList: customerBooking.customerIndividualBookingList
         };
         const currentSerialized = JSON.stringify(currentBeforeSerialized);
         if (serializedBooking !== currentSerialized) {
@@ -50,8 +51,7 @@
             // Reset
             else {
                 availabilityList = [];
-                selectedAvailability = undefined;
-                customerBooking.bookingTime = null;
+                selectAvailability(undefined)
             }
 
             // Update the stored serialized form
@@ -62,12 +62,6 @@
 
     // Select booking time
     let availabilityList = [];
-    let selectedAvailability = undefined;
-
-    // Record the selected booking time period
-    // This is to make sure the consistency when submitting to the server
-    // That we can lock the time period for the customer booking
-    $: updateBookingTimePeriod(selectedAvailability?.timePeriod);
 
     // Array to store indices of bookings with empty service lists
     let emptyServiceBookingIndices = [];
@@ -78,15 +72,21 @@
     let alertMsg = "";
     let fetching = false;
 
-    $: if ($modalCreateCustomerBookingLobby.pleaseFetchAvailability) {
-        getAvailabilities();
+    $: if ($customerBookingLobbyComponent.pleaseFetchAvailability) {
+
         availabilityFetched();
+
+        console.log("Here in fetching availabilities", $customerBookingLobbyComponent.pleaseFetchAvailability)
+
+        getAvailabilities();
     }
 
     function getAvailabilities() {
+
         showAlert = false;
         alertMsg = "";
 
+        // Get the indices of the guest that have not selected a service
         emptyServiceBookingIndices = [];
         customerBooking.customerIndividualBookingList.forEach((booking, index) => {
             if (booking.customerIndividualServiceBookingList.length === 0) {
@@ -94,27 +94,54 @@
             }
         });
 
-        console.log("emptyServiceBookingIndices", emptyServiceBookingIndices);
-
-        // console.log("getAvailabilities customerBooking", customerBooking);
-
+        // All guests selected at least a service
+        // Proceed with getting the availabilities
         if (emptyServiceBookingIndices.length === 0) {
             // Record current timestamp to submit the customer booking later based on it
             // This will prevent conflict submit due to the time passing while the customer make the decision
-            updateCurrentTimeString(nowTime());
+            updateCurrentTime(nowTime());
+
+            // Cloned
+            const clonedCustomerBooking = JSON.parse(JSON.stringify(customerBooking))
+
+            // Initialize the booking date and time
+            clonedCustomerBooking.bookingDate = $customerBookingLobbyComponent.bookingDate;
 
             // Get the availabilities
             fetching = true;
-            fetchAvailableTimeList(customerBooking, true)
+            fetchAvailableTimeList(clonedCustomerBooking, true)
                 .then((availabilities) => {
-                    availabilityList = availabilities;
+
+                    // Reset the availability list
+                    availabilityList = [];
+
+                    // If it is editing customer booking
+                    // The search availability date is the existing booking date
+                    // Then add a default option
+                    // Show the default time of the customer booking
+                    if (customerBooking.id !== -1 &&
+                        $customerBookingLobbyComponent.bookingDate === customerBooking.bookingDate) {
+                        availabilityList = [
+                            {
+                                timePeriod: {
+                                    startTime: customerBooking.bookingTime,
+                                    endTime: customerBooking.bookingTime
+                                },
+                                duration: 0,
+                                walkIn: true,
+
+                                override: true
+                            }
+                        ];
+                    }
+
+                    // Add the availabilities to the list
+                    availabilityList.push(...availabilities);
 
                     // Select the first booking time
                     if (availabilityList.length > 0) {
                         selectAvailability(availabilityList[0]);
                     }
-
-                    // console.log("availabilityList", availabilityList)
                 })
                 .catch((err) => {
                     console.error("Error getAvailabilities():", err);
@@ -161,7 +188,7 @@
                 // The display string include the search
                 // Or it is the selected availability
                 return (
-                    selectedAvailability === availability ||
+                    $customerBookingLobbyComponent.selectedAvailability === availability ||
                     normalizeSearchInput(displayString).includes(normalizedSearchValue)
                 );
             });
@@ -176,8 +203,8 @@
                 const matchIndexB = displayStringB.indexOf(normalizedSearchValue);
 
                 // If one or both items are the selected availability, prioritize them
-                if (selectedAvailability === a) return -1;
-                if (selectedAvailability === b) return 1;
+                if ($customerBookingLobbyComponent.selectedAvailability === a) return -1;
+                if ($customerBookingLobbyComponent.selectedAvailability === b) return 1;
 
                 // Sort by the match index; earlier matches are better
                 // If no match found (index = -1), push to the end
@@ -187,12 +214,6 @@
                 );
             });
         }
-    }
-
-    function selectAvailability(availability) {
-        selectedAvailability = availability;
-        customerBooking.bookingTime = availability.timePeriod.startTime;
-        // console.log("Selected time: ", customerBooking.bookingTime);
     }
 
     function availabilityString(availability) {
@@ -214,8 +235,8 @@
 
 {#if requiredAvailabilitiesSearch}
     <button
-            on:click={getAvailabilities}
-            on:mouseenter={getAvailabilities}
+            on:click={pleaseFetchAvailability}
+            on:mouseenter={pleaseFetchAvailability}
             class="focus:outline-none w-full h-full flex flex-col justify-center items-center shadow p-1 rounded-lg stripeBG"
     >
         <svg
@@ -288,30 +309,46 @@
             placeholder="Search Time Info"
             maxlength="20"
     ></Search>
-    <span class="font-semibold flex w-full items-center justify-center w-full bg-white border-[1px] border-[#d1d5db] rounded-b mb-1">Availability for {customerBooking.bookingDate}</span>
+    <span class="font-semibold flex w-full items-center justify-center bg-white border-[1px] border-[#d1d5db] rounded-b mb-1">Availability for {$customerBookingLobbyComponent.bookingDate}</span>
     <ul class="space-y-2 w-full overflow-x-hidden justify-center">
         {#each filteredAvailabilityList as availability, index (index)}
-            <li
-                    id={index}
-                    class="flex justify-between items-center py-1 px-1 rounded-md shadow-sm
-                    {selectedAvailability === availability
+            {#if availability.override}
+                <!--Override option show the colour red-->
+                <li
+                        id={index}
+                        class="bg-red-200 flex justify-between items-center py-1 px-1 rounded-md shadow-sm
+                    {$customerBookingLobbyComponent.selectedAvailability === availability ? 'border-[3px] border-red-700' : ''}"
+                >
+                    <button
+                            class="flex-1 text-left cursor-pointer"
+                            on:click={() => selectAvailability(availability)}
+                    >
+                        {dayjs(availability.timePeriod.startTime, formatToTime).format(formatToTimeAM)}
+                    </button>
+                </li>
+            {:else}
+                <li
+                        id={index}
+                        class="flex justify-between items-center py-1 px-1 rounded-md shadow-sm
+                    {$customerBookingLobbyComponent.selectedAvailability === availability
           ? availability.walkIn
             ? 'border-[3px] border-red-700'
             : 'border-[3px] border-blue-700'
           : ''}
                     {availability.walkIn ? 'bg-yellow-200' : 'bg-green-200'}"
-            >
-                <button
-                        class="flex-1 text-left cursor-pointer"
-                        on:click={() => selectAvailability(availability)}
                 >
-                    {availabilityString(availability)}
-                </button>
-            </li>
+                    <button
+                            class="flex-1 text-left cursor-pointer"
+                            on:click={() => selectAvailability(availability)}
+                    >
+                        {availabilityString(availability)}
+                    </button>
+                </li>
+            {/if}
         {/each}
     </ul>
 {:else if !fetching}
-    <span class="font-semibold flex w-full items-center justify-center w-full bg-white border-[1px] border-[#d1d5db]">Availability for {customerBooking.bookingDate}</span>
+    <span class="font-semibold flex w-full items-center justify-center w-full bg-white border-[1px] border-[#d1d5db]">Availability for {$customerBookingLobbyComponent.bookingDate}</span>
     <p
             class="flex flex-row items-center select-none text-center text-lg py-4 text-gray-500"
     >

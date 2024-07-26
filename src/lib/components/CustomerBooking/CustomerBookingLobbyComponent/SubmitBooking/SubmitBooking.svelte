@@ -1,24 +1,21 @@
 <script>
-    import {CashSolid, UsersGroupSolid} from "flowbite-svelte-icons";
-    import {Button, Checkbox, Input, Label, Textarea} from "flowbite-svelte";
+    import {Input, Label, Textarea} from "flowbite-svelte";
     import {formatPhoneNumber, rawPhoneNumber} from "$lib/application/FormatPhoneNumber.js";
     import {business} from "$lib/page/stores/business/business.js";
     import {
         getCustomer
     } from "$lib/api/api_server/api_endpoints/customer-booking-portal/api.js";
     import {
-        modalCreateCustomerBookingLobby,
         pleaseFetchAvailability
-    } from "$lib/components/Modal/CreateCustomerBookingLobby/stores/createCustomerBookingLobby.js";
+    } from "$lib/components/CustomerBooking/CustomerBookingLobbyComponent/store/customerBookingLobbyComponent.js";
     import {submitCustomerBooking} from "$lib/api/api_server/functions.js";
     import {
-        getServiceBookingListFromCustomerBooking,
-        getServiceBookingListWithBookedEmployeeFromCustomerBooking
-    } from "$lib/api/utilitiy_functions/CustomerBooking.js";
-    import {sendSmsNewBookedEmployee} from "$lib/api/api_twilio/functions.js";
+        customerBookingLobbyComponent
+    } from "$lib/components/CustomerBooking/CustomerBookingLobbyComponent/store/customerBookingLobbyComponent.js";
 
     export let customerBooking;
     export let submitSuccessful;
+    export let options;
 
     // Phone number
     let formattedPhoneNumber = formatPhoneNumber(customerBooking.customer.phoneNumber);
@@ -52,15 +49,23 @@
     // Submit the customer booking
     function submit()
     {
-        if ($modalCreateCustomerBookingLobby.currentTimeString &&
-            $modalCreateCustomerBookingLobby.bookingTimePeriod)
+        if ($customerBookingLobbyComponent.currentTimeString &&
+            $customerBookingLobbyComponent.bookingDate &&
+            $customerBookingLobbyComponent.selectedAvailability)
         {
+            const customerBookingInformationProps = {
+                ...options,
+                overrideFlag: $customerBookingLobbyComponent.selectedAvailability.override ?? false
+            }
+
             submitCustomerBooking(
                 customerBooking,
-                $modalCreateCustomerBookingLobby.currentTimeString,
-                $modalCreateCustomerBookingLobby.bookingTimePeriod,
+                $customerBookingLobbyComponent.bookingDate,
+                $customerBookingLobbyComponent.currentTimeString,
+                $customerBookingLobbyComponent.selectedAvailability.timePeriod.startTime,
+                $customerBookingLobbyComponent.selectedAvailability.timePeriod,
                 true,
-                $modalCreateCustomerBookingLobby.customerBookingInformationProps
+                customerBookingInformationProps
             )
                 .then(success => {
                     if (success)
@@ -73,7 +78,7 @@
                         pleaseFetchAvailability();
                         alert("Booking time recently unavailable. Please pick a different time!");
                     }
-                })
+                });
         }
         else
         {
@@ -122,8 +127,4 @@
                 bind:value={customerBooking.message}
         />
     </Label>
-
-
-
-
 </form>
