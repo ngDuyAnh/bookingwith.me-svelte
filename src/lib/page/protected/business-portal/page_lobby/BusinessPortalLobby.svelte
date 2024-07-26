@@ -164,7 +164,7 @@
                 {
                     for(let j =0; j<beforeTempQueueList[i].length; j++)
                     {
-                        if(beforeTempQueueList[i][j].bookingChannel==CustomerBookingChannel.ONLINE)
+                        if(beforeTempQueueList[i][j].bookingChannel === CustomerBookingChannel.ONLINE)
                         {
                             beforeCount++;
                         }
@@ -177,7 +177,7 @@
                 {
                     for(let j =0; j<$customerBookingQueueList[i].length; j++)
                     {
-                        if($customerBookingQueueList[i][j].bookingChannel==CustomerBookingChannel.ONLINE)
+                        if($customerBookingQueueList[i][j].bookingChannel === CustomerBookingChannel.ONLINE)
                         {
                             afterCount++;
                         }
