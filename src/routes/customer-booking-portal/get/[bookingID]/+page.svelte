@@ -9,7 +9,6 @@
     import Today from "$lib/page/customer-booking-portal/get/page/Today/Today.svelte";
     import Future from "$lib/page/customer-booking-portal/get/page/Future/Future.svelte";
     import {handleCustomerBookingEstimateUpdateEvent} from "$lib/page/customer-booking-portal/get/stores/customerBookingEstimate.js";
-    import Deleted from "$lib/page/customer-booking-portal/get/page/Deleted/Deleted.svelte";
     import {business} from "$lib/page/stores/business/business.js";
     import ModalEditCustomerBooking from "$lib/components/Modal/EditCustomerBooking/ModalEditCustomerBooking.svelte";
     import {CustomerBookingState} from "$lib/api/initialize_functions/CustomerBooking.js";
