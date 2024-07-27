@@ -10,27 +10,29 @@
     } from "$lib/components/Modal/GetManagerPasswordModal/stores/managerAccess.js";
     import GetManagerPasswordModal from "$lib/components/Modal/GetManagerPasswordModal/GetManagerPasswordModal.svelte";
     import {
+        getManagerPasswordModal,
         handleOpenGetManagerPasswordModal
     } from "$lib/components/Modal/GetManagerPasswordModal/stores/getManagerPasswordModal.js";
+    import {onMount} from "svelte";
 
     // Computed to mask/unmask phone number based on visibility state
     $: maskedPhoneNumber = $managerAccess
         ? formatPhoneNumber($customerBookingClickModal.customerBooking.customer.phoneNumber)
         : '(xxx) xxx-' + $customerBookingClickModal.customerBooking.customer.phoneNumber.slice(6);
 
-    function handleManagerAccess()
-    {
+    function handleManagerAccess() {
         // Request manager access
-        if (!$managerAccess)
-        {
+        if (!$managerAccess) {
             handleOpenGetManagerPasswordModal();
         }
         // Disable manager access
-        else
-        {
+        else {
+            getPassword=false;
             disableManagerAccess();
         }
     }
+
+
 </script>
 
 <p><strong>Phone number:</strong> {maskedPhoneNumber}
@@ -43,5 +45,7 @@
     </button>
 </p>
 
-<!--Grant manager access-->
-<GetManagerPasswordModal/>
+{#if $getManagerPasswordModal.open}
+    <!--Grant manager access-->
+    <GetManagerPasswordModal/>
+{/if}
