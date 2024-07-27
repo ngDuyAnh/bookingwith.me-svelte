@@ -13,7 +13,7 @@
     let openArrivalModal = false;
 
     async function notifyArrival() {
-        moveToLobby($customerBooking);
+        await moveToLobby($customerBooking);
 
         // Force react
         customerBookingEstimate.set($customerBookingEstimate);

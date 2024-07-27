@@ -26,7 +26,7 @@ export function getEmployee(id) {
     return null;
 }
 
-export function importNailSalonServices()
+export async function importNailSalonServices()
 {
     let importServiceGroupList = [
         {
@@ -534,14 +534,13 @@ export function importNailSalonServices()
     businessValue.serviceGroupList =
         [...businessValue.serviceGroupList, ...importServiceGroupList];
 
+    console.log("businessValue",businessValue);
+
     // Request the server to update
-    initializeBusiness(businessValue)
-        .then(response => {
-            business.set(response);
-        })
-        .catch(error => {
-            console.error('Failed to update the business:', error);
-        });
+    const response = await initializeBusiness(businessValue);
+    console.log("response",response);
+
+    business.set(response);
 }
 
 export function importHairSalonServices()

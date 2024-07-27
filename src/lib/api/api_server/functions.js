@@ -81,8 +81,6 @@ export async function submitCustomerBooking(
 
     const businessValue = get(business);
 
-    console.log("submitCustomerBooking()", cb);
-
     let success = false;
 
     try {
@@ -203,7 +201,7 @@ async function handleCustomerBooking(
         await sendSmsNewBookedEmployee(
             businessValue.businessInfo.businessName, customerBooking
         );
-        console.log("New customer booking SMS notification to the employees.");;
+        console.log("New customer booking SMS notification to the employees.");
     }
     // Edit customer booking
     else

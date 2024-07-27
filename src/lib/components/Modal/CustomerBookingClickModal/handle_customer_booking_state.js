@@ -9,7 +9,7 @@ import {get} from "svelte/store";
 export async function moveToAppointment(customerBooking) {
     customerBooking.bookingState = CustomerBookingState.APPOINTMENT;
 
-    // Reset the booking stats
+    // Reset the time stats
     customerBooking.checkinTime = null;
     customerBooking.servicingStartTime = null;
     customerBooking.servicingEndTime = null;
@@ -31,6 +31,7 @@ export async function moveToLobby(customerBooking) {
 
     customerBooking.bookingState = CustomerBookingState.LOBBY;
 
+    // Initialize stats time
     if (!customerBooking.checkinTime) {
         customerBooking.checkinTime = currentTime;
     }
@@ -47,7 +48,7 @@ export async function moveToServicing(customerBooking) {
     customerBooking.bookingState = CustomerBookingState.SERVICING;
     customerBooking.noShow = false;
 
-    // Initialize the checkin time if it is null
+    // Initialize stats time
     if (!customerBooking.checkinTime) {
         customerBooking.checkinTime = currentTime;
     }
@@ -87,7 +88,11 @@ export async function moveToCompleted(customerBooking) {
     const currentTime = nowTime();
 
     customerBooking.bookingState = CustomerBookingState.COMPLETED;
-    customerBooking.servicingEndTime = currentTime;
+
+    // Initialize stats time
+    if (!customerBooking.servicingEndTime) {
+        customerBooking.servicingEndTime = currentTime;
+    }
 
     // Iterate over each individual booking
     customerBooking.customerIndividualBookingList.forEach(individualBooking => {
