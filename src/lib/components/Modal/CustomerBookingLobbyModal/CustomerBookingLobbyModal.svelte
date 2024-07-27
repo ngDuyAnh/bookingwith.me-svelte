@@ -38,6 +38,7 @@
     $: if ($customerBookingLobbyModal.open && !wasOpen) {
         wasOpen = true;
 
+        // Reset to show the header and footer
         showHeaderAndFooter = true;
     } else if (!$customerBookingLobbyModal.open) {
         wasOpen = false;
@@ -114,9 +115,15 @@
                         {/if}
                     </div>
 
-                    <Button form="bookingForm" type="submit" class="">
-                        Create
-                    </Button>
+                    {#if isEditCustomerBooking()}
+                        <Button form="bookingForm" type="submit" class="">
+                            Edit
+                        </Button>
+                    {:else}
+                        <Button form="bookingForm" type="submit" class="">
+                            Create
+                        </Button>
+                    {/if}
                 </div>
             {/if}
         </svelte:fragment>
