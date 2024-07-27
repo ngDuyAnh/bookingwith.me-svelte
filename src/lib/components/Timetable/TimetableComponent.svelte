@@ -1206,6 +1206,7 @@
 
     :global(.pop-out-no-border:hover) {
         transform: scale(1.05); /* Scales up the element by 5% */
+        z-index: 10!important;
     }
 
     :global(.pop-out-no-border:active) {
