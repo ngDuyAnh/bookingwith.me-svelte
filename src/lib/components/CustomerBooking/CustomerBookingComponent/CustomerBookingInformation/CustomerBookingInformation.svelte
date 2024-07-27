@@ -2,9 +2,10 @@
     import {Button, Toggle, Tooltip} from "flowbite-svelte";
     import CustomerBookingInformationForm
         from "$lib/components/Form/CustomerBookingInformationForm/CustomerBookingInformationForm.svelte";
-    import {formatPhoneNumber} from "$lib/application/FormatPhoneNumber.js";
     import {ArrowLeftOutline} from 'flowbite-svelte-icons';
     import {isToday} from "$lib/page/stores/now/now_dayjs_store.js";
+
+    export let bookingDateRestricted;
 
     export let customerBookingInformationProps;
 
@@ -80,6 +81,8 @@
     <!-- Customer booking information -->
     <div class="w-full max-w-md p-8">
         <CustomerBookingInformationForm
+                {bookingDateRestricted}
+
                 businessInfo={business.businessInfo}
 
                 bind:customerBooking={customerBooking}

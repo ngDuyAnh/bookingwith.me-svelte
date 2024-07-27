@@ -15,6 +15,8 @@
     import {isToday} from "$lib/page/stores/now/now_dayjs_store.js";
     import {submitCustomerBooking} from "$lib/api/api_server/functions.js";
 
+    export let bookingDateRestricted;
+
     export let customerBookingInformationFormProps;
 
     export let businessInfo;
@@ -37,6 +39,7 @@
         availableTimeOptionList = [];
 
         const bookingDate = dayjs(customerBooking.bookingDate, formatToDate);
+
         currentTimeString = "00:00"; // Booking date is in the future
         if (bookingDate.isSame($now, 'day')) {
             currentTimeString = $now.format(formatToTime)
@@ -169,7 +172,19 @@
         })();
     }
 
+    // Restrict the selected date
+    let maxDate = $now.add(14, 'day');
     let dateSelected = customerBooking.bookingDate;
+    $: if (bookingDateRestricted && dateSelected)
+    {
+        let selected = dayjs(dateSelected, formatToDate);
+        maxDate = dayjs($now).add(14, 'day');
+        if (selected.isAfter(maxDate)) {
+            dateSelected = maxDate.format(formatToDate);
+        } else {
+            dateSelected = selected.format(formatToDate);
+        }
+    }
 
     async function getAvailableTimeOptionList() {
         // New date selected
@@ -309,6 +324,7 @@
                 id="date"
                 type="date"
                 min={$now.format(formatToDate)}
+                max={maxDate.format(formatToDate)}
                 bind:value={dateSelected}
                 required
         />
