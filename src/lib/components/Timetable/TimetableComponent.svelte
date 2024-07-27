@@ -3,10 +3,6 @@
     import {formatTimeAm, formatToDate, formatToTime,} from "$lib/application/Formatter.js";
     import Calendar from "@event-calendar/core";
     import {
-        handleNewCustomerBookingWalkin
-    } from "$lib/components/Modal/CreateCustomerBooking/stores/modalCreateCustomerBooking.js";
-
-    import {
         ChevronLeftOutline,
         ChevronRightOutline,
         InfoCircleSolid,
@@ -54,6 +50,9 @@
         initializeEmployeeTimetableBlockTicket
     } from "$lib/api/api_server/api_endpoints/lobby-portal/api.js";
     import {getEndTime} from "$lib/api/initialize_functions/TimePeriod.js";
+    import {
+        handleNewCustomerBookingLobbyModalForLobby
+    } from "$lib/components/Modal/CustomerBookingLobbyModal/stores/customerBookingLobbyModal.js";
 
     // Date select
     let selectedDate = today();
@@ -1070,7 +1069,7 @@
                 <Button
                         color="blue"
                         class="!p-2.5 rounded-s-none"
-                        on:click={handleNewCustomerBookingWalkin}
+                        on:click={handleNewCustomerBookingLobbyModalForLobby}
                 >
                     <PlusOutline class="w-5 h-5"/>
                 </Button>
