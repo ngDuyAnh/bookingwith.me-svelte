@@ -159,7 +159,7 @@
                 </Button>
             </div>
         </div>
-        <div class="flex flex-grow flex-row xl:space-x-4">
+        <div class="flex flex-grow xl:max-h-full max-h-[95%] flex-row xl:space-x-4">
 
             <!--Guest column-->
             <div class="flex-1 flex flex-col xl:min-w-[230px] min-w-[100%] xl:block {focusColumnIndex===1?'block':'hidden'}">
@@ -220,8 +220,8 @@
             </div>
 
             <!--Booking time-->
-            <div class="flex-1 flex flex-col xl:min-w-[310px] min-w-[100%] xl:block {focusColumnIndex===3?'block':'hidden'}">
-                <div class="flex flex-col h-full">
+            <div class="flex-1 max-h-full flex flex-col xl:min-w-[310px] min-w-[100%] xl:block {focusColumnIndex===3?'block':'hidden'}">
+                <div class="flex flex-col h-full overflow-auto">
                     <div class="relative flex flex-row flex-grow items-center justify-center mb-2 xl:flex hidden">
                         <div class="absolute border-2 border-gray-200 h-1 w-full rounded-lg"></div>
                         <div class="flex flex-row bg-white z-10 space-x-1 px-1">
@@ -231,7 +231,7 @@
                     </div>
 
                     <!--Date & Time select-->
-                    <div class="h-full shadow overflow-y-auto flex flex-col items-center w-full stripeBG {hoverDiv}">
+                    <div class="h-full shadow overflow-y-auto flex flex-col items-center w-full stripeBG {hoverDiv} overflow-x-hidden">
                         <div class="flex flex-row sm:justify-normal justify-center items-center p-1 bg-white w-full">
                             <Button class="h-fit text-md mr-1" size="xs" color="light"
                                     on:click={()=>{selectToday()}}
@@ -318,5 +318,9 @@
     .stripeBG {
         background-image: linear-gradient(45deg, #ffffff 25%, #fffceb 25%, #fffceb 50%, #ffffff 50%, #ffffff 75%, #fffceb 75%, #fffceb 100%);
         background-size: 36.77px 36.77px;
+    }
+
+    .flex-item {
+        flex: 0 1 auto; /* flex-grow: 0, flex-shrink: 1, flex-basis: auto */
     }
 </style>
