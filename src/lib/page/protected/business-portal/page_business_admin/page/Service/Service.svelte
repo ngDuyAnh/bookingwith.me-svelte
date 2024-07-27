@@ -38,6 +38,8 @@
     }
 
     $: console.log("business", $business);
+
+    let showImportButtons=true;
 </script>
 
 {#if loading}
@@ -102,14 +104,15 @@
             {/each}
         </ul>
     </Accordion>
+
 {/if}
 
 <div class="mt-4 space-x-2">
     <Button on:click={handleOpenCreateNewServiceGroupModal}>Add New Service Group</Button>
 
-    {#if $business.serviceGroupList.length === 0}
-        <Button on:click={importNailSalonServices}>Import nail salon services</Button>
-        <Button on:click={importHairSalonServices}>Import hair salon services</Button>
+    {#if showImportButtons && $business.serviceGroupList.length === 0}
+        <Button on:click={()=> {importNailSalonServices(); showImportButtons=false;}}>Import nail salon services</Button>
+        <Button on:click={()=> {importHairSalonServices(); showImportButtons=false;}}>Import hair salon services</Button>
     {/if}
 </div>
 
