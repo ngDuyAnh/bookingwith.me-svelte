@@ -7,6 +7,8 @@
         from "$lib/components/CustomerBooking/CustomerBookingComponent/CustomerBookingInformation/CustomerBookingInformation.svelte";
     import BookingSuccess from "$lib/page/customer-booking-portal/create/page/BookingSuccess/BookingSuccess.svelte";
 
+    export let bookingDateRestricted = true;
+
     export let customerIndividualBookingServiceSelectProps = {
         showAllServiceGroup: false,
         showAllService: false,
@@ -94,6 +96,8 @@
         />
     {:else if pageIndex === 2}
         <CustomerBookingInformation
+                {bookingDateRestricted}
+
                 {customerBookingInformationProps}
 
                 {customerBookingInformationFormProps}
