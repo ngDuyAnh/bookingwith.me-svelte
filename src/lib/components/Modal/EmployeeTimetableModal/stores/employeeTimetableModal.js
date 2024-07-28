@@ -4,7 +4,7 @@ import {
     getEmployeeWorkScheduleException,
     initializeEmployeeWorkScheduleException
 } from "$lib/api/api_server/api_endpoints/business-portal/api.js";
-import {isToday, nowTime, today} from "$lib/page/stores/now/now_dayjs_store.js";
+import {nowTime, today} from "$lib/page/stores/now/now_dayjs_store.js";
 import {business} from "$lib/page/stores/business/business.js";
 import {initializeEmployeeTimetableBlockTicket} from "$lib/api/api_server/api_endpoints/lobby-portal/api.js";
 import {EmployeeTimetableBlockTicket} from "$lib/api/initialize_functions/CustomerBooking.js";
@@ -44,7 +44,7 @@ export async function handleOpenEmployeeTimetableModal(employee, date)
             startTime: null,
             endTime: null
         };
-        if (isToday(date) && getDurationInMinutes(workSchedule.timePeriod))
+        if (getDurationInMinutes(workSchedule.timePeriod))
         {
             showBlockTimePeriod = true;
 
