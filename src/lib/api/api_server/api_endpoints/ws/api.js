@@ -16,7 +16,7 @@ export const ServerEvent = {
 };
 
 export function listenSocketFrom(businessID) {
-    return PUBLIC_API_BASE_URL + '/ws/' + businessID;
+    return PUBLIC_API_BASE_URL.replace(/^https?/, 'wss') + '/ws/' + businessID;
 }
 
 export function eventConfirmation(socket, requestId, confirmed) {
