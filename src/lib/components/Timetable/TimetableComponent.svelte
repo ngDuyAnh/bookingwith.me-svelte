@@ -28,6 +28,8 @@
     import {onMount} from "svelte";
     import {Button, DropdownDivider, Popover, Search} from "flowbite-svelte";
     import dayjs from "dayjs";
+    import utc from "dayjs/plugin/utc";
+    import timezone from "dayjs/plugin/timezone"
     import {findCustomerBookingById} from "$lib/page/protected/business-portal/page_lobby/stores/dashboard_store.js";
     import {
         findIndividualBookingFromCustomerBooking,
@@ -53,6 +55,15 @@
     import {
         handleNewCustomerBookingLobbyModalForLobby
     } from "$lib/components/Modal/CustomerBookingLobbyModal/stores/customerBookingLobbyModal.js";
+
+    // Coordinated Universal Time
+    // Enables converting local time to UTC
+    dayjs.extend(utc);
+
+    // Working with different time zones
+    dayjs.extend(timezone);
+
+    dayjs.tz.setDefault($business.businessInfo.timezone);
 
     // Date select
     let selectedDate = today();
