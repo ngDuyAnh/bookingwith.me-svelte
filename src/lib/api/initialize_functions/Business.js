@@ -1,4 +1,5 @@
 import { User } from "$lib/api/initialize_functions/User.js";
+import dayjs from "dayjs";
 
 export const BusinessScheduleManagement = {
     NONE: 0,
@@ -15,9 +16,6 @@ export function Business() {
 }
 
 export function BusinessInformation() {
-
-    const localTimezone = Intl.DateTimeFormat().resolvedOptions().timeZone;
-
     return {
         "id": -1,
         "businessID": null,
@@ -34,7 +32,7 @@ export function BusinessInformation() {
         "googleEmbedMapLink": "",
         "googleMapsDirectionLink": "",
 
-        "timezone": localTimezone,
+        "timezone": dayjs.tz.guess(),
 
         "active": true,
         "scheduleManagement": BusinessScheduleManagement.NONE,
