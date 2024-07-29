@@ -20,8 +20,8 @@ export const now = derived(business, ($business, set) => {
 
     // Function to update the now store every minute
     function updateNow() {
-        if ($business && $business.businessInfo && $business.businessInfo.timeZone) {
-            set(dayjs().tz($business.businessInfo.timeZone));
+        if ($business && $business.businessInfo && $business.businessInfo.timezone) {
+            set(dayjs().tz($business.businessInfo.timezone));
         } else {
             set(dayjs());
         }
@@ -29,8 +29,8 @@ export const now = derived(business, ($business, set) => {
 
     // Calculates the time until the next minute starts
     function getTimeUntilNextMinute() {
-        const nowValue = $business && $business.businessInfo && $business.businessInfo.timeZone ?
-            dayjs().tz($business.businessInfo.timeZone) : dayjs();
+        const nowValue = $business && $business.businessInfo && $business.businessInfo.timezone ?
+            dayjs().tz($business.businessInfo.timezone) : dayjs();
         const nextMinute = nowValue.add(1, 'minute').startOf('minute');
         return nextMinute.diff(nowValue);
     }
