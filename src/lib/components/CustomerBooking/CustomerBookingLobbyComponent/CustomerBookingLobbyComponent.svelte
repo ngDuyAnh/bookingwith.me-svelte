@@ -16,6 +16,8 @@
         handleNewCustomerBookingLobbyComponent,
         pleaseFetchAvailability
     } from "$lib/components/CustomerBooking/CustomerBookingLobbyComponent/store/customerBookingLobbyComponent.js";
+    import {moveToLobby} from "$lib/components/Modal/CustomerBookingClickModal/handle_customer_booking_state.js";
+    import {tick} from "svelte";
 
     export let options = {
         showSendSms: true,
@@ -107,44 +109,83 @@
 
     const hoverDiv = "border-2 border-transparent hover:border-gray-300 transition-colors duration-300 rounded"
 
-    let focusColumnIndex = 1;
-
-    function nextCol() {
-        if (focusColumnIndex !== 4)
-            focusColumnIndex++;
-    }
+    export let focusIndividualColumnIndex;
+    export let focusDualColumnIndex;
 
     function prevCol() {
-        if (focusColumnIndex !== 0)
-            focusColumnIndex--;
+        if (focusIndividualColumnIndex !== 1)
+            focusIndividualColumnIndex--;
+        if (focusDualColumnIndex !== 1)
+            focusDualColumnIndex--;
+    }
+    async function nextCol() {
+        if (focusIndividualColumnIndex !== 4)
+            focusIndividualColumnIndex++;
+        if (focusDualColumnIndex !== 2)
+            focusDualColumnIndex++;
+
+        if (focusIndividualColumnIndex === 3 || (focusDualColumnIndex === 2 && focusIndividualColumnIndex < 3)) {
+            await tick(); // Ensure all updates are processed
+            pleaseFetchAvailability();
+        }
     }
 
 </script>
 
 {#if !successfulSubmit}
     <div class="flex flex-col h-full">
-        <div class=" relative flex items-center justify-center px-6 pb-2 w-full xl:hidden z-10">
+        <div class=" relative flex items-center justify-center pb-2 w-full xl:hidden z-10">
             <!-- Container for the Previous Button -->
-            <div class="flex-1 z-10">
-                <Button class={`disable-double-tap-zoom !p-2 ${focusColumnIndex === 1 ? 'hidden' : ''}`}
+            <div class=" absolute left-0 flex-1 z-10">
+                <Button class="disable-double-tap-zoom !p-2 md:{focusDualColumnIndex===1?'hidden':''} {focusIndividualColumnIndex === 1? 'hidden' : ''}"
                         on:click={prevCol}>
                     <ArrowLeftOutline class="w-4 h-4"/>
                 </Button>
             </div>
-            <div class="absolute border-2 border-gray-200 h-1 w-[75%] rounded-lg"></div>
 
-            <div class="relative flex flex-row flex-grow items-center justify-center mb-2">
+            <div class="flex flex-row justify-between w-full md:flex hidden">
+                <div class="relative flex flex-row flex-grow items-center justify-center mb-2 xl:flex md:flex hidden w-1/2">
+                    <div class="absolute border-2 border-gray-200 h-1 w-11/12 rounded-lg"></div>
+                    <div class="flex flex-row bg-white z-10 space-x-1 px-1">
+                        <Avatar size="xs" class="flex justify-center items-center">{focusDualColumnIndex==1?1:3}</Avatar>
+                        <span class="font-bold">
+                        {#if focusDualColumnIndex === 1}
+                            Guest
+                        {:else if focusDualColumnIndex == 2}
+                            Date & Time
+                        {/if}
+                    </span>
+                    </div>
+                </div>
+                <div class="relative flex flex-row flex-grow items-center justify-center mb-2 xl:flex md:flex hidden w-1/2">
+                    <div class="absolute border-2 border-gray-200 h-1 w-11/12 rounded-lg"></div>
+                    <div class="flex flex-row bg-white z-10 space-x-1 px-1">
+                        <Avatar size="xs" class="flex justify-center items-center">{focusDualColumnIndex==1?2:4}</Avatar>
+                        <span class="font-bold">
+                        {#if focusIndividualColumnIndex === 1}
+                            Service
+                        {:else if focusIndividualColumnIndex == 2}
+                            Customer
+                        {/if}
+                    </span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="absolute border-2 border-gray-200 h-1 w-[75%] rounded-lg md:hidden"></div>
+
+            <div class="relative flex flex-row flex-grow items-center justify-center mb-2 md:hidden">
                 <!--                <div class="absolute border-2 border-gray-200 h-1 w-full rounded-lg"></div>-->
                 <div class="flex flex-row bg-white z-10 space-x-1 px-1">
-                    <Avatar size="xs" class="flex justify-center items-center">{focusColumnIndex}</Avatar>
+                    <Avatar size="xs" class="flex justify-center items-center">{focusIndividualColumnIndex}</Avatar>
                     <span class="font-bold">
-                        {#if focusColumnIndex === 1}
+                        {#if focusIndividualColumnIndex === 1}
                             Guest
-                        {:else if focusColumnIndex == 2}
+                        {:else if focusIndividualColumnIndex == 2}
                             Service
-                        {:else if focusColumnIndex == 3}
+                        {:else if focusIndividualColumnIndex == 3}
                             Date & Time
-                        {:else if focusColumnIndex == 4}
+                        {:else if focusIndividualColumnIndex == 4}
                             Customer
                         {/if}
                     </span>
@@ -152,9 +193,9 @@
             </div>
 
             <!-- Container for the Next Button -->
-            <div class="flex-1 text-right z-10">
-                <Button class={`disable-double-tap-zoom !p-2 ${focusColumnIndex === 4 ? 'hidden' : ''}`}
-                        on:click={()=>{nextCol(); pleaseFetchAvailability();}}>
+            <div class="absolute flex-1 text-right z-10 right-0">
+                <Button class="disable-double-tap-zoom !p-2 md:{focusDualColumnIndex===2?'hidden':''} {focusIndividualColumnIndex === 4? 'hidden' : ''}"
+                        on:click={()=>{nextCol(); }}>
                     <ArrowRightOutline class="w-4 h-4"/>
                 </Button>
             </div>
@@ -162,7 +203,7 @@
         <div class="flex flex-grow xl:max-h-full max-h-[95%] flex-row xl:space-x-4">
 
             <!--Guest column-->
-            <div class="flex-1 flex flex-col xl:min-w-[230px] min-w-[100%] xl:block {focusColumnIndex===1?'block':'hidden'}">
+            <div class="flex-1 flex flex-col xl:min-w-[230px] md:min-w-[50%] min-w-[100%] xl:block md:{focusDualColumnIndex===1?'block':'hidden'} {focusIndividualColumnIndex===1?'block':'hidden'}">
                 <div class="flex flex-col h-full">
                     <div class="relative flex flex-row flex-grow items-center justify-center mb-2 xl:flex hidden">
                         <div class="absolute border-2 border-gray-200 h-1 w-full rounded-lg"></div>
@@ -200,7 +241,7 @@
             </div>
 
             <!--Service selection for guest column-->
-            <div class="flex-1 flex flex-col xl:min-w-[230px] min-w-[100%] xl:block {focusColumnIndex===2?'block':'hidden'}">
+            <div class="flex-1 flex flex-col xl:min-w-[230px] md:min-w-[50%] min-w-[100%] xl:block md:{focusDualColumnIndex===1?'block':'hidden'} {focusIndividualColumnIndex===2?'block':'hidden'}">
                 <div class="flex flex-col h-full">
                     <div class="relative flex flex-row flex-grow items-center justify-center mb-2 xl:flex hidden">
                         <div class="absolute border-2 border-gray-200 h-1 w-full rounded-lg"></div>
@@ -220,7 +261,7 @@
             </div>
 
             <!--Booking time-->
-            <div class="flex-1 max-h-full flex flex-col xl:min-w-[310px] min-w-[100%] xl:block {focusColumnIndex===3?'block':'hidden'}">
+            <div class="flex-1 max-h-full flex flex-col xl:min-w-[310px] md:min-w-[230px] min-w-[100%] xl:block md:{focusDualColumnIndex===2?'block':'hidden'}  {focusIndividualColumnIndex===3?'block':'hidden'}">
                 <div class="flex flex-col h-full overflow-auto">
                     <div class="relative flex flex-row flex-grow items-center justify-center mb-2 xl:flex hidden">
                         <div class="absolute border-2 border-gray-200 h-1 w-full rounded-lg"></div>
@@ -260,7 +301,7 @@
             </div>
 
             <!--Customer profile-->
-            <div class="flex-1 flex flex-col xl:min-w-[230px] min-w-[100%] xl:block {focusColumnIndex===4?'block':'hidden'}">
+            <div class="flex-1 flex flex-col xl:min-w-[230px] md:min-w-[230px] min-w-[100%] xl:block md:{focusDualColumnIndex===2?'block':'hidden'} {focusIndividualColumnIndex===4?'block':'hidden'}">
                 <div class="flex flex-col h-full">
                     <div class="relative flex flex-row flex-grow items-center justify-center mb-2 xl:flex hidden">
                         <div class="absolute border-2 border-gray-200 h-1 w-full rounded-lg"></div>
