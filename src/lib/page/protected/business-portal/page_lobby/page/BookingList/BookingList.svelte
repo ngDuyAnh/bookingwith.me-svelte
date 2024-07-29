@@ -1,6 +1,6 @@
 <script>
     import { onMount } from 'svelte';
-    import {isTomorrow, now} from "$lib/page/stores/now/now_dayjs_store.js";
+    import {isTomorrow, now} from "$lib/page/stores/now/now.js";
     import {formatToDate} from "$lib/application/Formatter.js";
     import CustomerBookingListItem
         from "$lib/page/protected/business-portal/page_lobby/page/Dashboard/components/components/CustomerBookingList/CustomerBookingListItem/CustomerBookingListItem.svelte";

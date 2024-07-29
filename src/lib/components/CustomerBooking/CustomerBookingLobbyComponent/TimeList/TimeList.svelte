@@ -15,7 +15,7 @@
     import {
         updateCurrentTime
     } from "$lib/components/CustomerBooking/CustomerBookingLobbyComponent/store/customerBookingLobbyComponent.js";
-    import {nowTime} from "$lib/page/stores/now/now_dayjs_store.js";
+    import {nowTime} from "$lib/page/stores/now/now.js";
     import {
         pleaseFetchAvailability
     } from "$lib/components/CustomerBooking/CustomerBookingLobbyComponent/store/customerBookingLobbyComponent.js";

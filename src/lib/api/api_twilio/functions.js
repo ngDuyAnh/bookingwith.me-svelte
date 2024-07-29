@@ -5,7 +5,7 @@ import {
     scheduleSendSms, cancelScheduledSms
 } from "$lib/api/api_twilio/twilio_endpoints/twilio_endpoints.js";
 import {get} from "svelte/store";
-import {isToday, now} from "$lib/page/stores/now/now_dayjs_store.js";
+import {isToday, now} from "$lib/page/stores/now/now.js";
 import {
     getServiceBookingListWithBookedEmployeeFromCustomerBooking,
     groupServiceBookingsByEmployee, shortCustomerBookingID

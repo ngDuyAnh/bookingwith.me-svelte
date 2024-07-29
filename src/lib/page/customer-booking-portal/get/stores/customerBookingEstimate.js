@@ -1,6 +1,6 @@
 import {get, writable} from 'svelte/store';
 import {getCustomerBookingEstimate} from "$lib/api/api_server/api_endpoints/customer-booking-portal/api.js";
-import {now} from "$lib/page/stores/now/now_dayjs_store.js";
+import {now} from "$lib/page/stores/now/now.js";
 import {formatToDate, formatToTime, formatToTimeAm} from "$lib/application/Formatter.js";
 import dayjs from "dayjs";
 import {CustomerBooking, CustomerBookingState} from "$lib/api/initialize_functions/CustomerBooking.js";

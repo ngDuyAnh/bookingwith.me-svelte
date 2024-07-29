@@ -1,7 +1,7 @@
 <script>
     import {getCustomerBookingQueueList, getSchedule} from "$lib/api/api_server/api_endpoints/lobby-portal/api.js";
     import {business} from "$lib/page/stores/business/business.js";
-    import {now} from "$lib/page/stores/now/now_dayjs_store.js";
+    import {now} from "$lib/page/stores/now/now.js";
     import {formatToDate, formatToTime} from "$lib/application/Formatter.js";
     import {customerBookingQueueList} from "$lib/page/protected/business-portal/page_lobby/stores/dashboard_store.js";
     import {onMount} from "svelte";
