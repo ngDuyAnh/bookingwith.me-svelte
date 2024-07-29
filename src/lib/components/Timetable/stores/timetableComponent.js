@@ -1,5 +1,5 @@
 import {get, writable} from "svelte/store";
-import {isPast, isToday, nowTime, today} from "$lib/page/stores/now/now_dayjs_store.js";
+import {isPast, isToday, nowTime, today} from "$lib/page/stores/now/now.js";
 import {business} from "$lib/page/stores/business/business.js";
 import {getSchedule} from "$lib/api/api_server/api_endpoints/lobby-portal/api.js";
 

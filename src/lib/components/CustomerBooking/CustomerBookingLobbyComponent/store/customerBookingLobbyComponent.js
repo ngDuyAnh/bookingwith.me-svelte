@@ -1,5 +1,5 @@
 import {writable} from "svelte/store";
-import {today} from "$lib/page/stores/now/now_dayjs_store.js";
+import {today} from "$lib/page/stores/now/now.js";
 
 export const customerBookingLobbyComponent = writable({
     // Flag for fetching booking time availability

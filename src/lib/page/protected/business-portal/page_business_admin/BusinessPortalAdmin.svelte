@@ -16,7 +16,7 @@
     } from "$lib/api/api_server/api_endpoints/ws/api.js";
     import {business} from "$lib/page/stores/business/business.js";
     import {onMount} from "svelte";
-    import {isToday} from "$lib/page/stores/now/now_dayjs_store.js";
+    import {isToday} from "$lib/page/stores/now/now.js";
     import {
         fetchCustomerBookingQueueList
     } from "$lib/page/protected/business-portal/page_lobby/stores/dashboard_store.js";

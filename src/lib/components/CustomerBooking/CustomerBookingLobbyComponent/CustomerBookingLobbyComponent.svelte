@@ -5,7 +5,7 @@
     import {Avatar, Button} from "flowbite-svelte";
     import GuestList from "$lib/components/CustomerBooking/CustomerBookingLobbyComponent/GuestList/GuestList.svelte";
     import TimeList from "$lib/components/CustomerBooking/CustomerBookingLobbyComponent/TimeList/TimeList.svelte";
-    import {isToday, today} from "$lib/page/stores/now/now_dayjs_store.js";
+    import {isToday, today} from "$lib/page/stores/now/now.js";
     import {ArrowLeftOutline, ArrowRightOutline, ChevronLeftOutline, ChevronRightOutline} from "flowbite-svelte-icons";
     import dayjs from "dayjs";
     import {formatToDate} from "$lib/application/Formatter.js";

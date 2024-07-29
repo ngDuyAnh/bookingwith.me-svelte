@@ -1,5 +1,5 @@
 <script>
-    import {now} from "$lib/page/stores/now/now_dayjs_store.js";
+    import {now} from "$lib/page/stores/now/now.js";
     import {formatToDate, formatToTime, formatToTimeAM} from "$lib/application/Formatter.js";
     import {Button, Input, Label, Select, Textarea} from "flowbite-svelte";
     import {
@@ -12,7 +12,7 @@
         CustomerBookingState
     } from "$lib/api/initialize_functions/CustomerBooking.js";
     import {rawPhoneNumber, formatPhoneNumber} from "$lib/application/FormatPhoneNumber.js";
-    import {isToday} from "$lib/page/stores/now/now_dayjs_store.js";
+    import {isToday} from "$lib/page/stores/now/now.js";
     import {submitCustomerBooking} from "$lib/api/api_server/functions.js";
 
     export let bookingDateRestricted;

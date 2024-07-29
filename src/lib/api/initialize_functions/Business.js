@@ -15,6 +15,9 @@ export function Business() {
 }
 
 export function BusinessInformation() {
+
+    const localTimezone = Intl.DateTimeFormat().resolvedOptions().timeZone;
+
     return {
         "id": -1,
         "businessID": null,
@@ -30,6 +33,8 @@ export function BusinessInformation() {
         "googleMapsLink": "",
         "googleEmbedMapLink": "",
         "googleMapsDirectionLink": "",
+
+        "timezone": localTimezone,
 
         "active": true,
         "scheduleManagement": BusinessScheduleManagement.NONE,

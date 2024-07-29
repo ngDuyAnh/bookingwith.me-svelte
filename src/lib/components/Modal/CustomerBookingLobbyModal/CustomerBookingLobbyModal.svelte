@@ -13,7 +13,7 @@
     import {
         customerBookingLobbyComponent
     } from "$lib/components/CustomerBooking/CustomerBookingLobbyComponent/store/customerBookingLobbyComponent.js";
-    import {isToday} from "$lib/page/stores/now/now_dayjs_store.js";
+    import {isToday} from "$lib/page/stores/now/now.js";
 
     let totalServiceCost = 0;
     let totalGuests = 0;

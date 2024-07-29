@@ -4,7 +4,7 @@ import {
     getEmployeeWorkScheduleException,
     initializeEmployeeWorkScheduleException
 } from "$lib/api/api_server/api_endpoints/business-portal/api.js";
-import {nowTime, today} from "$lib/page/stores/now/now_dayjs_store.js";
+import {nowTime, today} from "$lib/page/stores/now/now.js";
 import {business} from "$lib/page/stores/business/business.js";
 import {initializeEmployeeTimetableBlockTicket} from "$lib/api/api_server/api_endpoints/lobby-portal/api.js";
 import {EmployeeTimetableBlockTicket} from "$lib/api/initialize_functions/CustomerBooking.js";

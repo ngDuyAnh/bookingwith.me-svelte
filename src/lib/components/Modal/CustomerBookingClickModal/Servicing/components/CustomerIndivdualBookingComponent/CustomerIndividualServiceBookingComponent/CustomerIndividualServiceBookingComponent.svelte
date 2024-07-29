@@ -2,7 +2,7 @@
     import dayjs from "dayjs";
     import {employeeSelectOptions} from "$lib/page/stores/employeeSelectOptions/employeeSelectOptions.js";
     import {Button, Select} from "flowbite-svelte";
-    import {nowTime} from "$lib/page/stores/now/now_dayjs_store.js";
+    import {nowTime} from "$lib/page/stores/now/now.js";
     import {formatToTime, formatToTimeAm} from "$lib/application/Formatter.js";
     import {ServicingTicket} from "$lib/api/initialize_functions/CustomerBooking.js";
     import {moveToServicing} from "$lib/components/Modal/CustomerBookingClickModal/handle_customer_booking_state.js";

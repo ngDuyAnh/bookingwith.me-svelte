@@ -1,7 +1,7 @@
 <script>
     import dayjs from 'dayjs';
     import {onMount} from "svelte";
-    import {now} from "$lib/page/stores/now/now_dayjs_store.js";
+    import {now} from "$lib/page/stores/now/now.js";
     import {
         initializeCustomerBooking
     } from "$lib/api/api_server/api_endpoints/customer-booking-portal/api.js";

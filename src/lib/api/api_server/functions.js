@@ -6,7 +6,7 @@ import {
     forceSubmitBooking, initializeCustomerBooking,
     submitBooking
 } from "$lib/api/api_server/api_endpoints/customer-booking-portal/api.js";
-import {isPast, isToday, nowTime} from "$lib/page/stores/now/now_dayjs_store.js";
+import {isPast, isToday, nowTime} from "$lib/page/stores/now/now.js";
 import {getBusinessID} from "$lib/page/stores/business/business.js";
 import {sanitizeCustomerBooking} from "$lib/api/utilitiy_functions/CustomerBooking.js";
 import {

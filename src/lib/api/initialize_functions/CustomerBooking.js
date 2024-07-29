@@ -1,6 +1,5 @@
 import { TimePeriod } from "$lib/api/initialize_functions/TimePeriod.js";
-import { today } from "$lib/page/stores/now/now_dayjs_store.js";
-import {Employee} from "$lib/api/initialize_functions/Business.js";
+import { today } from "$lib/page/stores/now/now.js";
 
 export const CustomerBookingState = {
     APPOINTMENT: 0,

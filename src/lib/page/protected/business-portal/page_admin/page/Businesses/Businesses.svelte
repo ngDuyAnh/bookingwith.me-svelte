@@ -17,7 +17,7 @@
         initializeBusiness
     } from "$lib/api/api_server/api_endpoints/business-portal/api.js";
     import {CustomerBookingChannel} from "$lib/api/initialize_functions/CustomerBooking.js";
-    import {today} from "$lib/page/stores/now/now_dayjs_store.js";
+    import {today} from "$lib/page/stores/now/now.js";
     import {CloseCircleSolid} from "flowbite-svelte-icons";
     import dayjs from "dayjs";
     import {formatToDate} from "$lib/application/Formatter.js";
