@@ -7,7 +7,7 @@ import {
 import {nowTime, today} from "$lib/page/stores/now/now.js";
 import {business} from "$lib/page/stores/business/business.js";
 import {initializeEmployeeTimetableBlockTicket} from "$lib/api/api_server/api_endpoints/lobby-portal/api.js";
-import {EmployeeTimetableBlockTicket} from "$lib/api/initialize_functions/CustomerBooking.js";
+import {EmployeeTimetableBlockTicket} from "$lib/api/initialize_functions/Business.js";
 import {Employee} from "$lib/api/initialize_functions/Business.js";
 
 const DEFAULT_DURATION = 30; // Minutes

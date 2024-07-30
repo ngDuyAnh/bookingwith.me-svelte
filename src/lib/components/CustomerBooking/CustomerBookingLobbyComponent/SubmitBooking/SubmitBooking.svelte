@@ -51,7 +51,8 @@
     {
         if ($customerBookingLobbyComponent.currentTimeString &&
             $customerBookingLobbyComponent.bookingDate &&
-            $customerBookingLobbyComponent.selectedAvailability)
+            $customerBookingLobbyComponent.selectedAvailability &&
+            (customerBooking.customer.phoneNumber.length === 0 || customerBooking.customer.phoneNumber.length === 10))
         {
             const customerBookingInformationProps = {
                 ...options,
@@ -96,8 +97,7 @@
                 placeholder="(123) 456-7890"
                 bind:value={formattedPhoneNumber}
                 on:input={handlePhoneNumberInput}
-                required
-                pattern="\(\d\d\d\) \d\d\d-\d\d\d\d"
+                pattern="^(\(\d{3}\) \d{3}-\d{4})?$"
                 title="Phone number must be in the format: (123) 456-7890"
         />
     </Label>
