@@ -16,7 +16,6 @@
         handleNewCustomerBookingLobbyComponent,
         pleaseFetchAvailability
     } from "$lib/components/CustomerBooking/CustomerBookingLobbyComponent/store/customerBookingLobbyComponent.js";
-    import {moveToLobby} from "$lib/components/Modal/CustomerBookingClickModal/handle_customer_booking_state.js";
     import {tick} from "svelte";
 
     export let options = {
