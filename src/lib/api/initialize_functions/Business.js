@@ -1,4 +1,5 @@
 import { User } from "$lib/api/initialize_functions/User.js";
+import {today} from "$lib/page/stores/now/now.js";
 
 export const BusinessScheduleManagement = {
     NONE: 0,
@@ -74,6 +75,17 @@ export function Employee() {
 
         "showOnlineBookingPage": true,
         "archive": false
+    };
+}
+
+export function EmployeeTimetableBlockTicket()
+{
+    return {
+        "blockTicketID": -1,
+        "employee": undefined,
+        "date": today(),
+        "startTime": "00:00",
+        "duration": 0
     };
 }
 
