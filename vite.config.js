@@ -4,7 +4,7 @@ import path from "path"
 import removeConsole from "vite-plugin-svelte-console-remover";
 
 export default defineConfig({
-	plugins: [sveltekit(), removeConsole()],
+	plugins: [sveltekit()],
 
 	test: {
 		include: ['src/**/*.{test,spec}.{js,ts}']
