@@ -1,6 +1,6 @@
 import dayjs from "dayjs";
 import {formatToDate} from "$lib/application/Formatter.js";
-import {CustomerBookingState} from "$lib/api/initialize_functions/CustomerBooking.js";
+import {CustomerBookingState, WalkInCustomer} from "$lib/api/initialize_functions/CustomerBooking.js";
 import {
     availability,
     forceSubmitBooking, initializeCustomerBooking,
@@ -89,6 +89,10 @@ export async function submitCustomerBooking(
             JSON.parse(JSON.stringify(cb))
         );
 
+        // If the customer phone number is empty
+        // Then initialize with default walk-in customer profile
+        customerBooking.customer = WalkInCustomer();
+
         // Set the booking date and time for submit
         customerBooking.bookingDate = bookingDate;
         customerBooking.bookingTime = bookingTime;
@@ -131,7 +135,7 @@ export async function submitCustomerBooking(
             success = true;
 
             // Handle SMS and moving the customer booking to lobby
-            handleCustomerBooking(
+            await handleCustomerBooking(
                 businessValue,
                 response.customerBooking,
                 customerBookingInformationProps,

@@ -37,6 +37,14 @@ export function Customer(phoneNumber) {
     };
 }
 
+export function WalkInCustomer()
+{
+    return {
+        "phoneNumber": "1234567890",
+        "customerName": "Walk-in"
+    };
+}
+
 export function CustomerBooking() {
     return {
         "id": -1,
@@ -130,16 +138,5 @@ export function ServicingTicket() {
         "isFiller": false,
         "isOngoing": false,
         "isCompleted": false
-    };
-}
-
-export function EmployeeTimetableBlockTicket()
-{
-    return {
-        "blockTicketID": -1,
-        "employee": undefined,
-        "date": today(),
-        "startTime": "00:00",
-        "duration": 0
     };
 }
