@@ -1,6 +1,6 @@
 import {get, writable} from "svelte/store";
 import {getAppointmentBookingList} from "$lib/api/api_server/api_endpoints/lobby-portal/api.js";
-import {tomorrow} from "$lib/page/stores/now/now.js";
+import {tomorrow} from "$lib/page/stores/business/business.js";
 import {
     bookingListCustomerBookingClickModal
 } from "$lib/page/protected/business-portal/page_lobby/page/BookingList/components/BookingListCustomerBookingClickModal/stores/BookingListCustomerBookingClickModal.js";

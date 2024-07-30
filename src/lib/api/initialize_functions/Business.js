@@ -1,5 +1,5 @@
 import { User } from "$lib/api/initialize_functions/User.js";
-import {today} from "$lib/page/stores/now/now.js";
+import {today} from "$lib/page/stores/business/business.js";
 
 export const BusinessScheduleManagement = {
     NONE: 0,

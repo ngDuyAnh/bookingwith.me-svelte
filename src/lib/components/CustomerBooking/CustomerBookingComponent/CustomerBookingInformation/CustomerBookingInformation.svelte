@@ -3,7 +3,7 @@
     import CustomerBookingInformationForm
         from "$lib/components/Form/CustomerBookingInformationForm/CustomerBookingInformationForm.svelte";
     import {ArrowLeftOutline} from 'flowbite-svelte-icons';
-    import {isToday} from "$lib/page/stores/now/now.js";
+    import {isToday} from "$lib/page/stores/business/business.js";
 
     export let bookingDateRestricted;
 

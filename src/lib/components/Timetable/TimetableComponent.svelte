@@ -1,5 +1,5 @@
 <script>
-    import {isPast, isToday, now, nowTime, today,} from "$lib/page/stores/now/now.js";
+    import {isPast, isToday, now, nowTime, today} from "$lib/page/stores/business/business.js";
     import {formatTimeAm, formatToDate, formatToTime,} from "$lib/application/Formatter.js";
     import Calendar from "@event-calendar/core";
     import {

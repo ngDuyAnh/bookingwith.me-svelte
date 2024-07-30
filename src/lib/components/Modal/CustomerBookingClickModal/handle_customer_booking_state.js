@@ -2,7 +2,7 @@ import {CustomerBookingState} from "$lib/api/initialize_functions/CustomerBookin
 import {
     initializeCustomerBookingAndBroadcast
 } from "$lib/api/api_server/api_endpoints/customer-booking-portal/api.js";
-import {nowTime} from "$lib/page/stores/now/now.js";
+import {nowTime} from "$lib/page/stores/business/business.js";
 import {timetableComponent} from "$lib/components/Timetable/stores/timetableComponent.js";
 import {get} from "svelte/store";
 

@@ -14,7 +14,7 @@
         TableHead,
         TableHeadCell
     } from "flowbite-svelte";
-    import {now, today} from "$lib/page/stores/now/now.js";
+    import {now, today} from "$lib/page/stores/business/business.js";
     import {formatToDate, formatToYearMonth} from "$lib/application/Formatter.js";
     import dayjs from "dayjs";
     import {fly} from "svelte/transition";

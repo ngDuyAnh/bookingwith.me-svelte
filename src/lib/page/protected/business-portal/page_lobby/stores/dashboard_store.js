@@ -1,7 +1,7 @@
 import {get, writable} from "svelte/store";
 import {getCustomerBookingQueueList} from "$lib/api/api_server/api_endpoints/lobby-portal/api.js";
 import {business} from "$lib/page/stores/business/business.js";
-import {now} from "$lib/page/stores/now/now.js";
+import {now} from "$lib/page/stores/business/business.js";
 import {formatToDate} from "$lib/application/Formatter.js";
 import {
     handleCustomerBookingClickUpdate

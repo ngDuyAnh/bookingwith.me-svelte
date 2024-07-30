@@ -1,6 +1,6 @@
 <script>
     import {customerBookingEstimate} from "$lib/page/customer-booking-portal/get/stores/customerBookingEstimate.js";
-    import {isTomorrow, now} from "$lib/page/stores/now/now.js";
+    import {isTomorrow, now} from "$lib/page/stores/business/business.js";
     import report_icon from "$lib/images/report_icon/message-report.png";
     import {
         handleCustomerBookingPortalEditCustomerBooking

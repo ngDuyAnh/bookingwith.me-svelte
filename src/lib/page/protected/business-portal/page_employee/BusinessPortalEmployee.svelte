@@ -10,7 +10,7 @@
         ServerEvent
     } from "$lib/api/api_server/api_endpoints/ws/api.js";
     import {business} from "$lib/page/stores/business/business.js";
-    import {isToday} from "$lib/page/stores/now/now.js";
+    import {isToday} from "$lib/page/stores/business/business.js";
     import {fetchTimetable, timetableComponent} from "$lib/components/Timetable/stores/timetableComponent.js";
     import {
         bookingList

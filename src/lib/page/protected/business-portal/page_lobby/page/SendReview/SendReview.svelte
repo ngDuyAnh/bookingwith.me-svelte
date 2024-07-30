@@ -15,7 +15,7 @@
     import {checkAbleToSendSmsReviewReminder} from "$lib/api/api_server/functions.js";
     import {business} from "$lib/page/stores/business/business.js";
     import {sendSMSAskingForReview} from "$lib/api/api_twilio/functions.js";
-    import {nowTime} from "$lib/page/stores/now/now.js";
+    import {nowTime} from "$lib/page/stores/business/business.js";
     import {fly} from "svelte/transition";
     import {InfoCircleSolid} from "flowbite-svelte-icons";
 

@@ -14,7 +14,7 @@
         TableHeadCell
     } from "flowbite-svelte";
     import PaymentCard from "$lib/components/Stripe/PaymentCard/PaymentCard.svelte";
-    import {now} from "$lib/page/stores/now/now.js";
+    import {now} from "$lib/page/stores/business/business.js";
     import {formatToYearMonth} from "$lib/application/Formatter.js";
     import dayjs from "dayjs";
     import PastInvoice from "$lib/components/Stripe/PastInvoice/PastInvoice.svelte";
