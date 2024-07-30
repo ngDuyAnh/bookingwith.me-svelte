@@ -1,7 +1,5 @@
 <script>
-    import {
-        CustomerBookingChannel
-    } from "$lib/api/initialize_functions/CustomerBooking.js";
+    import {CustomerBookingChannel} from "$lib/api/initialize_functions/CustomerBooking.js";
     import {Badge, Button, Checkbox, Modal} from "flowbite-svelte";
     import CustomerBookingLobbyComponent
         from "$lib/components/CustomerBooking/CustomerBookingLobbyComponent/CustomerBookingLobbyComponent.svelte";
@@ -44,10 +42,19 @@
         wasOpen = false;
     }
 
-    function submitCallback(hideHeaderAndFooter)
-    {
+    function submitCallback(hideHeaderAndFooter) {
         showHeaderAndFooter = !hideHeaderAndFooter;
     }
+
+    let focusIndividualColumnIndex = 1;
+    let focusDualColumnIndex = 1;
+
+    let showCreateButton = true;
+
+    $: showCreateButton = focusIndividualColumnIndex === 4 || focusDualColumnIndex===2;
+    $: buttonKey = focusIndividualColumnIndex + focusDualColumnIndex;
+
+
 </script>
 
 <div class="absolute top-0 left-0 right-0 z-[2000]">
@@ -57,7 +64,7 @@
            class="xl:w-full sm:w-9/12 w-full h-[80vh] border-8"
            classBackdrop="fixed inset-0 z-50 bg-gray-900 bg-opacity-90 dark:bg-opacity-80"
            size="xl"
-           >
+    >
         <svelte:fragment slot="header">
             <div class="flex sm:flex-row flex-col sm:justify-between justify-center items-center w-full">
                 <div class="w-1/2 flex sm:justify-start justify-center">
@@ -93,6 +100,9 @@
                 bind:options={$customerBookingLobbyModal.customerBookingInformationProps}
 
                 {submitCallback}
+
+                bind:focusIndividualColumnIndex={focusIndividualColumnIndex}
+                bind:focusDualColumnIndex={focusDualColumnIndex}
         />
 
         <svelte:fragment slot="footer">
@@ -120,9 +130,12 @@
                             Edit
                         </Button>
                     {:else}
-                        <Button form="bookingForm" type="submit" class="">
-                            Create
-                        </Button>
+                        {#key buttonKey}
+                            <Button form="bookingForm" type="submit"
+                                    class="xl:block {showCreateButton?'':'hidden'}">
+                                Create
+                            </Button>
+                        {/key}
                     {/if}
                 </div>
             {/if}
