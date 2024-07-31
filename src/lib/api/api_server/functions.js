@@ -91,7 +91,10 @@ export async function submitCustomerBooking(
 
         // If the customer phone number is empty
         // Then initialize with default walk-in customer profile
-        customerBooking.customer = WalkInCustomer();
+        if (customerBooking.customer.phoneNumber.length === 0)
+        {
+            customerBooking.customer = WalkInCustomer();
+        }
 
         // Set the booking date and time for submit
         customerBooking.bookingDate = bookingDate;

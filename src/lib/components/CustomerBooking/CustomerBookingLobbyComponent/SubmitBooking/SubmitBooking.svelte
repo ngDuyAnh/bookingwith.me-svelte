@@ -97,7 +97,7 @@
                 placeholder="(123) 456-7890"
                 bind:value={formattedPhoneNumber}
                 on:input={handlePhoneNumberInput}
-                pattern="^(\(\d{3}\) \d{3}-\d{4}?$"
+                pattern="^(\(\d\d\d\) \d\d\d-\d\d\d\d)?$"
                 title="Phone number must be in the format: (123) 456-7890"
         />
     </Label>

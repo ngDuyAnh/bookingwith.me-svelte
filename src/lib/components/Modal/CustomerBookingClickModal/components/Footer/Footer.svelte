@@ -229,7 +229,7 @@
 
         <!--Move to lobby-->
         {#if customerBooking.bookingState < CustomerBookingState.LOBBY}
-            <Button class="bg-orange-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
+            <Button class="bg-orange-500 hover:bg-orange-700 text-white font-bold py-2 px-4 rounded"
                     on:click={() => moveToLobby(customerBooking)}>Lobby
             </Button>
         {/if}
