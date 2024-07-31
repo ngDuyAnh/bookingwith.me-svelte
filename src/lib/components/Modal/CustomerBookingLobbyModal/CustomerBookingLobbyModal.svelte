@@ -109,7 +109,7 @@
             <!--Optional actions-->
             {#if showHeaderAndFooter}
                 <div class="w-full flex justify-end space-x-2">
-                    <div class="flex flex-row space-x-2 xl:block {showCreateButton?'':'hidden'}">
+                    <div class="flex flex-row space-x-2 xl:flex {showCreateButton?'':'hidden'}">
                         {#if $customerBookingLobbyModal.customerBookingInformationProps.showSendSms}
                             <Checkbox
                                     bind:checked={$customerBookingLobbyModal.customerBookingInformationProps.sendSmsFlag}>
