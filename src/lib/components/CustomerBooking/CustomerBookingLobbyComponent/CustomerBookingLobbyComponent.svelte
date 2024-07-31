@@ -163,7 +163,7 @@
                         on:click={prevDualCol}>
                     <ArrowLeftOutline class="w-4 h-4"/>
                 </Button>
-                <Button color="blue" class="disable-double-tap-zoom md:hidden !p-2 {focusIndividualColumnIndex===1?'hidden':'block'}"
+                <Button class="disable-double-tap-zoom md:hidden !p-2 {focusIndividualColumnIndex===1?'hidden':'block'}"
                         on:click={prevIndividualCol}>
                     <ArrowLeftOutline class="w-4 h-4"/>
                 </Button>
@@ -220,7 +220,7 @@
 
             <!-- Container for the Next Button -->
             <div class="absolute flex-1 text-right z-10 right-0">
-                <Button color="dark" class="disable-double-tap-zoom !p-2 hidden md:{focusDualColumnIndex===2?'hidden':'block'}"
+                <Button class="disable-double-tap-zoom !p-2 hidden md:{focusDualColumnIndex===2?'hidden':'block'}"
                         on:click={nextDualCol}>
                     <ArrowRightOutline class="w-4 h-4"/>
                 </Button>

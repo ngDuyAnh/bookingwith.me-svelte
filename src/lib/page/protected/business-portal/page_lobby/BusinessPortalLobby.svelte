@@ -28,7 +28,7 @@
     } from "$lib/page/protected/business-portal/page_lobby/page/BookingList/stores/bookingList.js";
     import {CustomerBookingChannel} from "$lib/api/initialize_functions/CustomerBooking.js";
 
-    let tabs = ["Dashboard", "Timetable", "List", "Send review"];
+    let tabs = ["Dashboard", "Timetable", "Future Lists", "Send review"];
     let selectedIndex = 0;
 
     let loading = true;

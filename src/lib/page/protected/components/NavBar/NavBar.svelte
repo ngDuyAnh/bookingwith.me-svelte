@@ -82,7 +82,7 @@
         "dashboard": GridSolid,
         "timetable": ClockSolid,
         "setting": UserSettingsOutline,
-        "list": ListOutline,
+        "future lists": ListOutline,
         "create": GridPlusOutline,
         "my timetable": CalendarMonthOutline,
         "employee": UsersGroupSolid,

@@ -109,7 +109,7 @@
             <!--Optional actions-->
             {#if showHeaderAndFooter}
                 <div class="w-full flex justify-end space-x-2">
-                    <div class="flex flex-row space-x-2">
+                    <div class="flex flex-row space-x-2 xl:flex {showCreateButton?'':'hidden'}">
                         {#if $customerBookingLobbyModal.customerBookingInformationProps.showSendSms}
                             <Checkbox
                                     bind:checked={$customerBookingLobbyModal.customerBookingInformationProps.sendSmsFlag}>
@@ -124,19 +124,18 @@
                             </Checkbox>
                         {/if}
                     </div>
-
+                    {#key buttonKey}
                     {#if isEditCustomerBooking()}
-                        <Button form="bookingForm" type="submit" class="">
-                            Edit
+                        <Button form="bookingForm" type="submit" class="xl:block {showCreateButton?'':'hidden'}">
+                            Submit Edit
                         </Button>
                     {:else}
-                        {#key buttonKey}
-                            <Button form="bookingForm" type="submit"
-                                    class="xl:block {showCreateButton?'':'hidden'}">
-                                Create
-                            </Button>
-                        {/key}
+                        <Button form="bookingForm" type="submit"
+                                class="xl:block {showCreateButton?'':'hidden'}">
+                            Create
+                        </Button>
                     {/if}
+                    {/key}
                 </div>
             {/if}
         </svelte:fragment>
