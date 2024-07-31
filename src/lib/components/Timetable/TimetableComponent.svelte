@@ -849,8 +849,8 @@
                     employeeTable.employee.id === -1 || !employeeTable.employee.id
                         ? "red"
                         : "#FFF9D0",
-                start: `${$now.format("YYYY-MM-DD")} ${employeeTable.timePeriod.startTime}`,
-                end: `${$now.format("YYYY-MM-DD")} ${employeeTable.timePeriod.endTime}`,
+                start: `${dayjs().format("YYYY-MM-DD")} ${employeeTable.timePeriod.startTime}`,
+                end: `${dayjs().format("YYYY-MM-DD")} ${employeeTable.timePeriod.endTime}`,
                 display: "background",
             });
             let countOfNullResourceIds = employeeEvents.filter(
@@ -936,8 +936,8 @@
                 // console.log("blockTicket", blockTicket);
 
                 return {
-                    start: `${$now.format("YYYY-MM-DD")} ${blockTicket.startTime}`,
-                    end: `${$now.format("YYYY-MM-DD")} ${getEndTime(blockTicket.startTime, blockTicket.duration)}`,
+                    start: `${dayjs().format("YYYY-MM-DD")} ${blockTicket.startTime}`,
+                    end: `${dayjs().format("YYYY-MM-DD")} ${getEndTime(blockTicket.startTime, blockTicket.duration)}`,
                     resourceId: employeeTable.employee.id,
                     title: ` `,
                     color: "grey", // Using grey to denote blocked times
@@ -966,8 +966,8 @@
 
                     return {
                         // Event variables
-                        start: `${$now.format("YYYY-MM-DD")} ${servicingTicket.timePeriod.startTime}`,
-                        end: `${$now.format("YYYY-MM-DD")} ${servicingTicket.timePeriod.endTime}`,
+                        start: `${dayjs().format("YYYY-MM-DD")} ${servicingTicket.timePeriod.startTime}`,
+                        end: `${dayjs().format("YYYY-MM-DD")} ${servicingTicket.timePeriod.endTime}`,
                         resourceId: employeeTable.employee.id,
                         title: ` `,
 

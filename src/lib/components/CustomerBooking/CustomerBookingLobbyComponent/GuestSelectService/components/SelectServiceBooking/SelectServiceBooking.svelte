@@ -118,7 +118,7 @@
 
 </script>
 
-<div class="max-w-[250px]">
+<div class="max-w-[100%]">
     <Select --margin="2px 0px"
             --font-size="0.9rem"
             floatingConfig={{ strategy: 'fixed' }}
