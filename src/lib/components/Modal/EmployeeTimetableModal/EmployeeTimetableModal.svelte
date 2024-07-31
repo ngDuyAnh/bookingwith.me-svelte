@@ -65,7 +65,7 @@
                     />
                 </div>
 
-                <div class="border-2 rounded-lg ">
+                <div class="border-2 rounded-lg">
                     <!--Work schedule-->
                     {#if ableToChangeEmployeeWorkSchedule}
                         <div class="flex sm:items-center sm:space-x-2 sm:space-y-0 space-y-1 sm:flex-row flex-col p-1">
@@ -93,10 +93,12 @@
 
                     {/if}
 
-
+                    {#if ableToChangeEmployeeWorkSchedule && $employeeTimetableModal.showBlockTimePeriod}
+                        <hr/>
+                    {/if}
                     <!--Block time period-->
                     {#if $employeeTimetableModal.showBlockTimePeriod}
-                        <hr/>
+
                         <div class="flex sm:items-center sm:space-x-2 sm:space-y-0 space-y-1 sm:flex-row flex-col p-1">
                             <!-- Container for inputs to ensure they split space evenly -->
                             <div class="flex flex-1 space-x-2">
