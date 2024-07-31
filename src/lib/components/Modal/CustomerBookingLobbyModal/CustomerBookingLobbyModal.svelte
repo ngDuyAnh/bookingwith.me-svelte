@@ -29,6 +29,8 @@
         })
     }
 
+    let focusIndividualColumnIndex = 1;
+    let focusDualColumnIndex = 1;
     let showHeaderAndFooter = true;
 
     // Reset
@@ -38,16 +40,19 @@
 
         // Reset to show the header and footer
         showHeaderAndFooter = true;
+        focusIndividualColumnIndex = 1;
+        focusDualColumnIndex = 1;
     } else if (!$customerBookingLobbyModal.open) {
         wasOpen = false;
     }
 
     function submitCallback(hideHeaderAndFooter) {
         showHeaderAndFooter = !hideHeaderAndFooter;
+        focusIndividualColumnIndex = 1;
+        focusDualColumnIndex = 1;
     }
 
-    let focusIndividualColumnIndex = 1;
-    let focusDualColumnIndex = 1;
+
 
     let showCreateButton = true;
 
@@ -61,7 +66,7 @@
     <Modal bind:open={$customerBookingLobbyModal.open}
            classHeader="!p-1"
            classBody="p-4 md:p-5 space-y-0 flex-1 overflow-y-auto overscroll-contain"
-           class="xl:w-full sm:w-9/12 w-full h-[80vh] border-8"
+           class="xl:w-full sm:w-11/12 w-full h-[80vh] border-8"
            classBackdrop="fixed inset-0 z-50 bg-gray-900 bg-opacity-90 dark:bg-opacity-80"
            size="xl"
     >

@@ -1,6 +1,7 @@
 <script>
     import {Tooltip} from "flowbite-svelte";
     import {UserOutline, UserSolid} from "flowbite-svelte-icons";
+    import {onMount} from "svelte";
 
     export let nextCol;
     export let customerBooking;
@@ -23,6 +24,23 @@
             }
         }
     }
+
+    let screenWidth;
+
+    onMount(() => {
+        screenWidth = window.innerWidth;
+        window.addEventListener('resize', () => {
+            screenWidth = window.innerWidth;
+        });
+    });
+
+    function handleButtonClick(index) {
+        selectedIndividualBookingIndex = index;
+        //  768px for 'md' in Tailwind
+        if (screenWidth < 768) {
+            nextCol();
+        }
+    }
 </script>
 
 <ul class="flex-grow mt-4 space-y-2 px-2">
@@ -30,7 +48,7 @@
         <li id={index}
             class="flex justify-between items-center {selectedIndividualBookingIndex === index ? 'bg-blue-50 py-2 border-[1px] border-blue-700':'bg-gray-100 py-1'} px-1 rounded-md shadow-sm ">
             <button
-                    on:click={() => {selectedIndividualBookingIndex = index; nextCol();}}
+                    on:click={() => { handleButtonClick(index);}}
                     class="flex-1 text-left cursor-pointer"
             >
                 <span class="flex items-center text-gray-950">

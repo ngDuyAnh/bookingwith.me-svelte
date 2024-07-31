@@ -147,8 +147,6 @@
     {
         if (focusIndividualColumnIndex !== 4)
             focusIndividualColumnIndex++;
-        if (focusDualColumnIndex !== 2)
-            focusDualColumnIndex++;
     }
 
 
