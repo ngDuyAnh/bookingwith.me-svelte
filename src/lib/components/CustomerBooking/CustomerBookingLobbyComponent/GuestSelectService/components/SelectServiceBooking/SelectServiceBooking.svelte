@@ -43,8 +43,9 @@
         // Return
         return options;
     }
+
     $: employeeSelectOptions = serviceBooking ?
-            generateEmployeeOptions(serviceBooking.service) : [defaultEmployeeOption];
+        generateEmployeeOptions(serviceBooking.service) : [defaultEmployeeOption];
 
     $: selectedService = serviceSelectOptions.find(option => option.value.id === serviceBooking?.service?.id) || null;
     $: selectedEmployee = employeeSelectOptions.find(option => option.value?.id === serviceBooking?.bookedEmployee?.id);
@@ -124,7 +125,6 @@
             floatingConfig={{ strategy: 'fixed' }}
             --item-height="auto"
             --input-color="black"
-
             --list-border="1px solid #006fe8"
 
             items={serviceSelectOptions} groupBy={(item) => item.group}
@@ -142,9 +142,13 @@
                     </div>
                 {:else if item.groupItem}
                     <div class="space-y-0 text-inherit">
-                        <div class="flex flex-row justify-between items-center text-left text-sm text-inherit">
-                            <span class="font-bold">{item.label}</span>
-                            <span class="font-semibold">${item.value.serviceCost}</span>
+                        <div class="flex flex-row justify-between items-center text-sm">
+                            <span class="font-bold flex-grow text-wrap">
+                                {item.label}
+                            </span>
+                                                    <span class="font-semibold flex-shrink-0">
+                                ${item.value.serviceCost}
+                            </span>
                         </div>
                         <div class="flex flex-row items-center text-left text-xs text-inherit">
                             <ClockOutline/> {item.value.serviceTimeLength} minutes
@@ -160,7 +164,6 @@
                 --font-size="0.9rem"
                 floatingConfig={{strategy: 'fixed',}}
                 --multi-max-width="fit"
-
                 --list-border="1px solid #006fe8"
 
 
@@ -174,7 +177,13 @@
 
 <style>
     :global(.svelte-select-list) {
-        width: 400px !important;
+        width: 100% !important;
         height: fit-content !important;
+    }
+
+    @media (min-width: 768px) {
+        :global(.svelte-select-list) {
+            width: 400px !important;
+        }
     }
 </style>
