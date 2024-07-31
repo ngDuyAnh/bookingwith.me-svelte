@@ -134,7 +134,7 @@
         };
     });
 
-    async function handleEmployeeWorKScheduleUpdate(eventData) {
+    async function handleEmployeeWorKScheduleUpdate() {
         // console.log(`Handle ${eventData.type}`, eventData);
         await fetchTimetable($timetableComponent.date);
     }
@@ -142,6 +142,12 @@
     // The timetable uses t
     async function handleCustomerBookingUpdate(eventData) {
         const customerBooking = eventData.data;
+
+        // We need to get the customer booking queue
+        // The timetable uses it to get customer booking instance
+        if (isToday(customerBooking.bookingDate)) {
+            await fetchCustomerBookingQueueList();
+        }
 
         // Timetable
         if ($timetableComponent.date === customerBooking.bookingDate) {

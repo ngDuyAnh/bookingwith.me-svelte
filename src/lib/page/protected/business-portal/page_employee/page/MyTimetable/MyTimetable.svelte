@@ -6,4 +6,5 @@
 <TimetableComponent
         bind:user={$userProfile.user}
         ableToChangeEmployeeWorkSchedule={false}
+        ableToAssignEmployeeToServicingTicket={false}
 />

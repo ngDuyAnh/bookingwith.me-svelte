@@ -66,6 +66,7 @@
 
     // Allow to edit the timetable
     export let editable = true;
+    export let ableToAssignEmployeeToServicingTicket = true;
 
     let options = {
         editable: editable,
@@ -406,7 +407,7 @@
                                 }
                             }
                         }
-                            // Same employee timetable
+                        // Same employee timetable
                         // Need to handle this differently because there is no oldResource
                         else {
                             let employeeID = info.event.resourceIds[0];
@@ -450,7 +451,11 @@
                             // Dragged to employee
                             else
                             {
-                                serviceBooking.assignedEmployee = getEmployee(assignedEmployeeID);
+                                // Only assign to employee if the timetable is allowed
+                                if (ableToAssignEmployeeToServicingTicket)
+                                {
+                                    serviceBooking.assignedEmployee = getEmployee(assignedEmployeeID);
+                                }
 
                                 // If the first service booking is the selected service booking
                                 // Ignore the order adjustment
@@ -465,7 +470,7 @@
                                 if (customerBooking.bookingState === CustomerBookingState.SERVICING) {
                                     serviceBooking.startTime = startTime;
                                 }
-                                    // Appointment and lobby
+                                // Appointment and lobby
                                 // Always set the start time for all service booking for automatic scheduling
                                 else if (customerBooking.bookingState === CustomerBookingState.APPOINTMENT ||
                                     customerBooking.bookingState === CustomerBookingState.LOBBY) {
