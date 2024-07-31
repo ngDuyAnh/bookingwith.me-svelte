@@ -111,23 +111,46 @@
     export let focusIndividualColumnIndex;
     export let focusDualColumnIndex;
 
-    function prevCol() {
-        if (focusIndividualColumnIndex !== 1)
-            focusIndividualColumnIndex--;
+    function prevDualCol() {
         if (focusDualColumnIndex !== 1)
             focusDualColumnIndex--;
+        focusIndividualColumnIndex=1;
     }
-    async function nextCol() {
-        if (focusIndividualColumnIndex !== 4)
-            focusIndividualColumnIndex++;
+
+    function prevIndividualCol() {
+        if (focusIndividualColumnIndex !== 1)
+            focusIndividualColumnIndex--;
+        focusDualColumnIndex=1;
+    }
+    async function nextDualCol() {
         if (focusDualColumnIndex !== 2)
             focusDualColumnIndex++;
-
-        if (focusIndividualColumnIndex === 3 || (focusDualColumnIndex === 2 && focusIndividualColumnIndex < 3)) {
+        focusIndividualColumnIndex=1;
+        if (focusDualColumnIndex === 2 ) {
             await tick(); // Ensure all updates are processed
             pleaseFetchAvailability();
         }
     }
+
+    async function nextIndividualCol() {
+        if (focusIndividualColumnIndex !== 4)
+            focusIndividualColumnIndex++;
+        focusDualColumnIndex=1;
+
+        if (focusIndividualColumnIndex === 3) {
+            await tick(); // Ensure all updates are processed
+            pleaseFetchAvailability();
+        }
+    }
+
+    function nextCol()
+    {
+        if (focusIndividualColumnIndex !== 4)
+            focusIndividualColumnIndex++;
+        if (focusDualColumnIndex !== 2)
+            focusDualColumnIndex++;
+    }
+
 
 </script>
 
@@ -136,8 +159,12 @@
         <div class=" relative flex items-center justify-center pb-2 w-full xl:hidden z-10">
             <!-- Container for the Previous Button -->
             <div class=" absolute left-0 flex-1 z-10">
-                <Button class="disable-double-tap-zoom !p-2 md:{focusDualColumnIndex===1?'hidden':''} {focusIndividualColumnIndex === 1? 'hidden' : ''}"
-                        on:click={prevCol}>
+                <Button class="disable-double-tap-zoom !p-2 hidden md:{focusDualColumnIndex===1?'hidden':'block'}"
+                        on:click={prevDualCol}>
+                    <ArrowLeftOutline class="w-4 h-4"/>
+                </Button>
+                <Button color="blue" class="disable-double-tap-zoom md:hidden !p-2 {focusIndividualColumnIndex===1?'hidden':'block'}"
+                        on:click={prevIndividualCol}>
                     <ArrowLeftOutline class="w-4 h-4"/>
                 </Button>
             </div>
@@ -193,8 +220,12 @@
 
             <!-- Container for the Next Button -->
             <div class="absolute flex-1 text-right z-10 right-0">
-                <Button class="disable-double-tap-zoom !p-2 md:{focusDualColumnIndex===2?'hidden':''} {focusIndividualColumnIndex === 4? 'hidden' : ''}"
-                        on:click={()=>{nextCol(); }}>
+                <Button color="dark" class="disable-double-tap-zoom !p-2 hidden md:{focusDualColumnIndex===2?'hidden':'block'}"
+                        on:click={nextDualCol}>
+                    <ArrowRightOutline class="w-4 h-4"/>
+                </Button>
+                <Button class="disable-double-tap-zoom md:hidden !p-2 {focusIndividualColumnIndex===4?'hidden':'block'}"
+                        on:click={nextIndividualCol}>
                     <ArrowRightOutline class="w-4 h-4"/>
                 </Button>
             </div>
