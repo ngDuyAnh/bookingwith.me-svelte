@@ -21,7 +21,7 @@
             value: service
         })));
 
-    $:console.log("serviceSelectOptions", serviceSelectOptions);
+    // $:console.log("serviceSelectOptions", serviceSelectOptions);
 
     function generateEmployeeOptions(service) {
 
@@ -66,17 +66,21 @@
             ];
 
             // console.log("Add new service booking", individualBooking)
-        } else {
-            serviceBooking.service = newService;
         }
+        // Existing service booking
+        else {
+            serviceBooking.service = newService;
 
-        serviceBooking.bookedEmployee = null;
-
+            // Keep the employee selected if the employee also provides the service
+            // If the employee does not provide the service, default it back to any employee
+            const employeesProvidingService = newService.employeeList.map(employee => employee.id);
+            if (!employeesProvidingService.includes(serviceBooking.bookedEmployee?.id)) {
+                serviceBooking.bookedEmployee = null;
+            }
+        }
     }
 
     function handleDeleteServiceBooking() {
-        // console.log("handleDeleteServiceBooking", event);
-
         if (serviceBookingIndex < individualBooking.customerIndividualServiceBookingList.length) {
             individualBooking.customerIndividualServiceBookingList = [
                 ...individualBooking.customerIndividualServiceBookingList.slice(0, serviceBookingIndex),
@@ -108,7 +112,7 @@
         return str.toLowerCase().split(/\s+/);
     }
 
-    function customFilter(label, filterText, option) {
+    function customFilter(label, filterText) {
         const tokens = tokenize(filterText);
         const labelTokens = tokenize(label);
 
@@ -118,7 +122,7 @@
 
 </script>
 
-<div class="max-w-[250px]">
+<div class="max-w-[100%]">
     <Select --margin="2px 0px"
             --font-size="0.9rem"
             floatingConfig={{ strategy: 'fixed' }}
