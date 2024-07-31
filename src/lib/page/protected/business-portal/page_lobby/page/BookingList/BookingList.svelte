@@ -1,13 +1,13 @@
 <script>
-    import { onMount } from 'svelte';
-    import {isTomorrow, now} from "$lib/page/stores/business/business.js";
+    import {onMount} from 'svelte';
+    import {business, isTomorrow, now} from "$lib/page/stores/business/business.js";
     import {formatToDate} from "$lib/application/Formatter.js";
     import CustomerBookingListItem
         from "$lib/page/protected/business-portal/page_lobby/page/Dashboard/components/components/CustomerBookingList/CustomerBookingListItem/CustomerBookingListItem.svelte";
     import dayjs from "dayjs";
-    import {business} from "$lib/page/stores/business/business.js";
     import {
-        bookingList, fetchAppointmentCustomerBookingList
+        bookingList,
+        fetchAppointmentCustomerBookingList
     } from "$lib/page/protected/business-portal/page_lobby/page/BookingList/stores/bookingList.js";
     import {
         handleBookingListCustomerBookingClick
@@ -23,11 +23,9 @@
 
     let selectedDate = tomorrow.format(formatToDate);
 
-    function fetchBookingsForDate()
-    {
+    function fetchBookingsForDate() {
         // Ensure the boundary for date to be the future
-        if (dayjs(selectedDate, formatToDate).startOf('day').isBefore(tomorrow))
-        {
+        if (dayjs(selectedDate, formatToDate).startOf('day').isBefore(tomorrow)) {
             selectedDate = tomorrow.format(formatToDate);
         }
 
@@ -40,8 +38,7 @@
     });
 
     // Date select change
-    $: if ($bookingList.date !== selectedDate)
-    {
+    $: if ($bookingList.date !== selectedDate) {
         fetchBookingsForDate();
     }
 
@@ -73,9 +70,9 @@
             filteredCustomerBookingList = $bookingList.customerBookingList;
         } else {
             filteredCustomerBookingList = $bookingList.customerBookingList.filter(booking =>
-                    normalizeSearchInput(booking.customer.customerName).includes(normalizedSearchValue) ||
-                    normalizeSearchInput(shortCustomerBookingID(booking.id)).includes(normalizedSearchValue) ||
-                    normalizeSearchInput(booking.customer.phoneNumber.toString()).includes(normalizedSearchValue)
+                normalizeSearchInput(booking.customer.customerName).includes(normalizedSearchValue) ||
+                normalizeSearchInput(shortCustomerBookingID(booking.id)).includes(normalizedSearchValue) ||
+                normalizeSearchInput(booking.customer.phoneNumber.toString()).includes(normalizedSearchValue)
             );
         }
     }
@@ -84,71 +81,86 @@
 </script>
 
 <div
-        class="flex sm:flex-row flex-col left-0 inline-block h-fit sm:space-y-0 space-y-1 items-center justify-evenly w-full"
+        class="relative flex flex-col items-center justify-center sm:w-5/6 w-11/12 h-full mx-auto my-2 overflow-x-auto space-y-1"
 >
-    <div class="flex flex-row sm:justify-normal justify-center items-center">
-        <Button
-                class="h-fit text-md mr-1"
-                size="xs"
-                color="light"
-                on:click={() => {
+    <div
+            class="flex sm:flex-row flex-col left-0 inline-block h-fit sm:space-y-0 space-y-1 items-center justify-evenly w-full"
+    >
+
+        <div class="flex flex-row sm:justify-normal justify-center items-center">
+            <Button
+                    class="h-fit text-md mr-1"
+                    size="xs"
+                    color="light"
+                    on:click={() => {
           selectToTomorrow();
         }}
-                disabled={isTomorrow(selectedDate)}
-        >Tomorrow
-        </Button>
-        <div class="flex items-center">
-            <Button
-                    class="rounded-r-none h-fit"
-                    size="xs"
-                    color="light"
-                    on:click={() => {
+                    disabled={isTomorrow(selectedDate)}
+            >Tomorrow
+            </Button>
+            <div class="flex items-center">
+                <Button
+                        class="rounded-r-none h-fit"
+                        size="xs"
+                        color="light"
+                        on:click={() => {
             selectYesterday();
           }}
-            >
-                <ChevronLeftOutline class="w-6 h-6"/>
-            </Button>
-            <input
-                    class="border-gray-300 w-[8rem]"
-                    bind:value={selectedDate}
-                    type="date"
-            />
-            <Button
-                    class="rounded-l-none h-fit"
-                    size="xs"
-                    color="light"
-                    on:click={() => {
+                >
+                    <ChevronLeftOutline class="w-6 h-6"/>
+                </Button>
+                <input
+                        class="border-gray-300 w-[8rem]"
+                        bind:value={selectedDate}
+                        type="date"
+                />
+                <Button
+                        class="rounded-l-none h-fit"
+                        size="xs"
+                        color="light"
+                        on:click={() => {
             selectTomorrow();
           }}
-            >
-                <ChevronRightOutline class="w-6 h-6"/>
-            </Button>
+                >
+                    <ChevronRightOutline class="w-6 h-6"/>
+                </Button>
+            </div>
         </div>
+
+        <form class="flex max-w-xs items-center">
+            <Search bind:value={searchValue} size="md" class="rounded-none rounded-l-lg py-2.5"
+                    placeholder="Search Booking Info" maxlength="20">
+            </Search>
+        </form>
     </div>
 
-    <form class="flex max-w-xs items-center">
-        <Search bind:value={searchValue} size="md" class="rounded-none rounded-l-lg py-2.5"
-                placeholder="Search Booking Info" maxlength="20">
-        </Search>
-    </form>
+    <div class="overflow-y-auto rounded border-2 w-full flex-1">
+        {#if $bookingList.customerBookingList.length === 0}
+            <div class="flex justify-center w-full h-full">
+                <span class="text-lg font-semibold">No Appointments for {selectedDate}</span>
+            </div>
+        {:else}
+            <!-- Appointment list -->
+
+            <ul>
+                {#each filteredCustomerBookingList as customerBooking (customerBooking.id)}
+                    <li class="border-b last:border-b-0">
+                        <button
+                                class="mb-4 p-4 bg-white rounded shadow select-none w-full text-left
+                            hover:bg-gray-300 transition-all duration-300 ease-in-out"
+                                on:click={() => handleBookingListCustomerBookingClick(customerBooking)}
+                        >
+                            <CustomerBookingListItem {customerBooking}/>
+                        </button>
+                    </li>
+                {/each}
+            </ul>
+        {/if}
+    </div>
+
+
 </div>
 
-<!-- Appointment list -->
-<div class="overflow-y-auto">
-    <ul>
-        {#each filteredCustomerBookingList as customerBooking (customerBooking.id)}
-            <li class="border-b last:border-b-0">
-                <button
-                        class="mb-4 p-4 bg-white rounded shadow select-none w-full text-left
-                            hover:bg-gray-300 transition-all duration-300 ease-in-out"
-                        on:click={() => handleBookingListCustomerBookingClick(customerBooking)}
-                >
-                    <CustomerBookingListItem {customerBooking} />
-                </button>
-            </li>
-        {/each}
-    </ul>
-</div>
 
 <!-- Modal for customer booking -->
 <BookingListCustomerBookingClickModal/>
