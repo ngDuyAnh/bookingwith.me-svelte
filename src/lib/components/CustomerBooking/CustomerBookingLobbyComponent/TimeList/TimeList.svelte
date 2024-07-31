@@ -42,10 +42,7 @@
             requiredAvailabilitiesSearch = true; // Trigger the UI to show the re-fetch button
 
             // If it is date change, automatically perform the availability search
-            if (
-                beforeSerializedBooking.bookingDate !==
-                currentBeforeSerialized.bookingDate
-            ) {
+            if (beforeSerializedBooking.bookingDate !== currentBeforeSerialized.bookingDate) {
                 pleaseFetchAvailability();
             }
             // Reset
@@ -73,11 +70,7 @@
     let fetching = false;
 
     $: if ($customerBookingLobbyComponent.pleaseFetchAvailability) {
-
         availabilityFetched();
-
-        console.log("Here in fetching availabilities", $customerBookingLobbyComponent.pleaseFetchAvailability)
-
         getAvailabilities();
     }
 
@@ -138,9 +131,30 @@
                     // Add the availabilities to the list
                     availabilityList.push(...availabilities);
 
-                    // Select the first booking time
+                    // Select availability
                     if (availabilityList.length > 0) {
-                        selectAvailability(availabilityList[0]);
+
+
+                        console.log("$customerBookingLobbyComponent.selectedAvailability", $customerBookingLobbyComponent.selectedAvailability);
+                        console.log("availability list", availabilityList);
+
+
+                        // Reselect the availability if there is one
+                        const selected = availabilityList.find(availability =>
+                            availability.timePeriod.startTime === $customerBookingLobbyComponent.selectedAvailability?.timePeriod.startTime &&
+                            availability.timePeriod.endTime === $customerBookingLobbyComponent.selectedAvailability?.timePeriod.endTime
+                        );
+
+                        // Reselect
+                        if (selected)
+                        {
+                            selectAvailability(selected);
+                        }
+                        // Select the first element
+                        else
+                        {
+                            selectAvailability(availabilityList[0]);
+                        }
                     }
                 })
                 .catch((err) => {
@@ -231,6 +245,8 @@
 
         return `${startTimeFormatted} to ${endTimeFormatted} ${durationDisplay}`;
     }
+
+    // $: console.log("Selected availability", $customerBookingLobbyComponent.selectedAvailability);
 </script>
 
 {#if requiredAvailabilitiesSearch}
