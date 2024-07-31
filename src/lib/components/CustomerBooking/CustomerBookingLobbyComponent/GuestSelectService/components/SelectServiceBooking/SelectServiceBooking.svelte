@@ -146,7 +146,7 @@
                             <span class="font-bold flex-grow text-wrap">
                                 {item.label}
                             </span>
-                                                    <span class="font-semibold flex-shrink-0">
+                                                    <span class="font-extrabold flex-shrink-0 pl-3">
                                 ${item.value.serviceCost}
                             </span>
                         </div>
@@ -181,7 +181,7 @@
         height: fit-content !important;
     }
 
-    @media (min-width: 768px) {
+    @media (min-width: 450px) {
         :global(.svelte-select-list) {
             width: 400px !important;
         }
