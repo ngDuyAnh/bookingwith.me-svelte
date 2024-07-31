@@ -45,6 +45,9 @@ export function BusinessInformation() {
 }
 
 export function TestBusinessInformation() {
+
+    const localTimezone = Intl.DateTimeFormat().resolvedOptions().timeZone;
+
     return {
         "id": -1,
         "businessID": null,
@@ -60,6 +63,8 @@ export function TestBusinessInformation() {
         "googleMapsLink": "wewe",
         "googleEmbedMapLink": "weew",
         "googleMapsDirectionLink": "wewe",
+
+        "timezone": localTimezone,
 
         "active": true,
         "scheduleManagement": BusinessScheduleManagement.NONE,
