@@ -9,6 +9,8 @@
     export let individualBooking;
     export let serviceBookingIndex;
 
+    const defaultEmployeeOption = {label: "Any employee", value: null};
+
     // Get the service booking
     $: serviceBooking = individualBooking.customerIndividualServiceBookingList[serviceBookingIndex];
 
@@ -41,9 +43,8 @@
         // Return
         return options;
     }
-
     $: employeeSelectOptions = serviceBooking ?
-        generateEmployeeOptions(serviceBooking.service) : [{label: "Any employee", value: null}];
+            generateEmployeeOptions(serviceBooking.service) : [defaultEmployeeOption];
 
     $: selectedService = serviceSelectOptions.find(option => option.value.id === serviceBooking?.service?.id) || null;
     $: selectedEmployee = employeeSelectOptions.find(option => option.value?.id === serviceBooking?.bookedEmployee?.id);
@@ -68,6 +69,9 @@
         } else {
             serviceBooking.service = newService;
         }
+
+        serviceBooking.bookedEmployee = null;
+
     }
 
     function handleDeleteServiceBooking() {
@@ -78,8 +82,6 @@
                 ...individualBooking.customerIndividualServiceBookingList.slice(0, serviceBookingIndex),
                 ...individualBooking.customerIndividualServiceBookingList.slice(serviceBookingIndex + 1)
             ];
-
-            console.log(`individualBooking.customerIndividualServiceBookingList ${serviceBookingIndex}`, individualBooking.customerIndividualServiceBookingList)
         }
     }
 
@@ -113,6 +115,7 @@
         // All tokens must match the start of at least one label token
         return tokens.every(token => labelTokens.some(labelToken => labelToken.startsWith(token)));
     }
+
 </script>
 
 <div class="max-w-[250px]">
