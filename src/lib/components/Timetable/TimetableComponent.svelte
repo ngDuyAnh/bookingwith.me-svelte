@@ -1004,7 +1004,7 @@
 </script>
 
 <div
-        class="relative flex flex-col items-center justify-center w-5/6 h-auto mx-auto my-2 overflow-x-auto space-y-1"
+        class="relative flex flex-col items-center justify-center sm:w-5/6 w-11/12 h-auto mx-auto my-2 overflow-x-auto space-y-1"
 >
     <div
             class="flex sm:flex-row flex-col left-0 inline-block h-fit sm:space-y-0 space-y-1 items-center justify-evenly w-full"

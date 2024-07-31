@@ -143,12 +143,8 @@
                 {:else if item.groupItem}
                     <div class="space-y-0 text-inherit">
                         <div class="flex flex-row justify-between items-center text-sm">
-                            <span class="font-bold flex-grow text-wrap">
-                                {item.label}
-                            </span>
-                                                    <span class="font-extrabold flex-shrink-0 pl-3">
-                                ${item.value.serviceCost}
-                            </span>
+                            <span class="font-bold flex-grow text-wrap">{item.label}</span>
+                            <span class="font-extrabold flex-shrink-0 pl-3">${item.value.serviceCost}</span>
                         </div>
                         <div class="flex flex-row items-center text-left text-xs text-inherit">
                             <ClockOutline/> {item.value.serviceTimeLength} minutes
