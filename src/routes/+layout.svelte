@@ -37,7 +37,7 @@
 
     // Get the local timezone
     const localTimeZone = dayjs.tz.guess();
-    console.log("Your local timezone is:", localTimeZone);
+    console.info("Your local timezone is:", localTimeZone);
 </script>
 
 <div class="app h-dvh w-full">
