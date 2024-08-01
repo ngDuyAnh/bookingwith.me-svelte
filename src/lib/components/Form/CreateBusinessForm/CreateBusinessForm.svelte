@@ -158,36 +158,6 @@
     </div>
 
     <div class="form-group">
-        <label for="socialMediaLink">Social Media Link:</label>
-        <input type="text" id="socialMediaLink" bind:value={business.businessInfo.socialMediaLink} class="input-field">
-    </div>
-
-    <div class="form-group">
-        <label for="googleReviewLink">Google Review Link:</label>
-        <input type="text" id="googleReviewLink" bind:value={business.businessInfo.googleReviewLink} class="input-field" required>
-    </div>
-
-    <div class="form-group">
-        <label for="googleMapsLink">Google Maps Link:</label>
-        <input type="text" id="googleMapsLink" bind:value={business.businessInfo.googleMapsLink} class="input-field" required>
-    </div>
-
-    <div class="form-group">
-        <label for="googleEmbedMapLink">Google Embed Map Link:</label>
-        <input type="text" id="googleEmbedMapLink" bind:value={business.businessInfo.googleEmbedMapLink} class="input-field" required>
-    </div>
-
-    <div class="form-group">
-        <label for="googleMapsDirectionLink">Google Maps Direction Link:</label>
-        <input type="text" id="googleMapsDirectionLink" bind:value={business.businessInfo.googleMapsDirectionLink} class="input-field" required>
-    </div>
-
-    <div class="form-group">
-        <label for="active">Active Flag:</label>
-        <input type="checkbox" id="active" bind:checked={business.businessInfo.active} class="input-field">
-    </div>
-
-    <div class="form-group">
         <label for="scheduleManagement">Schedule Management Flag:</label>
         <Select items={scheduleManagementOptions} bind:value={business.businessInfo.scheduleManagement} required/>
     </div>
