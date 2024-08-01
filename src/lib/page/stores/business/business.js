@@ -2,6 +2,8 @@ import {derived, get, writable} from 'svelte/store';
 import {Service, ServiceGroup} from "$lib/api/initialize_functions/Business.js";
 import {initializeBusiness} from "$lib/api/api_server/api_endpoints/business-portal/api.js";
 import dayjs from "dayjs";
+import utc from "dayjs/plugin/utc";
+import timezone from "dayjs/plugin/timezone"
 import {formatToDate, formatToTime} from "$lib/application/Formatter.js";
 
 export const business = writable(undefined);
@@ -32,6 +34,13 @@ export function getEmployee(id) {
 
 
 export const now = derived(business, ($business, set) => {
+
+    // Coordinated Universal Time
+    // Enables converting local time to UTC
+    dayjs.extend(utc);
+
+    // Working with different time zones
+    dayjs.extend(timezone);
 
     // Initialize based on the business timezone
     // Use local timezone as alternative
