@@ -11,6 +11,19 @@ export const customerBookingLobbyComponent = writable({
     selectedAvailability: undefined
 });
 
+export function resetCustomerBookingLobbyComponent()
+{
+    customerBookingLobbyComponent.set({
+        // Flag for fetching booking time availability
+        pleaseFetchAvailability: false,
+
+        // For submitting customer booking
+        bookingDate: today(),
+        currentTimeString: undefined,
+        selectedAvailability: undefined
+    });
+}
+
 export function handleNewCustomerBookingLobbyComponent()
 {
     customerBookingLobbyComponent.set({

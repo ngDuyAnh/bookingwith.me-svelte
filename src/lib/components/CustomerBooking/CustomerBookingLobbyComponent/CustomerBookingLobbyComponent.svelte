@@ -14,7 +14,7 @@
     import {
         customerBookingLobbyComponent,
         handleNewCustomerBookingLobbyComponent,
-        pleaseFetchAvailability
+        pleaseFetchAvailability, resetCustomerBookingLobbyComponent
     } from "$lib/components/CustomerBooking/CustomerBookingLobbyComponent/store/customerBookingLobbyComponent.js";
     import {tick} from "svelte";
 
@@ -104,6 +104,9 @@
             ...CustomerBooking(),
             customerIndividualBookingList: [CustomerIndividualBooking()]
         };
+
+        // Reset the store
+        resetCustomerBookingLobbyComponent();
     }
 
     const hoverDiv = "border-2 border-transparent hover:border-gray-300 transition-colors duration-300 rounded"

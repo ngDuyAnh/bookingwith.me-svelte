@@ -9,7 +9,7 @@
         isEditCustomerBooking
     } from "$lib/components/Modal/CustomerBookingLobbyModal/stores/customerBookingLobbyModal.js";
     import {
-        customerBookingLobbyComponent
+        customerBookingLobbyComponent, resetCustomerBookingLobbyComponent
     } from "$lib/components/CustomerBooking/CustomerBookingLobbyComponent/store/customerBookingLobbyComponent.js";
     import {isToday} from "$lib/page/stores/business/business.js";
 
@@ -37,6 +37,9 @@
     let wasOpen = $customerBookingLobbyModal.open;
     $: if ($customerBookingLobbyModal.open && !wasOpen) {
         wasOpen = true;
+
+        // Reset store
+        resetCustomerBookingLobbyComponent();
 
         // Reset to show the header and footer
         showHeaderAndFooter = true;
