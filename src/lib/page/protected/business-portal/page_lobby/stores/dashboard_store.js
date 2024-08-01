@@ -7,6 +7,8 @@ import {
     handleCustomerBookingClickUpdate
 } from "$lib/components/Modal/CustomerBookingClickModal/stores/customerBookingClickModal.js";
 
+export const dragStartedStore = writable(null);
+
 export const customerBookingQueueList = writable([[],[],[],[]]);
 
 export async function fetchCustomerBookingQueueList()

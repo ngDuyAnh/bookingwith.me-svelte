@@ -27,7 +27,6 @@
         }
         // Disable manager access
         else {
-            getPassword=false;
             disableManagerAccess();
         }
     }

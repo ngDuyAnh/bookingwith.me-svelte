@@ -12,6 +12,18 @@
         moveToLobby,
         moveToServicing
     } from "$lib/components/Modal/CustomerBookingClickModal/handle_customer_booking_state.js";
+    import {
+        disableManagerAccess,
+        managerAccess
+    } from "$lib/components/Modal/GetManagerPasswordModal/stores/managerAccess.js";
+    import {
+        getManagerPasswordModal,
+        handleOpenGetManagerPasswordModal
+    } from "$lib/components/Modal/GetManagerPasswordModal/stores/getManagerPasswordModal.js";
+    import GetManagerPasswordModal from "$lib/components/Modal/GetManagerPasswordModal/GetManagerPasswordModal.svelte";
+    import {
+        fetchCustomerBookingQueueList,dragStartedStore
+    } from "$lib/page/protected/business-portal/page_lobby/stores/dashboard_store.js";
 
     export let flipDurationMs;
     export let customerBookingList;
@@ -20,21 +32,42 @@
     export let moveFinished;
     export let droppedIntoID;
 
+    function handleManagerAccess() {
+        // Request manager access
+        if (!$managerAccess) {
+            handleOpenGetManagerPasswordModal();
+        }
+        // Disable manager access
+        else {
+            disableManagerAccess();
+        }
+    }
+
+    let getManagerAccess = false;
+    let bookingToMoveToAppointment=null;
+
     function handleSort(id, e) {
+
+        if (e.detail.info.trigger === "dragStarted") {
+            dragStartedStore.set(id)
+        } else
         if (e.detail.info.trigger === "droppedIntoZone") {
+
 
             dragDisabled = true;
             droppedIntoID = columnID;
 
             const custBooking = e.detail.items.find(booking => booking.id === e.detail.info.id);
 
-            if (custBooking) {
+            if (id === $dragStartedStore) {
+                moveFinished = true;
+
+            } else if (custBooking)
+            {
                 if (id === 0) {
-                    (async () => {
-                        await moveToAppointment(custBooking).then(() => {
-                            moveFinished = true;
-                        });
-                    })();
+                    getManagerAccess = true;
+                    handleManagerAccess();
+                    bookingToMoveToAppointment = custBooking;
                 } else if (id === 1) {
                     (async () => {
                         await moveToLobby(custBooking).then(() => {
@@ -58,10 +91,46 @@
                 console.log("Can't find booking");
             }
 
+            dragStartedStore.set(null);
         }
+
         customerBookingList = e.detail.items;
     }
 
+    // manager access given so move to appointment
+    $:if(getManagerAccess && $managerAccess)
+    {
+        (async () => {
+            await moveToAppointment(bookingToMoveToAppointment).then(() => {
+                moveFinished = true;
+                getManagerAccess=false;
+                disableManagerAccess();
+                bookingToMoveToAppointment=null;
+            });
+        })();
+    }
+
+    let wasOpen = false;
+
+    // modal was open
+    $:if ($getManagerPasswordModal.open)
+    {
+        wasOpen=true;
+    }
+
+    // modal was open but manager access was not given
+    $:if (getManagerAccess && wasOpen && !$getManagerPasswordModal.open)
+    {
+        moveFinished = true;
+        wasOpen=false;
+        getManagerAccess=false;
+        disableManagerAccess();
+        bookingToMoveToAppointment=null;
+
+        (async () => {
+            await fetchCustomerBookingQueueList();
+        })();
+    }
 
 </script>
 <div class="relative flex-grow">
@@ -86,3 +155,8 @@
         {/each}
     </ul>
 </div>
+
+{#if $getManagerPasswordModal.open}
+    <!--Grant manager access-->
+    <GetManagerPasswordModal/>
+{/if}
