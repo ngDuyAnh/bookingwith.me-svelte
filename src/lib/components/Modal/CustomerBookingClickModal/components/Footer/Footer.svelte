@@ -257,7 +257,7 @@
                     on:click={handleNoShowClick}>No show
             </Button>
             {#if customerBooking.noShow}
-                <Tooltip>Move to servicing to undo</Tooltip>
+            <Tooltip placement="top-end">Move to servicing to undo</Tooltip>
             {/if}
         {:else}
             {#if indicateSendToCompleted}
