@@ -47,7 +47,7 @@
     let bookingToMoveToAppointment=null;
 
     function handleSort(id, e) {
-
+        let noColumnChange=false;
         if (e.detail.info.trigger === "dragStarted") {
             dragStartedStore.set(id)
         } else
@@ -61,6 +61,7 @@
 
             if (id === $dragStartedStore) {
                 moveFinished = true;
+                noColumnChange=true;
 
             } else if (custBooking)
             {
@@ -95,6 +96,14 @@
         }
 
         customerBookingList = e.detail.items;
+
+        if(noColumnChange)
+        {
+            (async () => {
+                await fetchCustomerBookingQueueList();
+            })();
+        }
+
     }
 
     // manager access given so move to appointment
