@@ -1,6 +1,7 @@
 <script>
     import dayjs from "dayjs";
     import {formatToTime, formatToTimeAm} from "$lib/application/Formatter.js";
+    import {Tooltip} from "flowbite-svelte";
 
     export let customerBooking;
 
@@ -20,11 +21,12 @@
         {/if}
 
         {#if customerBooking.smsConfirmation == true}
-            <svg class="w-[18px] h-[18px] text-green-400 " aria-hidden="true" xmlns="http://www.w3.org/2000/svg"
+            <svg id="confirmationTooltip{customerBooking.id}"class="w-[18px] h-[18px] text-green-400 " aria-hidden="true" xmlns="http://www.w3.org/2000/svg"
                      width="24" height="24" fill="none" viewBox="0 0 24 24">
               <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                     d="M5 11.917 9.724 16.5 19 7.5"/>
             </svg>
+            <Tooltip triggeredBy="#confirmationTooltip{customerBooking.id}">Verified Phone Number</Tooltip>
         {/if}
     </span>
 
