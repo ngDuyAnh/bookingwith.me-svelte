@@ -34,25 +34,24 @@
         customerBooking.bookingState === CustomerBookingState.COMPLETED &&
         !customerBooking.smsReviewReminderSent) {
 
-            ableToSendSmsReviewReminder = false;
+        ableToSendSmsReviewReminder = false;
 
-            checkAbleToSendReviewReminder(customerBooking)
-                .then(response => {
-                    ableToSendSmsReviewReminder = checkAbleToSendSmsReviewReminder(response);
-                    //console.log(`customerBooking.smsReviewReminderSent ${customerBooking.smsReviewReminderSent} ableToSendSmsReviewReminder ${ableToSendSmsReviewReminder}, allowToSendReviewReminderSMS ${allowToSendReviewReminderSMS}, moreThan6Months ${moreThan6Months}`)
-                })
-                .catch(error => {
-                    console.error('Failed at checkAbleToSendReviewReminder():', error);
-                });
-    }
-    else {
+        checkAbleToSendReviewReminder(customerBooking)
+            .then(response => {
+                ableToSendSmsReviewReminder = checkAbleToSendSmsReviewReminder(response);
+                //console.log(`customerBooking.smsReviewReminderSent ${customerBooking.smsReviewReminderSent} ableToSendSmsReviewReminder ${ableToSendSmsReviewReminder}, allowToSendReviewReminderSMS ${allowToSendReviewReminderSMS}, moreThan6Months ${moreThan6Months}`)
+            })
+            .catch(error => {
+                console.error('Failed at checkAbleToSendReviewReminder():', error);
+            });
+    } else {
         ableToSendSmsReviewReminder = false;
     }
 
 
-
     // Send appointment reminder
     let sendingAppointmentReminder = false;
+
     async function handleSendSmsAppointment() {
         if (!customerBooking.smsAppointmentSent) {
 
@@ -74,6 +73,7 @@
     }
 
     let sendingLobbyReminder = false;
+
     async function handleSendSmsLobby() {
         if (!customerBooking.smsAppointmentSent) {
 
@@ -162,6 +162,7 @@
             </Button>
             <Tooltip>Edit booking</Tooltip>
 
+
         {:else}
             <Button disabled={sendingReviewReminder || !ableToSendSmsReviewReminder || customerBooking.smsReviewReminderSent || customerBooking.noShow}
                     color="light"
@@ -224,51 +225,55 @@
     </div>
 
     <!--Right options-->
-    <div class="content-center space-x-2">
-        <span class="text-gray-700 font-bold">Move to:</span>
+    <div class="flex flex-row justify-center items-center">
+        <span class="text-gray-700 font-bold whitespace-nowrap">Move to:</span>
+        <div class="sm:space-x-2 flex flex-wrap justify-center items-center gap-2">
+            <div class="flex flex-wrap gap-1 w-full">
 
-        <!--Move to lobby-->
-        {#if customerBooking.bookingState < CustomerBookingState.LOBBY}
-            <Button class="bg-orange-500 hover:bg-orange-700 text-white font-bold py-2 px-4 rounded"
-                    on:click={() => moveToLobby(customerBooking)}>Lobby
-            </Button>
-        {/if}
+                <!--Move to lobby-->
+                {#if customerBooking.bookingState < CustomerBookingState.LOBBY}
+                    <Button class="bg-orange-500 hover:bg-orange-700 text-white font-bold py-2 px-4 rounded flex-grow"
+                            on:click={() => moveToLobby(customerBooking)}>Lobby
+                    </Button>
+                {/if}
 
-        <!--Move to servicing-->
-        {#if customerBooking.bookingState !== CustomerBookingState.SERVICING}
-            <Button class="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded"
-                    on:click={() => moveToServicing(customerBooking)}>Servicing
-            </Button>
-        {/if}
+                <!--Move to servicing-->
+                {#if customerBooking.bookingState !== CustomerBookingState.SERVICING}
+                    <Button class="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded flex-grow"
+                            on:click={() => moveToServicing(customerBooking)}>Servicing
+                    </Button>
+                {/if}
 
-        <!--Cancel the appointment-->
-        {#if customerBooking.bookingState === CustomerBookingState.APPOINTMENT}
-            <Button disabled={customerBooking.deleted}
-                    class="bg-red-400 hover:bg-red-700 text-white font-bold py-2 px-4 rounded"
-                    on:click={handleDeleteClick}>Delete
-            </Button>
-        {/if}
+                <!--Cancel the appointment-->
+                {#if customerBooking.bookingState === CustomerBookingState.APPOINTMENT}
+                    <Button disabled={customerBooking.deleted}
+                            class="bg-red-400 hover:bg-red-700 text-white font-bold py-2 px-4 rounded flex-grow"
+                            on:click={handleDeleteClick}>Delete
+                    </Button>
+                {/if}
 
-        <!--No show or send customer booking to completed-->
-        {#if customerBooking.bookingState === CustomerBookingState.APPOINTMENT ||
+                <!--No show or send customer booking to completed-->
+                {#if customerBooking.bookingState === CustomerBookingState.APPOINTMENT ||
                 customerBooking.bookingState === CustomerBookingState.COMPLETED}
-            <Button disabled={customerBooking.noShow}
-                    class="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded"
-                    on:click={handleNoShowClick}>No show
-            </Button>
-            {#if customerBooking.noShow}
-            <Tooltip placement="top-end">Move to servicing to undo</Tooltip>
-            {/if}
-        {:else}
-            {#if indicateSendToCompleted}
-                <Button class="animate-pulse bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded"
-                        on:click={handleCompleteClick}>Complete
-                </Button>
-            {:else}
-                <Button class="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded"
-                        on:click={handleCompleteClick}>Complete
-                </Button>
-            {/if}
-        {/if}
+                    <Button disabled={customerBooking.noShow}
+                            class="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded flex-grow"
+                            on:click={handleNoShowClick}>No show
+                    </Button>
+                    {#if customerBooking.noShow}
+                        <Tooltip placement="top-end">Move to servicing to undo</Tooltip>
+                    {/if}
+                {:else}
+                    {#if indicateSendToCompleted}
+                        <Button class="animate-pulse bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded flex-grow"
+                                on:click={handleCompleteClick}>Complete
+                        </Button>
+                    {:else}
+                        <Button class="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded flex-grow"
+                                on:click={handleCompleteClick}>Complete
+                        </Button>
+                    {/if}
+                {/if}
+            </div>
+        </div>
     </div>
 </div>
