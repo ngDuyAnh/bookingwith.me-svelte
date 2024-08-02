@@ -179,6 +179,6 @@
     </div>
     <div class="flex justify-between">
         <span class="text-sm font-medium text-gray-700">Amount Due:</span>
-        <span class="text-sm font-medium text-gray-900" class:!text-red-500={parseFloat(amountDue) !== 0}>${parseFloat(amountDue).toFixed(2)}</span>
+        <span class="text-sm font-medium text-green-500" class:!text-red-500={parseFloat(amountDue) !== 0}>${parseFloat(amountDue).toFixed(2)}</span>
     </div>
 </div>
