@@ -17,9 +17,7 @@
     $: netSubtotal = subtotal - discount;
 
     $: tax = netSubtotal * $business.businessInfo.taxRate;
-    $: grossTotal = netSubtotal + tax;
-
-    console.log("$business.businessInfo.taxRate", $business.businessInfo.taxRate)
+    $: subtotalWithTax = netSubtotal + tax;
 
     let tip = 0;
 
@@ -154,52 +152,49 @@
             <td colspan="2" class="px-6 py-4 whitespace-nowrap text-sm text-gray-900"></td>
         </tr>
     </tbody>
-
-    <!--Cost summary-->
-    <div>
-        <h2 class="text-lg font-medium text-gray-700 mb-4">Cost Summary</h2>
-        <div class="flex justify-between mb-2">
-            <span class="text-sm font-medium text-gray-700">Subtotal:</span>
-            <span class="text-sm font-medium text-gray-900">${subtotal}</span>
-        </div>
-        <div class="flex justify-between mb-2">
-            <span class="text-sm font-medium text-gray-700">Discount:</span>
-            <span class="text-sm font-medium text-gray-900">${discount}</span>
-        </div>
-        <div class="flex justify-between mb-2">
-            <span class="text-sm font-medium text-gray-700">Net Subtotal:</span>
-            <span class="text-sm font-medium text-gray-900">${netSubtotal}</span>
-        </div>
-        <div class="flex justify-between mb-2">
-            <span class="text-sm font-medium text-gray-700">Tax:</span>
-            <span class="text-sm font-medium text-gray-900">${tax}</span>
-        </div>
-        <div class="flex justify-between mb-2">
-            <span class="text-sm font-medium text-gray-700">Gross total:</span>
-            <span class="text-sm font-medium text-gray-900">${grossTotal}</span>
-        </div>
-
-        <div class="flex justify-between mb-2">
-            <span class="text-sm font-medium text-gray-700">Tip:</span>
-            <span class="text-sm font-medium text-gray-900">${tip}</span>
-        </div>
-        <div class="flex justify-between mb-2">
-            <span class="text-sm font-medium text-gray-700">Total:</span>
-            <span class="text-sm font-medium text-gray-900">${total}</span>
-        </div>
-        <div class="flex justify-between mb-2">
-            <span class="text-sm font-medium text-gray-700">Credit Card Payment:</span>
-            <span class="text-sm font-medium text-gray-900">${creditCardPayment}</span>
-        </div>
-        <div class="flex justify-between mb-2">
-            <span class="text-sm font-medium text-gray-700">Cash Payment:</span>
-            <span class="text-sm font-medium text-gray-900">${cashPayment}</span>
-        </div>
-        <div class="flex justify-between">
-            <span class="text-sm font-medium text-gray-700">Amount Due:</span>
-            <span class="text-sm font-medium text-gray-900">${amountDue}</span>
-        </div>
-    </div>
-
 </table>
 
+<!-- Cost Summary -->
+<div>
+    <h2 class="text-lg font-medium text-gray-700 mb-4">Cost Summary</h2>
+    <div class="flex justify-between mb-2">
+        <span class="text-sm font-medium text-gray-700">Subtotal:</span>
+        <span class="text-sm font-medium text-gray-900">${subtotal}</span>
+    </div>
+    <div class="flex justify-between mb-2">
+        <span class="text-sm font-medium text-gray-700">Discount:</span>
+        <span class="text-sm font-medium text-gray-900">${discount}</span>
+    </div>
+    <div class="flex justify-between mb-2">
+        <span class="text-sm font-medium text-gray-700">Net Subtotal:</span>
+        <span class="text-sm font-medium text-gray-900">${netSubtotal}</span>
+    </div>
+    <div class="flex justify-between mb-2">
+        <span class="text-sm font-medium text-gray-700">Tax:</span>
+        <span class="text-sm font-medium text-gray-900">${tax}</span>
+    </div>
+    <div class="flex justify-between mb-2">
+        <span class="text-sm font-medium text-gray-700">Subtotal with Tax:</span>
+        <span class="text-sm font-medium text-gray-900">${subtotalWithTax}</span>
+    </div>
+    <div class="flex justify-between mb-2">
+        <span class="text-sm font-medium text-gray-700">Tip:</span>
+        <span class="text-sm font-medium text-gray-900">${tip}</span>
+    </div>
+    <div class="flex justify-between mb-2">
+        <span class="text-sm font-medium text-gray-700">Total:</span>
+        <span class="text-sm font-medium text-gray-900">${total}</span>
+    </div>
+    <div class="flex justify-between mb-2">
+        <span class="text-sm font-medium text-gray-700">Credit Card Payment:</span>
+        <span class="text-sm font-medium text-gray-900">${creditCardPayment}</span>
+    </div>
+    <div class="flex justify-between mb-2">
+        <span class="text-sm font-medium text-gray-700">Cash Payment:</span>
+        <span class="text-sm font-medium text-gray-900">${cashPayment}</span>
+    </div>
+    <div class="flex justify-between">
+        <span class="text-sm font-medium text-gray-700">Amount Due:</span>
+        <span class="text-sm font-medium text-gray-900">${amountDue}</span>
+    </div>
+</div>
