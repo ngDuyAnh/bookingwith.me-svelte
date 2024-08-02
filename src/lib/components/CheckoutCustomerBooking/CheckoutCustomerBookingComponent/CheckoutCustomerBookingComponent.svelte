@@ -135,14 +135,6 @@
                 </td>
             </tr>
         {/each}
-
-        <!--Total row-->
-        <tr class="bg-gray-100">
-            <td colspan="2" class="text-right px-6 py-4 text-sm font-medium text-gray-900">Total:</td>
-            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">${customerBooking.totalCost}</td>
-            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">${customerBooking.totalDiscount}%</td>
-            <td colspan="2" class="px-6 py-4 whitespace-nowrap text-sm text-gray-900"></td>
-        </tr>
     </tbody>
 </table>
 
