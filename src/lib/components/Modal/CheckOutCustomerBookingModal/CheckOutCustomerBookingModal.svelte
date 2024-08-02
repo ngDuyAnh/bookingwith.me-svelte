@@ -57,8 +57,8 @@
         />
 
         <svelte:fragment slot="footer">
-            <Button type="submit" class="ml-auto">
-                Complete Booking
+            <Button form="checkoutForm" type="submit" class="ml-auto">
+                Checkout
             </Button>
         </svelte:fragment>
     </Modal>
