@@ -40,7 +40,9 @@ export function BusinessInformation() {
         "active": true,
         "scheduleManagement": BusinessScheduleManagement.NONE,
 
-        "stripeLastReportedDate": null
+        "stripeLastReportedDate": null,
+
+        "taxRate": 0.0
     };
 }
 
@@ -68,6 +70,10 @@ export function TestBusinessInformation() {
 
         "active": true,
         "scheduleManagement": BusinessScheduleManagement.NONE,
+
+        "stripeLastReportedDate": null,
+
+        "taxRate": 0.0
     };
 }
 
