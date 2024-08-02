@@ -14,18 +14,18 @@
 
     $: subtotal = customerBookingSubtotal(customerBooking);
     let discount = 0;
-    $: netSubtotal = subtotal - discount;
+    $: netSubtotal = (subtotal - discount).toFixed(2);
 
-    $: tax = netSubtotal * $business.businessInfo.taxRate;
-    $: subtotalWithTax = netSubtotal + tax;
+    $: tax = (netSubtotal * $business.businessInfo.taxRate).toFixed(2);
+    $: subtotalWithTax = (parseFloat(netSubtotal) + parseFloat(tax)).toFixed(2);
 
     let tip = 0;
 
-    $: total = subtotal - discount + tax + tip;
+    $: total = (parseFloat(subtotalWithTax) + parseFloat(tip)).toFixed(2);
 
     let creditCardPayment = 0;
     let cashPayment = 0;
-    $: amountDue = total - creditCardPayment - cashPayment;
+    $: amountDue = (parseFloat(total) - creditCardPayment - cashPayment).toFixed(2);
 
 
     export let submitCallback;
@@ -163,7 +163,7 @@
     </div>
     <div class="flex justify-between mb-2">
         <span class="text-sm font-medium text-gray-700">Discount:</span>
-        <span class="text-sm font-medium text-gray-900">${discount}</span>
+        <input type="number" bind:value={discount} class="text-sm font-medium text-gray-900 border rounded p-1 w-24" />
     </div>
     <div class="flex justify-between mb-2">
         <span class="text-sm font-medium text-gray-700">Net Subtotal:</span>
@@ -179,7 +179,7 @@
     </div>
     <div class="flex justify-between mb-2">
         <span class="text-sm font-medium text-gray-700">Tip:</span>
-        <span class="text-sm font-medium text-gray-900">${tip}</span>
+        <input type="number" bind:value={tip} class="text-sm font-medium text-gray-900 border rounded p-1 w-24" />
     </div>
     <div class="flex justify-between mb-2">
         <span class="text-sm font-medium text-gray-700">Total:</span>
@@ -187,14 +187,14 @@
     </div>
     <div class="flex justify-between mb-2">
         <span class="text-sm font-medium text-gray-700">Credit Card Payment:</span>
-        <span class="text-sm font-medium text-gray-900">${creditCardPayment}</span>
+        <input type="number" bind:value={creditCardPayment} class="text-sm font-medium text-gray-900 border rounded p-1 w-24" />
     </div>
     <div class="flex justify-between mb-2">
         <span class="text-sm font-medium text-gray-700">Cash Payment:</span>
-        <span class="text-sm font-medium text-gray-900">${cashPayment}</span>
+        <input type="number" bind:value={cashPayment} class="text-sm font-medium text-gray-900 border rounded p-1 w-24" />
     </div>
     <div class="flex justify-between">
         <span class="text-sm font-medium text-gray-700">Amount Due:</span>
-        <span class="text-sm font-medium text-gray-900">${amountDue}</span>
+        <span class="text-sm font-medium text-gray-900" class:!text-red-500={parseFloat(amountDue) !== 0}>${parseFloat(amountDue).toFixed(2)}</span>
     </div>
 </div>
