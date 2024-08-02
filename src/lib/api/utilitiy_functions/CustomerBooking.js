@@ -89,11 +89,13 @@ export function groupServiceBookingsByEmployee(serviceBookingList) {
 export function customerBookingSubtotal(customerBooking)
 {
     let subtotal = 0;
-    customerBooking.customerIndividualBookingList.forEach(individualBooking => {
-        individualBooking.customerIndividualServiceBookingList.forEach(serviceBooking => {
-            subtotal += serviceBookingCost(serviceBooking);
+    if(customerBooking) {
+        customerBooking.customerIndividualBookingList.forEach(individualBooking => {
+            individualBooking.customerIndividualServiceBookingList.forEach(serviceBooking => {
+                subtotal += serviceBookingCost(serviceBooking);
+            });
         });
-    });
+    }
 
     // Return
     return subtotal;
