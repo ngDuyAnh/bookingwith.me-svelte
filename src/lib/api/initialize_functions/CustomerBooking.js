@@ -79,7 +79,9 @@ export function CustomerBooking() {
 
         "customerBookingReview": null,
 
-        "customerIndividualBookingList": []
+        "customerIndividualBookingList": [],
+
+        "transaction": null
     };
 }
 
@@ -140,5 +142,18 @@ export function ServicingTicket() {
         "isFiller": false,
         "isOngoing": false,
         "isCompleted": false
+    };
+}
+
+export function Transaction()
+{
+    return {
+        "adjustment": 0,
+        "discount": 0,
+        "tip": 0,
+        "creditCardPayment": 0,
+        "cashPayment": 0,
+        "giftCardUsed": null,
+        "giftCardPayment": 0
     };
 }

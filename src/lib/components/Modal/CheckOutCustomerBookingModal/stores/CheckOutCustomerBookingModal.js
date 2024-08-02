@@ -1,4 +1,5 @@
 import {get, writable} from 'svelte/store';
+import {Transaction} from "$lib/api/initialize_functions/CustomerBooking.js";
 
 export const checkoutCustomerBookingModal = writable({
     open: false,
@@ -8,10 +9,19 @@ export const checkoutCustomerBookingModal = writable({
 
 export function handleCheckoutCustomerBookingClick(customerBooking)
 {
+    // Cloned the customer booking
+    let clonedCustomerBooking = JSON.parse(JSON.stringify(customerBooking));
+
+    // Initialize with transaction if not existed
+    if (!clonedCustomerBooking.transaction)
+    {
+        clonedCustomerBooking.transaction = Transaction();
+    }
+
     checkoutCustomerBookingModal.set({
         open: true,
 
-        customerBooking: JSON.parse(JSON.stringify(customerBooking)),
+        customerBooking: clonedCustomerBooking
     });
 }
 
