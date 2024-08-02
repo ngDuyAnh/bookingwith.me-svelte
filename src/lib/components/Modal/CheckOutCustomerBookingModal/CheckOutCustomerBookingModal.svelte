@@ -14,22 +14,13 @@
     } from "$lib/components/Modal/CheckOutCustomerBookingModal/stores/CheckOutCustomerBookingModal.js";
     import CheckoutCustomerBookingComponent
         from "$lib/components/CheckoutCustomerBooking/CheckoutCustomerBookingComponent/CheckoutCustomerBookingComponent.svelte";
+    import {customerBookingSubtotal} from "$lib/api/utilitiy_functions/CustomerBooking.js";
+    import {business} from "$lib/page/stores/business/business.js";
 
-    let totalServiceCost = 0;
-    let totalGuests = 0;
-
-    // Calculate the total number of guest and service cost for the header
-    $:if ($customerBookingLobbyModal.customerBooking) {
-        totalServiceCost = 0;
-        totalGuests = 0;
-
-        $customerBookingLobbyModal.customerBooking.customerIndividualBookingList.forEach(individualBooking => {
-            totalGuests += 1;
-            individualBooking.customerIndividualServiceBookingList.forEach(booking => {
-                totalServiceCost += booking.service.serviceCost;
-            });
-        })
-    }
+    $: subtotal = customerBookingSubtotal($customerBookingLobbyModal.customerBooking);
+    let discount = 0;
+    $: tax = (subtotal - discount) * $business.businessInfo.taxRate;
+    $: total = subtotal - discount + tax;
 
     let focusIndividualColumnIndex = 1;
     let focusDualColumnIndex = 1;

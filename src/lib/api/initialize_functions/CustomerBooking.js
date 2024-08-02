@@ -105,6 +105,8 @@ export function CustomerIndividualServiceBooking() {
         "startTime": null,
         "servicingDuration": null,
 
+        "serviceCostAdjusted": null,
+
         "servicingTicketList": []
     };
 }
