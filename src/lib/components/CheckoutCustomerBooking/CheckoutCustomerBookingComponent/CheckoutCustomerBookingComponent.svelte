@@ -143,11 +143,25 @@
         </div>
         <div class="flex justify-between mb-2">
             <span class="text-sm font-medium text-gray-700">Adjustment:</span>
-            <input type="number" bind:value={customerBooking.transaction.adjustment} class="text-sm font-medium text-gray-900 border rounded p-1 w-24" />
+            <div class="relative">
+                <span class="absolute left-1 top-1 z-20">$</span>
+                <input
+                        type="number"
+                        bind:value={customerBooking.transaction.adjustment}
+                        class="pl-5 pr-1 py-1 w-24 text-sm font-medium text-gray-900 border rounded"
+                />
+            </div>
         </div>
         <div class="flex justify-between mb-2">
             <span class="text-sm font-medium text-gray-700">Discount:</span>
-            <input type="number" bind:value={customerBooking.transaction.discount} class="text-sm font-medium text-gray-900 border rounded p-1 w-24" />
+            <div class="relative">
+                <span class="absolute left-1 top-1 z-20">$</span>
+                <input
+                        type="number"
+                        bind:value={customerBooking.transaction.discount}
+                        class="pl-5 pr-1 py-1 w-24 text-sm font-medium text-gray-900 border rounded"
+                />
+            </div>
         </div>
         <div class="flex justify-between mb-2">
             <span class="text-sm font-medium text-gray-700">Net Subtotal:</span>
@@ -163,7 +177,14 @@
         </div>
         <div class="flex justify-between mb-2">
             <span class="text-sm font-medium text-gray-700">Tip:</span>
-            <input type="number" bind:value={customerBooking.transaction.tip} class="text-sm font-medium text-gray-900 border rounded p-1 w-24" />
+            <div class="relative">
+                <span class="absolute left-1 top-1 z-20">$</span>
+                <input
+                        type="number"
+                        bind:value={customerBooking.transaction.tip}
+                        class="pl-5 pr-1 py-1 w-24 text-sm font-medium text-gray-900 border rounded"
+                />
+            </div>
         </div>
         <div class="flex justify-between mb-2">
             <span class="text-sm font-medium text-gray-700">Total:</span>
@@ -171,11 +192,25 @@
         </div>
         <div class="flex justify-between mb-2">
             <span class="text-sm font-medium text-gray-700">Credit Card Payment:</span>
-            <input type="number" bind:value={customerBooking.transaction.creditCardPayment} class="text-sm font-medium text-gray-900 border rounded p-1 w-24" />
+            <div class="relative">
+                <span class="absolute left-1 top-1 z-20">$</span>
+                <input
+                        type="number"
+                        bind:value={customerBooking.transaction.creditCardPayment}
+                        class="pl-5 pr-1 py-1 w-24 text-sm font-medium text-gray-900 border rounded"
+                />
+            </div>
         </div>
         <div class="flex justify-between mb-2">
             <span class="text-sm font-medium text-gray-700">Cash Payment:</span>
-            <input type="number" bind:value={customerBooking.transaction.cashPayment} class="text-sm font-medium text-gray-900 border rounded p-1 w-24" />
+            <div class="relative">
+                <span class="absolute left-1 top-1 z-20">$</span>
+                <input
+                        type="number"
+                        bind:value={customerBooking.transaction.cashPayment}
+                        class="pl-5 pr-1 py-1 w-24 text-sm font-medium text-gray-900 border rounded"
+                />
+            </div>
         </div>
         <div class="flex justify-between">
             <span class="text-sm font-medium text-gray-700">Amount Due:</span>
