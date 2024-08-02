@@ -21,6 +21,9 @@
     import {
         handleEditCustomerBookingLobbyModal
     } from "$lib/components/Modal/CustomerBookingLobbyModal/stores/customerBookingLobbyModal.js";
+    import {
+        handleCheckoutCustomerBookingClick
+    } from "$lib/components/Modal/CheckOutCustomerBookingModal/stores/CheckOutCustomerBookingModal.js";
 
     export let customerBooking;
 
@@ -114,11 +117,12 @@
         }
     }
 
-    async function handleCompleteClick() {
-        if (confirm("Are you sure you want to mark this as complete?")) {
-            await moveToCompleted(customerBooking);
-        }
-    }
+    // async function handleCompleteClick() {
+    //     handleCheckoutCustomerBookingClick();
+    //     // if (confirm("Are you sure you want to mark this as complete?")) {
+    //     //     await moveToCompleted(customerBooking);
+    //     // }
+    // }
 
     function handleDeleteClick() {
         if (confirm("Are you sure you want to delete this appointment?")) {
@@ -265,11 +269,11 @@
                 {:else}
                     {#if indicateSendToCompleted}
                         <Button class="animate-pulse bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded flex-grow"
-                                on:click={handleCompleteClick}>Complete
+                                on:click={()=>{handleCheckoutCustomerBookingClick(customerBooking)}}>Checkout
                         </Button>
                     {:else}
                         <Button class="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded flex-grow"
-                                on:click={handleCompleteClick}>Complete
+                                on:click={()=>{handleCheckoutCustomerBookingClick(customerBooking)}}>Checkout
                         </Button>
                     {/if}
                 {/if}
