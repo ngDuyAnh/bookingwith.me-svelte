@@ -22,37 +22,10 @@
     $: tax = (subtotal - discount) * $business.businessInfo.taxRate;
     $: total = subtotal - discount + tax;
 
-    let focusIndividualColumnIndex = 1;
-    let focusDualColumnIndex = 1;
-    let showHeaderAndFooter = true;
-
-    // Reset
-    let wasOpen = $customerBookingLobbyModal.open;
-    $: if ($customerBookingLobbyModal.open && !wasOpen) {
-        wasOpen = true;
-
-        // Reset store
-        resetCustomerBookingLobbyComponent();
-
-        // Reset to show the header and footer
-        showHeaderAndFooter = true;
-        focusIndividualColumnIndex = 1;
-        focusDualColumnIndex = 1;
-    } else if (!$customerBookingLobbyModal.open) {
-        wasOpen = false;
-    }
-
-    function submitCallback(hideHeaderAndFooter) {
-        showHeaderAndFooter = !hideHeaderAndFooter;
-        focusIndividualColumnIndex = 1;
-        focusDualColumnIndex = 1;
-    }
 
 
-    let showCreateButton = true;
 
-    $: showCreateButton = focusIndividualColumnIndex === 4 || focusDualColumnIndex === 2;
-    $: buttonKey = focusIndividualColumnIndex + focusDualColumnIndex;
+
 
 
 </script>
