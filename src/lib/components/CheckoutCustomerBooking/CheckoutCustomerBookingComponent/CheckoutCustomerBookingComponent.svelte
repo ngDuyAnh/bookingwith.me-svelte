@@ -4,6 +4,7 @@
     import {customerBookingSubtotal} from "$lib/api/utility_functions/CustomerBooking.js";
     import {business} from "$lib/page/stores/business/business.js";
     import {Tooltip} from "flowbite-svelte";
+    import {moveToCompleted} from "$lib/components/Modal/CustomerBookingClickModal/handle_customer_booking_state.js";
 
     export let customerBooking;
 
@@ -30,32 +31,20 @@
 
     let timeoutId = null;
 
-    function submitCheckout() {
-        //
-        // successfulSubmit = true;
-        //
-        // // Hide the modal header and footer
-        // if (submitCallback) {
-        //     submitCallback(successfulSubmit);
-        // }
-        //
-        // console.log("submitSuccessful()", customerBooking)
-        //
-        // // If it is not edit customer booking
-        // // Reset back to create new customer booking
-        // handleNewCustomerBookingLobbyComponent();
-        // if (customerBooking.id === -1) {
-        //     if (timeoutId !== null) {
-        //         clearTimeout(timeoutId);
-        //     }
-        //
-        //     // Call second function after 2 seconds
-        //     timeoutId = setTimeout(resetBooking, 1000);
-        // }
+    async function submitCheckout()
+    {
+        console.log("submitCheckout() customerBooking", customerBooking);
 
-
-
-        console.log("Submit checkout here")
+        // Amount due must be zero to be a valid transaction
+        if (parseFloat(amountDue) === 0.0)
+        {
+            // Submit the transaction and move it to completed
+            await moveToCompleted(customerBooking);
+        }
+        else
+        {
+            alert("Amount due is not zero.")
+        }
     }
 
     // Second function to be called after a delay to get back to the create page
@@ -147,6 +136,7 @@
                 <span class="absolute left-1 top-1 z-20">$</span>
                 <input
                         type="number"
+                        step=".01"
                         bind:value={subtotal}
                         class="pl-5 pr-1 py-1 w-24 text-sm font-medium text-gray-900 border rounded"
                 />
@@ -158,6 +148,7 @@
                 <span class="absolute left-1 top-1 z-20">$</span>
                 <input
                         type="number"
+                        step=".01"
                         bind:value={customerBooking.transaction.discount}
                         class="pl-5 pr-1 py-1 w-24 text-sm font-medium text-gray-900 border rounded"
                 />
@@ -181,6 +172,7 @@
                 <span class="absolute left-1 top-1 z-20">$</span>
                 <input
                         type="number"
+                        step=".01"
                         bind:value={customerBooking.transaction.tip}
                         class="pl-5 pr-1 py-1 w-24 text-sm font-medium text-gray-900 border rounded"
                 />
@@ -196,6 +188,7 @@
                 <span class="absolute left-1 top-1 z-20">$</span>
                 <input
                         type="number"
+                        step=".01"
                         bind:value={customerBooking.transaction.creditCardPayment}
                         class="pl-5 pr-1 py-1 w-24 text-sm font-medium text-gray-900 border rounded"
                 />
@@ -207,6 +200,7 @@
                 <span class="absolute left-1 top-1 z-20">$</span>
                 <input
                         type="number"
+                        step=".01"
                         bind:value={customerBooking.transaction.cashPayment}
                         class="pl-5 pr-1 py-1 w-24 text-sm font-medium text-gray-900 border rounded"
                 />

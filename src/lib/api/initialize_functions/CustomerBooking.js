@@ -148,12 +148,12 @@ export function ServicingTicket() {
 export function Transaction()
 {
     return {
-        "adjustment": 0,
-        "discount": 0,
-        "tip": 0,
-        "creditCardPayment": 0,
-        "cashPayment": 0,
+        "adjustment": 0.0,
+        "discount": 0.0,
+        "tip": 0.0,
+        "creditCardPayment": 0.0,
+        "cashPayment": 0.0,
         "giftCardUsed": null,
-        "giftCardPayment": 0
+        "giftCardPayment": 0.0
     };
 }
