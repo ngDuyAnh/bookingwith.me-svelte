@@ -118,6 +118,7 @@
                             <div class="flex justify-between items-center pt-2">
                                 <!--Service name-->
                                 <span class="w-32 truncate">{individualServiceBooking.service.serviceName}</span>
+                                <Tooltip>{individualServiceBooking.service.serviceName}</Tooltip>
 
                                 <!--Cost-->
                                 <span class="w-32 truncate">${individualServiceBooking.serviceCostAdjusted}</span>
@@ -125,6 +126,7 @@
 
                                 <!--Employee worked on the service-->
                                 <span class="w-32 text-center truncate">{individualServiceBooking.assignedEmployee ? individualServiceBooking.assignedEmployee.employeeName : 'Not Recorded'}</span>
+                                <Tooltip>{individualServiceBooking.assignedEmployee ? individualServiceBooking.assignedEmployee.employeeName : 'Not Recorded'}</Tooltip>
                             </div>
                         {/each}
                     </div>
