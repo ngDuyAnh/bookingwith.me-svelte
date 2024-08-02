@@ -3,6 +3,7 @@
     import {formatPhoneNumber} from "$lib/application/FormatPhoneNumber.js";
     import {customerBookingSubtotal} from "$lib/api/utility_functions/CustomerBooking.js";
     import {business} from "$lib/page/stores/business/business.js";
+    import {Tooltip} from "flowbite-svelte";
 
     export let customerBooking;
 
@@ -142,10 +143,6 @@
         <h2 class="text-lg font-medium text-gray-700 mb-4">Cost Summary</h2>
         <div class="flex justify-between mb-2">
             <span class="text-sm font-medium text-gray-700">Subtotal:</span>
-            <span class="text-sm font-medium text-gray-900">${subtotal}</span>
-        </div>
-        <div class="flex justify-between mb-2">
-            <span class="text-sm font-medium text-gray-700">Adjustment:</span>
             <div class="relative">
                 <span class="absolute left-1 top-1 z-20">$</span>
                 <input
