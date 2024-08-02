@@ -1,19 +1,20 @@
 <script>
-    import {CustomerBooking, CustomerIndividualBooking} from "$lib/api/initialize_functions/CustomerBooking.js";
-    import {
-        handleNewCustomerBookingLobbyComponent,
-        resetCustomerBookingLobbyComponent
-    } from "$lib/components/CustomerBooking/CustomerBookingLobbyComponent/store/customerBookingLobbyComponent.js";
-    import {UserCircleSolid, UserSolid} from "flowbite-svelte-icons";
+    import {UserCircleSolid} from "flowbite-svelte-icons";
     import {formatPhoneNumber} from "$lib/application/FormatPhoneNumber.js";
-    import {Tooltip} from "flowbite-svelte";
     import {customerBookingSubtotal} from "$lib/api/utility_functions/CustomerBooking.js";
     import {business} from "$lib/page/stores/business/business.js";
 
     export let customerBooking;
 
-    $: subtotal = customerBookingSubtotal(customerBooking);
-    $: netSubtotal = (subtotal + customerBooking.transaction.adjustment - customerBooking.transaction.discount).toFixed(2);
+    // Display subtotal is different because it is adjusted
+    // Update the adjusted on changes to the display subtotal
+    let subtotal = customerBookingSubtotal(customerBooking) + customerBooking.transaction.adjustment;
+    $: if (subtotal !== customerBookingSubtotal(customerBooking) + customerBooking.transaction.adjustment)
+    {
+        customerBooking.transaction.adjustment = subtotal - customerBookingSubtotal(customerBooking);
+    }
+
+    $: netSubtotal = (subtotal - customerBooking.transaction.discount).toFixed(2);
 
     $: tax = (netSubtotal * $business.businessInfo.taxRate).toFixed(2);
     $: subtotalWithTax = (parseFloat(netSubtotal) + parseFloat(tax)).toFixed(2);
@@ -114,7 +115,7 @@
                 </td>
                 <td colspan="3" class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
                     <div class="space-y-2 divide-y divide-gray-300">
-                        {#each customerIndividualBookingList.customerIndividualServiceBookingList as individualServiceBooking, ind (individualServiceBooking.serviceBookingID)}
+                        {#each customerIndividualBookingList.customerIndividualServiceBookingList as individualServiceBooking (individualServiceBooking.serviceBookingID)}
                             <div class="flex justify-between items-center pt-2">
                                 <!--Service name-->
                                 <span class="w-32 truncate">{individualServiceBooking.service.serviceName}</span>
@@ -139,11 +140,7 @@
         <h2 class="text-lg font-medium text-gray-700 mb-4">Cost Summary</h2>
         <div class="flex justify-between mb-2">
             <span class="text-sm font-medium text-gray-700">Subtotal:</span>
-            <span class="text-sm font-medium text-gray-900">${subtotal}</span>
-        </div>
-        <div class="flex justify-between mb-2">
-            <span class="text-sm font-medium text-gray-700">Adjustment:</span>
-            <input type="number" bind:value={customerBooking.transaction.adjustment} class="text-sm font-medium text-gray-900 border rounded p-1 w-24" />
+            <input type="number" bind:value={subtotal} class="text-sm font-medium text-gray-900 border rounded p-1 w-24" />
         </div>
         <div class="flex justify-between mb-2">
             <span class="text-sm font-medium text-gray-700">Discount:</span>
