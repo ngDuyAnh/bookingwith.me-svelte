@@ -1,5 +1,5 @@
 <script>
-    import {UserCircleSolid} from "flowbite-svelte-icons";
+    import {InfoCircleSolid, UserCircleSolid} from "flowbite-svelte-icons";
     import {formatPhoneNumber} from "$lib/application/FormatPhoneNumber.js";
     import {customerBookingSubtotal} from "$lib/api/utility_functions/CustomerBooking.js";
     import {business} from "$lib/page/stores/business/business.js";
@@ -80,16 +80,16 @@
 </script>
 
 <form id="checkoutForm" on:submit|preventDefault={submitCheckout} class="space-y-4 h-full overflow-x-auto">
-    <div bind:this={scrollContainer} class="scroll-container h-full">
+    <div bind:this={scrollContainer} class="scroll-container h-full space-y-1">
         <div class="cost-summary-wrapper flex justify-center w-full" style={cardStyle}>
-            <div class="flex flex-row items-center space-x-2 bg-gray-100 p-3 rounded-lg shadow mb-2 w-full">
+            <div class="flex flex-row items-center space-x-2 bg-gray-100 p-3 rounded-b-none rounded-lg  shadow w-full">
                 <UserCircleSolid class="h-6 w-6 text-blue-500"/>
                 <span class="font-medium text-gray-700">{customerBooking.customer.customerName}</span> <span
                     class="font-medium text-gray-700">{formatPhoneNumber(customerBooking.customer.phoneNumber) }</span>
             </div>
         </div>
 
-        <table class="table-fixed w-full">
+        <table class="table-fixed w-full border-[1px]">
             <thead class="bg-gray-50">
             <tr>
                 <th scope="col"
@@ -140,13 +140,13 @@
         </table>
 
         <!-- Cost Summary -->
-        <div class="cost-summary-wrapper w-full flex justify-center" style={cardStyle}>
-            <Card class="w-full" size="xl">
+        <div class="cost-summary-wrapper w-full flex justify-center mb-3" style={cardStyle}>
+            <Card class="w-full rounded-t-none" size="xl">
                 <h2 class="text-lg font-medium text-gray-700 mb-4">Cost Summary</h2>
                 <div class="flex justify-between mb-2">
                     <span class="text-sm font-medium text-gray-700">Subtotal:</span>
                     <div class="relative">
-                        <span class="absolute left-1 top-1 z-20">$</span>
+                        <span class="absolute left-1 top-1 z-[2]">$</span>
                         <input
                                 type="number"
                                 step=".01"
@@ -158,7 +158,7 @@
                 <div class="flex justify-between mb-2">
                     <span class="text-sm font-medium text-gray-700">Discount:</span>
                     <div class="relative">
-                        <span class="absolute left-1 top-1 z-20">$</span>
+                        <span class="absolute left-1 top-1 z-[2]">$</span>
                         <input
                                 type="number"
                                 step=".01"
@@ -167,8 +167,16 @@
                         />
                     </div>
                 </div>
-                <div class="flex justify-between mb-2">
-                    <span class="text-sm font-medium text-gray-700">Net Subtotal:</span>
+                <div class="flex justify-between mb-2 border-b-2">
+                    <div class="flex flex-row">
+                        <span class="text-sm font-medium text-gray-700">Net Subtotal</span>
+                        <InfoCircleSolid
+                                size="lg"
+                                id="netSubTotal"
+                                class="text-gray-400 hover:text-gray-900 dark:hover:text-white cursor-pointer ms-1"
+                        />
+                        <Tooltip triggerdBy="#netSubTotal" class="z-10">Net Subtotal = Subtotal - Discount</Tooltip>:
+                    </div>
                     <span class="text-sm font-medium text-gray-900">${netSubtotal}</span>
                 </div>
                 <div class="flex justify-between mb-2">
@@ -182,7 +190,7 @@
                 <div class="flex justify-between mb-2">
                     <span class="text-sm font-medium text-gray-700">Tip:</span>
                     <div class="relative">
-                        <span class="absolute left-1 top-1 z-20">$</span>
+                        <span class="absolute left-1 top-1 z-[2]">$</span>
                         <input
                                 type="number"
                                 step=".01"
@@ -191,14 +199,14 @@
                         />
                     </div>
                 </div>
-                <div class="flex justify-between mb-2">
+                <div class="flex justify-between mb-2 border-b-2">
                     <span class="text-sm font-medium text-gray-700">Total:</span>
                     <span class="text-sm font-medium text-gray-900">${total}</span>
                 </div>
                 <div class="flex justify-between mb-2">
                     <span class="text-sm font-medium text-gray-700">Credit Card Payment:</span>
                     <div class="relative">
-                        <span class="absolute left-1 top-1 z-20">$</span>
+                        <span class="absolute left-1 top-1 z-[2]">$</span>
                         <input
                                 type="number"
                                 step=".01"
@@ -210,7 +218,7 @@
                 <div class="flex justify-between mb-2">
                     <span class="text-sm font-medium text-gray-700">Cash Payment:</span>
                     <div class="relative">
-                        <span class="absolute left-1 top-1 z-20">$</span>
+                        <span class="absolute left-1 top-1 z-[2]">$</span>
                         <input
                                 type="number"
                                 step=".01"
@@ -242,3 +250,4 @@
         position: relative;
     }
 </style>
+
