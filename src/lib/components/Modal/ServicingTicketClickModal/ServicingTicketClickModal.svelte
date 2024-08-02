@@ -9,7 +9,7 @@
     } from "$lib/components/Modal/ServicingTicketClickModal/functions.js";
     import {
         findIndividualBookingFromCustomerBooking
-    } from "$lib/api/utilitiy_functions/CustomerBooking.js";
+    } from "$lib/api/utility_functions/CustomerBooking.js";
     import Footer from "$lib/components/Modal/CustomerBookingClickModal/components/Footer/Footer.svelte";
     import ServicingTicketInformation
         from "$lib/components/Modal/ServicingTicketClickModal/components/ServicingTicketInformation/ServicingTicketInformation.svelte";

@@ -8,7 +8,7 @@ import {
 } from "$lib/api/api_server/api_endpoints/customer-booking-portal/api.js";
 import {isPast, isToday, nowTime} from "$lib/page/stores/business/business.js";
 import {getBusinessID} from "$lib/page/stores/business/business.js";
-import {sanitizeCustomerBooking} from "$lib/api/utilitiy_functions/CustomerBooking.js";
+import {sanitizeCustomerBooking} from "$lib/api/utility_functions/CustomerBooking.js";
 import {
     moveToAppointment,
     moveToLobby

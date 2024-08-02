@@ -9,7 +9,7 @@ import {now, isToday} from "$lib/page/stores/business/business.js";
 import {
     getServiceBookingListWithBookedEmployeeFromCustomerBooking,
     groupServiceBookingsByEmployee, shortCustomerBookingID
-} from "$lib/api/utilitiy_functions/CustomerBooking.js";
+} from "$lib/api/utility_functions/CustomerBooking.js";
 import {PUBLIC_ORIGIN} from "$env/static/public";
 
 export async function sendSmsConfirmBookingSuccess(businessName, customerBooking) {

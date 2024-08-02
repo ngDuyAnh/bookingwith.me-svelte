@@ -2,7 +2,7 @@ import {get, writable} from "svelte/store";
 import {Service} from "$lib/api/initialize_functions/Business.js";
 import {initializeBusiness} from "$lib/api/api_server/api_endpoints/business-portal/api.js";
 import {business} from "$lib/page/stores/business/business.js";
-import {findServiceFromBusiness, findServiceGroupFromBusinessUsingID} from "$lib/api/utilitiy_functions/Business.js";
+import {findServiceFromBusiness, findServiceGroupFromBusinessUsingID} from "$lib/api/utility_functions/Business.js";
 
 export const serviceModal = writable({
     open: false,

@@ -2,7 +2,7 @@ import {get, writable} from "svelte/store";
 import {findCustomerBookingById} from "$lib/page/protected/business-portal/page_lobby/stores/dashboard_store.js";
 import {
     findServiceBookingFromCustomerBooking
-} from "$lib/api/utilitiy_functions/CustomerBooking.js";
+} from "$lib/api/utility_functions/CustomerBooking.js";
 
 export const servicingTicketClickModal = writable({
     open: false,

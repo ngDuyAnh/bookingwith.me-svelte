@@ -17,7 +17,7 @@
     import {ChevronLeftOutline, ChevronRightOutline} from "flowbite-svelte-icons";
     import {Button, Search} from "flowbite-svelte";
     import {normalizeSearchInput} from "$lib/application/NormalizeSearchInput.js";
-    import {shortCustomerBookingID} from "$lib/api/utilitiy_functions/CustomerBooking.js";
+    import {shortCustomerBookingID} from "$lib/api/utility_functions/CustomerBooking.js";
 
     let tomorrow = $now.startOf('day').add(1, 'day');
 

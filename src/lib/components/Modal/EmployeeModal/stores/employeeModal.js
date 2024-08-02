@@ -1,7 +1,7 @@
 import {get, writable} from "svelte/store";
 import {initializeBusiness} from "$lib/api/api_server/api_endpoints/business-portal/api.js";
 import {business} from "$lib/page/stores/business/business.js";
-import {findEmployeeFromBusiness} from "$lib/api/utilitiy_functions/Business.js";
+import {findEmployeeFromBusiness} from "$lib/api/utility_functions/Business.js";
 import {User} from "$lib/api/initialize_functions/User.js";
 import {Employee} from "$lib/api/initialize_functions/Business.js";
 

@@ -5,22 +5,15 @@
         customerBookingLobbyModal
     } from "$lib/components/Modal/CustomerBookingLobbyModal/stores/customerBookingLobbyModal.js";
     import {
-        customerBookingLobbyComponent,
-        resetCustomerBookingLobbyComponent
-    } from "$lib/components/CustomerBooking/CustomerBookingLobbyComponent/store/customerBookingLobbyComponent.js";
-    import {isToday} from "$lib/page/stores/business/business.js";
-    import {
-        CheckoutCustomerBookingModal
+        checkoutCustomerBookingModal
     } from "$lib/components/Modal/CheckOutCustomerBookingModal/stores/CheckOutCustomerBookingModal.js";
     import CheckoutCustomerBookingComponent
         from "$lib/components/CheckoutCustomerBooking/CheckoutCustomerBookingComponent/CheckoutCustomerBookingComponent.svelte";
-    import {customerBookingSubtotal} from "$lib/api/utilitiy_functions/CustomerBooking.js";
+    import {customerBookingSubtotal} from "$lib/api/utility_functions/CustomerBooking.js";
     import {business} from "$lib/page/stores/business/business.js";
 
-    $: subtotal = customerBookingSubtotal($customerBookingLobbyModal.customerBooking);
-    let discount = 0;
-    $: tax = (subtotal - discount) * $business.businessInfo.taxRate;
-    $: total = subtotal - discount + tax;
+
+
 
 
 
@@ -30,8 +23,8 @@
 
 </script>
 
-<div class="absolute top-0 left-0 right-0 z-[2001]">
-    <Modal bind:open={$CheckoutCustomerBookingModal.open}
+<div class="absolute top-0 left-0 right-0 z-[2000]">
+    <Modal bind:open={$checkoutCustomerBookingModal.open}
            classHeader="!p-1"
            classBody="p-4 md:p-5 space-y-0 flex-1 overflow-y-auto overscroll-contain"
            class="xl:w-full sm:w-11/12 w-full h-[80vh] border-8 "
@@ -60,7 +53,7 @@
         </svelte:fragment>
 
         <CheckoutCustomerBookingComponent
-        bind:customerBooking={$CheckoutCustomerBookingModal.customerBooking}
+            bind:customerBooking={$checkoutCustomerBookingModal.customerBooking}
         />
 
         <svelte:fragment slot="footer">

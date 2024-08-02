@@ -33,14 +33,14 @@
         findIndividualBookingFromCustomerBooking,
         findServiceBookingFromCustomerBooking,
         shortCustomerBookingID,
-    } from "$lib/api/utilitiy_functions/CustomerBooking.js";
+    } from "$lib/api/utility_functions/CustomerBooking.js";
     import {
         getCustomerBooking,
         initializeCustomerBookingAndBroadcast
     } from "$lib/api/api_server/api_endpoints/customer-booking-portal/api.js";
     import {business, getEmployee} from "$lib/page/stores/business/business.js";
     import {normalizeSearchInput} from "$lib/application/NormalizeSearchInput.js";
-    import {findEmployeeFromBusinessUsingEmployeeID} from "$lib/api/utilitiy_functions/Business.js";
+    import {findEmployeeFromBusinessUsingEmployeeID} from "$lib/api/utility_functions/Business.js";
     import {
         handleOpenEmployeeTimetableModal
     } from "$lib/components/Modal/EmployeeTimetableModal/stores/employeeTimetableModal.js";

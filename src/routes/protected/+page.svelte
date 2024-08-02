@@ -16,6 +16,8 @@
     import CustomerProfileModal from "$lib/components/Modal/CustomerProfileModal/CustomerProfileModal.svelte";
     import CustomerBookingLobbyModal
         from "$lib/components/Modal/CustomerBookingLobbyModal/CustomerBookingLobbyModal.svelte";
+    import CheckOutCustomerBookingModal
+        from "$lib/components/Modal/CheckOutCustomerBookingModal/CheckOutCustomerBookingModal.svelte";
 
     export let data;
     let loading = true;
@@ -64,3 +66,6 @@
 
 <!-- Modal for create customer booking in lobby -->
 <CustomerBookingLobbyModal/>
+
+<!--Modal for checkout customer booking-->
+<CheckOutCustomerBookingModal/>

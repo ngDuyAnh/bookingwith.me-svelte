@@ -1,16 +1,17 @@
 import {get, writable} from 'svelte/store';
-import {findCustomerBookingById} from "$lib/page/protected/business-portal/page_lobby/stores/dashboard_store.js";
 
-export const CheckoutCustomerBookingModal = writable({
+export const checkoutCustomerBookingModal = writable({
     open: false,
-    customerBooking: undefined
+
+    customerBooking: undefined,
 });
 
 export function handleCheckoutCustomerBookingClick(customerBooking)
 {
-    CheckoutCustomerBookingModal.set({
+    checkoutCustomerBookingModal.set({
         open: true,
-        customerBooking: customerBooking
+
+        customerBooking: JSON.parse(JSON.stringify(customerBooking)),
     });
 }
 

@@ -3,7 +3,7 @@ import {ServiceGroup} from "$lib/api/initialize_functions/Business.js";
 import {business} from "$lib/page/stores/business/business.js";
 import {
     findServiceGroupFromBusiness
-} from "$lib/api/utilitiy_functions/Business.js";
+} from "$lib/api/utility_functions/Business.js";
 import {initializeBusiness} from "$lib/api/api_server/api_endpoints/business-portal/api.js";
 
 export const serviceGroupModal = writable({

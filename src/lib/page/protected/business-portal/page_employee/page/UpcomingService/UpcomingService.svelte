@@ -6,7 +6,7 @@
     import {getCustomerBooking} from "$lib/api/api_server/api_endpoints/customer-booking-portal/api.js";
     import {
         findServiceBookingFromCustomerBooking
-    } from "$lib/api/utilitiy_functions/CustomerBooking.js";
+    } from "$lib/api/utility_functions/CustomerBooking.js";
     import {Button} from "flowbite-svelte";
     import {
         ArrowLeftOutline,
