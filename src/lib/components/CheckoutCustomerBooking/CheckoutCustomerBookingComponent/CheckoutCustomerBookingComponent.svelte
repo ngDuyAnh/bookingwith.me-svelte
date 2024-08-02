@@ -98,13 +98,10 @@
             Service
         </th>
         <th scope="col" class="w-32 px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-            Duration
-        </th>
-        <th scope="col" class="w-32 px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
             Cost
         </th>
         <th scope="col" class="w-32 px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-            Discount
+            Adjusted cost
         </th>
         <th scope="col" class="w-32 px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
             Completed By
@@ -117,26 +114,21 @@
                 <td class="w-20 px-2 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
                     Guest #{index + 1}
                 </td>
-                <td colspan="5" class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                <td colspan="4" class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
                     <div class="space-y-2 divide-y divide-gray-300">
                         {#each customerIndividualBookingList.customerIndividualServiceBookingList as individualServiceBooking, ind (individualServiceBooking.serviceBookingID)}
                             <div class="flex justify-between items-center pt-2">
+                                <!--Service name-->
                                 <span class="w-32 truncate">{individualServiceBooking.service.serviceName}</span>
-                                <Tooltip>{individualServiceBooking.service.serviceName}</Tooltip>
-                                <span class="w-32 text-center truncate">{individualServiceBooking.servicingDuration ? individualServiceBooking.servicingDuration : 0}
-                                    mins</span>
-                                <Tooltip>{individualServiceBooking.servicingDuration ? individualServiceBooking.servicingDuration : 0}
-                                    mins
-                                </Tooltip>
-                                <span class="w-32 text-center truncate">${individualServiceBooking.serviceCostAdjusted ? individualServiceBooking.serviceCostAdjusted : 0}</span>
-                                <Tooltip>
-                                    ${individualServiceBooking.serviceCostAdjusted ? individualServiceBooking.serviceCostAdjusted : 0}</Tooltip>
-                                <span class="w-32 text-center truncate">${individualServiceBooking.discount ? individualServiceBooking.discount : 0}
-                                    %</span>
-                                <Tooltip>${individualServiceBooking.discount ? individualServiceBooking.discount : 0}%
-                                </Tooltip>
+
+                                <!--Service cost-->
+                                <span class="w-32 text-center truncate">${individualServiceBooking.service.serviceCost}</span>
+
+                                <!--Adjusted cost-->
+                                <input type="number" bind:value={individualServiceBooking.serviceCostAdjusted} class="w-32 text-center border rounded p-1" />
+
+                                <!--Employee worked on the service-->
                                 <span class="w-32 text-center truncate">{individualServiceBooking.assignedEmployee ? individualServiceBooking.assignedEmployee.employeeName : 'Not Recorded'}</span>
-                                <Tooltip>{individualServiceBooking.assignedEmployee ? individualServiceBooking.assignedEmployee.employeeName : 'Not Assigned'}</Tooltip>
                             </div>
                         {/each}
                     </div>
