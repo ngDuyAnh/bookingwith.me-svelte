@@ -24,7 +24,7 @@
     $: total = (parseFloat(subtotalWithTax) + customerBooking.transaction.tip).toFixed(2);
 
     $: amountDue = (parseFloat(total) - customerBooking.transaction.creditCardPayment - customerBooking.transaction.cashPayment).toFixed(2);
-
+    $: amountPaid = total - amountDue;
 
     export let submitCallback;
     let successfulSubmit = false;
@@ -122,24 +122,25 @@
                                     <span hidden={ind>0}>Guest #{index + 1}</span>
                                 </td>
 
+                                <!--Service name-->
                                 <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
                                     <div class="flex justify-between items-center pt-2">
-                                        <!--Service name-->
                                         <span class="w-[250px] truncate">{individualServiceBooking.service.serviceName}</span>
                                         <Tooltip>{individualServiceBooking.service.serviceName}</Tooltip>
-
                                     </div>
                                 </td>
+
+                                <!--Cost-->
                                 <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
                                     <div class="flex justify-between items-center pt-2">
-                                        <!--Cost-->
                                         <span class="w-[100px] truncate">${individualServiceBooking.serviceCostAdjusted}</span>
                                         <!--<input type="number" bind:value={individualServiceBooking.serviceCostAdjusted} class="w-32 text-center border rounded p-1" />-->
                                     </div>
                                 </td>
+
+                                <!--Employee worked on the service-->
                                 <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
                                     <div class="flex justify-between items-center pt-2">
-                                        <!--Employee worked on the service-->
                                         <span class="w-32 text-center truncate">{individualServiceBooking.assignedEmployee ? individualServiceBooking.assignedEmployee.employeeName : 'Not Recorded'}</span>
                                         <Tooltip>{individualServiceBooking.assignedEmployee ? individualServiceBooking.assignedEmployee.employeeName : 'Not Recorded'}</Tooltip>
                                     </div>
@@ -213,12 +214,10 @@
                     </div>
                 </div>
 
-                <div class="flex justify-between bg-green-100 px-[3px] border-y-[2px]  items-center mb-2">
-                    <span class="text-sm font-medium text-gray-700">Amount Due:</span>
-                    <span class="text-lg font-medium text-green-500"
-                          class:!text-red-500={parseFloat(amountDue) !== 0}>${parseFloat(amountDue).toFixed(2)}</span>
+                <div class="flex justify-between mb-2 border-b-2">
+                    <span class="text-sm font-medium text-gray-700">Total:</span>
+                    <span class="text-sm font-medium text-gray-900">${total}</span>
                 </div>
-
 
                 <div class="flex justify-between mb-2">
                     <span class="text-sm font-medium text-gray-700">Credit Card Payment:</span>
@@ -245,10 +244,22 @@
                     </div>
                 </div>
 
-                <div class="flex justify-between mb-2 border-b-2">
-                    <span class="text-sm font-medium text-gray-700">Total:</span>
-                    <span class="text-sm font-medium text-gray-900">${total}</span>
+                <div class="flex justify-between bg-green-100 px-[3px] border-y-[2px]  items-center mb-2"
+                     class:!bg-red-100={parseFloat(amountDue) !== 0}
+                >
+                    <span class="text-sm font-medium text-gray-700">Amount Paid:</span>
+                    <span class="text-lg font-medium text-green-500"
+                          class:!text-red-500={parseFloat(amountDue) !== 0}>${parseFloat(amountPaid).toFixed(2)}</span>
                 </div>
+
+                <div class="flex justify-between px-[3px] border-y-[2px]  items-center mb-2"
+                     class:!bg-red-100={parseFloat(amountDue) !== 0}
+                >
+                    <span class="text-sm font-medium text-gray-700">Due:</span>
+                    <span class="text-lg font-medium text-green-500"
+                          class:!text-red-500={parseFloat(amountDue) !== 0}>${parseFloat(amountDue).toFixed(2)}</span>
+                </div>
+
             </Card>
         </div>
     </div>
