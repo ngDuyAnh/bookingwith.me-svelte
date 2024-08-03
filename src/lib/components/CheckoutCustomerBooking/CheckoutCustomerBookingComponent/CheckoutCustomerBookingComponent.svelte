@@ -81,30 +81,26 @@
     // const hoverDiv = "border-2 border-transparent hover:border-gray-300 transition-colors duration-300 rounded"
 
     let guestPaymentMethods = [];
-
-    // Initialzie with the individual booking list
-    // Initialize the  customerBooking.transaction.creditCardPayment at the beginning with all the guest payment method is preferred card
-    // On checking the ratio box, recalculate the card and cash payments
-
     function handlePaymentMethodChange(individualBooking, index, method) {
 
-        const guestCost = individualBookingCost(individualBooking);
+        const guestCost = (individualBookingCost(individualBooking)).toFixed(2);
+        const guestTax = (guestCost * $business.businessInfo.taxRate).toFixed(2);
+        const guestTotal = parseFloat(guestCost) + parseFloat(guestTax);
 
-        console.log("!!!! individualBooking ",index," ",method, individualBooking);
         // Previously selected
         if (guestPaymentMethods[index] === 'card') {
-            customerBooking.transaction.creditCardPayment -= guestCost;
+            customerBooking.transaction.creditCardPayment -= guestTotal;
         } else if (guestPaymentMethods[index] === 'cash') {
-            customerBooking.transaction.cashPayment -= guestCost;
+            customerBooking.transaction.cashPayment -= guestTotal;
         }
 
         if (method === 'card') {
-            customerBooking.transaction.creditCardPayment += guestCost;
+            customerBooking.transaction.creditCardPayment += guestTotal;
         } else if (method === 'cash') {
-            customerBooking.transaction.cashPayment += guestCost;
+            customerBooking.transaction.cashPayment += guestTotal;
         }
 
-        console.log("customer booking from change", customerBooking);
+        // Update the payment method for the guest
         guestPaymentMethods[index] = method;
     }
 
@@ -117,13 +113,11 @@
 
         for(let i in customerBooking.customerIndividualBookingList)
         {
-            console.log("i ",i," ",);
-            const guestCost = individualBookingCost(customerBooking.customerIndividualBookingList[i]);
-            customerBooking.transaction.creditCardPayment += guestCost;
-            // handlePaymentMethodChange(, i, guestPaymentMethods[i]);
+            const guestCost = (individualBookingCost(customerBooking.customerIndividualBookingList[i])).toFixed(2);
+            const guestTax = (parseFloat(guestCost) * $business.businessInfo.taxRate).toFixed(2);
+            const guestTotal = parseFloat(guestCost) + parseFloat(guestTax);
+            customerBooking.transaction.creditCardPayment += guestTotal;
         }
-
-        // console.log(guestPaymentMethods);
     }
 
     $: if(!$checkoutCustomerBookingModal.open)
@@ -138,7 +132,7 @@
         on:submit|preventDefault={submitCheckout}
 >
     <div class="flex flex-col lg:flex-grow w-full h-full space-y-1">
-        <div class="w-full flex justify-center w-full">
+        <div class="w-full flex justify-center">
             <div class="flex flex-row items-center space-x-2 bg-gray-100 p-3 rounded-b-none rounded-lg shadow w-full">
                 <UserCircleSolid class="h-6 w-6 text-blue-500"/>
                 <span class="font-medium text-gray-700">{customerBooking.customer.customerName}</span>
