@@ -139,7 +139,7 @@ export function getEmployeeTips(customerBookingList, employee)
             });
         });
 
-        console.log(`${transaction.tip} * ${employeeRatio} / ${totalRatio}`)
+        // console.log(`${transaction.tip} * ${employeeRatio} / ${totalRatio}`)
 
         // Add the tip
         totalTips += transaction.tip * (employeeRatio / totalRatio);

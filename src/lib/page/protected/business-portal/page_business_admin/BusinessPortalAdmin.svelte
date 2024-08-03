@@ -22,8 +22,9 @@
     } from "$lib/page/protected/business-portal/page_lobby/stores/dashboard_store.js";
     import TimetableComponent from "$lib/components/Timetable/TimetableComponent.svelte";
     import Setting from "$lib/page/protected/business-portal/page_business_admin/page/Setting/Setting.svelte";
+    import Tips from "$lib/page/protected/business-portal/page_business_admin/page/Tips/Tips.svelte";
 
-    let tabs = ["Dashboard", "Metrics", "Timetable", "Employee", "Service", "Setting"];
+    let tabs = ["Dashboard", "Metrics", "Timetable", "Employee", "Service", "Setting", "Tips"];
 
     let dropdownOptions = {
         Metrics: {
@@ -177,6 +178,8 @@
             <Service/>
         {:else if selectedIndex === 5}
             <Setting/>
+        {:else if selectedIndex === 6}
+            <Tips/>
         {/if}
     </div>
 {/if}
