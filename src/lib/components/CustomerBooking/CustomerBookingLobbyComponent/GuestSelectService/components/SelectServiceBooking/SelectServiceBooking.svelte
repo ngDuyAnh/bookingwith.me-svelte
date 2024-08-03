@@ -23,17 +23,14 @@
 
     // $:console.log("serviceSelectOptions", serviceSelectOptions);
 
-    function generateEmployeeOptions(service) {
+    function generateEmployeeOptions() {
 
         // console.log("generateEmployeeOptions", service);
 
-        const options = [{
-            label: "Any employee",
-            value: null
-        }];
+        const options = [defaultEmployeeOption];
 
         // Employees who provide the service
-        service.employeeList.forEach(employee => {
+        $business.employeeList.forEach(employee => {
             options.push({
                 label: employee.employeeName,
                 value: employee
@@ -44,8 +41,7 @@
         return options;
     }
 
-    $: employeeSelectOptions = serviceBooking ?
-        generateEmployeeOptions(serviceBooking.service) : [defaultEmployeeOption];
+    const employeeSelectOptions = generateEmployeeOptions();
 
     $: selectedService = serviceSelectOptions.find(option => option.value.id === serviceBooking?.service?.id) || null;
     $: selectedEmployee = employeeSelectOptions.find(option => option.value?.id === serviceBooking?.bookedEmployee?.id);
@@ -113,12 +109,34 @@
         return str.toLowerCase().split(/\s+/);
     }
 
-    function customFilter(label, filterText) {
+    function customServiceFilter(label, filterText) {
         const tokens = tokenize(filterText);
         const labelTokens = tokenize(label);
 
         // All tokens must match the start of at least one label token
         return tokens.every(token => labelTokens.some(labelToken => labelToken.startsWith(token)));
+    }
+
+    function customEmployeeFilter(label, filterText) {
+        const tokens = tokenize(filterText);
+        const labelTokens = tokenize(label);
+
+        // Filter based on all employee
+        if (filterText.length)
+        {
+            return tokens.every(token => labelTokens.some(labelToken => labelToken.includes(token)));
+        }
+        // If the filter text is empty
+        // Only show employees who provide the service
+        else if (selectedService)
+        {
+            return selectedService.value.employeeList.some(employee =>
+                label.includes(defaultEmployeeOption.label) || label.includes(employee.employeeName)
+            );
+        }
+
+        // Default do not show any employee option
+        return false;
     }
 
 </script>
@@ -136,7 +154,7 @@
             on:change={handleServiceBookingSelect}
             on:clear={handleDeleteServiceBooking}
 
-            itemFilter={customFilter}
+            itemFilter={customServiceFilter}
     >
         <svelte:fragment slot="item" let:item>
             <div class="flex flex-col">
@@ -171,6 +189,8 @@
                 value={selectedEmployee}
                 on:change={handleEmployeeSelect}
                 disabled={!selectedService}
+
+                itemFilter={customEmployeeFilter}
         />
     {/if}
 </div>
