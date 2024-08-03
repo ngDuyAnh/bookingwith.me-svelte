@@ -96,7 +96,7 @@
         </div>
         <div class="w-full flex flex-col lg:flex-row lg:flex-grow">
             <div class="flex w-full lg:flex-grow overflow-x-auto ">
-                <Card class="lg:rounded-r-none lg:rounded-t-none lg:rounded-bl-xl w-fit lg:shadow-transparent lg:border-r-[1px]" size="xl">
+                <Card class="lg:rounded-r-none rounded-t-none rounded-b-none lg:rounded-b lg:rounded-bl-xl w-fit lg:shadow-transparent lg:border-r-[1px]" size="xl">
                     <h2 class="text-lg md:text-xl lg:text-2xl font-medium text-gray-800 dark:text-white mb-4 shadow-sm">
                         Booking Details
                     </h2>
@@ -195,8 +195,8 @@
             </div>
 
             <!-- Cost Summary -->
-            <div class="w-full flex justify-center lg:flex-grow lg:w-fit">
-                <Card class="w-full lg:rounded-l-none lg:rounded-t-none lg:rounded-br-xl lg:shadow-transparent lg:border-l-[1px]" size="xl">
+            <div class="w-full flex justify-center lg:flex-grow lg:w-fit lg:mb-0 mb-1">
+                <Card class="w-full lg:rounded-l-none rounded-t-none lg:rounded-br-xl lg:shadow-transparent lg:border-l-[1px]" size="xl">
                     <h2 class="text-lg md:text-xl lg:text-2xl font-medium text-gray-800 dark:text-white mb-4 shadow-sm">
                         Cost Summary
                     </h2>
