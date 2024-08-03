@@ -88,68 +88,76 @@
                     class="font-medium text-gray-700">{formatPhoneNumber(customerBooking.customer.phoneNumber) }</span>
             </div>
         </div>
-
-        <table class="table-fixed w-full border-[1px]">
-            <thead class="bg-gray-50">
-            <tr>
-                <th scope="col"
-                    class="w-20 px-2 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                    Guest
-                </th>
-                <th class="w-[150px] overflow-hidden text-ellipsis whitespace-nowrap px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                    Service
-                </th>
-                <th scope="col"
-                    class="w-[100px] px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                    Cost
-                </th>
-                <th scope="col"
-                    class="w-32 px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                    Completed By
-                </th>
-            </tr>
-            </thead>
-            <tbody class="bg-white">
-            {#each customerBooking.customerIndividualBookingList as customerIndividualBookingList, index (customerIndividualBookingList.individualID)}
-
-                {#each customerIndividualBookingList.customerIndividualServiceBookingList as individualServiceBooking, ind (individualServiceBooking.serviceBookingID)}
-                    <tr class="{ind===0 && index!==0?'divide-y':''}">
-                        <td class="w-20 px-2 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
-                            <span hidden={ind>0}>Guest #{index + 1}</span>
-                        </td>
-
-                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                            <div class="flex justify-between items-center pt-2">
-                                <!--Service name-->
-                                <span class="w-[250px] truncate">{individualServiceBooking.service.serviceName}</span>
-                                <Tooltip>{individualServiceBooking.service.serviceName}</Tooltip>
-
-                            </div>
-                        </td>
-                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                            <div class="flex justify-between items-center pt-2">
-                                <!--Cost-->
-                                <span class="w-[100px] truncate">${individualServiceBooking.serviceCostAdjusted}</span>
-                                <!--<input type="number" bind:value={individualServiceBooking.serviceCostAdjusted} class="w-32 text-center border rounded p-1" />-->
-                            </div>
-                        </td>
-                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                            <div class="flex justify-between items-center pt-2">
-                                <!--Employee worked on the service-->
-                                <span class="w-32 text-center truncate">{individualServiceBooking.assignedEmployee ? individualServiceBooking.assignedEmployee.employeeName : 'Not Recorded'}</span>
-                                <Tooltip>{individualServiceBooking.assignedEmployee ? individualServiceBooking.assignedEmployee.employeeName : 'Not Recorded'}</Tooltip>
-                            </div>
-                        </td>
+        <div class="flex w-fit justify-center">
+            <Card class="rounded-none w-fit" size="xl">
+                <h2 class="text-lg md:text-xl lg:text-2xl font-medium text-gray-800 dark:text-white mb-4 shadow-sm">
+                    Booking Details
+                </h2>
+                <table class="table-fixed w-full border-y-[1px]">
+                    <thead class="bg-gray-50">
+                    <tr>
+                        <th scope="col"
+                            class="w-20 px-2 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                            Guest
+                        </th>
+                        <th class="w-[150px] overflow-hidden text-ellipsis whitespace-nowrap px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                            Service
+                        </th>
+                        <th scope="col"
+                            class="w-[100px] px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                            Cost
+                        </th>
+                        <th scope="col"
+                            class="w-32 px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                            Completed By
+                        </th>
                     </tr>
-                {/each}
-            {/each}
-            </tbody>
-        </table>
+                    </thead>
+                    <tbody class="bg-white">
+                    {#each customerBooking.customerIndividualBookingList as customerIndividualBookingList, index (customerIndividualBookingList.individualID)}
+
+                        {#each customerIndividualBookingList.customerIndividualServiceBookingList as individualServiceBooking, ind (individualServiceBooking.serviceBookingID)}
+                            <tr class="{ind===0 && index!==0?'divide-y':''}">
+                                <td class="w-20 px-2 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
+                                    <span hidden={ind>0}>Guest #{index + 1}</span>
+                                </td>
+
+                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                                    <div class="flex justify-between items-center pt-2">
+                                        <!--Service name-->
+                                        <span class="w-[250px] truncate">{individualServiceBooking.service.serviceName}</span>
+                                        <Tooltip>{individualServiceBooking.service.serviceName}</Tooltip>
+
+                                    </div>
+                                </td>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                                    <div class="flex justify-between items-center pt-2">
+                                        <!--Cost-->
+                                        <span class="w-[100px] truncate">${individualServiceBooking.serviceCostAdjusted}</span>
+                                        <!--<input type="number" bind:value={individualServiceBooking.serviceCostAdjusted} class="w-32 text-center border rounded p-1" />-->
+                                    </div>
+                                </td>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                                    <div class="flex justify-between items-center pt-2">
+                                        <!--Employee worked on the service-->
+                                        <span class="w-32 text-center truncate">{individualServiceBooking.assignedEmployee ? individualServiceBooking.assignedEmployee.employeeName : 'Not Recorded'}</span>
+                                        <Tooltip>{individualServiceBooking.assignedEmployee ? individualServiceBooking.assignedEmployee.employeeName : 'Not Recorded'}</Tooltip>
+                                    </div>
+                                </td>
+                            </tr>
+                        {/each}
+                    {/each}
+                    </tbody>
+                </table>
+            </Card>
+        </div>
 
         <!-- Cost Summary -->
         <div class="cost-summary-wrapper w-full flex justify-center mb-3" style={cardStyle}>
             <Card class="w-full rounded-t-none" size="xl">
-                <h2 class="text-lg font-medium text-gray-700 mb-4">Cost Summary</h2>
+                <h2 class="text-lg md:text-xl lg:text-2xl font-medium text-gray-800 dark:text-white mb-4 shadow-sm">
+                    Cost Summary
+                </h2>
                 <div class="flex justify-between mb-2">
                     <span class="text-sm font-medium text-gray-700">Subtotal:</span>
                     <div class="relative">
@@ -204,8 +212,8 @@
                         />
                     </div>
                 </div>
-                
-                <div class="flex justify-between">
+
+                <div class="flex justify-between bg-green-100 px-[3px] border-y-[2px]  items-center mb-2">
                     <span class="text-sm font-medium text-gray-700">Amount Due:</span>
                     <span class="text-lg font-medium text-green-500"
                           class:!text-red-500={parseFloat(amountDue) !== 0}>${parseFloat(amountDue).toFixed(2)}</span>
