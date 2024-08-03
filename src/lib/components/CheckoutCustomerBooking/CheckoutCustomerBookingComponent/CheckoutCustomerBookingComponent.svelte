@@ -109,32 +109,39 @@
                 </th>
             </tr>
             </thead>
-            <tbody class="bg-white divide-y divide-gray-200">
+            <tbody class="bg-white">
             {#each customerBooking.customerIndividualBookingList as customerIndividualBookingList, index (customerIndividualBookingList.individualID)}
-                <tr>
-                    <td class="w-20 px-2 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
-                        Guest #{index + 1}
-                    </td>
-                    <td colspan="3" class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                        <div class="space-y-2 divide-y divide-gray-300">
-                            {#each customerIndividualBookingList.customerIndividualServiceBookingList as individualServiceBooking (individualServiceBooking.serviceBookingID)}
-                                <div class="flex justify-between items-center pt-2">
-                                    <!--Service name-->
-                                    <span class="w-[150px] truncate">{individualServiceBooking.service.serviceName}</span>
-                                    <Tooltip>{individualServiceBooking.service.serviceName}</Tooltip>
 
-                                    <!--Cost-->
-                                    <span class="w-[100px] truncate">${individualServiceBooking.serviceCostAdjusted}</span>
-                                    <!--<input type="number" bind:value={individualServiceBooking.serviceCostAdjusted} class="w-32 text-center border rounded p-1" />-->
+                {#each customerIndividualBookingList.customerIndividualServiceBookingList as individualServiceBooking, ind (individualServiceBooking.serviceBookingID)}
+                    <tr class="{ind===0 && index!==0?'divide-y':''}">
+                        <td class="w-20 px-2 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
+                            <span hidden={ind>0}>Guest #{index + 1}</span>
+                        </td>
 
-                                    <!--Employee worked on the service-->
-                                    <span class="w-32 text-center truncate">{individualServiceBooking.assignedEmployee ? individualServiceBooking.assignedEmployee.employeeName : 'Not Recorded'}</span>
-                                    <Tooltip>{individualServiceBooking.assignedEmployee ? individualServiceBooking.assignedEmployee.employeeName : 'Not Recorded'}</Tooltip>
-                                </div>
-                            {/each}
-                        </div>
-                    </td>
-                </tr>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                            <div class="flex justify-between items-center pt-2">
+                                <!--Service name-->
+                                <span class="w-[250px] truncate">{individualServiceBooking.service.serviceName}</span>
+                                <Tooltip>{individualServiceBooking.service.serviceName}</Tooltip>
+
+                            </div>
+                        </td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                            <div class="flex justify-between items-center pt-2">
+                                <!--Cost-->
+                                <span class="w-[100px] truncate">${individualServiceBooking.serviceCostAdjusted}</span>
+                                <!--<input type="number" bind:value={individualServiceBooking.serviceCostAdjusted} class="w-32 text-center border rounded p-1" />-->
+                            </div>
+                        </td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                            <div class="flex justify-between items-center pt-2">
+                                <!--Employee worked on the service-->
+                                <span class="w-32 text-center truncate">{individualServiceBooking.assignedEmployee ? individualServiceBooking.assignedEmployee.employeeName : 'Not Recorded'}</span>
+                                <Tooltip>{individualServiceBooking.assignedEmployee ? individualServiceBooking.assignedEmployee.employeeName : 'Not Recorded'}</Tooltip>
+                            </div>
+                        </td>
+                    </tr>
+                {/each}
             {/each}
             </tbody>
         </table>
@@ -175,7 +182,8 @@
                                 id="netSubTotal"
                                 class="text-gray-400 hover:text-gray-900 dark:hover:text-white cursor-pointer ms-1"
                         />
-                        <Tooltip triggerdBy="#netSubTotal" class="z-10">Net Subtotal = Subtotal - Discount</Tooltip>:
+                        <Tooltip triggerdBy="#netSubTotal" class="z-10">Net Subtotal = Subtotal - Discount</Tooltip>
+                        :
                     </div>
                     <span class="text-sm font-medium text-gray-900">${netSubtotal}</span>
                 </div>
