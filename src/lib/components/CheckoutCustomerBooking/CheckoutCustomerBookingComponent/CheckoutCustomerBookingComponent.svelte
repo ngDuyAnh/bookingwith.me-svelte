@@ -100,7 +100,7 @@
                     Service
                 </th>
                 <th scope="col"
-                    class="w-32 px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    class="w-[100px] px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                     Cost
                 </th>
                 <th scope="col"
@@ -120,11 +120,11 @@
                             {#each customerIndividualBookingList.customerIndividualServiceBookingList as individualServiceBooking (individualServiceBooking.serviceBookingID)}
                                 <div class="flex justify-between items-center pt-2">
                                     <!--Service name-->
-                                    <span class="w-32 truncate">{individualServiceBooking.service.serviceName}</span>
+                                    <span class="w-[150px] truncate">{individualServiceBooking.service.serviceName}</span>
                                     <Tooltip>{individualServiceBooking.service.serviceName}</Tooltip>
 
                                     <!--Cost-->
-                                    <span class="w-32 truncate">${individualServiceBooking.serviceCostAdjusted}</span>
+                                    <span class="w-[100px] truncate">${individualServiceBooking.serviceCostAdjusted}</span>
                                     <!--<input type="number" bind:value={individualServiceBooking.serviceCostAdjusted} class="w-32 text-center border rounded p-1" />-->
 
                                     <!--Employee worked on the service-->
@@ -229,7 +229,7 @@
                 </div>
                 <div class="flex justify-between">
                     <span class="text-sm font-medium text-gray-700">Amount Due:</span>
-                    <span class="text-sm font-medium text-green-500"
+                    <span class="text-lg font-medium text-green-500"
                           class:!text-red-500={parseFloat(amountDue) !== 0}>${parseFloat(amountDue).toFixed(2)}</span>
                 </div>
             </Card>
