@@ -6,6 +6,9 @@
     } from "$lib/components/Modal/CheckOutCustomerBookingModal/stores/checkOutCustomerBookingModal.js";
     import CheckoutCustomerBookingComponent
         from "$lib/components/CheckoutCustomerBooking/CheckoutCustomerBookingComponent/CheckoutCustomerBookingComponent.svelte";
+    import {
+        resetCustomerBookingLobbyComponent
+    } from "$lib/components/CustomerBooking/CustomerBookingLobbyComponent/store/customerBookingLobbyComponent.js";
 
     let showHeaderAndFooter = true;
     function submitCallback(hideHeaderAndFooter) {
@@ -15,6 +18,20 @@
         setTimeout(() => {
             handleCloseCheckoutCustomerBooking();
         }, 1000);
+    }
+
+    // Reset
+    let wasOpen = $checkOutCustomerBookingModal.open;
+    $: if ($checkOutCustomerBookingModal.open && !wasOpen) {
+        wasOpen = true;
+
+        // Reset store
+        resetCustomerBookingLobbyComponent();
+
+        // Reset to show the header and footer
+        showHeaderAndFooter = true;
+    } else if (!$checkOutCustomerBookingModal.open) {
+        wasOpen = false;
     }
 </script>
 
