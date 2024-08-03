@@ -3,7 +3,7 @@
     import {formatPhoneNumber} from "$lib/application/FormatPhoneNumber.js";
     import {customerBookingSubtotal} from "$lib/api/utility_functions/CustomerBooking.js";
     import {business} from "$lib/page/stores/business/business.js";
-    import {Card, Tooltip} from "flowbite-svelte";
+    import {Card, Radio, Tooltip} from "flowbite-svelte";
     import {moveToCompleted} from "$lib/components/Modal/CustomerBookingClickModal/handle_customer_booking_state.js";
     import {onMount} from "svelte";
 
@@ -80,7 +80,7 @@
 </script>
 
 <form id="checkoutForm" on:submit|preventDefault={submitCheckout} class="space-y-4 h-full overflow-x-auto">
-    <div bind:this={scrollContainer} class="scroll-container h-full space-y-1">
+    <div bind:this={scrollContainer} class="scroll-container  flex-grow space-y-1">
         <div class="cost-summary-wrapper flex justify-center w-full" style={cardStyle}>
             <div class="flex flex-row items-center space-x-2 bg-gray-100 p-3 rounded-b-none rounded-lg  shadow w-full">
                 <UserCircleSolid class="h-6 w-6 text-blue-500"/>
@@ -88,168 +88,182 @@
                     class="font-medium text-gray-700">{formatPhoneNumber(customerBooking.customer.phoneNumber) }</span>
             </div>
         </div>
-        <div class="flex w-fit justify-center">
-            <Card class="rounded-none w-fit" size="xl">
-                <h2 class="text-lg md:text-xl lg:text-2xl font-medium text-gray-800 dark:text-white mb-4 shadow-sm">
-                    Booking Details
-                </h2>
-                <table class="table-fixed w-full border-y-[1px]">
-                    <thead class="bg-gray-50">
-                    <tr>
-                        <th scope="col"
-                            class="w-20 px-2 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                            Guest
-                        </th>
-                        <th class="w-[150px] overflow-hidden text-ellipsis whitespace-nowrap px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                            Service
-                        </th>
-                        <th scope="col"
-                            class="w-[100px] px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                            Cost
-                        </th>
-                        <th scope="col"
-                            class="w-32 px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                            Completed By
-                        </th>
-                    </tr>
-                    </thead>
-                    <tbody class="bg-white">
-                    {#each customerBooking.customerIndividualBookingList as customerIndividualBookingList, index (customerIndividualBookingList.individualID)}
+        <div class="w-full flex flex-col lg:flex-row flex-grow">
+            <div class="flex w-fit justify-center  lg:flex-grow">
+                <Card class=" w-fit" size="xl">
+                    <h2 class="text-lg md:text-xl lg:text-2xl font-medium text-gray-800 dark:text-white mb-4 shadow-sm">
+                        Booking Details
+                    </h2>
+                    <table class="table-fixed w-full border-y-[1px]">
+                        <thead class="bg-gray-50">
+                        <tr>
+                            <th scope="col"
+                                class="w-20 px-2 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                Guest
+                            </th>
+                            <th class="w-[150px] overflow-hidden text-ellipsis whitespace-nowrap px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                Service
+                            </th>
+                            <th scope="col"
+                                class="w-[100px] px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                Cost
+                            </th>
+                            <th scope="col"
+                                class="w-32 px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                Completed By
+                            </th>
+                            <th scope="col"
+                                class="w-24 px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                Pay With
+                            </th>
+                        </tr>
+                        </thead>
+                        <tbody class="bg-white">
+                        {#each customerBooking.customerIndividualBookingList as customerIndividualBookingList, index (customerIndividualBookingList.individualID)}
 
-                        {#each customerIndividualBookingList.customerIndividualServiceBookingList as individualServiceBooking, ind (individualServiceBooking.serviceBookingID)}
-                            <tr class="{ind===0 && index!==0?'divide-y':''}">
-                                <td class="w-20 px-2 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
-                                    <span hidden={ind>0}>Guest #{index + 1}</span>
-                                </td>
+                            {#each customerIndividualBookingList.customerIndividualServiceBookingList as individualServiceBooking, ind (individualServiceBooking.serviceBookingID)}
+                                <tr class="{ind===0 && index!==0?'divide-y':''}">
+                                    <td class="w-20 px-2 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
+                                        <span hidden={ind>0}>Guest #{index + 1}</span>
+                                    </td>
 
-                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                                    <div class="flex justify-between items-center pt-2">
-                                        <!--Service name-->
-                                        <span class="w-[250px] truncate">{individualServiceBooking.service.serviceName}</span>
-                                        <Tooltip>{individualServiceBooking.service.serviceName}</Tooltip>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                                        <div class="flex justify-between items-center pt-2">
+                                            <!--Service name-->
+                                            <span class="w-[250px] truncate">{individualServiceBooking.service.serviceName}</span>
+                                            <Tooltip>{individualServiceBooking.service.serviceName}</Tooltip>
 
-                                    </div>
-                                </td>
-                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                                    <div class="flex justify-between items-center pt-2">
-                                        <!--Cost-->
-                                        <span class="w-[100px] truncate">${individualServiceBooking.serviceCostAdjusted}</span>
-                                        <!--<input type="number" bind:value={individualServiceBooking.serviceCostAdjusted} class="w-32 text-center border rounded p-1" />-->
-                                    </div>
-                                </td>
-                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                                    <div class="flex justify-between items-center pt-2">
-                                        <!--Employee worked on the service-->
-                                        <span class="w-32 text-center truncate">{individualServiceBooking.assignedEmployee ? individualServiceBooking.assignedEmployee.employeeName : 'Not Recorded'}</span>
-                                        <Tooltip>{individualServiceBooking.assignedEmployee ? individualServiceBooking.assignedEmployee.employeeName : 'Not Recorded'}</Tooltip>
-                                    </div>
-                                </td>
-                            </tr>
+                                        </div>
+                                    </td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                                        <div class="flex justify-between items-center pt-2">
+                                            <!--Cost-->
+                                            <span class="w-[100px] truncate">${individualServiceBooking.serviceCostAdjusted}</span>
+                                            <!--<input type="number" bind:value={individualServiceBooking.serviceCostAdjusted} class="w-32 text-center border rounded p-1" />-->
+                                        </div>
+                                    </td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                                        <div class="flex justify-between items-center pt-2">
+                                            <!--Employee worked on the service-->
+                                            <span class="w-32 text-center truncate">{individualServiceBooking.assignedEmployee ? individualServiceBooking.assignedEmployee.employeeName : 'Not Recorded'}</span>
+                                            <Tooltip>{individualServiceBooking.assignedEmployee ? individualServiceBooking.assignedEmployee.employeeName : 'Not Recorded'}</Tooltip>
+                                        </div>
+                                    </td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                                        {#if ind == 0}
+                                            <div class="flex flex-col pt-2">
+                                                <Radio name="example">Card</Radio>
+                                                <Radio name="example" checked={true}>Cash</Radio>
+                                            </div>
+                                        {/if}
+                                    </td>
+                                </tr>
+                            {/each}
                         {/each}
-                    {/each}
-                    </tbody>
-                </table>
-            </Card>
-        </div>
+                        </tbody>
+                    </table>
+                </Card>
+            </div>
 
-        <!-- Cost Summary -->
-        <div class="cost-summary-wrapper w-full flex justify-center mb-3" style={cardStyle}>
-            <Card class="w-full rounded-t-none" size="xl">
-                <h2 class="text-lg md:text-xl lg:text-2xl font-medium text-gray-800 dark:text-white mb-4 shadow-sm">
-                    Cost Summary
-                </h2>
-                <div class="flex justify-between mb-2">
-                    <span class="text-sm font-medium text-gray-700">Subtotal:</span>
-                    <div class="relative">
-                        <span class="absolute left-1 top-1 z-[2]">$</span>
-                        <input
-                                type="number"
-                                step=".01"
-                                bind:value={subtotal}
-                                class="pl-5 pr-1 py-1 w-24 text-sm font-medium text-gray-900 border rounded"
-                        />
+            <!-- Cost Summary -->
+            <div class="cost-summary-wrapper w-full flex justify-center lg:flex-grow" style={cardStyle}>
+                <Card class="w-full rounded-t-none" size="xl">
+                    <h2 class="text-lg md:text-xl lg:text-2xl font-medium text-gray-800 dark:text-white mb-4 shadow-sm">
+                        Cost Summary
+                    </h2>
+                    <div class="flex justify-between mb-2">
+                        <span class="text-sm font-medium text-gray-700">Subtotal:</span>
+                        <div class="relative">
+                            <span class="absolute left-1 top-1 z-[2]">$</span>
+                            <input
+                                    type="number"
+                                    step=".01"
+                                    bind:value={subtotal}
+                                    class="pl-5 pr-1 py-1 w-24 text-sm font-medium text-gray-900 border rounded"
+                            />
+                        </div>
                     </div>
-                </div>
-                <div class="flex justify-between mb-2">
-                    <span class="text-sm font-medium text-gray-700">Discount:</span>
-                    <div class="relative">
-                        <span class="absolute left-1 top-1 z-[2]">$</span>
-                        <input
-                                type="number"
-                                step=".01"
-                                bind:value={customerBooking.transaction.discount}
-                                class="pl-5 pr-1 py-1 w-24 text-sm font-medium text-gray-900 border rounded"
-                        />
+                    <div class="flex justify-between mb-2">
+                        <span class="text-sm font-medium text-gray-700">Discount:</span>
+                        <div class="relative">
+                            <span class="absolute left-1 top-1 z-[2]">$</span>
+                            <input
+                                    type="number"
+                                    step=".01"
+                                    bind:value={customerBooking.transaction.discount}
+                                    class="pl-5 pr-1 py-1 w-24 text-sm font-medium text-gray-900 border rounded"
+                            />
+                        </div>
                     </div>
-                </div>
-                <div class="flex justify-between mb-2 border-b-2">
-                    <div class="flex flex-row">
-                        <span class="text-sm font-medium text-gray-700">Net Subtotal</span>
-                        <InfoCircleSolid
-                                size="lg"
-                                id="netSubTotal"
-                                class="text-gray-400 hover:text-gray-900 dark:hover:text-white cursor-pointer ms-1"
-                        />
-                        <Tooltip triggerdBy="#netSubTotal" class="z-10">Net Subtotal = Subtotal - Discount</Tooltip>
-                        :
+                    <div class="flex justify-between mb-2 border-b-2">
+                        <div class="flex flex-row">
+                            <span class="text-sm font-medium text-gray-700">Net Subtotal</span>
+                            <InfoCircleSolid
+                                    size="lg"
+                                    id="netSubTotal"
+                                    class="text-gray-400 hover:text-gray-900 dark:hover:text-white cursor-pointer ms-1"
+                            />
+                            <Tooltip triggerdBy="#netSubTotal" class="z-10">Net Subtotal = Subtotal - Discount</Tooltip>
+                            :
+                        </div>
+                        <span class="text-sm font-medium text-gray-900">${netSubtotal}</span>
                     </div>
-                    <span class="text-sm font-medium text-gray-900">${netSubtotal}</span>
-                </div>
-                <div class="flex justify-between mb-2">
-                    <span class="text-sm font-medium text-gray-700">Tax:</span>
-                    <span class="text-sm font-medium text-gray-900">${tax}</span>
-                </div>
+                    <div class="flex justify-between mb-2">
+                        <span class="text-sm font-medium text-gray-700">Tax:</span>
+                        <span class="text-sm font-medium text-gray-900">${tax}</span>
+                    </div>
 
-                <div class="flex justify-between mb-2">
-                    <span class="text-sm font-medium text-gray-700">Tip:</span>
-                    <div class="relative">
-                        <span class="absolute left-1 top-1 z-[2]">$</span>
-                        <input
-                                type="number"
-                                step=".01"
-                                bind:value={customerBooking.transaction.tip}
-                                class="pl-5 pr-1 py-1 w-24 text-sm font-medium text-gray-900 border rounded"
-                        />
+                    <div class="flex justify-between mb-2">
+                        <span class="text-sm font-medium text-gray-700">Tip:</span>
+                        <div class="relative">
+                            <span class="absolute left-1 top-1 z-[2]">$</span>
+                            <input
+                                    type="number"
+                                    step=".01"
+                                    bind:value={customerBooking.transaction.tip}
+                                    class="pl-5 pr-1 py-1 w-24 text-sm font-medium text-gray-900 border rounded"
+                            />
+                        </div>
                     </div>
-                </div>
 
-                <div class="flex justify-between bg-green-100 px-[3px] border-y-[2px]  items-center mb-2">
-                    <span class="text-sm font-medium text-gray-700">Amount Due:</span>
-                    <span class="text-lg font-medium text-green-500"
-                          class:!text-red-500={parseFloat(amountDue) !== 0}>${parseFloat(amountDue).toFixed(2)}</span>
-                </div>
-
-
-                <div class="flex justify-between mb-2">
-                    <span class="text-sm font-medium text-gray-700">Credit Card Payment:</span>
-                    <div class="relative">
-                        <span class="absolute left-1 top-1 z-[2]">$</span>
-                        <input
-                                type="number"
-                                step=".01"
-                                bind:value={customerBooking.transaction.creditCardPayment}
-                                class="pl-5 pr-1 py-1 w-24 text-sm font-medium text-gray-900 border rounded"
-                        />
+                    <div class="flex justify-between bg-green-100 px-[3px] border-y-[2px]  items-center mb-2">
+                        <span class="text-sm font-medium text-gray-700">Amount Due:</span>
+                        <span class="text-lg font-medium text-green-500"
+                              class:!text-red-500={parseFloat(amountDue) !== 0}>${parseFloat(amountDue).toFixed(2)}</span>
                     </div>
-                </div>
-                <div class="flex justify-between mb-2">
-                    <span class="text-sm font-medium text-gray-700">Cash Payment:</span>
-                    <div class="relative">
-                        <span class="absolute left-1 top-1 z-[2]">$</span>
-                        <input
-                                type="number"
-                                step=".01"
-                                bind:value={customerBooking.transaction.cashPayment}
-                                class="pl-5 pr-1 py-1 w-24 text-sm font-medium text-gray-900 border rounded"
-                        />
-                    </div>
-                </div>
 
-                <div class="flex justify-between mb-2 border-b-2">
-                    <span class="text-sm font-medium text-gray-700">Total:</span>
-                    <span class="text-sm font-medium text-gray-900">${total}</span>
-                </div>
-            </Card>
+
+                    <div class="flex justify-between mb-2">
+                        <span class="text-sm font-medium text-gray-700">Credit Card Payment:</span>
+                        <div class="relative">
+                            <span class="absolute left-1 top-1 z-[2]">$</span>
+                            <input
+                                    type="number"
+                                    step=".01"
+                                    bind:value={customerBooking.transaction.creditCardPayment}
+                                    class="pl-5 pr-1 py-1 w-24 text-sm font-medium text-gray-900 border rounded"
+                            />
+                        </div>
+                    </div>
+                    <div class="flex justify-between mb-2">
+                        <span class="text-sm font-medium text-gray-700">Cash Payment:</span>
+                        <div class="relative">
+                            <span class="absolute left-1 top-1 z-[2]">$</span>
+                            <input
+                                    type="number"
+                                    step=".01"
+                                    bind:value={customerBooking.transaction.cashPayment}
+                                    class="pl-5 pr-1 py-1 w-24 text-sm font-medium text-gray-900 border rounded"
+                            />
+                        </div>
+                    </div>
+
+                    <div class="flex justify-between mb-2 border-b-2">
+                        <span class="text-sm font-medium text-gray-700">Total:</span>
+                        <span class="text-sm font-medium text-gray-900">${total}</span>
+                    </div>
+                </Card>
+            </div>
         </div>
     </div>
 </form>
@@ -263,7 +277,6 @@
     }
 
     .cost-summary-wrapper {
-        width: 100%;
         position: relative;
     }
 </style>
