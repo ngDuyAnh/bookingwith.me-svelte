@@ -1,4 +1,4 @@
-import {get, writable} from 'svelte/store';
+import {writable} from 'svelte/store';
 import {Transaction} from "$lib/api/initialize_functions/CustomerBooking.js";
 
 export const checkOutCustomerBookingModal = writable({
