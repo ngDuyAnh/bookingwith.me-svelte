@@ -6,8 +6,8 @@
     import {Card, Radio, Tooltip} from "flowbite-svelte";
     import {moveToCompleted} from "$lib/components/Modal/CustomerBookingClickModal/handle_customer_booking_state.js";
     import {
-        checkoutCustomerBookingModal
-    } from "$lib/components/Modal/CheckOutCustomerBookingModal/stores/CheckOutCustomerBookingModal.js";
+        checkOutCustomerBookingModal
+    } from "$lib/components/Modal/CheckOutCustomerBookingModal/stores/checkOutCustomerBookingModal.js";
     import {Transaction} from "$lib/api/initialize_functions/CustomerBooking.js";
 
     export let customerBooking;
@@ -51,6 +51,11 @@
 
             successfulSubmit = true;
 
+            // Hide the modal header and footer
+            if (submitCallback) {
+                submitCallback(successfulSubmit);
+            }
+
             // Submit the transaction and move it to completed
             await moveToCompleted(customerBooking);
         } else {
@@ -84,7 +89,7 @@
 
     let wasOpen=false;
     let showPaymentOption = false;
-    $:if ($checkoutCustomerBookingModal.open && !wasOpen) {
+    $:if ($checkOutCustomerBookingModal.open && !wasOpen) {
         wasOpen=true;
 
         // New transaction
@@ -105,7 +110,7 @@
         }
     }
 
-    $: if(!$checkoutCustomerBookingModal.open)
+    $: if(!$checkOutCustomerBookingModal.open)
     {
         wasOpen=false;
     }
