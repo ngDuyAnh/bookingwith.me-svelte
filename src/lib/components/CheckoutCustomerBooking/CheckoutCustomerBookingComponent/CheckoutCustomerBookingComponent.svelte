@@ -5,7 +5,9 @@
     import {business} from "$lib/page/stores/business/business.js";
     import {Card, Radio, Tooltip} from "flowbite-svelte";
     import {moveToCompleted} from "$lib/components/Modal/CustomerBookingClickModal/handle_customer_booking_state.js";
-    import {onMount} from "svelte";
+    import {
+        checkoutCustomerBookingModal
+    } from "$lib/components/Modal/CheckOutCustomerBookingModal/stores/CheckOutCustomerBookingModal.js";
 
     export let customerBooking;
 
@@ -78,46 +80,56 @@
     //
     // const hoverDiv = "border-2 border-transparent hover:border-gray-300 transition-colors duration-300 rounded"
 
-    let scrollContainer;
-    let cardStyle = {};
-
-    onMount(() => {
-        scrollContainer.addEventListener("scroll", () => {
-            cardStyle = `
-                right: -${scrollContainer.scrollLeft}px
-            `;
-        });
-    });
-
     let guestPaymentMethods = [];
+
     // Initialzie with the individual booking list
     // Initialize the  customerBooking.transaction.creditCardPayment at the beginning with all the guest payment method is preferred card
     // On checking the ratio box, recalculate the card and cash payments
 
-    function handlePaymentMethodChange(individualBooking, method) {
+    function handlePaymentMethodChange(individualBooking, index, method) {
 
         const guestCost = individualBookingCost(individualBooking);
 
+        console.log("!!!! individualBooking ",index," ",method, individualBooking);
         // Previously selected
-        if (individualBooking.paymentMethod === 'Card')
-        {
+        if (guestPaymentMethods[index] === 'card') {
             customerBooking.transaction.creditCardPayment -= guestCost;
-        }
-        else if (individualBooking.paymentMethod === 'Cash')
-        {
+        } else if (guestPaymentMethods[index] === 'cash') {
             customerBooking.transaction.cashPayment -= guestCost;
         }
 
-        if (method === 'Card') {
+        if (method === 'card') {
             customerBooking.transaction.creditCardPayment += guestCost;
-        } else if (method === 'Cash') {
+        } else if (method === 'cash') {
             customerBooking.transaction.cashPayment += guestCost;
         }
 
-        individualBooking.paymentMethod = method;
+        console.log("customer booking from change", customerBooking);
+        guestPaymentMethods[index] = method;
     }
 
     $: console.log("customerBooking", customerBooking);
+
+    let wasOpen=false;
+    $:if ($checkoutCustomerBookingModal.open && !wasOpen) {
+        wasOpen=true;
+        guestPaymentMethods = Array(customerBooking.customerIndividualBookingList.length).fill('card');
+
+        for(let i in customerBooking.customerIndividualBookingList)
+        {
+            console.log("i ",i," ",);
+            const guestCost = individualBookingCost(customerBooking.customerIndividualBookingList[i]);
+            customerBooking.transaction.creditCardPayment += guestCost;
+            // handlePaymentMethodChange(, i, guestPaymentMethods[i]);
+        }
+
+        // console.log(guestPaymentMethods);
+    }
+
+    $: if(!$checkoutCustomerBookingModal.open)
+    {
+        wasOpen=false;
+    }
 </script>
 
 <form
@@ -135,7 +147,8 @@
         </div>
         <div class="w-full flex flex-col lg:flex-row lg:flex-grow">
             <div class="flex w-full lg:flex-grow overflow-x-auto ">
-                <Card class="lg:rounded-r-none rounded-t-none rounded-b-none lg:rounded-b lg:rounded-bl-xl w-fit lg:shadow-transparent lg:border-r-[1px]" size="xl">
+                <Card class="lg:rounded-r-none rounded-t-none rounded-b-none lg:rounded-b lg:rounded-bl-xl w-fit lg:shadow-transparent lg:border-r-[1px]"
+                      size="xl">
                     <h2 class="text-lg md:text-xl lg:text-2xl font-medium text-gray-800 dark:text-white mb-4 shadow-sm">
                         Booking Details
                     </h2>
@@ -227,16 +240,16 @@
                                                 <Radio
                                                         name="paymentMethod-{index}"
                                                         value="Card"
-                                                        checked={individualBooking.paymentMethod === 'Card'}
-                                                        on:change={() => handlePaymentMethodChange(individualBooking, 'Card')}
+                                                        checked={guestPaymentMethods[index]==='card'}
+                                                        on:change={() => handlePaymentMethodChange(individualBooking,index, 'card')}
                                                 >
                                                     Card
                                                 </Radio>
                                                 <Radio
                                                         name="paymentMethod-{index}"
                                                         value="Cash"
-                                                        checked={individualBooking.paymentMethod === 'Cash'}
-                                                        on:change={() => handlePaymentMethodChange(individualBooking, 'Cash')}
+                                                        checked={guestPaymentMethods[index]==='cash'}
+                                                        on:change={() => handlePaymentMethodChange(individualBooking, index, 'cash')}
                                                 >
                                                     Cash
                                                 </Radio>
@@ -253,7 +266,8 @@
 
             <!-- Cost Summary -->
             <div class="w-full flex justify-center lg:flex-grow lg:w-fit lg:mb-0 mb-1">
-                <Card class="w-full lg:rounded-l-none rounded-t-none lg:rounded-br-xl lg:shadow-transparent lg:border-l-[1px]" size="xl">
+                <Card class="w-full lg:rounded-l-none rounded-t-none lg:rounded-br-xl lg:shadow-transparent lg:border-l-[1px]"
+                      size="xl">
                     <h2 class="text-lg md:text-xl lg:text-2xl font-medium text-gray-800 dark:text-white mb-4 shadow-sm">
                         Cost Summary
                     </h2>

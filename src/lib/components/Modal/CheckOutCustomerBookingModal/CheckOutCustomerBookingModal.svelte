@@ -12,15 +12,6 @@
     import {customerBookingSubtotal} from "$lib/api/utility_functions/CustomerBooking.js";
     import {business} from "$lib/page/stores/business/business.js";
 
-
-
-
-
-
-
-
-
-
 </script>
 
 <div class="absolute top-0 left-0 right-0 z-[2000]">
