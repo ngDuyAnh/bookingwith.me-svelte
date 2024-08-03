@@ -23,7 +23,7 @@
     } from "$lib/components/Modal/CustomerBookingLobbyModal/stores/customerBookingLobbyModal.js";
     import {
         handleCheckoutCustomerBookingClick
-    } from "$lib/components/Modal/CheckOutCustomerBookingModal/stores/CheckOutCustomerBookingModal.js";
+    } from "$lib/components/Modal/CheckOutCustomerBookingModal/stores/checkOutCustomerBookingModal.js";
 
     export let customerBooking;
 

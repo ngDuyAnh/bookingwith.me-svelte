@@ -1,21 +1,25 @@
 <script>
-    import {Badge, Button, Checkbox, Modal} from "flowbite-svelte";
-    import {CartOutline, CashSolid, UsersGroupSolid} from "flowbite-svelte-icons";
+    import {Button, Modal} from "flowbite-svelte";
+    import {CartOutline} from "flowbite-svelte-icons";
     import {
-        customerBookingLobbyModal
-    } from "$lib/components/Modal/CustomerBookingLobbyModal/stores/customerBookingLobbyModal.js";
-    import {
-        checkoutCustomerBookingModal
-    } from "$lib/components/Modal/CheckOutCustomerBookingModal/stores/CheckOutCustomerBookingModal.js";
+        checkOutCustomerBookingModal, handleCloseCheckoutCustomerBooking
+    } from "$lib/components/Modal/CheckOutCustomerBookingModal/stores/checkOutCustomerBookingModal.js";
     import CheckoutCustomerBookingComponent
         from "$lib/components/CheckoutCustomerBooking/CheckoutCustomerBookingComponent/CheckoutCustomerBookingComponent.svelte";
-    import {customerBookingSubtotal} from "$lib/api/utility_functions/CustomerBooking.js";
-    import {business} from "$lib/page/stores/business/business.js";
 
+    let showHeaderAndFooter = true;
+    function submitCallback(hideHeaderAndFooter) {
+        showHeaderAndFooter = !hideHeaderAndFooter;
+
+        // Close the modal
+        setTimeout(() => {
+            handleCloseCheckoutCustomerBooking();
+        }, 1000);
+    }
 </script>
 
 <div class="absolute top-0 left-0 right-0 z-[2000]">
-    <Modal bind:open={$checkoutCustomerBookingModal.open}
+    <Modal bind:open={$checkOutCustomerBookingModal.open}
            classHeader="!p-1"
            classBody="p-4 md:p-5 space-y-0 flex-1 overflow-y-auto overscroll-contain"
            class="xl:w-full sm:w-11/12 w-full h-[80vh] border-8 "
@@ -30,27 +34,20 @@
                         Checkout
                     </h1>
                 </div>
-                <!--{#if showHeaderAndFooter}-->
-                <!--    <div class="w-1/2 flex justify-center">-->
-                <!--        <div class="flex flex-row items-center space-x-2">-->
-                <!--            <Badge color="dark" class="space-x-2" large>-->
-                <!--                <span class="flex flex-row"><UsersGroupSolid/> Guest(s):  {totalGuests}</span>-->
-                <!--                <span class="flex flex-row"><CashSolid/> Total: ${totalServiceCost}</span>-->
-                <!--            </Badge>-->
-                <!--        </div>-->
-                <!--    </div>-->
-                <!--{/if}-->
             </div>
         </svelte:fragment>
 
         <CheckoutCustomerBookingComponent
-            bind:customerBooking={$checkoutCustomerBookingModal.customerBooking}
+            bind:customerBooking={$checkOutCustomerBookingModal.customerBooking}
+            {submitCallback}
         />
 
         <svelte:fragment slot="footer">
-            <Button form="checkoutForm" type="submit" class="ml-auto">
-                Checkout
-            </Button>
+            {#if showHeaderAndFooter}
+                <Button form="checkoutForm" type="submit" class="ml-auto">
+                    Checkout
+                </Button>
+            {/if}
         </svelte:fragment>
     </Modal>
 </div>
