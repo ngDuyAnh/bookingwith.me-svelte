@@ -191,10 +191,7 @@
                     <span class="text-sm font-medium text-gray-700">Tax:</span>
                     <span class="text-sm font-medium text-gray-900">${tax}</span>
                 </div>
-                <div class="flex justify-between mb-2">
-                    <span class="text-sm font-medium text-gray-700">Subtotal with Tax:</span>
-                    <span class="text-sm font-medium text-gray-900">${subtotalWithTax}</span>
-                </div>
+
                 <div class="flex justify-between mb-2">
                     <span class="text-sm font-medium text-gray-700">Tip:</span>
                     <div class="relative">
@@ -207,10 +204,14 @@
                         />
                     </div>
                 </div>
-                <div class="flex justify-between mb-2 border-b-2">
-                    <span class="text-sm font-medium text-gray-700">Total:</span>
-                    <span class="text-sm font-medium text-gray-900">${total}</span>
+                
+                <div class="flex justify-between">
+                    <span class="text-sm font-medium text-gray-700">Amount Due:</span>
+                    <span class="text-lg font-medium text-green-500"
+                          class:!text-red-500={parseFloat(amountDue) !== 0}>${parseFloat(amountDue).toFixed(2)}</span>
                 </div>
+
+
                 <div class="flex justify-between mb-2">
                     <span class="text-sm font-medium text-gray-700">Credit Card Payment:</span>
                     <div class="relative">
@@ -235,10 +236,10 @@
                         />
                     </div>
                 </div>
-                <div class="flex justify-between">
-                    <span class="text-sm font-medium text-gray-700">Amount Due:</span>
-                    <span class="text-lg font-medium text-green-500"
-                          class:!text-red-500={parseFloat(amountDue) !== 0}>${parseFloat(amountDue).toFixed(2)}</span>
+
+                <div class="flex justify-between mb-2 border-b-2">
+                    <span class="text-sm font-medium text-gray-700">Total:</span>
+                    <span class="text-sm font-medium text-gray-900">${total}</span>
                 </div>
             </Card>
         </div>
