@@ -112,3 +112,39 @@ export function serviceBookingCost(serviceBooking)
     // Return
     return cost;
 }
+
+export function getEmployeeTips(customerBookingList, employee)
+{
+    let totalTips = 0;
+    customerBookingList.forEach(customerBooking => {
+        // Get the transaction
+        const transaction = customerBooking.transaction;
+
+        // Determine the ratio of tips the employee
+        // Right now the ratio is based on the service duration
+        let totalRatio = 0;
+        let employeeRatio = 0;
+        customerBooking.customerIndividualBookingList.forEach(individualBooking => {
+            individualBooking.customerIndividualServiceBookingList.forEach(serviceBooking => {
+
+                const timeLength = serviceBooking.service.serviceTimeLength;
+
+                totalRatio += timeLength;
+
+                // It is the targeted employee
+                if (serviceBooking.assignedEmployee.id === employee.id)
+                {
+                    employeeRatio += timeLength;
+                }
+            });
+        });
+
+        console.log(`${transaction.tip} * ${employeeRatio} / ${totalRatio}`)
+
+        // Add the tip
+        totalTips += transaction.tip * (employeeRatio / totalRatio);
+    });
+
+    // Return
+    return totalTips;
+}

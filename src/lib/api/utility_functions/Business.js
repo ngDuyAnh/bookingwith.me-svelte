@@ -17,6 +17,15 @@ export function findEmployeeFromBusinessUsingEmployeeID(business, employeeID)
     return null;
 }
 
+export function findEmployeeFromBusinessUsingEmail(business, email) {
+    for (let employeeFromBusiness of business.employeeList) {
+        if (employeeFromBusiness.user?.email === email) {
+            return employeeFromBusiness;
+        }
+    }
+    return null;
+}
+
 export function findServiceGroupFromBusiness(business, serviceGroup) {
     return findServiceGroupFromBusinessUsingID(business, serviceGroup.id);
 }

@@ -20,8 +20,9 @@
     import {
         fetchCustomerBookingQueueList
     } from "$lib/page/protected/business-portal/page_lobby/stores/dashboard_store.js";
+    import Information from "$lib/page/protected/business-portal/page_employee/page/Information/Information.svelte";
 
-    let tabs = ["My Timetable", "Service Spotlight"];
+    let tabs = ["My Timetable", "Service Spotlight", "Information"];
     let selectedIndex = 0;
 
     let loading = true;
@@ -171,6 +172,8 @@
             <MyTimetable/>
         {:else if selectedIndex === 1}
             <UpcomingService/>
+        {:else if selectedIndex === 2}
+            <Information/>
         {/if}
     </div>
 {/if}
