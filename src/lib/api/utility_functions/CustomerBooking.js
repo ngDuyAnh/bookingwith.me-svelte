@@ -91,11 +91,20 @@ export function customerBookingSubtotal(customerBooking)
     let subtotal = 0;
     if(customerBooking) {
         customerBooking.customerIndividualBookingList.forEach(individualBooking => {
-            individualBooking.customerIndividualServiceBookingList.forEach(serviceBooking => {
-                subtotal += serviceBookingCost(serviceBooking);
-            });
+            subtotal += individualBookingCost(individualBooking);
         });
     }
+
+    // Return
+    return subtotal;
+}
+
+export function individualBookingCost(individualBooking)
+{
+    let subtotal = 0;
+    individualBooking.customerIndividualServiceBookingList.forEach(serviceBooking => {
+        subtotal += serviceBookingCost(serviceBooking);
+    });
 
     // Return
     return subtotal;

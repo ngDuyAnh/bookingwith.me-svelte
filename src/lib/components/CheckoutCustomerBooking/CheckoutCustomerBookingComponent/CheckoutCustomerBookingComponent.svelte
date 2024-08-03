@@ -1,7 +1,7 @@
 <script>
     import {InfoCircleSolid, UserCircleSolid} from "flowbite-svelte-icons";
     import {formatPhoneNumber} from "$lib/application/FormatPhoneNumber.js";
-    import {customerBookingSubtotal} from "$lib/api/utility_functions/CustomerBooking.js";
+    import {customerBookingSubtotal, individualBookingCost} from "$lib/api/utility_functions/CustomerBooking.js";
     import {business} from "$lib/page/stores/business/business.js";
     import {Card, Radio, Tooltip} from "flowbite-svelte";
     import {moveToCompleted} from "$lib/components/Modal/CustomerBookingClickModal/handle_customer_booking_state.js";
@@ -89,6 +89,34 @@
         });
     });
 
+    let guestPaymentMethods = [];
+    // Initialzie with the individual booking list
+    // Initialize the  customerBooking.transaction.creditCardPayment at the beginning with all the guest payment method is preferred card
+    // On checking the ratio box, recalculate the card and cash payments
+
+    function handlePaymentMethodChange(individualBooking, method) {
+
+        const guestCost = individualBookingCost(individualBooking);
+
+        // Previously selected
+        if (individualBooking.paymentMethod === 'Card')
+        {
+            customerBooking.transaction.creditCardPayment -= guestCost;
+        }
+        else if (individualBooking.paymentMethod === 'Cash')
+        {
+            customerBooking.transaction.cashPayment -= guestCost;
+        }
+
+        if (method === 'Card') {
+            customerBooking.transaction.creditCardPayment += guestCost;
+        } else if (method === 'Cash') {
+            customerBooking.transaction.cashPayment += guestCost;
+        }
+
+        individualBooking.paymentMethod = method;
+    }
+
     $: console.log("customerBooking", customerBooking);
 </script>
 
@@ -148,8 +176,8 @@
                         </tr>
                         </thead>
                         <tbody class="bg-white">
-                        {#each customerBooking.customerIndividualBookingList as customerIndividualBookingList, index (customerIndividualBookingList.individualID)}
-                            {#each customerIndividualBookingList.customerIndividualServiceBookingList as individualServiceBooking, ind (individualServiceBooking.serviceBookingID)}
+                        {#each customerBooking.customerIndividualBookingList as individualBooking, index (individualBooking.individualID)}
+                            {#each individualBooking.customerIndividualServiceBookingList as serviceBooking, ind (serviceBooking.serviceBookingID)}
                                 <tr class={ind === 0 && index !== 0 ? "divide-y" : ""}>
                                     <td
                                             class="w-20 px-2 py-4 whitespace-nowrap text-sm font-medium text-gray-900"
@@ -157,45 +185,63 @@
                                         <span hidden={ind > 0}>Guest #{index + 1}</span>
                                     </td>
 
+                                    <!--Service name-->
                                     <td
                                             class="px-6 py-4 whitespace-nowrap text-sm text-gray-500"
                                     >
                                         <div class="flex justify-between items-center pt-2">
-                                            <!--Service name-->
                                             <span class="w-[250px] truncate"
-                                            >{individualServiceBooking.service.serviceName}</span
+                                            >{serviceBooking.service.serviceName}</span
                                             >
                                             <Tooltip
-                                            >{individualServiceBooking.service
+                                            >{serviceBooking.service
                                                 .serviceName}</Tooltip
                                             >
                                         </div>
                                     </td>
+
+                                    <!--Cost-->
                                     <td
                                             class="px-6 py-4 whitespace-nowrap text-sm text-gray-500"
                                     >
                                         <div class="flex justify-between items-center pt-2">
-                                            <!--Cost-->
-                                            <span class="w-[100px] truncate">${individualServiceBooking.serviceCostAdjusted}</span>
-                                            <!--<input type="number" bind:value={individualServiceBooking.serviceCostAdjusted} class="w-32 text-center border rounded p-1" />-->
+                                            <span class="w-[100px] truncate">${serviceBooking.serviceCostAdjusted}</span>
+                                            <!--<input type="number" bind:value={serviceBooking.serviceCostAdjusted} class="w-32 text-center border rounded p-1" />-->
                                         </div>
                                     </td>
+
+                                    <!--Employee worked on the service-->
                                     <td
                                             class="px-6 py-4 whitespace-nowrap text-sm text-gray-500"
                                     >
                                         <div class="flex justify-between items-center pt-2">
-                                            <!--Employee worked on the service-->
-                                            <span class="w-32 text-center truncate">{individualServiceBooking.assignedEmployee ? individualServiceBooking.assignedEmployee.employeeName : "Not Recorded"}</span>
-                                            <Tooltip>{individualServiceBooking.assignedEmployee ? individualServiceBooking.assignedEmployee.employeeName : "Not Recorded"}</Tooltip>
+                                            <span class="w-32 text-center truncate">{serviceBooking.assignedEmployee ? serviceBooking.assignedEmployee.employeeName : "Not Recorded"}</span>
+                                            <Tooltip>{serviceBooking.assignedEmployee ? serviceBooking.assignedEmployee.employeeName : "Not Recorded"}</Tooltip>
                                         </div>
                                     </td>
+
+                                    <!--Payment method-->
                                     <td
                                             class="px-6 py-4 whitespace-nowrap text-sm text-gray-500"
                                     >
-                                        {#if ind == 0}
+                                        {#if ind === 0}
                                             <div class="flex flex-col pt-2">
-                                                <Radio name="example">Card</Radio>
-                                                <Radio name="example" checked={true}>Cash</Radio>
+                                                <Radio
+                                                        name="paymentMethod-{index}"
+                                                        value="Card"
+                                                        checked={individualBooking.paymentMethod === 'Card'}
+                                                        on:change={() => handlePaymentMethodChange(individualBooking, 'Card')}
+                                                >
+                                                    Card
+                                                </Radio>
+                                                <Radio
+                                                        name="paymentMethod-{index}"
+                                                        value="Cash"
+                                                        checked={individualBooking.paymentMethod === 'Cash'}
+                                                        on:change={() => handlePaymentMethodChange(individualBooking, 'Cash')}
+                                                >
+                                                    Cash
+                                                </Radio>
                                             </div>
                                         {/if}
                                     </td>
