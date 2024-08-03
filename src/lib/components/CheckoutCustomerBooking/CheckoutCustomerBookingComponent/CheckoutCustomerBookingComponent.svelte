@@ -78,39 +78,26 @@
     //
     // const hoverDiv = "border-2 border-transparent hover:border-gray-300 transition-colors duration-300 rounded"
 
-    let scrollContainer;
-    let cardStyle = {};
-
-    onMount(() => {
-        scrollContainer.addEventListener("scroll", () => {
-            cardStyle = `
-                right: -${scrollContainer.scrollLeft}px
-            `;
-        });
-    });
-
     $: console.log("customerBooking", customerBooking);
 </script>
 
 <form
-        class="space-y-4 h-full overflow-x-auto"
+        class="flex flex-col space-y-4 h-full overflow-x-auto"
         id="checkoutForm"
         on:submit|preventDefault={submitCheckout}
 >
-    <div bind:this={scrollContainer} class="scroll-container h-full space-y-1">
-        <div class="cost-summary-wrapper flex justify-center w-full" style={cardStyle}>
+    <div class="flex flex-col lg:flex-grow w-full h-full space-y-1">
+        <div class="w-full flex justify-center w-full">
             <div class="flex flex-row items-center space-x-2 bg-gray-100 p-3 rounded-b-none rounded-lg shadow w-full">
                 <UserCircleSolid class="h-6 w-6 text-blue-500"/>
                 <span class="font-medium text-gray-700">{customerBooking.customer.customerName}</span>
                 <span class="font-medium text-gray-700">{formatPhoneNumber(customerBooking.customer.phoneNumber)}</span>
             </div>
         </div>
-        <div class="w-full flex flex-col lg:flex-row flex-grow">
-            <div class="flex w-fit justify-center lg:flex-grow">
-                <Card class=" w-fit" size="xl">
-                    <h2
-                            class="text-lg md:text-xl lg:text-2xl font-medium text-gray-800 dark:text-white mb-4 shadow-sm"
-                    >
+        <div class="w-full flex flex-col lg:flex-row lg:flex-grow">
+            <div class="flex w-full lg:flex-grow overflow-x-auto ">
+                <Card class="lg:rounded-r-none lg:rounded-t-none lg:rounded-bl-xl w-fit lg:shadow-transparent lg:border-r-[1px]" size="xl">
+                    <h2 class="text-lg md:text-xl lg:text-2xl font-medium text-gray-800 dark:text-white mb-4 shadow-sm">
                         Booking Details
                     </h2>
                     <table class="table-fixed w-full border-y-[1px]">
@@ -208,8 +195,8 @@
             </div>
 
             <!-- Cost Summary -->
-            <div class="cost-summary-wrapper w-full flex justify-center lg:flex-grow" style={cardStyle}>
-                <Card class="w-full rounded-t-none" size="xl">
+            <div class="w-full flex justify-center lg:flex-grow lg:w-fit">
+                <Card class="w-full lg:rounded-l-none lg:rounded-t-none lg:rounded-br-xl lg:shadow-transparent lg:border-l-[1px]" size="xl">
                     <h2 class="text-lg md:text-xl lg:text-2xl font-medium text-gray-800 dark:text-white mb-4 shadow-sm">
                         Cost Summary
                     </h2>
@@ -319,13 +306,4 @@
 </form>
 
 <style>
-    .scroll-container {
-        width: 100%;
-        overflow-x: auto;
-        position: relative;
-    }
-
-    .cost-summary-wrapper {
-        position: relative;
-    }
 </style>
