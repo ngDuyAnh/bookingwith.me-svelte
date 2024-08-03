@@ -42,6 +42,24 @@ export async function validateManagerAccess(id, password) {
     }
 }
 
+export async function updateManagerPassword(businessID, newPassword) {
+    const FETCH_URL = `${API_URL}/update-manager-password/${businessID}`;
+
+    const response = await fetch(`${FETCH_URL}`, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/x-www-form-urlencoded',
+        },
+        body: `newPassword=${encodeURIComponent(newPassword)}`
+    });
+
+    if (!response.ok) {
+        throw new Error(`Failed to fetch. Status: ${response.status}`);
+    }
+
+    return response.json();
+}
+
 export async function getBusinessIDList() {
     const FETCH_URL = `${API_URL}/get-business-id-list`;
 

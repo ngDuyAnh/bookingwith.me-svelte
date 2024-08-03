@@ -3,6 +3,7 @@
     import {initializeBusiness} from "$lib/api/api_server/api_endpoints/business-portal/api.js";
     import {PUBLIC_ORIGIN} from "$env/static/public";
     import {Spinner} from "flowbite-svelte";
+    import {updateManagerPassword} from "$lib/api/api_server/api_endpoints/business-portal/api.js";
 
     let loading = false;
     let businessValue = JSON.parse(JSON.stringify($business));
@@ -12,6 +13,18 @@
         loading = true;
         await initializeBusiness(businessValue);
         loading = false;
+    }
+
+    let newManagerPassword = "";
+    async function submitUpdateManagerPassword()
+    {
+        const temp = newManagerPassword;
+        newManagerPassword = "";
+        await updateManagerPassword(
+            $business.businessInfo.businessID, temp
+        );
+
+        console.log("Manager password changed.");
     }
 
     $: console.log("businessValue", businessValue);
@@ -57,6 +70,12 @@
         <div class="form-group">
             <button type="submit" class="submit-button">Submit</button>
         </div>
+    </form>
+
+    <form on:submit|preventDefault={submitUpdateManagerPassword}>
+        <label for="googleReviewLink">Manager password:</label>
+        <input type="text" id="googleReviewLink" bind:value={newManagerPassword} class="input-field" required>
+        <button type="submit" class="submit-button">Submit manager password</button>
     </form>
 {/if}
 
