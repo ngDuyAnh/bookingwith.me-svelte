@@ -2,6 +2,8 @@
     import dayjs from "dayjs";
     import {formatToTime, formatToTimeAm} from "$lib/application/Formatter.js";
     import {Tooltip} from "flowbite-svelte";
+    import {CustomerBookingChannel} from "$lib/api/initialize_functions/CustomerBooking.js";
+    import {GlobeSolid} from "flowbite-svelte-icons";
 
     export let customerBooking;
 
@@ -27,6 +29,10 @@
                     d="M5 11.917 9.724 16.5 19 7.5"/>
             </svg>
             <Tooltip triggeredBy="#confirmationTooltip{customerBooking.id}">Verified Phone Number</Tooltip>
+        {/if}
+        {#if customerBooking.bookingChannel === CustomerBookingChannel.ONLINE}
+            <GlobeSolid color="lightBlue" id="onlineBookingTooltip{customerBooking.id}"/>
+            <Tooltip triggeredBy="#onlineBookingTooltip{customerBooking.id}">Online Booking</Tooltip>
         {/if}
     </span>
 
