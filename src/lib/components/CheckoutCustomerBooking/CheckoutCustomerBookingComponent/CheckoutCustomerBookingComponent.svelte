@@ -63,58 +63,99 @@
         }
     }
 
-    let guestPaymentMethods = [];
+    let guestPaymentList = [];
+
+    // function qwerwer(){
+    //     for(let i in guestPaymentList)
+    //     {
+    //
+    //     }
+    // }
+
     function handlePaymentMethodChange(individualBooking, index, method) {
 
-        const guestCost = (individualBookingCost(individualBooking)).toFixed(2);
+        let totalServices = 0;
+        let currBookingTotalServices = 0;
+        for (let i in customerBooking.customerIndividualBookingList) {
+            console.log(customerBooking.customerIndividualBookingList[i]);
+            if (individualBooking.individualID === customerBooking.customerIndividualBookingList[i].individualID) {
+                currBookingTotalServices += customerBooking.customerIndividualBookingList[i].customerIndividualServiceBookingList.length;
+            }
+            totalServices += customerBooking.customerIndividualBookingList[i].customerIndividualServiceBookingList.length;
+        }
+
+        console.log("totalServices", totalServices);
+        console.log("currBookingTotalServices", currBookingTotalServices);
+        const guestCost = (individualBookingCost(individualBooking)) - (customerBooking.transaction.discount / (totalServices/currBookingTotalServices));
+        console.log("guestCost", guestCost);
         const guestTax = (guestCost * $business.businessInfo.taxRate).toFixed(2);
         const guestTotal = parseFloat(guestCost) + parseFloat(guestTax);
+        guestPaymentList[index].method = method;
+        guestPaymentList[index].amount = guestTotal;
 
+        let cardTotal = 0;
+        let cashTotal = 0;
+
+        // Loop through each guest payment and sum based on the method
+        guestPaymentList.forEach(payment => {
+            if (payment.method === 'card') {
+                cardTotal += parseFloat(payment.amount);
+            } else if (payment.method === 'cash') {
+                cashTotal += parseFloat(payment.amount);
+            }
+        });
+
+        console.log('Total Card Payments:', cardTotal.toFixed(2));
+        console.log('Total Cash Payments:', cashTotal.toFixed(2));
+
+        customerBooking.transaction.creditCardPayment = cardTotal.toFixed(2);
+
+        customerBooking.transaction.cashPayment = cashTotal.toFixed(2);
         // Previously selected
-        if (guestPaymentMethods[index] === 'card') {
-            customerBooking.transaction.creditCardPayment -= guestTotal;
-        } else if (guestPaymentMethods[index] === 'cash') {
-            customerBooking.transaction.cashPayment -= guestTotal;
-        }
+        // if (guestPaymentList[index].method === 'card') {
+        // } else if (guestPaymentList[index].method === 'cash') {
+        //
+        // }
 
-        if (method === 'card') {
-            customerBooking.transaction.creditCardPayment += guestTotal;
-        } else if (method === 'cash') {
-            customerBooking.transaction.cashPayment += guestTotal;
-        }
+        // if (method === 'card') {
+        //     customerBooking.transaction.creditCardPayment += totalPaymentAmount;
+        // } else if (method === 'cash') {
+        //     customerBooking.transaction.cashPayment += totalPaymentAmount;
+        // }
 
         // Update the payment method for the guest
-        guestPaymentMethods[index] = method;
     }
 
-    let wasOpen=false;
+    let wasOpen = false;
     let showPaymentOption = false;
     $:if ($checkOutCustomerBookingModal.open && !wasOpen) {
         wasOpen = true;
 
         // New transaction
         // Initialize the payment methods
-        if (JSON.stringify(customerBooking.transaction) === JSON.stringify(Transaction()))
-        {
+        if (JSON.stringify(customerBooking.transaction) === JSON.stringify(Transaction())) {
             console.log("Here");
 
             showPaymentOption = true;
 
-            guestPaymentMethods = Array(customerBooking.customerIndividualBookingList.length).fill('card');
-
-            for (let i in customerBooking.customerIndividualBookingList)
-            {
-                const guestCost = (individualBookingCost(customerBooking.customerIndividualBookingList[i])).toFixed(2);
+            // Initialize guestPaymentList with the method and calculated amount
+            guestPaymentList = customerBooking.customerIndividualBookingList.map(individualBooking => {
+                const guestCost = parseFloat(individualBookingCost(individualBooking)).toFixed(2);
                 const guestTax = (parseFloat(guestCost) * $business.businessInfo.taxRate).toFixed(2);
-                const guestTotal = parseFloat(guestCost) + parseFloat(guestTax);
-                customerBooking.transaction.creditCardPayment += guestTotal;
-            }
+                const guestTotal = (parseFloat(guestCost) + parseFloat(guestTax)).toFixed(2);
+
+                customerBooking.transaction.creditCardPayment += parseFloat(guestTotal);
+
+                return {
+                    method: 'card',
+                    amount: guestTotal
+                };
+            });
         }
     }
 
-    $: if(!$checkOutCustomerBookingModal.open)
-    {
-        wasOpen=false;
+    $: if (!$checkOutCustomerBookingModal.open) {
+        wasOpen = false;
     }
 </script>
 
@@ -231,7 +272,7 @@
                                                         <Radio
                                                                 name="paymentMethod-{index}"
                                                                 value="Card"
-                                                                checked={guestPaymentMethods[index]==='card'}
+                                                                checked={guestPaymentList[index].method==='card'}
                                                                 on:change={() => handlePaymentMethodChange(individualBooking,index, 'card')}
                                                         >
                                                             Card
@@ -239,7 +280,7 @@
                                                         <Radio
                                                                 name="paymentMethod-{index}"
                                                                 value="Cash"
-                                                                checked={guestPaymentMethods[index]==='cash'}
+                                                                checked={guestPaymentList[index].method==='cash'}
                                                                 on:change={() => handlePaymentMethodChange(individualBooking, index, 'cash')}
                                                         >
                                                             Cash
@@ -295,7 +336,8 @@
                                         id="netSubTotal"
                                         size="lg"
                                 />
-                                <Tooltip class="z-10" triggerdBy="#netSubTotal">Net Subtotal = Subtotal - Discount</Tooltip>
+                                <Tooltip class="z-10" triggerdBy="#netSubTotal">Net Subtotal = Subtotal - Discount
+                                </Tooltip>
                                 :
                             </div>
                             <span class="text-sm font-medium text-gray-900">${netSubtotal}</span
