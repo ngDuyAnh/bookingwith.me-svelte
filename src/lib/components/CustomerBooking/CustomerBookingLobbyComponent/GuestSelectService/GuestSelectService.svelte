@@ -7,6 +7,7 @@
 
     export let customerBooking;
     export let individualBookingIndex;
+    export let selectedSomething;
 
     // Reactive variables to store totals
     let totalServiceCost = 0;
@@ -39,6 +40,7 @@
 
         {#each individualBooking.customerIndividualServiceBookingList as serviceBooking, index (serviceBooking)}
             <ServiceBooking
+                    bind:selectedSomething={selectedSomething}
                     bind:individualBooking={individualBooking}
                     serviceBookingIndex={index}
                     bind:serviceBooking={serviceBooking}
@@ -49,6 +51,7 @@
         <div class="bg-green-100 border-2 border-dashed border-green-300 p-3 mt-4 rounded text-bold">
             <span class="block text-green-700 mb-2">Add New Service</span>
             <SelectServiceBooking
+                    bind:selectedSomething={selectedSomething}
                     newServiceSelect={true}
                     bind:individualBooking={individualBooking}
                     serviceBookingIndex={individualBooking.customerIndividualServiceBookingList.length}

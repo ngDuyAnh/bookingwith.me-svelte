@@ -1,27 +1,19 @@
 <script>
     import {fetchAvailableTimeList} from "$lib/api/api_server/functions.js";
-    import {Alert, Search, Spinner} from "flowbite-svelte";
+    import {Alert, Search, Spinner, Tooltip} from "flowbite-svelte";
     import dayjs from "dayjs";
     import {formatToTime, formatToTimeAM} from "$lib/application/Formatter.js";
     import {normalizeSearchInput} from "$lib/application/NormalizeSearchInput.js";
     import {fly} from "svelte/transition";
+    import {ExclamationCircleOutline, ExclamationCircleSolid, InfoCircleSolid,} from "flowbite-svelte-icons";
     import {
-        ExclamationCircleOutline,
-        InfoCircleSolid,
-    } from "flowbite-svelte-icons";
-    import {
-        availabilityFetched, selectAvailability
-    } from "$lib/components/CustomerBooking/CustomerBookingLobbyComponent/store/customerBookingLobbyComponent.js";
-    import {
+        availabilityFetched,
+        customerBookingLobbyComponent,
+        pleaseFetchAvailability,
+        selectAvailability,
         updateCurrentTime
     } from "$lib/components/CustomerBooking/CustomerBookingLobbyComponent/store/customerBookingLobbyComponent.js";
     import {nowTime} from "$lib/page/stores/business/business.js";
-    import {
-        pleaseFetchAvailability
-    } from "$lib/components/CustomerBooking/CustomerBookingLobbyComponent/store/customerBookingLobbyComponent.js";
-    import {
-        customerBookingLobbyComponent
-    } from "$lib/components/CustomerBooking/CustomerBookingLobbyComponent/store/customerBookingLobbyComponent.js";
 
     export let customerBooking;
 
@@ -146,13 +138,11 @@
                         );
 
                         // Reselect
-                        if (selected)
-                        {
+                        if (selected) {
                             selectAvailability(selected);
                         }
                         // Select the first element
-                        else
-                        {
+                        else {
                             selectAvailability(availabilityList[0]);
                         }
                     }
@@ -288,15 +278,22 @@
     </button>
 {:else if showAlert}
     <!--Alert for moving to customer booking information but at least a guest has not selected a service-->
-    <Alert
-            class="{showAlert ? '' : 'hidden'} rounded-none w-full flex justify-center"
-            dismissable={false}
-            params={{ x: 200 }}
-            transition={fly}
-    >
-        <InfoCircleSolid class="w-5 h-5 ripple" slot="icon"/>
-        {alertMsg}
-    </Alert>
+    <div class="hidden xl:{showAlert ? 'flex' : 'hidden'} rounded-none w-full flex justify-center">
+        <Alert
+                class="hidden xl:{showAlert ? 'flex' : 'hidden'} rounded-none w-full flex justify-center"
+                dismissable={false}
+                params={{ x: 200 }}
+                transition={fly}
+        >
+            <ExclamationCircleSolid class="w-5 h-5 ripple" slot="icon"/>
+            {alertMsg}
+        </Alert>
+    </div>
+
+    <div class="xl:hidden w-full h-full items-center justify-center flex">
+        <ExclamationCircleSolid id="errorAlert" class="ripple !w-20 !h-20 " size="lg" color="red" slot="icon"/>
+        <Tooltip triggeredBy="#errorAlert">{alertMsg}</Tooltip>
+    </div>
 {:else if fetching}
     <Spinner class="h-[100px] w-fit my-auto"/>
 {:else if filteredAvailabilityList.length > 0}

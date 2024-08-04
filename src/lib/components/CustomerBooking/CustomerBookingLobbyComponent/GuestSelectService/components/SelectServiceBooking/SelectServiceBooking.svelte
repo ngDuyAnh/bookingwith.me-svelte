@@ -9,6 +9,8 @@
     export let individualBooking;
     export let serviceBookingIndex;
 
+    export let selectedSomething;
+
     const defaultEmployeeOption = {label: "Any employee", value: null};
 
     // Get the service booking
@@ -47,6 +49,7 @@
     $: selectedEmployee = employeeSelectOptions.find(option => option.value?.id === serviceBooking?.bookedEmployee?.id);
 
     function handleServiceBookingSelect(event) {
+        selectedSomething=true;
         // console.log("handleServiceBookingSelect", event);
 
         let newService = event.detail.value;

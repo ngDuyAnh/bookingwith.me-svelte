@@ -5,6 +5,7 @@
     export let individualBooking;
     export let serviceBookingIndex;
     export let serviceBooking;
+    export let selectedSomething;
 
     $: servicingTime = getServicingDuration();
 
@@ -37,6 +38,7 @@
     <SelectServiceBooking
             bind:individualBooking={individualBooking}
             serviceBookingIndex={serviceBookingIndex}
+            bind:selectedSomething={selectedSomething}
     />
     <div class="mt-2 text-xs text-gray-700">
         <span class="font-semibold">Cost:</span> ${serviceBooking.service.serviceCost}

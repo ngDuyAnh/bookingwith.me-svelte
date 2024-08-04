@@ -2,7 +2,7 @@
     import {CustomerBooking, CustomerIndividualBooking} from "$lib/api/initialize_functions/CustomerBooking.js";
     import GuestSelectService
         from "$lib/components/CustomerBooking/CustomerBookingLobbyComponent/GuestSelectService/GuestSelectService.svelte";
-    import {Alert, Avatar, Button} from "flowbite-svelte";
+    import {Alert, Avatar, Button, Toast} from "flowbite-svelte";
     import GuestList from "$lib/components/CustomerBooking/CustomerBookingLobbyComponent/GuestList/GuestList.svelte";
     import TimeList from "$lib/components/CustomerBooking/CustomerBookingLobbyComponent/TimeList/TimeList.svelte";
     import {isToday, today} from "$lib/page/stores/business/business.js";
@@ -10,7 +10,7 @@
         ArrowLeftOutline,
         ArrowRightOutline,
         ChevronLeftOutline,
-        ChevronRightOutline,
+        ChevronRightOutline, ExclamationCircleSolid,
         InfoCircleSolid
     } from "flowbite-svelte-icons";
     import dayjs from "dayjs";
@@ -154,6 +154,7 @@
             pleaseFetchAvailability();
         }
     }
+    let selectedSomething;
 
     function nextCol() {
         if (focusIndividualColumnIndex !== 4)
@@ -161,13 +162,24 @@
     }
 
     let alertMsg = ""
+    let hideMsg=false;
 
-    $:console.log("customerbooking", customerBooking);
+    $:if(selectedSomething)
+    {
+        hideMsg=true;
+        selectedSomething=false;
+    }
+
+    $:if(alertMsg!=="")
+    {
+        hideMsg=false;
+    }
+
 
 </script>
 
 {#if !successfulSubmit}
-    <div class="flex flex-col h-full">
+    <div class="relative flex flex-col h-full">
         <div class=" relative flex items-center justify-center pb-2 w-full xl:hidden z-10">
             <!-- Container for the Previous Button -->
             <div class=" absolute left-0 flex-1 z-10">
@@ -244,7 +256,7 @@
                 </Button>
             </div>
         </div>
-        <div class="flex flex-grow xl:max-h-full max-h-[95%] flex-row xl:space-x-4">
+        <div class="relative flex flex-grow xl:max-h-full max-h-[95%] flex-row xl:space-x-4">
 
             <!--Guest column-->
             <div class="flex-1 flex flex-col xl:min-w-[230px] md:min-w-[50%] min-w-[100%] xl:block md:{focusDualColumnIndex===1?'block':'hidden'} {focusIndividualColumnIndex===1?'block':'hidden'}">
@@ -295,8 +307,9 @@
                         </div>
                     </div>
 
-                    <div class="h-full shadow overflow-y-auto {hoverDiv}">
+                    <div class="h-full shadow overflow-y-auto {hoverDiv}" on:hover={()=>{hideMsg=true;}}>
                         <GuestSelectService
+                                bind:selectedSomething={selectedSomething}
                                 bind:customerBooking={customerBooking}
                                 individualBookingIndex={selectedIndividualBookingIndex}
                         />
@@ -368,14 +381,14 @@
 
 
         </div>
-        <div class="{alertMsg==='' ? 'hidden' : ''} xl:hidden  w-full flex justify-center">
+        <div class="{alertMsg==='' || hideMsg ? 'hidden' : ''} fixed top-0 right-0 xl:hidden  w-full flex justify-center items-center">
             <Alert
-                    class=" rounded-t-none rounded-b-lg w-full flex justify-center"
+                    class="rounded-t-none border-x-2 border-b-2 !p-2 sm:!p-4 flex justify-center"
                     dismissable={false}
                     params={{ x: 200 }}
                     transition={fly}
             >
-                <InfoCircleSolid class="w-5 h-5 ripple" slot="icon"/>
+                <ExclamationCircleSolid class="ripple w-5 h-5 ripple" slot="icon"/>
                 {alertMsg}
             </Alert>
         </div>
@@ -421,5 +434,39 @@
 
     .flex-item {
         flex: 0 1 auto; /* flex-grow: 0, flex-shrink: 1, flex-basis: auto */
+    }
+
+
+    :global(.ripple) {
+        display: block;
+        width: 30px;
+        height: 30px;
+        border-radius: 50%;
+        border: 2px red solid;
+        animation: pulse 1s infinite;
+    }
+
+    @keyframes pulse {
+        0% {
+            box-shadow: 0 0 0 0 rgba(255, 0, 0, 0.4);
+        }
+        70% {
+            box-shadow: 0 0 0 10px rgba(255, 0, 0, 0);
+        }
+        100% {
+            box-shadow: 0 0 0 0 rgba(255, 0, 0, 0);
+        }
+    }
+
+    @-webkit-keyframes pulse {
+        0% {
+            -webkit-box-shadow: 0 0 0 0 rgba(255, 0, 0, 0.4);
+        }
+        70% {
+            -webkit-box-shadow: 0 0 0 10px rgba(255, 0, 0, 0);
+        }
+        100% {
+            -webkit-box-shadow: 0 0 0 0 rgba(255, 0, 0, 0);
+        }
     }
 </style>
