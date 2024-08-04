@@ -90,12 +90,14 @@
     let wasOpen=false;
     let showPaymentOption = false;
     $:if ($checkOutCustomerBookingModal.open && !wasOpen) {
-        wasOpen=true;
+        wasOpen = true;
 
         // New transaction
         // Initialize the payment methods
-        if (customerBooking.transaction === Transaction())
+        if (JSON.stringify(customerBooking.transaction) === JSON.stringify(Transaction()))
         {
+            console.log("Here");
+
             showPaymentOption = true;
 
             guestPaymentMethods = Array(customerBooking.customerIndividualBookingList.length).fill('card');
