@@ -273,7 +273,7 @@
             })
     }
 
-    let isConsentChecked = false;
+    let isConsentChecked = true;
 
     function styleOptions() {
         //console.log("styling");
@@ -362,7 +362,7 @@
         />
     </Label>
 
-    {#if customerBookingInformationFormProps.requiredAgreeToReceiveSms}
+    {#if customerBookingInformationFormProps.requiredAgreeToReceiveSMS}
         <Label class="space-y-2">
             <input type="checkbox"
                    bind:checked={isConsentChecked}
