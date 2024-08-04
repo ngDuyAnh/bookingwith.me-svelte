@@ -2,11 +2,17 @@
     import {CustomerBooking, CustomerIndividualBooking} from "$lib/api/initialize_functions/CustomerBooking.js";
     import GuestSelectService
         from "$lib/components/CustomerBooking/CustomerBookingLobbyComponent/GuestSelectService/GuestSelectService.svelte";
-    import {Avatar, Button} from "flowbite-svelte";
+    import {Alert, Avatar, Button} from "flowbite-svelte";
     import GuestList from "$lib/components/CustomerBooking/CustomerBookingLobbyComponent/GuestList/GuestList.svelte";
     import TimeList from "$lib/components/CustomerBooking/CustomerBookingLobbyComponent/TimeList/TimeList.svelte";
     import {isToday, today} from "$lib/page/stores/business/business.js";
-    import {ArrowLeftOutline, ArrowRightOutline, ChevronLeftOutline, ChevronRightOutline} from "flowbite-svelte-icons";
+    import {
+        ArrowLeftOutline,
+        ArrowRightOutline,
+        ChevronLeftOutline,
+        ChevronRightOutline,
+        InfoCircleSolid
+    } from "flowbite-svelte-icons";
     import dayjs from "dayjs";
     import {formatToDate} from "$lib/application/Formatter.js";
     import SubmitBooking
@@ -14,9 +20,11 @@
     import {
         customerBookingLobbyComponent,
         handleNewCustomerBookingLobbyComponent,
-        pleaseFetchAvailability, resetCustomerBookingLobbyComponent
+        pleaseFetchAvailability,
+        resetCustomerBookingLobbyComponent
     } from "$lib/components/CustomerBooking/CustomerBookingLobbyComponent/store/customerBookingLobbyComponent.js";
     import {tick} from "svelte";
+    import {fly} from "svelte/transition";
 
     export let options = {
         showSendSms: true,
@@ -117,19 +125,20 @@
     function prevDualCol() {
         if (focusDualColumnIndex !== 1)
             focusDualColumnIndex--;
-        focusIndividualColumnIndex=1;
+        focusIndividualColumnIndex = 1;
     }
 
     function prevIndividualCol() {
         if (focusIndividualColumnIndex !== 1)
             focusIndividualColumnIndex--;
-        focusDualColumnIndex=1;
+        focusDualColumnIndex = 1;
     }
+
     async function nextDualCol() {
         if (focusDualColumnIndex !== 2)
             focusDualColumnIndex++;
-        focusIndividualColumnIndex=1;
-        if (focusDualColumnIndex === 2 ) {
+        focusIndividualColumnIndex = 1;
+        if (focusDualColumnIndex === 2) {
             await tick(); // Ensure all updates are processed
             pleaseFetchAvailability();
         }
@@ -138,7 +147,7 @@
     async function nextIndividualCol() {
         if (focusIndividualColumnIndex !== 4)
             focusIndividualColumnIndex++;
-        focusDualColumnIndex=1;
+        focusDualColumnIndex = 1;
 
         if (focusIndividualColumnIndex === 3) {
             await tick(); // Ensure all updates are processed
@@ -146,12 +155,14 @@
         }
     }
 
-    function nextCol()
-    {
+    function nextCol() {
         if (focusIndividualColumnIndex !== 4)
             focusIndividualColumnIndex++;
     }
 
+    let alertMsg = ""
+
+    $:console.log("customerbooking", customerBooking);
 
 </script>
 
@@ -174,7 +185,8 @@
                 <div class="relative flex flex-row flex-grow items-center justify-center mb-2 xl:flex md:flex hidden w-1/2">
                     <div class="absolute border-2 border-gray-200 h-1 w-11/12 rounded-lg"></div>
                     <div class="flex flex-row bg-white z-10 space-x-1 px-1">
-                        <Avatar size="xs" class="flex justify-center items-center">{focusDualColumnIndex==1?1:3}</Avatar>
+                        <Avatar size="xs"
+                                class="flex justify-center items-center">{focusDualColumnIndex == 1 ? 1 : 3}</Avatar>
                         <span class="font-bold">
                         {#if focusDualColumnIndex === 1}
                             Guest
@@ -187,7 +199,8 @@
                 <div class="relative flex flex-row flex-grow items-center justify-center mb-2 xl:flex md:flex hidden w-1/2">
                     <div class="absolute border-2 border-gray-200 h-1 w-11/12 rounded-lg"></div>
                     <div class="flex flex-row bg-white z-10 space-x-1 px-1">
-                        <Avatar size="xs" class="flex justify-center items-center">{focusDualColumnIndex==1?2:4}</Avatar>
+                        <Avatar size="xs"
+                                class="flex justify-center items-center">{focusDualColumnIndex == 1 ? 2 : 4}</Avatar>
                         <span class="font-bold">
                         {#if focusIndividualColumnIndex === 1}
                             Service
@@ -326,6 +339,7 @@
 
                         <TimeList
                                 bind:customerBooking={customerBooking}
+                                bind:alertMsg={alertMsg}
                         />
                     </div>
                 </div>
@@ -351,6 +365,19 @@
                     </div>
                 </div>
             </div>
+
+
+        </div>
+        <div class="{alertMsg==='' ? 'hidden' : ''} xl:hidden  w-full flex justify-center">
+            <Alert
+                    class=" rounded-t-none rounded-b-lg w-full flex justify-center"
+                    dismissable={false}
+                    params={{ x: 200 }}
+                    transition={fly}
+            >
+                <InfoCircleSolid class="w-5 h-5 ripple" slot="icon"/>
+                {alertMsg}
+            </Alert>
         </div>
     </div>
 {:else}

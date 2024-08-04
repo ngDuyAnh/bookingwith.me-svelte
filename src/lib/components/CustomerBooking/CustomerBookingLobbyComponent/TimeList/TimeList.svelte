@@ -66,7 +66,7 @@
     // Loop through the list and check the length of customerIndividualServiceBookingList
 
     let showAlert = false;
-    let alertMsg = "";
+    export let alertMsg = "";
     let fetching = false;
 
     $: if ($customerBookingLobbyComponent.pleaseFetchAvailability) {
