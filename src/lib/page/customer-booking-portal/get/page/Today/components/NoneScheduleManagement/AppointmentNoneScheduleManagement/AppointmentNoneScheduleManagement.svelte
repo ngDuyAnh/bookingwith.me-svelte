@@ -1,16 +1,17 @@
 <script>
     import {customerBookingEstimate} from "$lib/page/customer-booking-portal/get/stores/customerBookingEstimate.js";
-    import {
-        moveToLobby
-    } from "$lib/components/Modal/CustomerBookingClickModal/handle_customer_booking_state.js";
     import {Button, Modal} from "flowbite-svelte";
-    import {ExclamationCircleOutline} from "flowbite-svelte-icons";
     import {business} from "$lib/page/stores/business/business.js";
     import {customerBooking} from "$lib/page/customer-booking-portal/get/stores/customerBookingEstimate.js";
     import LiveIndicator
         from "$lib/page/customer-booking-portal/get/page/components/LiveIndicator/LiveIndicator.svelte";
+    import {
+        setCustomerBookingArrivalStatus
+    } from "$lib/api/utility_functions/CustomerBookingArrivalStatus.js";
+    import {CustomerBookingArrivalStatus} from "$lib/api/initialize_functions/CustomerBooking.js";
+    import {ExclamationCircleOutline} from "flowbite-svelte-icons";
 
-    let openArrivalModal = false;
+    /*let openArrivalModal = false;
 
     async function notifyArrival() {
         await moveToLobby($customerBooking);
@@ -22,6 +23,12 @@
         alert(
             "Thank you for letting us know you have arrived. Please wait in the lobby until you are called."
         );
+    }*/
+
+    let openLateArrivalStatusModal = false;
+
+    async function notifyArrival(arrivalStatus) {
+        await setCustomerBookingArrivalStatus($customerBooking, arrivalStatus);
     }
 </script>
 
@@ -56,14 +63,38 @@
 
     <!-- Action options -->
     <div class="mt-4 flex flex-wrap justify-center">
-        <Button
-                class="mr-2 animate-pulse bg-blue-500 text-white font-semibold rounded shadow-lg hover:bg-blue-700 transition duration-300 ease-in-out transform hover:scale-105"
-                on:click={() => {
-                    openArrivalModal = true;
-                }}
-        >
-            Check in
-        </Button>
+
+        {#if $customerBooking.arrivalStatus === CustomerBookingArrivalStatus.ON_TIME}
+            <Button
+                    class="mr-2 animate-pulse bg-blue-500 text-white font-semibold rounded shadow-lg hover:bg-blue-700 transition duration-300 ease-in-out transform hover:scale-105"
+                    on:click={() => notifyArrival(CustomerBookingArrivalStatus.ON_THE_WAY)}
+            >
+                I am on my way!
+            </Button>
+        {/if}
+
+        {#if $customerBooking.arrivalStatus === CustomerBookingArrivalStatus.ON_TIME ||
+            $customerBooking.arrivalStatus === CustomerBookingArrivalStatus.ON_THE_WAY}
+            <Button
+                    class="mr-2 bg-red-500 text-white font-semibold rounded shadow-lg hover:bg-red-700 transition duration-300 ease-in-out transform hover:scale-105"
+                    on:click={() => {
+                            openLateArrivalStatusModal = true;
+                        }}
+            >
+                I will be late :(
+            </Button>
+        {/if}
+
+        <!--
+                <Button
+                        class="mr-2 animate-pulse bg-blue-500 text-white font-semibold rounded shadow-lg hover:bg-blue-700 transition duration-300 ease-in-out transform hover:scale-105"
+                        on:click={() => {
+                            openArrivalModal = true;
+                        }}
+                >
+                    I am here in lobby
+                </Button>
+        -->
 
         <a
                 class="mr-2 text-gray-900 bg-white border border-gray-300 focus:outline-none hover:bg-gray-100 focus:ring-4 focus:ring-gray-100 font-medium rounded-lg text-sm px-3 py-2.5 dark:bg-gray-800 dark:text-white dark:border-gray-600 dark:hover:bg-gray-700 dark:hover:border-gray-600 dark:focus:ring-gray-700"
@@ -90,7 +121,7 @@
 
         <a
                 class="text-gray-900 bg-white border border-gray-300 focus:outline-none hover:bg-gray-100 focus:ring-4 focus:ring-gray-100 font-medium rounded-lg text-sm px-3 py-2.5 dark:bg-gray-800 dark:text-white dark:border-gray-600 dark:hover:bg-gray-700 dark:hover:border-gray-600 dark:focus:ring-gray-700"
-                href="tel:{$business.businessInfo.businessPhoneNumber}"
+                href="tel:1{$business.businessInfo.businessPhoneNumber}"
                 target="_blank"
                 type="button"
         >
@@ -109,7 +140,43 @@
     </div>
 </div>
 
-<!-- Modal to confirm the customer arrival in the lobby -->
+<!--Late arrival-->
+<Modal autoclose bind:open={openLateArrivalStatusModal} outsideclose size="xs">
+    <div class="text-center p-6">
+        <ExclamationCircleOutline
+                class="mx-auto mb-4 text-gray-400 w-12 h-12 dark:text-gray-200"
+        />
+        <h3 class="mb-5 text-lg font-semibold text-gray-700 dark:text-gray-200">
+            Running Late
+        </h3>
+
+        <div class="space-y-4">
+            <Button class="w-full"
+                    color="yellow"
+                    on:click={() => notifyArrival(CustomerBookingArrivalStatus.LATE_LESS_THAN_10_MINUTES)}
+            >
+                Less than 10 minutes
+            </Button>
+
+            <Button class="w-full"
+                    color="red"
+                    on:click={() => notifyArrival(CustomerBookingArrivalStatus.LATE_GREATER_THAN_10_MINUTES)}
+            >
+                Greater than 10 minutes
+            </Button>
+
+            <Button class="w-full"
+                    color="alternative"
+                    on:click={() => openLateArrivalStatusModal = false}
+            >
+                Cancel
+            </Button>
+        </div>
+    </div>
+</Modal>
+
+<!--
+&lt;!&ndash; Modal to confirm the customer arrival in the lobby &ndash;&gt;
 <Modal autoclose bind:open={openArrivalModal} outsideclose size="xs">
     <div class="text-center">
         <ExclamationCircleOutline
@@ -126,3 +193,4 @@
         <Button color="alternative">Cancel</Button>
     </div>
 </Modal>
+-->

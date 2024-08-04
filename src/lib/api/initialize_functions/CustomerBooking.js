@@ -15,6 +15,13 @@ export const CustomerBookingChannel = {
     REVIEW: 2
 }
 
+export const CustomerBookingArrivalStatus = {
+    ON_TIME: 0,
+    ON_THE_WAY: 1,
+    LATE_LESS_THAN_10_MINUTES: 2,
+    LATE_GREATER_THAN_10_MINUTES: 3
+}
+
 export const CustomerBookingCost = {
     LOBBY: 4,
     ONLINE: 8,
@@ -56,6 +63,7 @@ export function CustomerBooking() {
 
         "bookingState": CustomerBookingState.SCHEDULE,
         "bookingChannel": -1,
+        "arrivalStatus": CustomerBookingArrivalStatus.ON_TIME,
 
         "bookingDate": today(),
         "bookingTime": null,

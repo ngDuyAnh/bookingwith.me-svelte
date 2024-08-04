@@ -1,7 +1,8 @@
 <script>
     import dayjs from "dayjs";
     import {formatToTime, formatToTimeAm} from "$lib/application/Formatter.js";
-    import {Tooltip} from "flowbite-svelte";
+    import {Badge, Tooltip} from "flowbite-svelte";
+    import {CustomerBookingArrivalStatus} from "$lib/api/initialize_functions/CustomerBooking.js";
 
     export let customerBooking;
 
@@ -20,13 +21,24 @@
             </svg>
         {/if}
 
-        {#if customerBooking.smsConfirmation == true}
+        {#if customerBooking.smsConfirmation === true}
             <svg id="confirmationTooltip{customerBooking.id}"class="w-[18px] h-[18px] text-green-400 " aria-hidden="true" xmlns="http://www.w3.org/2000/svg"
                      width="24" height="24" fill="none" viewBox="0 0 24 24">
               <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                     d="M5 11.917 9.724 16.5 19 7.5"/>
             </svg>
             <Tooltip triggeredBy="#confirmationTooltip{customerBooking.id}">Verified Phone Number</Tooltip>
+        {/if}
+
+        {#if customerBooking.arrivalStatus === CustomerBookingArrivalStatus.ON_THE_WAY}
+            <Badge id="arrival-status-{customerBooking.id}" color="green">OWM</Badge>
+            <Tooltip triggeredBy="#arrival-status-{customerBooking.id}">On my way!</Tooltip>
+        {:else if customerBooking.arrivalStatus === CustomerBookingArrivalStatus.LATE_LESS_THAN_10_MINUTES}
+            <Badge id="arrival-status-{customerBooking.id}" color="yellow">Late</Badge>
+            <Tooltip triggeredBy="#arrival-status-{customerBooking.id}">Less than 10 minutes</Tooltip>
+        {:else if customerBooking.arrivalStatus === CustomerBookingArrivalStatus.LATE_GREATER_THAN_10_MINUTES}
+            <Badge id="arrival-status-{customerBooking.id}" color="red">Late</Badge>
+            <Tooltip triggeredBy="#arrival-status-{customerBooking.id}">Greater than 10 minutes</Tooltip>
         {/if}
     </span>
 
