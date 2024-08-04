@@ -1,9 +1,10 @@
 <script>
     import dayjs from "dayjs";
     import {formatToTime, formatToTimeAm} from "$lib/application/Formatter.js";
-    import {Tooltip} from "flowbite-svelte";
+    import {Badge, Tooltip} from "flowbite-svelte";
     import {CustomerBookingChannel} from "$lib/api/initialize_functions/CustomerBooking.js";
     import {GlobeSolid} from "flowbite-svelte-icons";
+    import {CustomerBookingArrivalStatus} from "$lib/api/initialize_functions/CustomerBooking.js";
 
     export let customerBooking;
 
