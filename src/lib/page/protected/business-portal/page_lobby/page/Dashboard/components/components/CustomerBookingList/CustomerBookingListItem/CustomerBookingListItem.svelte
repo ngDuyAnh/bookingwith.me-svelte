@@ -1,8 +1,9 @@
 <script>
     import dayjs from "dayjs";
     import {formatToTime, formatToTimeAm} from "$lib/application/Formatter.js";
-    import {Badge, Tooltip} from "flowbite-svelte";
-    import {CustomerBookingArrivalStatus} from "$lib/api/initialize_functions/CustomerBooking.js";
+    import {Tooltip} from "flowbite-svelte";
+    import {CustomerBookingChannel} from "$lib/api/initialize_functions/CustomerBooking.js";
+    import {GlobeSolid} from "flowbite-svelte-icons";
 
     export let customerBooking;
 
@@ -21,6 +22,11 @@
             </svg>
         {/if}
 
+        {#if customerBooking.bookingChannel === CustomerBookingChannel.ONLINE}
+            <GlobeSolid color="lightBlue" id="onlineBookingTooltip{customerBooking.id}"/>
+            <Tooltip triggeredBy="#onlineBookingTooltip{customerBooking.id}">Online Booking</Tooltip>
+        {/if}
+
         {#if customerBooking.smsConfirmation === true}
             <svg id="confirmationTooltip{customerBooking.id}"class="w-[18px] h-[18px] text-green-400 " aria-hidden="true" xmlns="http://www.w3.org/2000/svg"
                      width="24" height="24" fill="none" viewBox="0 0 24 24">
@@ -29,7 +35,7 @@
             </svg>
             <Tooltip triggeredBy="#confirmationTooltip{customerBooking.id}">Verified Phone Number</Tooltip>
         {/if}
-
+        
         {#if customerBooking.arrivalStatus === CustomerBookingArrivalStatus.ON_THE_WAY}
             <Badge id="arrival-status-{customerBooking.id}" color="green">OWM</Badge>
             <Tooltip triggeredBy="#arrival-status-{customerBooking.id}">On my way!</Tooltip>
