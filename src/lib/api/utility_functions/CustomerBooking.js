@@ -138,12 +138,16 @@ export function getEmployeeTips(customerBookingList, employee)
 
                 const timeLength = serviceBooking.service.serviceTimeLength;
 
-                totalRatio += timeLength;
-
-                // It is the targeted employee
-                if (serviceBooking.assignedEmployee.id === employee.id)
+                // Only count as part of the tip pie if there is assigned employee
+                if (serviceBooking.assignedEmployee)
                 {
-                    employeeRatio += timeLength;
+                    totalRatio += timeLength;
+
+                    // It is the targeted employee
+                    if (serviceBooking.assignedEmployee.id === employee.id)
+                    {
+                        employeeRatio += timeLength;
+                    }
                 }
             });
         });
@@ -151,7 +155,11 @@ export function getEmployeeTips(customerBookingList, employee)
         // console.log(`${transaction.tip} * ${employeeRatio} / ${totalRatio}`)
 
         // Add the tip
-        totalTips += transaction.tip * (employeeRatio / totalRatio);
+        // Prevent divide by zero
+        if (totalRatio)
+        {
+            totalTips += transaction.tip * (employeeRatio / totalRatio);
+        }
     });
 
     // Return
