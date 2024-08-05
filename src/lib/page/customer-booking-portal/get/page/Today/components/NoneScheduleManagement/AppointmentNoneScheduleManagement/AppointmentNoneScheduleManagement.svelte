@@ -10,6 +10,7 @@
     } from "$lib/api/utility_functions/CustomerBookingArrivalStatus.js";
     import {CustomerBookingArrivalStatus} from "$lib/api/initialize_functions/CustomerBooking.js";
     import {ExclamationCircleOutline} from "flowbite-svelte-icons";
+    import {shortCustomerBookingID} from "$lib/api/utility_functions/CustomerBooking.js";
 
     /*let openArrivalModal = false;
 
@@ -42,6 +43,10 @@
                         class="underline">today</span>!</span>
                 <LiveIndicator/>
             </div>
+        </div>
+
+        <div class="p-4 text-sm">
+            <span>Appointment ID: {shortCustomerBookingID($customerBooking.id)}</span>
         </div>
 
         <div class="p-4 text-red-800 text-sm">
