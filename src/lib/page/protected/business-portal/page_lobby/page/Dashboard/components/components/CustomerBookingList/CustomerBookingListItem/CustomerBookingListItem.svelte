@@ -5,6 +5,7 @@
     import {CustomerBookingChannel} from "$lib/api/initialize_functions/CustomerBooking.js";
     import {GlobeSolid} from "flowbite-svelte-icons";
     import {CustomerBookingArrivalStatus} from "$lib/api/initialize_functions/CustomerBooking.js";
+    import {shortCustomerBookingID} from "$lib/api/utility_functions/CustomerBooking.js";
 
     export let customerBooking;
 
@@ -14,7 +15,7 @@
 <div class="">
 
     <span class="flex flex-row text-gray-900 font-bold">
-        {customerBooking.customer.customerName} - {(customerBooking.id % 1000).toString().padStart(3, '0')}
+        {customerBooking.customer.customerName} - {shortCustomerBookingID(customerBooking.id)}
         {#if !msg}
             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
                  stroke="currentColor" class="w-6 h-5">
@@ -25,27 +26,28 @@
 
         {#if customerBooking.bookingChannel === CustomerBookingChannel.ONLINE}
             <GlobeSolid color="lightBlue" id="onlineBookingTooltip{customerBooking.id}"/>
-            <Tooltip triggeredBy="#onlineBookingTooltip{customerBooking.id}">Online Booking</Tooltip>
+           <!-- <Tooltip triggeredBy="#onlineBookingTooltip{customerBooking.id}">Online Booking</Tooltip>-->
         {/if}
 
         {#if customerBooking.smsConfirmation === true}
-            <svg id="confirmationTooltip{customerBooking.id}"class="w-[18px] h-[18px] text-green-400 " aria-hidden="true" xmlns="http://www.w3.org/2000/svg"
-                     width="24" height="24" fill="none" viewBox="0 0 24 24">
+            <svg id="confirmationTooltip{customerBooking.id}"
+                 class="w-[18px] h-[18px] text-green-400 " aria-hidden="true" xmlns="http://www.w3.org/2000/svg"
+                 width="24" height="24" fill="none" viewBox="0 0 24 24">
               <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                     d="M5 11.917 9.724 16.5 19 7.5"/>
             </svg>
-            <Tooltip triggeredBy="#confirmationTooltip{customerBooking.id}">Verified Phone Number</Tooltip>
+            <!--<Tooltip triggeredBy="#confirmationTooltip{customerBooking.id}">Verified Phone Number</Tooltip>-->
         {/if}
-        
+
         {#if customerBooking.arrivalStatus === CustomerBookingArrivalStatus.ON_THE_WAY}
-            <Badge id="arrival-status-{customerBooking.id}" color="green">OWM</Badge>
-            <Tooltip triggeredBy="#arrival-status-{customerBooking.id}">On my way!</Tooltip>
+            <Badge id="on-the-way-status-{customerBooking.id}" color="green">OWM</Badge>
+            <!--<Tooltip triggeredBy="#on-the-way-status-{customerBooking.id}">On my way!</Tooltip>-->
         {:else if customerBooking.arrivalStatus === CustomerBookingArrivalStatus.LATE_LESS_THAN_10_MINUTES}
-            <Badge id="arrival-status-{customerBooking.id}" color="yellow">Late</Badge>
-            <Tooltip triggeredBy="#arrival-status-{customerBooking.id}">Less than 10 minutes</Tooltip>
+            <Badge id="less-10-status-{customerBooking.id}" color="yellow">Late</Badge>
+            <!--<Tooltip triggeredBy="#less-10-status-{customerBooking.id}">Less than 10 minutes</Tooltip>-->
         {:else if customerBooking.arrivalStatus === CustomerBookingArrivalStatus.LATE_GREATER_THAN_10_MINUTES}
-            <Badge id="arrival-status-{customerBooking.id}" color="red">Late</Badge>
-            <Tooltip triggeredBy="#arrival-status-{customerBooking.id}">Greater than 10 minutes</Tooltip>
+            <Badge id="greater-10-status-{customerBooking.id}" color="red">Late</Badge>
+            <!--<Tooltip triggeredBy="#greater-10-status-{customerBooking.id}">Greater than 10 minutes</Tooltip>-->
         {/if}
     </span>
 

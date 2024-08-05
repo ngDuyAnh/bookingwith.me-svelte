@@ -15,8 +15,6 @@
     import {handleOpenCustomerProfileModal} from "$lib/components/Modal/CustomerProfileModal/customerProfileModal.js";
     import {normalizeSearchInput} from "$lib/application/NormalizeSearchInput.js";
     import {shortCustomerBookingID} from "$lib/api/utility_functions/CustomerBooking.js";
-    import CheckOutCustomerBookingModal
-        from "$lib/components/Modal/CheckOutCustomerBookingModal/CheckOutCustomerBookingModal.svelte";
 
     let columns = [
         {
