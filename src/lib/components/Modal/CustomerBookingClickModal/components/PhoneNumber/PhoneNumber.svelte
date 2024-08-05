@@ -8,9 +8,7 @@
         disableManagerAccess,
         managerAccess
     } from "$lib/components/Modal/GetManagerPasswordModal/stores/managerAccess.js";
-    import GetManagerPasswordModal from "$lib/components/Modal/GetManagerPasswordModal/GetManagerPasswordModal.svelte";
     import {
-        getManagerPasswordModal,
         handleOpenGetManagerPasswordModal
     } from "$lib/components/Modal/GetManagerPasswordModal/stores/getManagerPasswordModal.js";
 

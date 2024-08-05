@@ -20,7 +20,6 @@
         getManagerPasswordModal,
         handleOpenGetManagerPasswordModal
     } from "$lib/components/Modal/GetManagerPasswordModal/stores/getManagerPasswordModal.js";
-    import GetManagerPasswordModal from "$lib/components/Modal/GetManagerPasswordModal/GetManagerPasswordModal.svelte";
     import {
         fetchCustomerBookingQueueList,dragStartedStore
     } from "$lib/page/protected/business-portal/page_lobby/stores/dashboard_store.js";

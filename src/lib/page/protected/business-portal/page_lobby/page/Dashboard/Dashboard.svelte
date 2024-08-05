@@ -201,5 +201,7 @@
 <!-- Modal for customer booking click -->
 <CustomerBookingClickModal/>
 
-<!--Grant manager access-->
-<GetManagerPasswordModal/>
+{#if $getManagerPasswordModal.open}
+    <!--Grant manager access-->
+    <GetManagerPasswordModal/>
+{/if}

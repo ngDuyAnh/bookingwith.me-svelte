@@ -22,7 +22,7 @@
     let elm;
 
     onMount(()=> {
-        const inputElement = document.getElementById('password');
+        const inputElement = document.getElementById('managerPasswordInput');
         if (inputElement) {
             inputElement.focus();
         } else {
@@ -42,7 +42,7 @@
             <div class="select-none flex flex-col space-y-2">
 
                 <Label for="password" class="font-bold mb-1">Password</Label>
-                <Input type="password" id="password" bind:value={managerPassword} placeholder="•••••••••" required
+                <Input type="password" id="managerPasswordInput" bind:value={managerPassword} placeholder="•••••••••" required
                        class="p-2 border rounded border-gray-300" bind:this={elm}
                        autocomplete="new-password"
 
