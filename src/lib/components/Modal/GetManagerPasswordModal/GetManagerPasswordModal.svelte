@@ -32,7 +32,7 @@
 
 </script>
 
-<div class="absolute top-0 left-0">
+<div class="absolute top-0 left-0 z-[2000]">
     <Modal bind:open={$getManagerPasswordModal.open} size="sm" outsideclose>
         <form class="flex flex-col space-y-4 p-4"
               on:submit={() => {}}

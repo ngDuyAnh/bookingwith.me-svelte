@@ -15,6 +15,10 @@
     import {handleOpenCustomerProfileModal} from "$lib/components/Modal/CustomerProfileModal/customerProfileModal.js";
     import {normalizeSearchInput} from "$lib/application/NormalizeSearchInput.js";
     import {shortCustomerBookingID} from "$lib/api/utility_functions/CustomerBooking.js";
+    import {
+        getManagerPasswordModal
+    } from "$lib/components/Modal/GetManagerPasswordModal/stores/getManagerPasswordModal.js";
+    import GetManagerPasswordModal from "$lib/components/Modal/GetManagerPasswordModal/GetManagerPasswordModal.svelte";
 
     let columns = [
         {
@@ -196,3 +200,6 @@
 
 <!-- Modal for customer booking click -->
 <CustomerBookingClickModal/>
+
+<!--Grant manager access-->
+<GetManagerPasswordModal/>

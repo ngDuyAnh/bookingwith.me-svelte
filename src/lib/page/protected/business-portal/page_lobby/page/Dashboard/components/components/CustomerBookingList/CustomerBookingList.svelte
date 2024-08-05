@@ -164,8 +164,3 @@
         {/each}
     </ul>
 </div>
-
-{#if $getManagerPasswordModal.open}
-    <!--Grant manager access-->
-    <GetManagerPasswordModal/>
-{/if}

@@ -13,7 +13,6 @@
         getManagerPasswordModal,
         handleOpenGetManagerPasswordModal
     } from "$lib/components/Modal/GetManagerPasswordModal/stores/getManagerPasswordModal.js";
-    import {onMount} from "svelte";
 
     // Computed to mask/unmask phone number based on visibility state
     $: maskedPhoneNumber = $managerAccess
@@ -43,8 +42,3 @@
         {/if}
     </button>
 </p>
-
-{#if $getManagerPasswordModal.open}
-    <!--Grant manager access-->
-    <GetManagerPasswordModal/>
-{/if}
