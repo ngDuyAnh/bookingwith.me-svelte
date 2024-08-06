@@ -14,7 +14,7 @@
     import {checkAbleToSendReviewReminderPhoneNumber} from "$lib/api/api_server/api_endpoints/lobby-portal/api.js";
     import {checkAbleToSendSmsReviewReminder} from "$lib/api/api_server/functions.js";
     import {business} from "$lib/page/stores/business/business.js";
-    import {sendSMSAskingForReview} from "$lib/api/api_twilio/functions.js";
+    import {sendSMSAskingForReview, sendSMSAskingForReviewNow} from "$lib/api/api_twilio/functions.js";
     import {nowTime} from "$lib/page/stores/business/business.js";
     import {fly} from "svelte/transition";
     import {InfoCircleSolid} from "flowbite-svelte-icons";
@@ -59,6 +59,8 @@
         }
     }
 
+    let sendTimeOption = 'now'; // Default to sending now
+
     async function send() {
         // Ensure able to send sms asking for review
         if (ableToSendSmsReviewReminder) {
@@ -84,7 +86,16 @@
 
                 // Send the SMS
                 if (response.submitted) {
-                    await sendSMSAskingForReview($business.businessInfo.businessName, response.customerBooking);
+
+                    // Send now
+                    if (sendTimeOption === 'now')
+                    {
+                        await sendSMSAskingForReviewNow($business.businessInfo.businessName, response.customerBooking);
+                    }
+                    else
+                    {
+                        await sendSMSAskingForReview($business.businessInfo.businessName, response.customerBooking);
+                    }
 
                     // Record the sms sent to the database
                     response.customerBooking.smsReviewReminderSent = true;
@@ -103,6 +114,14 @@
 <div class="my-auto justify-center">
     <DeviceMockup >
         <form on:submit|preventDefault={send} class="flex flex-col justify-center h-full space-y-4 p-3">
+            <Label class="space-y-2">
+                <span>Send Time:</span>
+                <select bind:value={sendTimeOption} class="form-select block w-full mt-1 rounded-lg">
+                    <option value="now">Now</option>
+                    <option value="later">In 15 Minutes</option>
+                </select>
+            </Label>
+
             <Label class="space-y-2">
                 <span>Phone Number:</span>
                 <Alert class="{alertMsg!== '' ?'':'hidden'} bg-none mb-4" params={{ x: 200 }} transition={fly}>

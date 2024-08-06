@@ -90,6 +90,25 @@ export async function sendSmsLobby(businessName, customerBooking) {
     return await sendSms(formattedPhoneNumber, message);
 }
 
+export async function sendSMSAskingForReviewNow(businessName, customerBooking) {
+    // https://help.twilio.com/articles/223183008-Formatting-International-Phone-Numbers
+    let formattedPhoneNumber = "+1" + customerBooking.customer.phoneNumber;
+
+    // Information for the message
+    let customerBookingURL = `${PUBLIC_ORIGIN}/customer-booking-portal/get/${customerBooking.bookingID}`;
+
+    // Build the SMS message
+    let message = `Thank you for visiting ${businessName}! How did we do today? Please let us know using this link: ${customerBookingURL}`;
+
+    // Ensure to only send review reminder one time
+    if (customerBooking.smsReviewReminderSent) {
+        throw new Error('Review reminder has already been sent');
+    }
+
+    // Send the SMS
+    return await sendSms(formattedPhoneNumber, message);
+}
+
 export async function sendSMSAskingForReview(businessName, customerBooking) {
     // https://help.twilio.com/articles/223183008-Formatting-International-Phone-Numbers
     let formattedPhoneNumber = "+1" + customerBooking.customer.phoneNumber;
