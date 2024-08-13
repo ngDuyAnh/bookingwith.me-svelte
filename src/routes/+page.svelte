@@ -1,83 +1,106 @@
 <script>
-	import welcome from '$lib/images/landing/svelte-welcome.webp';
-	import welcome_fallback from '$lib/images/landing/svelte-welcome.png';
-	import Header from "$lib/page/LandingPage/components/Header/Header.svelte";
-	import Footer from "$lib/page/LandingPage/components/Footer/Footer.svelte";
-	import ContactForm from "$lib/components/Form/ContactForm/ContactForm.svelte";
+    import Footer from "$lib/page/LandingPage/components/Footer/Footer.svelte";
+    import ContactForm from "$lib/components/Form/ContactForm/ContactForm.svelte";
+    import {userProfile} from "$lib/page/stores/userProfile/userProfile.js";
+    import NavBar from "$lib/page/protected/components/NavBar/NavBar.svelte";
 
-	let tabs = [
-		{ name: "Login", link: "/protected" },
-		{ name: "About", link: "/about" },
-	];
+    export let data;
+    userProfile.set(data.userProfile);
+
+    let tabs = ["Home","Features","For Businesses","For Employees","Pricing","Contact"];
+
+
 </script>
 
-<svelte:head>
-	<title>bookingwith.me Home</title>
-	<meta name="bookingwith.me home page" content="Welcome to bookingwith.me" />
-</svelte:head>
-
 <div class="relative flex flex-col h-full w-full">
-	<div class="z-10 sticky top-0">
-		<Header {tabs}/>
-	</div>
+    <div class="sticky-header lg:block hidden">
+        <NavBar landingPage={true} bind:tabs/>
+    </div>
+    <div class="sticky-sidebar lg:hidden w-fit">
+        <NavBar landingPage={true} bind:tabs/>
+    </div>
 
-	<section>
-			<span class="welcome">
-				<picture>
-					<source srcset={welcome} type="image/webp" />
-					<img src={welcome_fallback} alt="Welcome" />
-				</picture>
-			</span>
+    <!-- Hero Section -->
+    <section id="home" class="bg-blue-300 text-white text-center flex flex-col justify-center items-center h-screen">
+        <div class="p-5">
+            <h1 class="text-5xl font-bold mb-4">Simplify Your Scheduling</h1>
+            <p class="text-xl mb-4">Discover a seamless way to manage appointments and schedules with our intuitive interface.</p>
+            <a href="#contact" class="bg-white text-blue-500 px-6 py-2 rounded-full font-bold transition duration-300 ease-in-out hover:bg-blue-500 hover:text-white">Get Started</a>
+        </div>
+    </section>
 
-		<div class="text-3xl sm:text-4xl md:text-5xl text-center lg:text-left">
-			<div class="text-red-500">Let's enhance your customer booking experience together.</div>
-		</div>
 
-		<div class="flex flex-col sm:items-center md:flex-row md:items-start justify-center gap-6 md:gap-8 lg:gap-10 mt-6 lg:mt-10">
-			<div class="flex-1 text-center lg:text-left">
-				<p class="text-base sm:text-lg md:text-xl">
-					Curious what secrets lie within the art of seamless bookings?
-					<br>
-					Share your details to unlock the
-					<span class="text-emerald-500">risk-free</span>
-					mystery gift. Let’s whip up something amazing together!
-				</p>
-			</div>
+    <!-- Features Section -->
+    <section id="features" class="text-center flex flex-col justify-center items-center h-screen">
+        <h2 class="text-4xl font-bold">Features</h2>
+        <div class="flex flex-wrap justify-center items-center mt-4">
+            <div class="m-4 p-4 border rounded-lg">
+                <h3 class="font-semibold text-lg">Real-time Scheduling</h3>
+                <p>Book and update appointments instantly without delays, perfect for dynamic business environments.</p>
+            </div>
+            <div class="m-4 p-4 border rounded-lg">
+                <h3 class="font-semibold text-lg">Multiple Guest Bookings</h3>
+                <p>Facilitate group appointments easily, enhancing customer experience and expanding service options.</p>
+            </div>
+            <div class="m-4 p-4 border rounded-lg">
+                <h3 class="font-semibold text-lg">SMS Notifications</h3>
+                <p>Automatically send reminders and reduce no-shows, keeping both customers and staff updated in real-time.</p>
+            </div>
+        </div>
+    </section>
 
-			<div class="flex-1">
-				<div class="p-8 bg-white shadow-md rounded-lg">
-					<ContactForm/>
-				</div>
-			</div>
-		</div>
-	</section>
+    <!-- For Businesses -->
+    <section id="for-businesses" class="bg-gray-100 text-center flex flex-col justify-center items-center h-screen">
+        <h2 class="text-4xl font-bold">For Businesses</h2>
+        <p class="mx-auto max-w-prose">Optimize your operational efficiency with tools designed for managing small business sizes. Enjoy streamlined scheduling, comprehensive employee management, and customer engagement in one platform.</p>
+        <a href="#contact" class="mt-4 bg-blue-500 text-white px-6 py-2 rounded-full font-bold">Learn More</a>
+    </section>
 
-	<Footer/>
+    <!-- For Employees -->
+    <section id="for-employees" class="text-center flex flex-col justify-center items-center h-screen">
+        <h2 class="text-4xl font-bold">For Employees</h2>
+        <p>Manage your schedule, track your tasks, and stay informed on the go. Our platform ensures you have all the necessary tools at your fingertips, enabling a better work-life balance.</p>
+        <a href="#contact" class="mt-4 bg-blue-500 text-white px-6 py-2 rounded-full font-bold">Discover How</a>
+    </section>
+
+    <!-- Pricing Section -->
+    <section id="pricing" class="bg-gray-100 text-center flex flex-col justify-center items-center h-screen">
+        <h2 class="text-4xl font-bold">Pricing Plans</h2>
+        <p>Flexible and transparent pricing tailored to your business needs. For detailed plans and custom solutions,</p>
+        <a href="#contact" class="mt-4 bg-blue-500 text-white px-6 py-2 rounded-full font-bold">Contact Us</a>
+    </section>
+
+
+    <!-- Contact Form Section -->
+    <section id="contact" class="text-center flex flex-col justify-center items-center h-screen">
+        <h2 class="text-4xl font-bold">Contact Us</h2>
+        <p class="mb-4">Have questions or need help? Get in touch with our team today.</p>
+        <div class="w-full max-w-md mx-auto">
+            <ContactForm />
+        </div>
+    </section>
+
+
+    <Footer/>
 </div>
 
 <style>
-	section {
-		padding: 1rem;
-		display: flex;
-		flex-direction: column;
-		justify-content: center;
-		align-items: center;
-		flex: 0.6;
-	}
+    .sticky-header {
+        position: sticky;
+        top: 0;
+        z-index: 1000;
+        background-color: #2D3748;
+        width: 100%;
+        height: 60px; /* Specify the height of your header */
+    }
 
-	.welcome {
-		display: block;
-		position: relative;
-		width: 100%;
-		height: 0;
-		padding: 0 0 calc(100% * 495 / 2048) 0;
-	}
+    .sticky-sidebar {
+        position: sticky;
+        top: 0;
+        z-index: 1006;
+    }
 
-	.welcome img {
-		position: absolute;
-		width: 100%;
-		height: 100%;
-		top: 0;
-		display: block;
-	}
+    section {
+        padding: 2rem;
+    }
 </style>

@@ -2,8 +2,8 @@
 <div class="about-container">
     <h1>Welcome to bookingwith.me!</h1>
     <p>Here, we make booking simple and straightforward. Our goal is to provide a seamless experience that’s easy to use.</p>
-    <p>Whether you're a business owner or a customer, I'd appreciate it if you could take a moment to let me know how I can improve. Your insights are invaluable in helping me serve you better.</p>
-    <p>Thank you for considering booking with me. I look forward to making your booking experience exceptional!</p>
+    <p>Whether you're a business owner or a customer, we'd appreciate it if you could take a moment to let me know how we can improve. Your insights are invaluable in helping me serve you better.</p>
+    <p>Thank you for considering booking with me. We look forward to making your booking experience exceptional!</p>
 </div>
 
 <style>
