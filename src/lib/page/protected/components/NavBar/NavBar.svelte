@@ -367,6 +367,7 @@
                                         src={$userProfile.auth.picture}/>
                             </svelte:fragment>
                             <span class="block truncate text-sm font-semibold ps-11">{$userProfile.user.email}</span>
+                            <SidebarDropdownItem class="text-blue-500" href="/protected" label={"Work Area"} on:click={()=>{navigateButtonHidden = true}}/>
                             <SidebarDropdownItem class="text-red-600" href="/report"
                                                  label={"Report"}
                             />
