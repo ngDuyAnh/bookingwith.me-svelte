@@ -1,5 +1,5 @@
 <script>
-    import {Alert, Button, DeviceMockup, Input, Label} from "flowbite-svelte";
+    import {Alert, Button, DeviceMockup, Input, Label, Toggle, Tooltip} from "flowbite-svelte";
     import {
         Customer,
         CustomerBooking,
@@ -23,11 +23,12 @@
     let phoneNumber = "";
     let formattedPhoneNumber = "";
     let ableToSendSmsReviewReminder = false;
+    let overrideForceSend = false;
 
-    let alertMsg="";
+    let alertMsg = "";
 
     function handleBusinessPhoneNumberInput(event) {
-        alertMsg="";
+        alertMsg= "";
         const input = event.target.value;
 
         // Update the raw customer phone number
@@ -51,7 +52,7 @@
                     }
                 })
                 .catch(error => {
-                    alertMsg=`Something went wrong, try again.`;
+                    alertMsg = `Something went wrong, try again.`;
                     console.error('Failed at checkAbleToSendReviewReminder():', error);
                 });
         } else {
@@ -63,10 +64,13 @@
 
     async function send() {
         // Ensure able to send sms asking for review
-        if (ableToSendSmsReviewReminder) {
-            // Sent
+        if (ableToSendSmsReviewReminder || overrideForceSend)
+        {
+            // Send the message
+            overrideForceSend = false;
             ableToSendSmsReviewReminder = false;
             try {
+
                 // Create the filler customer booking
                 let customerBooking = {
                     ...CustomerBooking(),
@@ -76,6 +80,11 @@
                     bookingState: CustomerBookingState.COMPLETED,
                     bookingTime: nowTime()
                 };
+
+                // Reset the form
+                alertMsg = "";
+                phoneNumber = "";
+                formattedPhoneNumber = "";
 
                 // Submit the filler customer booking to be used to send review reminder
                 let response = await forceSubmitBooking(
@@ -108,23 +117,32 @@
         }
     }
 
-    $:        console.log("ableToSendSmsReviewReminder",ableToSendSmsReviewReminder);
+    $: console.log("ableToSendSmsReviewReminder",ableToSendSmsReviewReminder);
 </script>
 
 <div class="my-auto justify-center">
     <DeviceMockup >
         <form on:submit|preventDefault={send} class="flex flex-col justify-center h-full space-y-4 p-3">
+
+            <div class="flex items-center">
+                <Toggle bind:checked={overrideForceSend}>Override send
+                </Toggle>
+                <Tooltip>Force send the review</Tooltip>
+            </div>
+
             <Label class="space-y-2">
-                <span>Send Time:</span>
-                <select bind:value={sendTimeOption} class="form-select block w-full mt-1 rounded-lg">
-                    <option value="now">Now</option>
-                    <option value="later">In 15 Minutes</option>
-                </select>
+                <div class="flex items-center">
+                    <span>Send Time:</span>
+                    <select bind:value={sendTimeOption} class="form-select block w-full mt-1 rounded-lg">
+                        <option value="now">Now</option>
+                        <option value="later">In 15 Minutes</option>
+                    </select>
+                </div>
             </Label>
 
             <Label class="space-y-2">
                 <span>Phone Number:</span>
-                <Alert class="{alertMsg!== '' ?'':'hidden'} bg-none mb-4" params={{ x: 200 }} transition={fly}>
+                <Alert class="{alertMsg !== '' ?'':'hidden'} bg-none mb-4" params={{ x: 200 }} transition={fly}>
                     <InfoCircleSolid class="w-5 h-5 ripple" slot="icon"/>
                     <span>{alertMsg}</span>
                 </Alert>
@@ -140,20 +158,16 @@
                 />
             </Label>
 
-
-
             <Button
                     id="show-tooltip"
                     class={`w-full py-2 px-4 rounded-lg text-white font-semibold
             ${completedPhoneNumber ? "bg-green-500 hover:bg-green-600" : "bg-red-500 hover:bg-red-600"}
-            ${completedPhoneNumber && ableToSendSmsReviewReminder ? "" : "cursor-not-allowed opacity-50"}`}
-                    disabled={!completedPhoneNumber || !ableToSendSmsReviewReminder}
+            ${completedPhoneNumber && (ableToSendSmsReviewReminder || overrideForceSend) ? "" : "cursor-not-allowed opacity-50"}`}
+                    disabled={!completedPhoneNumber || (!ableToSendSmsReviewReminder && !overrideForceSend)}
                     type="submit"
             >
                 Send
             </Button>
-
-
         </form>
 
     </DeviceMockup>
