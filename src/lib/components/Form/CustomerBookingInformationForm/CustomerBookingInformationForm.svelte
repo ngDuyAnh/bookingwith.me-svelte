@@ -42,7 +42,8 @@
 
         currentTimeString = "00:00"; // Booking date is in the future
         if (bookingDate.isSame($now, 'day')) {
-            currentTimeString = $now.format(formatToTime)
+            const earliestAllowedBookingTime = $now.add(2, 'hour');
+            currentTimeString = earliestAllowedBookingTime.format(formatToTime)
         }
         // Invalid, the date selected is before today
         // Set it to the end of the day for no availability
